@@ -222,24 +222,94 @@ h1{
   text-align:center;
 }
 
+
+/* =========================
+   SOCIAL BASE
+========================= */
+
 .social{
   margin-top:20px;
   display:flex;
   justify-content:center;
+  align-items:center;
   gap:10px;
 }
 
 .social a{
   width:36px;
   height:36px;
-  border:1px solid #ddd;
   border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
   font-size:11px;
   text-decoration:none;
-  color:#111;
+  font-weight:500;
+  transition:0.2s;
+}
+
+/* =========================
+   BRAND COLORS
+========================= */
+
+/* LINE */
+.social a.li{
+  background:#00C300;
+  color:#fff;
+  border:1px solid #00C300;
+}
+
+/* Facebook */
+.social a.fb{
+  background:#1877F2;
+  color:#fff;
+  border:1px solid #1877F2;
+}
+
+/* TikTok */
+.social a.tt{
+  background:#000;
+  color:#fff;
+  border:1px solid #000;
+}
+
+/* Instagram */
+.social a.ig{
+  background:radial-gradient(circle at 30% 110%,
+    #fdf497 0%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285AEB 90%);
+  color:#fff;
+  border:1px solid transparent;
+}
+
+/* YouTube */
+.social a.yt{
+  background:#FF0000;
+  color:#fff;
+  border:1px solid #FF0000;
+}
+
+/* X (Twitter / X) */
+.social a.x{
+  background:#000;
+  color:#fff;
+  border:1px solid #000;
+}
+
+/* =========================
+   HOVER
+========================= */
+
+.social a:hover{
+  transform:translateY(-2px);
+  opacity:0.9;
+}
+
+.social a:hover{
+  transform:translateY(-2px);
+  opacity:0.9;
 }
 
 @media(max-width:768px){
@@ -327,7 +397,7 @@ h1{
 
   <div class="textblock">
     <!-- EMPTY ZONE -->
-    Product feed placeholder — connect Google Sheet / social links here later.
+    
   </div>
 
 </section>
@@ -427,14 +497,14 @@ h1{
   <p>Email: champsupalerk@gmail.com</p>
   <p>Mobile: +66 944 955 505</p>
 
-  <div class="social">
-    <a href="#">LI</a>
-    <a href="#">FB</a>
-    <a href="#">YT</a>
-    <a href="#">IG</a>
-    <a href="#">TT</a>
-    <a href="#">X</a>
-  </div>
+<div class="social">
+  <a href="#" class="li">LI</a>
+  <a href="#" class="tt">TT</a>
+  <a href="#" class="fb">FB</a>
+  <a href="#" class="ig">IG</a>
+  <a href="#" class="yt">YT</a>
+  <a href="#" class="x">X</a>
+</div>
 
 </section>
 
