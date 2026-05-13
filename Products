@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UNIMERCE | Products</title>
+
+<style>
+/* =========================
+   GLOBAL
+========================= */
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#fafafa;
+  color:#111;
+  padding-top:70px;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:16px 24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(255,255,255,0.9);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid #eee;
+  z-index:100;
+}
+
+.logo{
+  font-size:12px;
+  letter-spacing:3px;
+  color:#111;
+  text-decoration:none;
+  cursor:pointer;
+}
+
+.menu{
+  width:28px;
+  height:18px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  cursor:pointer;
+}
+
+.menu span{
+  height:2px;
+  background:#111;
+  width:100%;
+}
+
+/* =========================
+   HEADER
+========================= */
+.header{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
+.breadcrumb{
+  font-size:12px;
+  color:#888;
+  margin-bottom:10px;
+}
+
+.title{
+  font-size:22px;
+  font-weight:bold;
+}
+
+/* =========================
+   GRID
+========================= */
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:22px;
+}
+
+/* =========================
+   CARD
+========================= */
+.card{
+  background:#fff;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 4px 16px rgba(0,0,0,0.05);
+  transition:0.2s;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+}
+
+.card img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  background:#f0f0f0;
+  display:block;
+}
+
+.content{
+  padding:12px;
+}
+
+.sku{
+  font-size:11px;
+  color:#999;
+  margin-bottom:4px;
+}
+
+.name{
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:6px;
+}
+
+.desc{
+  font-size:12px;
+  color:#777;
+  margin-bottom:10px;
+}
+
+.price-box{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.price-old{
+  font-size:11px;
+  color:#999;
+  text-decoration:line-through;
+}
+
+.price-new{
+  font-size:14px;
+  font-weight:bold;
+  color:#111;
+}
+
+.loading{
+  text-align:center;
+  color:#888;
+}
+</style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a class="logo" href="index.html">UNIMERCE</a>
+
+  <div class="menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="breadcrumb">Home / Products</div>
+  <div class="title">All Products</div>
+</div>
+
+<!-- GRID -->
+<div class="container">
+  <div id="product-grid" class="grid">
+    <div class="loading">Loading products...</div>
+  </div>
+</div>
+
+<script>
+async function loadProducts(){
+  const res = await fetch("https://opensheet.elk.sh/1OMMHGc9nfZKtFox1uNz0rZ_7oD-Imi97EPeN9lsMyLU/Item_Master");
+  const data = await res.json();
+
+  const grid = document.getElementById("product-grid");
+
+  grid.innerHTML = data.map(p => {
+
+    const img = (p.image_link01 || "").trim();
+    const sku = p.Item_Code || '-';
+
+    return `
+      <div class="card">
+
+        <img 
+          src="${img}"
+          onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'"
+        />
+
+        <div class="content">
+
+          <!-- SKU ADDED -->
+          <div class="sku">${sku}</div>
+
+          <div class="name">${p.Description || '-'}</div>
+          <div class="desc">${p.MainCategory || '-'}</div>
+
+          <div class="price-box">
+
+            <div class="price-old">
+            ${p.ListPrice ? '฿' + p.ListPrice : ''}
+            </div>
+
+            <div class="price-new">
+            ${p.PromotionPrice ? '฿' + p.PromotionPrice : '-'}
+            </div>
+
+
+        
+          </div>
+        </div>
+
+      </div>
+    `;
+  }).join('');
+}
+
+loadProducts();
+</script>
+
+</body>
+</html>
