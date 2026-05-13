@@ -1,311 +1,442 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UNIMERCE GROUP</title>
 
-  <title>UNIMERCE GROUP</title>
+<style>
 
-  <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:Arial, Helvetica, sans-serif;
-    }
+/* =========================
+   BASE
+========================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Kanit", Arial, sans-serif;
+}
 
-    body{
-      background:#050505;
-      color:white;
-      overflow-x:hidden;
-    }
+body{
+  background:#ffffff;
+  color:#111;
+  overflow-x:hidden;
+}
 
-    /* ====================
-       BACKGROUND GLOW
-    ==================== */
+/* subtle background */
+.bg{
+  position:fixed;
+  width:700px;
+  height:700px;
+  background:radial-gradient(circle, rgba(0,0,0,0.04), transparent 70%);
+  top:-250px;
+  right:-250px;
+  z-index:-1;
+}
 
-    .bg-glow{
-      position:fixed;
-      width:700px;
-      height:700px;
-      background:radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
-      top:-200px;
-      right:-150px;
-      z-index:-1;
-      filter:blur(20px);
-    }
+/* =========================
+   TOP BAR (minimal)
+========================= */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:18px 28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid #eee;
+  z-index:100;
+}
 
-    .bg-glow2{
-      position:fixed;
-      width:500px;
-      height:500px;
-      background:radial-gradient(circle, rgba(255,255,255,0.05), transparent 70%);
-      bottom:-150px;
-      left:-100px;
-      z-index:-1;
-      filter:blur(30px);
-    }
+.logo{
+  font-size:12px;
+  letter-spacing:3px;
+  color:#111;
+}
 
-    /* ====================
-       HERO
-    ==================== */
+.menu{
+  width:28px;
+  height:18px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  cursor:pointer;
+}
 
-    .hero{
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      text-align:center;
-      padding:40px;
-      position:relative;
-    }
+.menu span{
+  height:2px;
+  background:#111;
+  width:100%;
+}
 
-    .tag{
-      border:1px solid rgba(255,255,255,0.15);
-      padding:10px 18px;
-      border-radius:999px;
-      font-size:13px;
-      letter-spacing:2px;
-      margin-bottom:30px;
-      backdrop-filter:blur(10px);
-      background:rgba(255,255,255,0.03);
-    }
+/* =========================
+   HERO
+========================= */
+.hero{
+  min-height:70vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:100px 20px 60px;
+}
 
-    h1{
-      font-size:90px;
-      letter-spacing:10px;
-      margin-bottom:25px;
-      font-weight:700;
-    }
+.tag{
+  font-size:12px;
+  letter-spacing:3px;
+  color:#666;
+}
 
-    .subtitle{
-      max-width:850px;
-      font-size:22px;
-      line-height:1.8;
-      color:#bdbdbd;
-      margin-bottom:50px;
-    }
+h1{
+  font-size:84px;
+  letter-spacing:18px;
+  margin:30px 0;
+}
 
-    .btn-group{
-      display:flex;
-      gap:20px;
-      flex-wrap:wrap;
-      justify-content:center;
-    }
+.sub{
+  max-width:720px;
+  font-size:18px;
+  color:#555;
+  line-height:1.8;
+}
 
-    .btn{
-      padding:16px 32px;
-      border-radius:14px;
-      text-decoration:none;
-      color:white;
-      border:1px solid rgba(255,255,255,0.12);
-      background:rgba(255,255,255,0.04);
-      backdrop-filter:blur(10px);
-      transition:0.3s;
-      font-size:15px;
-    }
+/* =========================
+   SECTION SYSTEM
+========================= */
+.section{
+  padding:60px 20px;
+}
 
-    .btn:hover{
-      transform:translateY(-4px);
-      background:white;
-      color:black;
-    }
+.title{
+  text-align:center;
+  font-size:24px;
+  margin-bottom:30px;
+  letter-spacing:2px;
+}
 
-    /* ====================
-       SECTION
-    ==================== */
+.textblock{
+  max-width:720px;
+  margin:0 auto;
+  line-height:1.8;
+  color:#444;
+}
 
-    .section{
-      padding:120px 10%;
-    }
+/* =========================
+   SHOP (MINIMAL BUTTON ROW)
+========================= */
+.shopbar{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
 
-    .section-title{
-      font-size:48px;
-      margin-bottom:20px;
-    }
+.shopbtn{
+  font-size:12px;
+  padding:8px 14px;
+  border:1px solid #ddd;
+  border-radius:999px;
+  text-decoration:none;
+  color:#111;
+  transition:0.2s;
+}
 
-    .section-sub{
-      color:#8f8f8f;
-      max-width:700px;
-      line-height:1.8;
-      margin-bottom:60px;
-    }
+.shopbtn:hover{
+  background:#111;
+  color:#fff;
+}
 
-    /* ====================
-       GRID
-    ==================== */
+/* =========================
+   GRID
+========================= */
+.grid{
+  max-width:1100px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-      gap:25px;
-    }
+.card{
+  border:1px solid #eee;
+  border-radius:16px;
+  padding:22px;
+  transition:0.25s;
+}
 
-    .card{
-      position:relative;
-      padding:35px;
-      border-radius:24px;
-      background:rgba(255,255,255,0.03);
-      border:1px solid rgba(255,255,255,0.08);
-      backdrop-filter:blur(12px);
-      transition:0.4s;
-      overflow:hidden;
-    }
+.card:hover{
+  transform:translateY(-5px);
+  border-color:#ddd;
+}
 
-    .card::before{
-      content:"";
-      position:absolute;
-      width:200px;
-      height:200px;
-      background:radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
-      top:-100px;
-      right:-100px;
-    }
+.card h3{
+  font-size:16px;
+  margin-bottom:8px;
+}
 
-    .card:hover{
-      transform:translateY(-8px);
-      border-color:rgba(255,255,255,0.2);
-    }
+.card p{
+  font-size:13px;
+  color:#666;
+  line-height:1.6;
+}
 
-    .card h3{
-      font-size:26px;
-      margin-bottom:18px;
-    }
+/* =========================
+   RECOMMENDED ZONE
+========================= */
+.recommend{
+  background:#fafafa;
+  border-top:1px solid #eee;
+  border-bottom:1px solid #eee;
+}
 
-    .card p{
-      color:#b3b3b3;
-      line-height:1.8;
-    }
+/* =========================
+   BRANDS
+========================= */
+.brands{
+  max-width:900px;
+  margin:0 auto;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+}
 
-    /* ====================
-       FOOTER
-    ==================== */
+.brandtag{
+  font-size:12px;
+  border:1px solid #ddd;
+  padding:6px 12px;
+  border-radius:999px;
+}
 
-    footer{
-      padding:60px 20px;
-      text-align:center;
-      color:#6f6f6f;
-      border-top:1px solid rgba(255,255,255,0.08);
-    }
+/* =========================
+   CONTACT
+========================= */
+.contact{
+  padding:60px 20px;
+  text-align:center;
+}
 
-    /* ====================
-       MOBILE
-    ==================== */
+.social{
+  margin-top:20px;
+  display:flex;
+  justify-content:center;
+  gap:10px;
+}
 
-    @media(max-width:768px){
+.social a{
+  width:36px;
+  height:36px;
+  border:1px solid #ddd;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  text-decoration:none;
+  color:#111;
+}
 
-      h1{
-        font-size:52px;
-        letter-spacing:4px;
-      }
+@media(max-width:768px){
+  h1{font-size:44px;}
+}
 
-      .subtitle{
-        font-size:18px;
-      }
-
-      .section-title{
-        font-size:36px;
-      }
-
-    }
-
-  </style>
+</style>
 </head>
 
 <body>
 
-  <div class="bg-glow"></div>
-  <div class="bg-glow2"></div>
+<div class="bg"></div>
 
-  <!-- ====================
-       HERO
-  ==================== -->
+<!-- ================= TOPBAR ================= -->
+<div class="topbar">
+  <div class="logo">UNIMERCE</div>
+  <div class="menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
 
-  <section class="hero">
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="tag">ADAPTIVE ESSENTIAL SYSTEM</div>
 
-    <div class="tag">
-      ADAPTIVE COMMERCE ECOSYSTEM
+  <h1>UNIMERCE</h1>
+
+  <div class="sub">
+    A curated system of essential tools designed for balance, usability, and long-term quality of life.
+  </div>
+</section>
+
+<!-- ================= SHOP (MINIMAL) ================= -->
+<section class="section">
+  <div class="title">SHOP</div>
+
+  <div class="shopbar">
+
+    <a class="shopbtn" href="https://shopee.co.th/shop/123173321" target="_blank">Shopee</a>
+
+    <a class="shopbtn" href="https://www.lazada.co.th/shop/vitevthailand/" target="_blank">Lazada</a>
+
+    <a class="shopbtn" href="#">TikTok (soon)</a>
+
+  </div>
+</section>
+
+<!-- ================= CATEGORIES ================= -->
+<section class="section">
+
+  <div class="title">CATEGORIES</div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>Water Purification</h3>
+      <p>Clean water systems for essential daily living.</p>
     </div>
 
-    <h1>UNIMERCE</h1>
+    <div class="card">
+      <h3>Water Quality Tools</h3>
+      <p>Measurement instruments for environmental precision.</p>
+    </div>
 
-    <p class="subtitle">
-      Building the future of modern commerce through AI,
-      smart devices, automation, IoT lifestyle technologies,
-      and adaptive business culture.
+    <div class="card">
+      <h3>Measurement Tools</h3>
+      <p>Practical tools for modern daily applications.</p>
+    </div>
+
+    <div class="card">
+      <h3>Aroma Systems</h3>
+      <p>Environmental scent and lifestyle balance tools.</p>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ================= RECOMMENDED PRODUCTS (EMPTY ZONE) ================= -->
+<section class="section recommend">
+
+  <div class="title">RECOMMENDED PRODUCTS</div>
+
+  <div class="textblock">
+    <!-- EMPTY ZONE -->
+    Product feed placeholder — connect Google Sheet / social links here later.
+  </div>
+
+</section>
+
+<!-- ================= WHO WE ARE ================= -->
+<section class="section">
+
+  <div class="title">WHO WE ARE</div>
+
+  <div class="textblock">
+
+    <p>
+      <strong>Essence of Presence</strong><br>
+      เราไม่ได้ยึดอยู่กับสิ่งที่ปรากฏต่อสายตา หากแต่ให้ความสำคัญกับแก่นแท้ที่อยู่ภายใต้รูปของสรรพสิ่ง ในความเปลี่ยนแปลงของโลก ทุกสิ่งแปรเปลี่ยนอยู่เสมอ แต่ยังมีภาวะหนึ่งที่นิ่งสงบ นั่นคือความโน้มเอียงของชีวิตในการแสวงหาความพอดี
     </p>
 
-    <div class="btn-group">
-      <a href="https://shopee.co.th/shop/123173321" class="btn" target="_blank" rel="noopener noreferrer">Explore Products</a>
-      <a href="https://shopee.co.th/shop/123173321" class="btn" target="_blank" rel="noopener noreferrer">Shopee Store</a>
-      <a href="#" class="btn" target="_blank" rel="noopener noreferrer">Contact LINE</a>
-    </div>
+    <br>
 
-  </section>
-
-  <!-- ====================
-       SECTION
-  ==================== -->
-
-  <section class="section">
-
-    <h2 class="section-title">
-      What We Build
-    </h2>
-
-    <p class="section-sub">
-      We focus on technology-driven products and systems
-      that improve efficiency, lifestyle, automation,
-      and next-generation commerce experiences.
+    <p>
+      <strong>Space Between Meaning</strong><br>
+      ระหว่างรูปและความหมาย คือพื้นที่ที่ไม่ต้องการคำอธิบาย  
+      เป็นการรับรู้ความสัมพันธ์อันลึกซึ้งของสรรพสิ่งที่ดำรงอยู่ร่วมกัน
     </p>
 
-    <div class="grid">
+    <br>
 
-      <div class="card">
-        <h3>AI Automation</h3>
+    <p>
+      <strong>Refinement of Selection</strong><br>
+      การเลือกสรรคือการมองให้ลึกกว่ารูปลักษณ์  
+      ค่อย ๆ ลดทอนสิ่งที่ไม่จำเป็น จนเหลือเพียงสิ่งที่มีเหตุผลของการดำรงอยู่
+    </p>
 
-        <p>
-          Leveraging modern AI tools to simplify workflows,
-          reduce repetitive tasks, and improve productivity.
-        </p>
-      </div>
+    <br>
 
-      <div class="card">
-        <h3>Smart Lifestyle</h3>
+    <p>
+      <strong>Natural Balance</strong><br>
+      เมื่อสิ่งใดสอดคล้องกับธรรมชาติของตน  
+      มันจะดำเนินไปอย่างพอดี และคงอยู่ในสมดุลที่เงียบงามของชีวิต
+    </p>
 
-        <p>
-          Curating smart living products, sensors,
-          connected devices, and automation ecosystems.
-        </p>
-      </div>
+  </div>
 
-      <div class="card">
-        <h3>IoT Ecosystem</h3>
+</section>
 
-        <p>
-          Integrating intelligent systems and devices
-          for seamless digital and physical experiences.
-        </p>
-      </div>
 
-      <div class="card">
-        <h3>Adaptive Commerce</h3>
+<br><br>
 
-        <p>
-          Evolving with consumer behavior, social commerce,
-          AI platforms, and emerging technologies.
-        </p>
-      </div>
 
-    </div>
+<!-- ================= WHAT WE DO ================= -->
+<section class="section">
 
-  </section>
+  <div class="title">WHAT WE DO</div>
 
-  <footer>
-    © 2026 UNIMERCE GROUP
-  </footer>
+  <div class="textblock">
+
+    <p>
+      เราคัดเลือกองค์ประกอบของการใช้ชีวิตร่วมสมัย ผ่านมุมมองของความสมดุลระหว่างประสบการณ์ คุณภาพ และความยั่งยืนในระยะยาว
+    </p>
+
+    <br>
+
+    <p>
+      โดยยึดแนวคิด longevity เป็นแกนกลาง มากกว่าความเร็วหรือความสะดวกชั่วคราว  
+      ทุกสิ่งผ่านการคัดกรองจากการใช้งานจริง ไม่ใช่เพียงภาพลักษณ์หรือความซับซ้อนที่เกินจำเป็น
+    </p>
+
+    <br>
+
+    <p>
+      เพื่อสนับสนุนชีวิตที่ดำเนินไปอย่างต่อเนื่อง ทั้งในระดับร่างกาย ความรู้สึก และจังหวะของการมีอยู่
+    </p>
+
+  </div>
+
+</section>
+</section><!-- ================= OUR BRANDS ================= -->
+<section class="section">
+
+  <div class="title">OUR BRANDS</div>
+
+  <div class="brands">
+
+    <div class="brandtag"><a href="https://vitev.com" target="_blank">Vitev</a></div>
+    <div class="brandtag">Tower Luxury</div>
+    <div class="brandtag">Smart Sensor</div>
+    <div class="brandtag">GVDA</div>
+
+  </div>
+
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="contact">
+
+  <div class="title">CONTACT</div>
+
+  <p>Email: champsupalerk@gmail.com</p>
+  <p>Mobile: +66 944 955 505</p>
+
+  <div class="social">
+    <a href="#">LI</a>
+    <a href="#">FB</a>
+    <a href="#">YT</a>
+    <a href="#">IG</a>
+    <a href="#">TT</a>
+    <a href="#">X</a>
+  </div>
+
+</section>
 
 </body>
 </html>
