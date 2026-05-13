@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>UNIMERCE GROUP</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      background:#050505;
+      color:white;
+      overflow-x:hidden;
+    }
+
+    /* ====================
+       BACKGROUND GLOW
+    ==================== */
+
+    .bg-glow{
+      position:fixed;
+      width:700px;
+      height:700px;
+      background:radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
+      top:-200px;
+      right:-150px;
+      z-index:-1;
+      filter:blur(20px);
+    }
+
+    .bg-glow2{
+      position:fixed;
+      width:500px;
+      height:500px;
+      background:radial-gradient(circle, rgba(255,255,255,0.05), transparent 70%);
+      bottom:-150px;
+      left:-100px;
+      z-index:-1;
+      filter:blur(30px);
+    }
+
+    /* ====================
+       HERO
+    ==================== */
+
+    .hero{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      padding:40px;
+      position:relative;
+    }
+
+    .tag{
+      border:1px solid rgba(255,255,255,0.15);
+      padding:10px 18px;
+      border-radius:999px;
+      font-size:13px;
+      letter-spacing:2px;
+      margin-bottom:30px;
+      backdrop-filter:blur(10px);
+      background:rgba(255,255,255,0.03);
+    }
+
+    h1{
+      font-size:90px;
+      letter-spacing:10px;
+      margin-bottom:25px;
+      font-weight:700;
+    }
+
+    .subtitle{
+      max-width:850px;
+      font-size:22px;
+      line-height:1.8;
+      color:#bdbdbd;
+      margin-bottom:50px;
+    }
+
+    .btn-group{
+      display:flex;
+      gap:20px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+
+    .btn{
+      padding:16px 32px;
+      border-radius:14px;
+      text-decoration:none;
+      color:white;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.04);
+      backdrop-filter:blur(10px);
+      transition:0.3s;
+      font-size:15px;
+    }
+
+    .btn:hover{
+      transform:translateY(-4px);
+      background:white;
+      color:black;
+    }
+
+    /* ====================
+       SECTION
+    ==================== */
+
+    .section{
+      padding:120px 10%;
+    }
+
+    .section-title{
+      font-size:48px;
+      margin-bottom:20px;
+    }
+
+    .section-sub{
+      color:#8f8f8f;
+      max-width:700px;
+      line-height:1.8;
+      margin-bottom:60px;
+    }
+
+    /* ====================
+       GRID
+    ==================== */
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:25px;
+    }
+
+    .card{
+      position:relative;
+      padding:35px;
+      border-radius:24px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(12px);
+      transition:0.4s;
+      overflow:hidden;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      width:200px;
+      height:200px;
+      background:radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
+      top:-100px;
+      right:-100px;
+    }
+
+    .card:hover{
+      transform:translateY(-8px);
+      border-color:rgba(255,255,255,0.2);
+    }
+
+    .card h3{
+      font-size:26px;
+      margin-bottom:18px;
+    }
+
+    .card p{
+      color:#b3b3b3;
+      line-height:1.8;
+    }
+
+    /* ====================
+       FOOTER
+    ==================== */
+
+    footer{
+      padding:60px 20px;
+      text-align:center;
+      color:#6f6f6f;
+      border-top:1px solid rgba(255,255,255,0.08);
+    }
+
+    /* ====================
+       MOBILE
+    ==================== */
+
+    @media(max-width:768px){
+
+      h1{
+        font-size:52px;
+        letter-spacing:4px;
+      }
+
+      .subtitle{
+        font-size:18px;
+      }
+
+      .section-title{
+        font-size:36px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-glow"></div>
+  <div class="bg-glow2"></div>
+
+  <!-- ====================
+       HERO
+  ==================== -->
+
+  <section class="hero">
+
+    <div class="tag">
+      ADAPTIVE COMMERCE ECOSYSTEM
+    </div>
+
+    <h1>UNIMERCE</h1>
+
+    <p class="subtitle">
+      Building the future of modern commerce through AI,
+      smart devices, automation, IoT lifestyle technologies,
+      and adaptive business culture.
+    </p>
+
+    <div class="btn-group">
+      <a href="#" class="btn">Explore Products</a>
+      <a href="#" class="btn">Shopee Store</a>
+      <a href="#" class="btn">Contact LINE</a>
+    </div>
+
+  </section>
+
+  <!-- ====================
+       SECTION
+  ==================== -->
+
+  <section class="section">
+
+    <h2 class="section-title">
+      What We Build
+    </h2>
+
+    <p class="section-sub">
+      We focus on technology-driven products and systems
+      that improve efficiency, lifestyle, automation,
+      and next-generation commerce experiences.
+    </p>
+
+    <div class="grid">
+
+      <div class="card">
+        <h3>AI Automation</h3>
+
+        <p>
+          Leveraging modern AI tools to simplify workflows,
+          reduce repetitive tasks, and improve productivity.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Smart Lifestyle</h3>
+
+        <p>
+          Curating smart living products, sensors,
+          connected devices, and automation ecosystems.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>IoT Ecosystem</h3>
+
+        <p>
+          Integrating intelligent systems and devices
+          for seamless digital and physical experiences.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Adaptive Commerce</h3>
+
+        <p>
+          Evolving with consumer behavior, social commerce,
+          AI platforms, and emerging technologies.
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <footer>
+    © 2026 UNIMERCE GROUP
+  </footer>
+
+</body>
+</html>
