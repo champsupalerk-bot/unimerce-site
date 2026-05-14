@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>UNIMERCE | Inventory OnHand</title>
-
 <style>
 
 /* =========================
@@ -54,13 +53,37 @@ body{
 }
 
 /* =========================
-   BREADCRUMB
+   BREADCRUMB ROW
 ========================= */
+.breadcrumb-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
 .breadcrumb{
   font-size:12px;
   color:#777;
-  margin-bottom:12px;
   letter-spacing:1px;
+}
+
+.hide-zero-wrap{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  color:#777;
+  white-space:nowrap;
+  cursor:pointer;
+  user-select:none;
+}
+
+.hide-zero-wrap input[type="checkbox"]{
+  width:14px;
+  height:14px;
+  cursor:pointer;
+  accent-color:#2f5ea8;
 }
 
 /* =========================
@@ -75,7 +98,7 @@ body{
   padding:10px 12px;
   border:1px solid #ddd;
   border-radius:8px;
-  font-size:13px;
+  font-size:16px;
   outline:none;
   box-sizing:border-box;
 }
@@ -85,7 +108,8 @@ body{
 ========================= */
 .table-wrap{
   width:100%;
-  overflow:auto;
+  overflow-x:hidden;
+  overflow-y:auto;
   border:1px solid #eee;
   border-radius:12px;
   background:#fff;
@@ -98,7 +122,6 @@ body{
 table{
   width:100%;
   border-collapse:collapse;
-  min-width:600px;
 }
 
 /* =========================
@@ -139,9 +162,22 @@ tbody tr:hover{
 /* =========================
    COLUMN WIDTHS
 ========================= */
-.col-code{width:80px;}
-.col-desc{width:auto;}
-.col-stock{width:70px; text-align:right;}
+.col-code{
+  width:90px;
+  white-space:nowrap;
+}
+
+.col-desc{
+  width:auto;
+  word-break:break-word;
+  white-space:normal;
+}
+
+.col-stock{
+  width:50px;
+  text-align:right;
+  white-space:nowrap;
+}
 
 /* =========================
    FLOAT TOP BUTTON
@@ -177,34 +213,18 @@ tbody tr:hover{
 }
 
 /* =========================
-   MOBILE FIX
+   MOBILE
 ========================= */
 @media(max-width:768px){
   .table-wrap{
-    overflow-x:auto;
-  }
-  table{
-    min-width:520px;
-  }
-  .col-stock{
-    position:sticky;
-    right:0;
-    background:#fff;
-    z-index:5;
-    box-shadow:-3px 0 6px rgba(0,0,0,0.06);
+    overflow-x:hidden;
   }
   thead th.col-stock{
-    background:#2f5ea8 !important;
-    z-index:55;
+    background:#2f5ea8;
     color:#fff;
   }
-  .col-desc{
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-  }
 }
+
 </style>
 </head>
 
@@ -218,9 +238,13 @@ tbody tr:hover{
 <!-- CONTENT -->
 <div class="container">
 
-  <!-- BREADCRUMB -->
-  <div class="breadcrumb">
-    HOME / INVENTORY / ONHAND
+  <!-- BREADCRUMB ROW -->
+  <div class="breadcrumb-row">
+    <div class="breadcrumb">HOME / INVENTORY</div>
+    <label class="hide-zero-wrap">
+      <input type="checkbox" id="hideZero" checked />
+      Hide 0 / –
+    </label>
   </div>
 
   <!-- FILTER -->
@@ -230,27 +254,22 @@ tbody tr:hover{
 
   <div class="table-wrap">
     <table>
-
       <thead>
         <tr>
           <th onclick="sortTable('Item_Code')">
             Item Code <span class="sort-arrow" id="arrow-Item_Code">↕</span>
           </th>
-
           <th onclick="sortTable('Description')">
             Description <span class="sort-arrow" id="arrow-Description">↕</span>
           </th>
-
-          <th onclick="sortTable('OnHand')">
+          <th onclick="sortTable('OnHand')" class="col-stock">
             OH <span class="sort-arrow" id="arrow-OnHand">↕</span>
           </th>
         </tr>
       </thead>
-
       <tbody id="table-body">
         <tr><td colspan="3">Loading...</td></tr>
       </tbody>
-
     </table>
   </div>
 
@@ -263,9 +282,9 @@ tbody tr:hover{
 
 const API = "https://opensheet.elk.sh/1OMMHGc9nfZKtFox1uNz0rZ_7oD-Imi97EPeN9lsMyLU/Item_Master";
 
-let rawData = [];
+let rawData      = [];
 let filteredData = [];
-let viewData = [];
+let viewData     = [];
 
 let sortState = {
   key: null,
@@ -279,9 +298,7 @@ async function loadTable(){
   try {
     const res = await fetch(API);
     rawData = await res.json();
-    filteredData = rawData;
-    viewData = rawData;
-    renderTable(viewData);
+    applyAll();
   } catch(e) {
     document.getElementById("table-body").innerHTML =
       '<tr><td colspan="3">Failed to load data.</td></tr>';
@@ -289,23 +306,38 @@ async function loadTable(){
 }
 
 /* =========================
-   FILTER
+   APPLY ALL (filter + hideZero + sort)
 ========================= */
-function applyFilter(q){
+function applyAll(){
 
-  q = q.toLowerCase().trim();
+  const q        = document.getElementById("searchBox").value.toLowerCase().trim();
+  const hideZero = document.getElementById("hideZero").checked;
 
-  if(!q){
-    filteredData = rawData;
-  } else {
-    filteredData = rawData.filter(i =>
+  // 1. FILTER BY SEARCH
+  let result = rawData;
+
+  if(q){
+    result = result.filter(i =>
       String(i.Item_Code   || "").toLowerCase().includes(q) ||
       String(i.Description || "").toLowerCase().includes(q) ||
       String(i.OnHand      || "").toLowerCase().includes(q)
     );
   }
 
-  // ถ้ามี sort active อยู่ ให้ sort filteredData ด้วย
+  // 2. HIDE ZERO / DASH
+  if(hideZero){
+    result = result.filter(i => {
+      const v = String(i.OnHand || "").trim();
+      if(v === "" || v === "-") return false;
+      const n = parseFloat(v);
+      if(!isNaN(n) && n === 0) return false;
+      return true;
+    });
+  }
+
+  filteredData = result;
+
+  // 3. SORT
   if(sortState.key){
     applySortOnFiltered();
   } else {
@@ -318,25 +350,21 @@ function applyFilter(q){
    SORT
 ========================= */
 function sortTable(key){
-
   if(sortState.key === key){
     sortState.dir = sortState.dir === "asc" ? "desc" : "asc";
   } else {
     sortState.key = key;
     sortState.dir = "asc";
   }
-
   applySortOnFiltered();
   updateArrows(sortState.key, sortState.dir);
 }
 
 function applySortOnFiltered(){
-
   const key = sortState.key;
   const dir = sortState.dir;
 
   viewData = [...filteredData].sort((a, b) => {
-
     let v1 = a[key] ?? "";
     let v2 = b[key] ?? "";
 
@@ -353,7 +381,6 @@ function applySortOnFiltered(){
     if(v1 < v2) return dir === "asc" ? -1 : 1;
     if(v1 > v2) return dir === "asc" ?  1 : -1;
     return 0;
-
   });
 
   updateArrows(key, dir);
@@ -364,7 +391,6 @@ function applySortOnFiltered(){
    RENDER
 ========================= */
 function renderTable(data){
-
   const tbody = document.getElementById("table-body");
 
   if(!data || data.length === 0){
@@ -374,9 +400,9 @@ function renderTable(data){
 
   tbody.innerHTML = data.map(p => `
     <tr>
-      <td class="col-code">${p.Item_Code    || "-"}</td>
-      <td class="col-desc">${p.Description  || "-"}</td>
-      <td class="col-stock">${p.OnHand      || "0"}</td>
+      <td class="col-code">${p.Item_Code   || "-"}</td>
+      <td class="col-desc">${p.Description || "-"}</td>
+      <td class="col-stock">${p.OnHand     || "0"}</td>
     </tr>
   `).join("");
 }
@@ -385,28 +411,28 @@ function renderTable(data){
    ARROWS
 ========================= */
 function updateArrows(active, dir){
-
   ["Item_Code", "Description", "OnHand"].forEach(k => {
     const el = document.getElementById("arrow-" + k);
     if(!el) return;
-
     if(!active){
       el.textContent = "↕";
       return;
     }
-
     el.textContent = k === active ? (dir === "asc" ? "↑" : "↓") : "↕";
   });
-
 }
 
 /* =========================
-   SEARCH BIND + INIT
+   INIT
 ========================= */
 window.addEventListener("load", () => {
 
-  document.getElementById("searchBox").addEventListener("input", (e) => {
-    applyFilter(e.target.value);
+  document.getElementById("searchBox").addEventListener("input", () => {
+    applyAll();
+  });
+
+  document.getElementById("hideZero").addEventListener("change", () => {
+    applyAll();
   });
 
   loadTable();
@@ -421,6 +447,5 @@ document.getElementById("toTop").onclick = () => {
 };
 
 </script>
-
 </body>
 </html>
