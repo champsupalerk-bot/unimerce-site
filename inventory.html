@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UNIMERCE | Inventory OnHand</title>
+
+<style>
+
+/* =========================
+   BASE
+========================= */
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#fafafa;
+  color:#111;
+  padding-top:70px;
+}
+
+/* =========================
+   TOPBAR
+========================= */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:18px 28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid #eee;
+  z-index:100;
+  box-sizing:border-box;
+}
+
+.logo{
+  font-size:12px;
+  letter-spacing:3px;
+  color:#111;
+  text-decoration:none;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+.container{
+  max-width:800px;
+  margin:0 auto;
+  padding:20px;
+}
+
+/* =========================
+   BREADCRUMB
+========================= */
+.breadcrumb{
+  font-size:12px;
+  color:#777;
+  margin-bottom:12px;
+  letter-spacing:1px;
+}
+
+/* =========================
+   FILTER BAR
+========================= */
+.filterbar{
+  margin-bottom:10px;
+}
+
+.filterbar input{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  font-size:13px;
+  outline:none;
+  box-sizing:border-box;
+}
+
+/* =========================
+   TABLE WRAP
+========================= */
+.table-wrap{
+  width:100%;
+  overflow:auto;
+  border:1px solid #eee;
+  border-radius:12px;
+  background:#fff;
+  max-height:75vh;
+}
+
+/* =========================
+   TABLE
+========================= */
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:600px;
+}
+
+/* =========================
+   HEADER
+========================= */
+thead th{
+  position:sticky;
+  top:0;
+  background:#2f5ea8;
+  color:#fff;
+  z-index:50;
+  text-align:left;
+  font-size:12px;
+  padding:12px 10px;
+  letter-spacing:1px;
+  cursor:pointer;
+  user-select:none;
+  white-space:nowrap;
+}
+
+thead th:hover{
+  background:#244a86;
+}
+
+/* =========================
+   BODY
+========================= */
+tbody td{
+  font-size:13px;
+  padding:10px;
+  border-bottom:1px solid #f0f0f0;
+}
+
+tbody tr:hover{
+  background:#f7f7f7;
+}
+
+/* =========================
+   COLUMN WIDTHS
+========================= */
+.col-code{width:80px;}
+.col-desc{width:auto;}
+.col-stock{width:70px; text-align:right;}
+
+/* =========================
+   FLOAT TOP BUTTON
+========================= */
+#toTop{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#111;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+#toTop:hover{
+  transform:translateY(-3px);
+}
+
+/* =========================
+   SORT ICON
+========================= */
+.sort-arrow{
+  font-size:10px;
+  margin-left:6px;
+  opacity:0.9;
+}
+
+/* =========================
+   MOBILE FIX
+========================= */
+@media(max-width:768px){
+
+  .table-wrap{
+    overflow-x:auto;
+  }
+
+  table{
+    min-width:520px;
+  }
+
+  .col-stock{
+    position:sticky;
+    right:0;
+    background:#fff;
+    z-index:5;
+  }
+
+  thead .col-stock{
+    background:#2f5ea8;
+  }
+
+  .col-desc{
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a class="logo" href="index.html">UNIMERCE</a>
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    HOME / INVENTORY / ONHAND
+  </div>
+
+  <!-- FILTER -->
+  <div class="filterbar">
+    <input id="searchBox" type="text" placeholder="Search Item Code / Description / OH..." />
+  </div>
+
+  <div class="table-wrap">
+    <table>
+
+      <thead>
+        <tr>
+          <th onclick="sortTable('Item_Code')">
+            Item Code <span class="sort-arrow" id="arrow-Item_Code">↕</span>
+          </th>
+
+          <th onclick="sortTable('Description')">
+            Description <span class="sort-arrow" id="arrow-Description">↕</span>
+          </th>
+
+          <th onclick="sortTable('OnHand')">
+            OH <span class="sort-arrow" id="arrow-OnHand">↕</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody id="table-body">
+        <tr><td colspan="3">Loading...</td></tr>
+      </tbody>
+
+    </table>
+  </div>
+
+</div>
+
+<!-- FLOAT TOP -->
+<div id="toTop">↑</div>
+
+<script>
+
+const API = "https://opensheet.elk.sh/1OMMHGc9nfZKtFox1uNz0rZ_7oD-Imi97EPeN9lsMyLU/Item_Master";
+
+let rawData = [];
+let filteredData = [];
+let viewData = [];
+
+let sortState = {
+  key: null,
+  dir: "asc"
+};
+
+/* =========================
+   LOAD DATA
+========================= */
+async function loadTable(){
+  try {
+    const res = await fetch(API);
+    rawData = await res.json();
+    filteredData = rawData;
+    viewData = rawData;
+    renderTable(viewData);
+  } catch(e) {
+    document.getElementById("table-body").innerHTML =
+      '<tr><td colspan="3">Failed to load data.</td></tr>';
+  }
+}
+
+/* =========================
+   FILTER
+========================= */
+function applyFilter(q){
+
+  q = q.toLowerCase().trim();
+
+  if(!q){
+    filteredData = rawData;
+  } else {
+    filteredData = rawData.filter(i =>
+      String(i.Item_Code   || "").toLowerCase().includes(q) ||
+      String(i.Description || "").toLowerCase().includes(q) ||
+      String(i.OnHand      || "").toLowerCase().includes(q)
+    );
+  }
+
+  // ถ้ามี sort active อยู่ ให้ sort filteredData ด้วย
+  if(sortState.key){
+    applySortOnFiltered();
+  } else {
+    viewData = filteredData;
+    renderTable(viewData);
+  }
+}
+
+/* =========================
+   SORT
+========================= */
+function sortTable(key){
+
+  if(sortState.key === key){
+    sortState.dir = sortState.dir === "asc" ? "desc" : "asc";
+  } else {
+    sortState.key = key;
+    sortState.dir = "asc";
+  }
+
+  applySortOnFiltered();
+  updateArrows(sortState.key, sortState.dir);
+}
+
+function applySortOnFiltered(){
+
+  const key = sortState.key;
+  const dir = sortState.dir;
+
+  viewData = [...filteredData].sort((a, b) => {
+
+    let v1 = a[key] ?? "";
+    let v2 = b[key] ?? "";
+
+    const n1 = parseFloat(v1);
+    const n2 = parseFloat(v2);
+
+    if(!isNaN(n1) && !isNaN(n2)){
+      return dir === "asc" ? n1 - n2 : n2 - n1;
+    }
+
+    v1 = String(v1).toLowerCase();
+    v2 = String(v2).toLowerCase();
+
+    if(v1 < v2) return dir === "asc" ? -1 : 1;
+    if(v1 > v2) return dir === "asc" ?  1 : -1;
+    return 0;
+
+  });
+
+  updateArrows(key, dir);
+  renderTable(viewData);
+}
+
+/* =========================
+   RENDER
+========================= */
+function renderTable(data){
+
+  const tbody = document.getElementById("table-body");
+
+  if(!data || data.length === 0){
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#aaa;padding:20px;">No results found.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = data.map(p => `
+    <tr>
+      <td class="col-code">${p.Item_Code    || "-"}</td>
+      <td class="col-desc">${p.Description  || "-"}</td>
+      <td class="col-stock">${p.OnHand      || "0"}</td>
+    </tr>
+  `).join("");
+}
+
+/* =========================
+   ARROWS
+========================= */
+function updateArrows(active, dir){
+
+  ["Item_Code", "Description", "OnHand"].forEach(k => {
+    const el = document.getElementById("arrow-" + k);
+    if(!el) return;
+
+    if(!active){
+      el.textContent = "↕";
+      return;
+    }
+
+    el.textContent = k === active ? (dir === "asc" ? "↑" : "↓") : "↕";
+  });
+
+}
+
+/* =========================
+   SEARCH BIND + INIT
+========================= */
+window.addEventListener("load", () => {
+
+  document.getElementById("searchBox").addEventListener("input", (e) => {
+    applyFilter(e.target.value);
+  });
+
+  loadTable();
+
+});
+
+/* =========================
+   TOP BUTTON
+========================= */
+document.getElementById("toTop").onclick = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+</script>
+
+</body>
+</html>
