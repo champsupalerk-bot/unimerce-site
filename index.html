@@ -56,11 +56,12 @@ body{
   font-size:12px;
   letter-spacing:3px;
   color:#111;
+  text-decoration:none;
 }
 
 .menu{
   width:28px;
-  height:18px;
+  height:14px;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
@@ -71,6 +72,7 @@ body{
   height:2px;
   background:#111;
   width:100%;
+  border-radius:999px;
 }
 
 /* =========================
@@ -96,6 +98,8 @@ h1{
   font-size:84px;
   letter-spacing:18px;
   margin:30px 0;
+  text-align:center;
+  width:100%;
 }
 
 .sub{
@@ -103,6 +107,34 @@ h1{
   font-size:18px;
   color:#555;
   line-height:1.8;
+}
+
+/* =========================
+   HERO CTA
+========================= */
+.hero-action{
+  margin-top:28px;
+}
+
+.hero-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px 22px;
+  border-radius:999px;
+  background:#111;
+  color:#fff;
+  text-decoration:none;
+  font-size:12px;
+  letter-spacing:1px;
+  border:1px solid #111;
+  transition:0.25s;
+}
+
+.hero-btn:hover{
+  background:#fff;
+  color:#111;
+  transform:translateY(-2px);
 }
 
 /* =========================
@@ -153,6 +185,29 @@ h1{
 }
 
 /* =========================
+   ALL PRODUCT LINK
+========================= */
+.allproduct-link-wrap{
+  text-align:center;
+  margin-top:18px;
+}
+
+.allproduct-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none;
+  color:#666;
+  font-size:13px;
+  transition:0.2s;
+}
+
+.allproduct-link:hover{
+  color:#111;
+  transform:translateX(3px);
+}
+
+/* =========================
    GRID
 ========================= */
 .grid{
@@ -168,11 +223,13 @@ h1{
   border-radius:16px;
   padding:22px;
   transition:0.25s;
+  background:#fff;
 }
 
 .card:hover{
   transform:translateY(-5px);
   border-color:#ddd;
+  background:#f5f5f5;
 }
 
 .card h3{
@@ -187,10 +244,26 @@ h1{
 }
 
 /* =========================
+   CATEGORY BUTTONS
+========================= */
+.category-btn{
+  text-decoration:none;
+  color:inherit;
+  display:block;
+}
+
+/* =========================
+   CATEGORIES ZONE
+========================= */
+.categories-section{
+  background:#fafafa;
+}
+
+/* =========================
    RECOMMENDED ZONE
 ========================= */
 .recommend{
-  background:#fafafa;
+  background:#fff;
   border-top:1px solid #eee;
   border-bottom:1px solid #eee;
 }
@@ -221,7 +294,6 @@ h1{
   padding:60px 20px;
   text-align:center;
 }
-
 
 /* =========================
    SOCIAL BASE
@@ -312,8 +384,45 @@ h1{
   opacity:0.9;
 }
 
+/* =========================
+   MOBILE
+========================= */
 @media(max-width:768px){
-  h1{font-size:44px;}
+
+  h1{
+    font-size:44px;
+    letter-spacing:8px;
+    line-height:1.2;
+    text-align:center;
+  }
+
+  .hero{
+    padding:120px 24px 60px;
+  }
+
+  .sub{
+    font-size:15px;
+  }
+
+  .grid{
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+
+  .card{
+    padding:18px;
+    border-radius:14px;
+  }
+
+  .card h3{
+    font-size:14px;
+  }
+
+  .card p{
+    font-size:12px;
+    line-height:1.5;
+  }
+
 }
 
 </style>
@@ -325,16 +434,19 @@ h1{
 
 <!-- ================= TOPBAR ================= -->
 <div class="topbar">
-  <div class="logo">UNIMERCE</div>
+
+  <a class="logo" href="index.html">UNIMERCE</a>
+
   <div class="menu">
     <span></span>
     <span></span>
-    <span></span>
   </div>
+
 </div>
 
 <!-- ================= HERO ================= -->
 <section class="hero">
+
   <div class="tag">ADAPTIVE ESSENTIAL SYSTEM</div>
 
   <h1>UNIMERCE</h1>
@@ -342,69 +454,94 @@ h1{
   <div class="sub">
     A curated system of essential tools designed for balance, usability, and long-term quality of life.
   </div>
+
+  <!-- HERO BUTTON -->
+  <div class="hero-action">
+    <a class="hero-btn" href="products.html">
+      ALL PRODUCTS
+    </a>
+  </div>
+
 </section>
 
 <!-- ================= SHOP (MINIMAL) ================= -->
 <section class="section">
+
   <div class="title">SHOP</div>
 
   <div class="shopbar">
 
-    <a class="shopbtn" href="https://shopee.co.th/shop/123173321" target="_blank">Shopee</a>
+    <a class="shopbtn" href="https://shopee.co.th/shop/123173321" target="_blank">
+      Shopee
+    </a>
 
-    <a class="shopbtn" href="https://www.lazada.co.th/shop/vitevthailand/" target="_blank">Lazada</a>
+    <a class="shopbtn" href="https://www.lazada.co.th/shop/vitevthailand/" target="_blank">
+      Lazada
+    </a>
 
-    <a class="shopbtn" href="#">TikTok (soon)</a>
+    <a class="shopbtn" href="#">
+      TikTok (soon)
+    </a>
 
   </div>
+
 </section>
 
 <!-- ================= CATEGORIES ================= -->
-<section class="section">
+<section class="section categories-section">
 
   <div class="title">CATEGORIES</div>
 
   <div class="grid">
 
-    <div class="card">
-      <h3>Water Purification</h3>
-      <p>Clean water systems for essential daily living.</p>
-    </div>
+    <a href="#" class="category-btn">
+      <div class="card">
+        <h3>Water Purification</h3>
+        <p>Clean water systems for essential daily living.</p>
+      </div>
+    </a>
 
-    <div class="card">
-      <h3>Water Quality Tools</h3>
-      <p>Measurement instruments for environmental precision.</p>
-    </div>
+    <a href="#" class="category-btn">
+      <div class="card">
+        <h3>Water Quality Tools</h3>
+        <p>Measurement instruments for environmental precision.</p>
+      </div>
+    </a>
 
-    <div class="card">
-      <h3>Measurement Tools</h3>
-      <p>Practical tools for modern daily applications.</p>
-    </div>
+    <a href="#" class="category-btn">
+      <div class="card">
+        <h3>Measurement Tools</h3>
+        <p>Practical tools for modern daily applications.</p>
+      </div>
+    </a>
 
-    <div class="card">
-      <h3>Aroma Systems</h3>
-      <p>Environmental scent and lifestyle balance tools.</p>
-    </div>
+    <a href="#" class="category-btn">
+      <div class="card">
+        <h3>Aroma Systems</h3>
+        <p>Environmental scent and lifestyle balance tools.</p>
+      </div>
+    </a>
 
-    <a href="products.html" style="text-decoration:none; color:inherit;">
-    <div class="card">
-    <h3>All Products</h3>
-    <p>Browse the complete UNIMERCE catalog.</p>
   </div>
-</a>
+
+  <!-- MINIMAL ALL PRODUCT LINK -->
+  <div class="allproduct-link-wrap">
+
+    <a class="allproduct-link" href="products.html">
+      สินค้าทั้งหมด →
+    </a>
 
   </div>
 
 </section>
 
-<!-- ================= RECOMMENDED PRODUCTS (EMPTY ZONE) ================= -->
+<!-- ================= RECOMMENDED PRODUCTS ================= -->
 <section class="section recommend">
 
   <div class="title">RECOMMENDED PRODUCTS</div>
 
   <div class="textblock">
     <!-- EMPTY ZONE -->
-    
   </div>
 
 </section>
@@ -449,9 +586,7 @@ h1{
 
 </section>
 
-
 <br><br>
-
 
 <!-- ================= WHAT WE DO ================= -->
 <section class="section">
@@ -480,17 +615,29 @@ h1{
   </div>
 
 </section>
-</section><!-- ================= OUR BRANDS ================= -->
+
+<!-- ================= OUR BRANDS ================= -->
 <section class="section">
 
   <div class="title">OUR BRANDS</div>
 
   <div class="brands">
 
-    <div class="brandtag"><a href="https://vitev.com" target="_blank">Vitev</a></div>
-    <div class="brandtag">Tower Luxury</div>
-    <div class="brandtag">Smart Sensor</div>
-    <div class="brandtag">GVDA</div>
+    <div class="brandtag">
+      <a href="https://vitev.com" target="_blank">Vitev</a>
+    </div>
+
+    <div class="brandtag">
+      Tower Luxury
+    </div>
+
+    <div class="brandtag">
+      Smart Sensor
+    </div>
+
+    <div class="brandtag">
+      GVDA
+    </div>
 
   </div>
 
@@ -504,14 +651,21 @@ h1{
   <p>Email: champsupalerk@gmail.com</p>
   <p>Mobile: +66 944 955 505</p>
 
-<div class="social">
-  <a href="#" class="li">LI</a>
-  <a href="#" class="tt">TT</a>
-  <a href="#" class="fb">FB</a>
-  <a href="#" class="ig">IG</a>
-  <a href="#" class="yt">YT</a>
-  <a href="#" class="x">X</a>
-</div>
+  <div class="social">
+
+    <a href="#" class="li">LI</a>
+
+    <a href="#" class="tt">TT</a>
+
+    <a href="#" class="fb">FB</a>
+
+    <a href="#" class="ig">IG</a>
+
+    <a href="#" class="yt">YT</a>
+
+    <a href="#" class="x">X</a>
+
+  </div>
 
 </section>
 
