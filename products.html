@@ -62,7 +62,7 @@ body{
    HEADER
 ========================= */
 .header{
-  max-width:1200px;
+  max-width:1600px;
   margin:auto;
   padding:24px 20px 10px;
 }
@@ -83,15 +83,68 @@ body{
    GRID
 ========================= */
 .container{
-  max-width:1200px;
+  max-width:1600px;
   margin:auto;
   padding:20px;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(2, minmax(0, 1fr));
+  grid-template-columns:repeat(5, minmax(0, 1fr));
   gap:22px;
+  align-items:start;
+}
+
+/* =========================
+   PROMOTION CARD
+========================= */
+.promo-card{
+  background: linear-gradient(135deg, #3a5a40, #344e41);
+  color:#fff;
+  border-radius:18px;
+  padding:18px;
+  min-height:280px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ✅ ADD THIS PART (สำคัญ) */
+.promo-card{
+  width:100%;
+  box-sizing:border-box;
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  display:inline-block;
+}
+
+.promo-tag{
+  font-size:11px;
+  letter-spacing:2px;
+  opacity:0.7;
+  margin-bottom:14px;
+}
+
+.promo-title{
+  font-size:20px;
+  font-weight:700;
+  line-height:1.15;
+
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+
+  word-break:break-word;
+  margin-bottom:12px;
+}
+
+.promo-desc{
+  font-size:13px;
+  line-height:1.7;
+  opacity:0.8;
 }
 
 /* =========================
@@ -157,12 +210,6 @@ body{
   min-height:44px;
 }
 
-.desc{
-  font-size:12px;
-  color:#777;
-  margin-bottom:10px;
-}
-
 /* =========================
    PRICE + STOCK GRID
 ========================= */
@@ -223,13 +270,47 @@ body{
 ========================= */
 @media(max-width:768px){
 
-  .grid{
-    grid-template-columns:1fr 1fr;
-    gap:14px;
+  .container{
+    padding:12px;
   }
 
-  .container{
-    padding:14px;
+  /* masonry mobile layout */
+  .grid{
+    column-count:2;
+    column-gap:6px;
+    display:block;
+  }
+
+  
+  .card,
+  .promo-card{
+    break-inside: avoid;
+    margin-bottom:3px;
+    display:inline-block;
+    width:100%;
+  }
+
+  /* promo card only */
+  .promo-card{
+   min-height:140px;
+   border-radius:16px;
+   padding:14px;
+  }
+
+  .promo-title{
+    font-size:18px;
+    line-height:1.15;
+    margin-bottom:8px;
+  }
+
+  .promo-desc{
+    font-size:11px;
+    line-height:1.5;
+  }
+
+  .promo-tag{
+    font-size:10px;
+    margin-bottom:10px;
   }
 
   .content{
@@ -238,7 +319,7 @@ body{
 
   .name{
     font-size:13px;
-    min-height:40px;
+    min-height:auto;
   }
 
   .price-new{
@@ -330,74 +411,94 @@ const filtered = data.filter(p => {
 
 });
 
-  /* =========================
-     RENDER
-  ========================= */
+/* =========================
+   PROMOTION CARD
+========================= */
 
-  grid.innerHTML = filtered.map(p => {
+const promoCard = `
 
-    const img = (p.image_link01 || "").trim();
+  <div class="promo-card">
 
-    const sku = p.Item_Code || '-';
+    <div class="promo-tag">
+      UNIMERCE SYSTEM
+    </div>
 
-    const category = p.MainCategory || '-';
+    <div class="promo-title">
+      Essential<br>
+      Product<br>
+      Collection
+    </div>
 
-    const onhand = p.OnHand || '0';
+  </div>
 
-    return `
+`;
 
-      <div class="card">
+/* =========================
+   PRODUCT RENDER
+========================= */
 
-        <img 
-          src="${img}"
-          onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'"
-        />
+const productCards = filtered.map(p => {
 
-        <div class="content">
+  const img = (p.image_link01 || "").trim();
 
-          <!-- TOP INFO -->
-          <div class="top-info">
+  const sku = p.Item_Code || '-';
 
-            <div class="sku">
-              ${sku}
+  const category = p.MainCategory || '-';
+
+  const onhand = p.OnHand || '0';
+
+  return `
+
+    <div class="card">
+
+      <img 
+        src="${img}"
+        onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'"
+      />
+
+      <div class="content">
+
+        <!-- TOP INFO -->
+        <div class="top-info">
+
+          <div class="sku">
+            ${sku}
+          </div>
+
+          <div class="category">
+            ${category}
+          </div>
+
+        </div>
+
+        <!-- PRODUCT NAME -->
+        <div class="name">
+          ${p.Description || '-'}
+        </div>
+
+        <!-- PRICE + STOCK -->
+        <div class="bottom-row">
+
+          <div class="price-box">
+
+            <div class="price-old">
+              ${p.ListPrice ? '฿' + p.ListPrice : ''}
             </div>
 
-            <div class="category">
-              ${category}
+            <div class="price-new">
+              ${p.PromotionPrice ? '฿' + p.PromotionPrice : '-'}
             </div>
 
           </div>
 
-          <!-- PRODUCT NAME -->
-          <div class="name">
-            ${p.Description || '-'}
-          </div>
+          <div class="stock-box">
 
-          <!-- PRICE + STOCK -->
-          <div class="bottom-row">
-
-            <div class="price-box">
-
-              <div class="price-old">
-                ${p.ListPrice ? '฿' + p.ListPrice : ''}
-              </div>
-
-              <div class="price-new">
-                ${p.PromotionPrice ? '฿' + p.PromotionPrice : '-'}
-              </div>
-
+            <div class="stock-label">
+              คงเหลือ
             </div>
 
-            <div class="stock-box">
-
-              <div class="stock-label">
-                คงเหลือ
-              </div>
-
-              <div class="stock-value">
-                ${onhand}
-              </div>
-
+            <div class="stock-value">
+              ${onhand}
             </div>
 
           </div>
@@ -406,9 +507,17 @@ const filtered = data.filter(p => {
 
       </div>
 
-    `;
+    </div>
 
-  }).join('');
+  `;
+
+}).join('');
+
+/* =========================
+   FINAL RENDER
+========================= */
+
+grid.innerHTML = promoCard + productCards;
 
 }
 
