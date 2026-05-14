@@ -25,11 +25,11 @@ body{
   top:0;
   left:0;
   width:100%;
-  padding:16px 24px;
+  padding:18px 28px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  background:rgba(255,255,255,0.9);
+  background:rgba(255,255,255,0.7);
   backdrop-filter:blur(10px);
   border-bottom:1px solid #eee;
   z-index:100;
@@ -40,12 +40,11 @@ body{
   letter-spacing:3px;
   color:#111;
   text-decoration:none;
-  cursor:pointer;
 }
 
 .menu{
   width:28px;
-  height:18px;
+  height:14px;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
@@ -56,15 +55,16 @@ body{
   height:2px;
   background:#111;
   width:100%;
+  border-radius:999px;
 }
 
 /* =========================
    HEADER
 ========================= */
 .header{
-  max-width:1100px;
+  max-width:1200px;
   margin:auto;
-  padding:20px;
+  padding:24px 20px 10px;
 }
 
 .breadcrumb{
@@ -74,22 +74,23 @@ body{
 }
 
 .title{
-  font-size:22px;
+  font-size:28px;
   font-weight:bold;
+  letter-spacing:1px;
 }
 
 /* =========================
    GRID
 ========================= */
 .container{
-  max-width:1100px;
+  max-width:1200px;
   margin:auto;
   padding:20px;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns:repeat(2, minmax(0, 1fr));
   gap:22px;
 }
 
@@ -98,14 +99,16 @@ body{
 ========================= */
 .card{
   background:#fff;
-  border-radius:12px;
+  border-radius:18px;
   overflow:hidden;
   box-shadow:0 4px 16px rgba(0,0,0,0.05);
-  transition:0.2s;
+  transition:0.25s;
+  border:1px solid #eee;
 }
 
 .card:hover{
-  transform:translateY(-3px);
+  transform:translateY(-4px);
+  box-shadow:0 10px 24px rgba(0,0,0,0.08);
 }
 
 .card img{
@@ -117,19 +120,41 @@ body{
 }
 
 .content{
-  padding:12px;
+  padding:14px;
+}
+
+/* =========================
+   TOP INFO GRID
+========================= */
+.top-info{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  margin-bottom:8px;
+  gap:10px;
 }
 
 .sku{
-  font-size:11px;
-  color:#999;
-  margin-bottom:4px;
+  font-size:14px;
+  font-weight:600;
+  color:#111;
 }
 
+.category{
+  font-size:11px;
+  color:#888;
+  text-align:right;
+}
+
+/* =========================
+   PRODUCT INFO
+========================= */
 .name{
-  font-size:13px;
+  font-size:15px;
   font-weight:600;
-  margin-bottom:6px;
+  line-height:1.5;
+  margin-bottom:12px;
+  min-height:44px;
 }
 
 .desc{
@@ -138,28 +163,102 @@ body{
   margin-bottom:10px;
 }
 
+/* =========================
+   PRICE + STOCK GRID
+========================= */
+.bottom-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:end;
+  gap:10px;
+}
+
 .price-box{
   display:flex;
   flex-direction:column;
-  gap:2px;
+  gap:4px;
 }
 
 .price-old{
-  font-size:11px;
+  font-size:13px;
   color:#999;
   text-decoration:line-through;
 }
 
 .price-new{
-  font-size:14px;
-  font-weight:bold;
+  font-size:22px;
+  font-weight:700;
+  color:#111;
+  line-height:1;
+}
+
+.stock-box{
+  text-align:right;
+}
+
+.stock-label{
+  font-size:11px;
+  color:#999;
+  margin-bottom:2px;
+}
+
+.stock-value{
+  font-size:16px;
+  font-weight:600;
   color:#111;
 }
 
+/* =========================
+   LOADING
+========================= */
 .loading{
   text-align:center;
   color:#888;
+  padding:40px;
+  grid-column:1/-1;
 }
+
+/* =========================
+   MOBILE
+========================= */
+@media(max-width:768px){
+
+  .grid{
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+
+  .container{
+    padding:14px;
+  }
+
+  .content{
+    padding:12px;
+  }
+
+  .name{
+    font-size:13px;
+    min-height:40px;
+  }
+
+  .price-new{
+    font-size:18px;
+  }
+
+  .sku{
+    font-size:13px;
+  }
+
+  .stock-value{
+    font-size:14px;
+  }
+
+  .title{
+    font-size:24px;
+  }
+
+}
+
 </style>
 </head>
 
@@ -167,77 +266,154 @@ body{
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <a class="logo" href="index.html">UNIMERCE</a>
+
+  <a class="logo" href="index.html">
+    UNIMERCE
+  </a>
 
   <div class="menu">
     <span></span>
     <span></span>
-    <span></span>
   </div>
+
 </div>
 
 <!-- HEADER -->
 <div class="header">
-  <div class="breadcrumb">Home / Products</div>
-  <div class="title">All Products</div>
+
+  <div class="breadcrumb">
+    Home / Products
+  </div>
+
+  <div class="title">
+    All Products
+  </div>
+
 </div>
 
 <!-- GRID -->
 <div class="container">
+
   <div id="product-grid" class="grid">
-    <div class="loading">Loading products...</div>
+
+    <div class="loading">
+      Loading products...
+    </div>
+
   </div>
+
 </div>
 
 <script>
+
 async function loadProducts(){
-  const res = await fetch("https://opensheet.elk.sh/1OMMHGc9nfZKtFox1uNz0rZ_7oD-Imi97EPeN9lsMyLU/Item_Master");
+
+  const res = await fetch(
+    "https://opensheet.elk.sh/1OMMHGc9nfZKtFox1uNz0rZ_7oD-Imi97EPeN9lsMyLU/Item_Master"
+  );
+
   const data = await res.json();
 
   const grid = document.getElementById("product-grid");
 
-  grid.innerHTML = data.map(p => {
+/* =========================
+   FILTER STOCK STATUS
+========================= */
+
+const filtered = data.filter(p => {
+
+  const status = String(p.StockStatus || "")
+    .trim()
+    .toLowerCase();
+
+  return status !== "discontinued";
+
+});
+
+  /* =========================
+     RENDER
+  ========================= */
+
+  grid.innerHTML = filtered.map(p => {
 
     const img = (p.image_link01 || "").trim();
+
     const sku = p.Item_Code || '-';
 
+    const category = p.MainCategory || '-';
+
+    const onhand = p.OnHand || '0';
+
     return `
+
       <div class="card">
 
         <img 
           src="${img}"
-          onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'"
+          onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'"
         />
 
         <div class="content">
 
-          <!-- SKU ADDED -->
-          <div class="sku">${sku}</div>
+          <!-- TOP INFO -->
+          <div class="top-info">
 
-          <div class="name">${p.Description || '-'}</div>
-          <div class="desc">${p.MainCategory || '-'}</div>
-
-          <div class="price-box">
-
-            <div class="price-old">
-            ${p.ListPrice ? '฿' + p.ListPrice : ''}
+            <div class="sku">
+              ${sku}
             </div>
 
-            <div class="price-new">
-            ${p.PromotionPrice ? '฿' + p.PromotionPrice : '-'}
+            <div class="category">
+              ${category}
             </div>
 
-
-        
           </div>
+
+          <!-- PRODUCT NAME -->
+          <div class="name">
+            ${p.Description || '-'}
+          </div>
+
+          <!-- PRICE + STOCK -->
+          <div class="bottom-row">
+
+            <div class="price-box">
+
+              <div class="price-old">
+                ${p.ListPrice ? '฿' + p.ListPrice : ''}
+              </div>
+
+              <div class="price-new">
+                ${p.PromotionPrice ? '฿' + p.PromotionPrice : '-'}
+              </div>
+
+            </div>
+
+            <div class="stock-box">
+
+              <div class="stock-label">
+                คงเหลือ
+              </div>
+
+              <div class="stock-value">
+                ${onhand}
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
       </div>
+
     `;
+
   }).join('');
+
 }
 
 loadProducts();
+
 </script>
 
 </body>
