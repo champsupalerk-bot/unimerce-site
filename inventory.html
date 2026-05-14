@@ -180,26 +180,24 @@ tbody tr:hover{
    MOBILE FIX
 ========================= */
 @media(max-width:768px){
-
   .table-wrap{
     overflow-x:auto;
   }
-
   table{
     min-width:520px;
   }
-
   .col-stock{
     position:sticky;
     right:0;
     background:#fff;
     z-index:5;
+    box-shadow:-3px 0 6px rgba(0,0,0,0.06);
   }
-
-  thead .col-stock{
-    background:#2f5ea8;
+  thead th.col-stock{
+    background:#2f5ea8 !important;
+    z-index:55;
+    color:#fff;
   }
-
   .col-desc{
     display:-webkit-box;
     -webkit-line-clamp:2;
@@ -207,7 +205,6 @@ tbody tr:hover{
     overflow:hidden;
   }
 }
-
 </style>
 </head>
 
