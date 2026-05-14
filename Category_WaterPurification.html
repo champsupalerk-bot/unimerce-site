@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UNIMERCE | Water Purification — Vitev</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* =========================
+   BASE
+========================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+body{
+  font-family:"Kanit", Arial, sans-serif;
+  background:#fff;
+  color:#111;
+  overflow-x:hidden;
+}
+
+/* =========================
+   TOPBAR (same as index)
+========================= */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:18px 28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid #eee;
+  z-index:100;
+}
+.logo{
+  font-size:12px;
+  letter-spacing:3px;
+  color:#111;
+  text-decoration:none;
+}
+.breadcrumb-nav{
+  font-size:11px;
+  letter-spacing:1.5px;
+  color:#999;
+}
+.breadcrumb-nav a{
+  color:#999;
+  text-decoration:none;
+}
+.breadcrumb-nav a:hover{
+  color:#111;
+}
+
+/* =========================
+   HERO
+========================= */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:0 0 80px;
+  position:relative;
+  overflow:hidden;
+  background:#0a0f14;
+}
+.hero-bg{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 60% 30%, rgba(30,80,120,0.35), transparent),
+    radial-gradient(ellipse 50% 80% at 20% 80%, rgba(10,40,70,0.4), transparent),
+    linear-gradient(180deg, #0a0f14 0%, #0d1d2e 60%, #0a0f14 100%);
+  z-index:0;
+}
+/* animated water ripple rings */
+.hero-rings{
+  position:absolute;
+  top:38%;
+  left:55%;
+  transform:translate(-50%,-50%);
+  z-index:0;
+}
+.ring{
+  position:absolute;
+  border-radius:50%;
+  border:1px solid rgba(100,180,255,0.12);
+  transform:translate(-50%,-50%);
+  animation:ripple 6s ease-out infinite;
+}
+.ring:nth-child(1){ width:200px; height:200px; animation-delay:0s; }
+.ring:nth-child(2){ width:380px; height:380px; animation-delay:1s; }
+.ring:nth-child(3){ width:560px; height:560px; animation-delay:2s; }
+.ring:nth-child(4){ width:740px; height:740px; animation-delay:3s; }
+.ring:nth-child(5){ width:920px; height:920px; animation-delay:4s; }
+@keyframes ripple{
+  0%{ opacity:0.6; transform:translate(-50%,-50%) scale(0.8); }
+  100%{ opacity:0; transform:translate(-50%,-50%) scale(1.2); }
+}
+
+/* water droplet center */
+.hero-drop{
+  position:absolute;
+  top:38%;
+  left:55%;
+  transform:translate(-50%,-50%);
+  width:80px;
+  height:80px;
+  z-index:1;
+}
+.hero-drop svg{
+  width:100%;
+  height:100%;
+  animation:dropFloat 4s ease-in-out infinite;
+}
+@keyframes dropFloat{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-12px); }
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+  padding:0 40px;
+  max-width:720px;
+}
+.hero-tag{
+  font-size:11px;
+  letter-spacing:4px;
+  color:rgba(100,180,255,0.7);
+  margin-bottom:24px;
+}
+.hero-brand{
+  font-size:11px;
+  letter-spacing:3px;
+  color:rgba(255,255,255,0.4);
+  margin-bottom:10px;
+}
+.hero-title{
+  font-size:72px;
+  font-weight:300;
+  letter-spacing:12px;
+  color:#fff;
+  line-height:1;
+  margin-bottom:32px;
+}
+.hero-title span{
+  display:block;
+  font-weight:500;
+  color:rgba(140,210,255,0.9);
+}
+.hero-sub{
+  font-size:15px;
+  color:rgba(255,255,255,0.55);
+  line-height:1.9;
+  max-width:480px;
+  margin-bottom:40px;
+}
+.hero-cta{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.btn-primary{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:13px 24px;
+  border-radius:999px;
+  background:rgba(140,210,255,0.15);
+  border:1px solid rgba(140,210,255,0.4);
+  color:rgba(200,235,255,0.9);
+  font-size:12px;
+  letter-spacing:1.5px;
+  text-decoration:none;
+  font-family:"Kanit",sans-serif;
+  cursor:pointer;
+  transition:0.25s;
+}
+.btn-primary:hover{
+  background:rgba(140,210,255,0.28);
+  border-color:rgba(140,210,255,0.7);
+  transform:translateY(-2px);
+}
+.btn-secondary{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:13px 24px;
+  border-radius:999px;
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.5);
+  font-size:12px;
+  letter-spacing:1.5px;
+  text-decoration:none;
+  font-family:"Kanit",sans-serif;
+  cursor:pointer;
+  transition:0.25s;
+}
+.btn-secondary:hover{
+  border-color:rgba(255,255,255,0.35);
+  color:rgba(255,255,255,0.8);
+}
+
+/* scroll indicator */
+.scroll-hint{
+  position:absolute;
+  bottom:28px;
+  right:40px;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  opacity:0.4;
+}
+.scroll-hint span{
+  font-size:10px;
+  letter-spacing:2px;
+  color:#fff;
+  writing-mode:vertical-rl;
+  text-orientation:mixed;
+}
+.scroll-line{
+  width:1px;
+  height:48px;
+  background:linear-gradient(to bottom, #fff, transparent);
+  animation:scrollLine 2s ease-in-out infinite;
+}
+@keyframes scrollLine{
+  0%{ transform:scaleY(0); transform-origin:top; }
+  50%{ transform:scaleY(1); transform-origin:top; }
+  51%{ transform-origin:bottom; }
+  100%{ transform:scaleY(0); transform-origin:bottom; }
+}
+
+/* =========================
+   PROBLEM SECTION
+========================= */
+.section{
+  padding:80px 40px;
+}
+.section-label{
+  font-size:11px;
+  letter-spacing:4px;
+  color:#999;
+  margin-bottom:16px;
+}
+.section-title{
+  font-size:38px;
+  font-weight:300;
+  letter-spacing:2px;
+  line-height:1.25;
+  margin-bottom:28px;
+}
+.section-title strong{
+  font-weight:600;
+}
+
+/* problem layout */
+.problem-wrap{
+  max-width:1100px;
+  margin:0 auto;
+}
+.problem-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:60px;
+  align-items:center;
+  margin-top:20px;
+}
+.problem-text p{
+  font-size:16px;
+  color:#555;
+  line-height:1.9;
+  margin-bottom:18px;
+}
+.problem-visual{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.compare-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.compare-box{
+  padding:22px;
+  border-radius:14px;
+  border:1px solid #eee;
+}
+.compare-box.bad{
+  background:#fafafa;
+  border-color:#f0f0f0;
+}
+.compare-box.good{
+  background:#f0f7ff;
+  border-color:#c8e0f8;
+}
+.compare-label{
+  font-size:10px;
+  letter-spacing:2px;
+  color:#aaa;
+  margin-bottom:10px;
+}
+.compare-box.good .compare-label{ color:#5ba8d8; }
+.compare-stat{
+  font-size:28px;
+  font-weight:600;
+  color:#111;
+  line-height:1;
+  margin-bottom:6px;
+}
+.compare-box.good .compare-stat{ color:#1a6fa8; }
+.compare-desc{
+  font-size:12px;
+  color:#888;
+  line-height:1.5;
+}
+.compare-box.good .compare-desc{ color:#4a86b0; }
+
+/* =========================
+   WHY VITEV — FEATURES
+========================= */
+.features-section{
+  background:#fafafa;
+  border-top:1px solid #eee;
+  border-bottom:1px solid #eee;
+}
+.features-inner{
+  max-width:1100px;
+  margin:0 auto;
+}
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:24px;
+  margin-top:40px;
+}
+.feature-card{
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:16px;
+  padding:28px;
+  transition:0.25s;
+}
+.feature-card:hover{
+  transform:translateY(-4px);
+  border-color:#ddd;
+  box-shadow:0 8px 24px rgba(0,0,0,0.06);
+}
+.feature-icon{
+  font-size:28px;
+  margin-bottom:16px;
+}
+.feature-title{
+  font-size:16px;
+  font-weight:600;
+  margin-bottom:10px;
+}
+.feature-desc{
+  font-size:14px;
+  color:#666;
+  line-height:1.7;
+}
+
+/* =========================
+   SHOP CTA BAND
+========================= */
+.cta-band{
+  background:#0a0f14;
+  padding:60px 40px;
+  text-align:center;
+}
+.cta-band .section-title{
+  color:#fff;
+  text-align:center;
+  max-width:600px;
+  margin:0 auto 12px;
+}
+.cta-band p{
+  font-size:14px;
+  color:rgba(255,255,255,0.45);
+  margin-bottom:32px;
+}
+.shop-btns{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.shopbtn{
+  font-size:12px;
+  font-family:"Kanit",sans-serif;
+  padding:11px 22px;
+  border:1px solid rgba(255,255,255,0.25);
+  border-radius:999px;
+  text-decoration:none;
+  color:rgba(255,255,255,0.75);
+  letter-spacing:1px;
+  transition:0.2s;
+}
+.shopbtn:hover{
+  background:rgba(255,255,255,0.1);
+  color:#fff;
+  border-color:rgba(255,255,255,0.5);
+}
+.shopbtn.highlight{
+  background:rgba(140,210,255,0.15);
+  border-color:rgba(140,210,255,0.5);
+  color:rgba(200,235,255,0.9);
+}
+.shopbtn.highlight:hover{
+  background:rgba(140,210,255,0.28);
+}
+
+/* =========================
+   PRODUCT CARDS SECTION
+========================= */
+.products-section{
+  padding:80px 20px;
+}
+.products-inner{
+  max-width:1100px;
+  margin:0 auto;
+}
+.products-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  margin-bottom:32px;
+  padding:0 0 0 20px;
+}
+.view-all-link{
+  font-size:12px;
+  letter-spacing:1px;
+  color:#999;
+  text-decoration:none;
+  transition:0.2s;
+}
+.view-all-link:hover{
+  color:#111;
+}
+
+/* product grid */
+.pgrid{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:18px;
+}
+.pcard{
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:16px;
+  overflow:hidden;
+  transition:0.25s;
+}
+.pcard:hover{
+  transform:translateY(-5px);
+  border-color:#ddd;
+  box-shadow:0 10px 28px rgba(0,0,0,0.08);
+}
+.pcard img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  background:#f3f3f3;
+  display:block;
+}
+.pcard-body{
+  padding:14px;
+}
+.pcard-cat{
+  font-size:10px;
+  letter-spacing:2px;
+  color:#aaa;
+  margin-bottom:6px;
+}
+.pcard-name{
+  font-size:14px;
+  font-weight:500;
+  line-height:1.5;
+  margin-bottom:12px;
+  min-height:42px;
+}
+.pcard-bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+}
+.pcard-price{
+  font-size:18px;
+  font-weight:600;
+  color:#111;
+}
+.pcard-price-old{
+  font-size:12px;
+  color:#bbb;
+  text-decoration:line-through;
+  margin-bottom:2px;
+}
+.pcard-stock{
+  font-size:11px;
+  color:#aaa;
+  text-align:right;
+}
+.pcard-stock strong{
+  display:block;
+  font-size:14px;
+  color:#111;
+}
+
+/* loading state */
+.loading-state{
+  text-align:center;
+  color:#aaa;
+  padding:60px;
+  grid-column:1/-1;
+  font-size:13px;
+  letter-spacing:1px;
+}
+
+/* shop links on each card */
+.pcard-links{
+  display:flex;
+  gap:6px;
+  margin-top:12px;
+  flex-wrap:wrap;
+}
+.pcard-link{
+  font-size:10px;
+  letter-spacing:1px;
+  padding:5px 10px;
+  border:1px solid #eee;
+  border-radius:999px;
+  text-decoration:none;
+  color:#666;
+  transition:0.2s;
+}
+.pcard-link:hover{
+  background:#111;
+  color:#fff;
+  border-color:#111;
+}
+
+/* =========================
+   ABOUT VITEV BAND
+========================= */
+.about-band{
+  background:#f5f9ff;
+  border-top:1px solid #e8f0fa;
+  border-bottom:1px solid #e8f0fa;
+  padding:70px 40px;
+}
+.about-inner{
+  max-width:860px;
+  margin:0 auto;
+  text-align:center;
+}
+.about-inner .section-title{
+  text-align:center;
+}
+.about-inner p{
+  font-size:15px;
+  color:#666;
+  line-height:1.9;
+  margin-bottom:14px;
+}
+.vitev-link{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-top:20px;
+  font-size:12px;
+  letter-spacing:2px;
+  color:#1a6fa8;
+  text-decoration:none;
+  border-bottom:1px solid rgba(26,111,168,0.3);
+  padding-bottom:2px;
+  transition:0.2s;
+}
+.vitev-link:hover{
+  color:#0d4a70;
+  border-color:#0d4a70;
+}
+
+/* =========================
+   FOOTER MINI
+========================= */
+.footer-mini{
+  padding:32px 40px;
+  border-top:1px solid #eee;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.footer-mini a{
+  font-size:11px;
+  letter-spacing:2px;
+  color:#aaa;
+  text-decoration:none;
+}
+.footer-mini a:hover{ color:#111; }
+.footer-copy{
+  font-size:11px;
+  color:#ccc;
+  letter-spacing:1px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media(max-width:768px){
+  .hero-title{
+    font-size:42px;
+    letter-spacing:6px;
+  }
+  .hero-content{
+    padding:0 24px;
+  }
+  .hero-drop{
+    left:65%;
+    top:32%;
+    width:56px;
+    height:56px;
+  }
+  .hero-rings{
+    left:65%;
+    top:32%;
+  }
+  .section{
+    padding:60px 24px;
+  }
+  .problem-grid{
+    grid-template-columns:1fr;
+    gap:36px;
+  }
+  .features-grid{
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  .pgrid{
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .pcard-name{
+    font-size:13px;
+    min-height:auto;
+  }
+  .pcard-price{
+    font-size:16px;
+  }
+  .products-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+    padding:0;
+  }
+  .footer-mini{
+    flex-direction:column;
+    gap:12px;
+    text-align:center;
+    padding:24px;
+  }
+  .about-band{
+    padding:60px 24px;
+  }
+  .cta-band{
+    padding:50px 24px;
+  }
+  .section-title{
+    font-size:28px;
+  }
+  .scroll-hint{
+    display:none;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ================= TOPBAR ================= -->
+<div class="topbar">
+  <a class="logo" href="index.html">UNIMERCE</a>
+  <div class="breadcrumb-nav">
+    <a href="index.html">HOME</a> &nbsp;/&nbsp; <a href="index.html#categories">CATEGORIES</a> &nbsp;/&nbsp; WATER PURIFICATION
+  </div>
+</div>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="hero-bg"></div>
+
+  <!-- ripple rings -->
+  <div class="hero-rings">
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+  </div>
+
+  <!-- water drop icon -->
+  <div class="hero-drop">
+    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 8 C40 8, 18 36, 18 52 C18 63.6 28 72 40 72 C52 72 62 63.6 62 52 C62 36 40 8 40 8Z"
+        fill="rgba(100,180,255,0.18)" stroke="rgba(140,210,255,0.6)" stroke-width="1.5"/>
+      <path d="M33 54 C33 54, 30 48, 34 44"
+        stroke="rgba(180,225,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-brand">UNIMERCE × VITEV</div>
+    <div class="hero-tag">WATER PURIFICATION SYSTEM</div>
+    <h1 class="hero-title">
+      WATER<br>
+      <span>PURE.</span>
+    </h1>
+    <p class="hero-sub">
+      น้ำ RO กรองสิ่งปนเปื้อนได้ดี<br>
+      แต่ยังขาดแร่ธาตุที่ร่างกายต้องการ<br>
+      Vitev เติมกลับในสิ่งที่หายไป
+    </p>
+    <div class="hero-cta">
+      <a class="btn-primary" href="https://shopee.co.th/shop/123173321" target="_blank">
+        ซื้อบน Shopee →
+      </a>
+      <a class="btn-secondary" href="https://www.lazada.co.th/shop/vitevthailand/" target="_blank">
+        Lazada
+      </a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>SCROLL</span>
+  </div>
+</section>
+
+<!-- ================= PROBLEM ================= -->
+<section class="section">
+  <div class="problem-wrap">
+    <div class="section-label">THE PROBLEM</div>
+    <h2 class="section-title">น้ำสะอาด ≠ <strong>น้ำดี</strong></h2>
+    <div class="problem-grid">
+      <div class="problem-text">
+        <p>
+          ระบบกรองน้ำ RO ทำงานได้ดีมากในการกำจัดสารปนเปื้อน แบคทีเรีย และโลหะหนักออกจากน้ำ
+          แต่กระบวนการเดียวกันนี้ยังกำจัดแร่ธาตุสำคัญอย่าง Calcium และ Magnesium ออกไปด้วย
+        </p>
+        <p>
+          ผลลัพธ์คือน้ำที่สะอาดมาก แต่ค่า pH ต่ำ ไม่มีแร่ธาตุ
+          และดื่มแล้วไม่ได้ประโยชน์เต็มที่ต่อร่างกายในระยะยาว
+        </p>
+        <p>
+          Vitev แก้ปัญหานี้ด้วย Remineralization Filter
+          ที่เติมแร่ธาตุกลับเข้าไปในน้ำอย่างสมดุล พร้อมปรับ pH
+          ให้เหมาะสมต่อการดูดซึมของร่างกาย
+        </p>
+      </div>
+      <div class="problem-visual">
+        <div class="compare-row">
+          <div class="compare-box bad">
+            <div class="compare-label">RO ONLY</div>
+            <div class="compare-stat">5–6</div>
+            <div class="compare-desc">pH ต่ำ เป็นกรดอ่อนๆ ขาดแร่ธาตุ</div>
+          </div>
+          <div class="compare-box good">
+            <div class="compare-label">VITEV REMIN</div>
+            <div class="compare-stat">8–9.5</div>
+            <div class="compare-desc">pH สมดุล มีแร่ธาตุ Calcium + Magnesium</div>
+          </div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-box bad">
+            <div class="compare-label">แร่ธาตุ</div>
+            <div class="compare-stat">~0</div>
+            <div class="compare-desc">ถูกกำจัดออกหมดในกระบวนการ RO</div>
+          </div>
+          <div class="compare-box good">
+            <div class="compare-label">ORP (ANTIOXIDANT)</div>
+            <div class="compare-stat">−</div>
+            <div class="compare-desc">Negative ORP ต้านอนุมูลอิสระ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHY VITEV ================= -->
+<section class="section features-section">
+  <div class="features-inner">
+    <div class="section-label">WHY VITEV</div>
+    <h2 class="section-title">สิ่งที่ทำให้ <strong>แตกต่าง</strong></h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">💧</div>
+        <div class="feature-title">Premium Mineral Blend</div>
+        <div class="feature-desc">
+          ไม่ใช่แค่ Calcite ธรรมดา แต่ใช้ส่วนผสมของแร่ธาตุหลายชนิด
+          ให้น้ำที่สมดุลและดูดซึมได้จริง ไม่ใช่แค่เพิ่ม pH บนกระดาษ
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚗️</div>
+        <div class="feature-title">Negative ORP</div>
+        <div class="feature-desc">
+          Oxidation Reduction Potential ค่าติดลบหมายถึงน้ำมีคุณสมบัติต้านอนุมูลอิสระ
+          ส่งผลดีต่อสุขภาพในระยะยาว
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔩</div>
+        <div class="feature-title">ต่อพ่วงระบบ RO เดิมได้</div>
+        <div class="feature-desc">
+          ออกแบบให้ติดตั้งง่าย ต่อเชื่อมกับระบบ RO ที่มีอยู่แล้ว
+          ไม่ต้องเปลี่ยนระบบทั้งชุด
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌿</div>
+        <div class="feature-title">Natural Minerals Only</div>
+        <div class="feature-desc">
+          แร่ธาตุจากธรรมชาติ ไม่มีสารเคมีสังเคราะห์
+          ผ่านการทดสอบและใช้งานจริงในสหรัฐอเมริกามากว่า 10 ปี
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">วัดผลได้จริง</div>
+        <div class="feature-desc">
+          ใช้คู่กับ TDS Meter และ pH Meter วัดผลก่อน-หลัง
+          เห็นความต่างชัดเจน ไม่ใช่แค่คำโฆษณา
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔄</div>
+        <div class="feature-title">Cartridge เปลี่ยนได้</div>
+        <div class="feature-desc">
+          ไส้กรองเปลี่ยนได้ตามกำหนด ลดต้นทุนระยะยาว
+          มีไส้กรองทดแทนพร้อมส่งในไทย
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SHOP CTA BAND ================= -->
+<section class="cta-band">
+  <h2 class="section-title">พร้อมอัปเกรด<br><strong>คุณภาพน้ำ</strong> วันนี้</h2>
+  <p>เลือกซื้อได้ทาง Shopee และ Lazada — จัดส่งทั่วไทย</p>
+  <div class="shop-btns">
+    <a class="shopbtn highlight" href="https://shopee.co.th/shop/123173321" target="_blank">
+      Shopee Store →
+    </a>
+    <a class="shopbtn" href="https://www.lazada.co.th/shop/vitevthailand/" target="_blank">
+      Lazada Store
+    </a>
+    <a class="shopbtn" href="https://vitev.com" target="_blank">
+      vitev.com (US)
+    </a>
+  </div>
+</section>
+
+<!-- ================= PRODUCT CARDS ================= -->
+<section class="products-section">
+  <div class="products-inner">
+    <div class="products-header">
+      <div>
+        <div class="section-label">PRODUCTS</div>
+        <h2 class="section-title" style="margin-bottom:0">Water Purification</h2>
+      </div>
+      <a class="view-all-link" href="products.html">ดูสินค้าทั้งหมด →</a>
+    </div>
+    <div id="product-grid" class="pgrid">
+      <div class="loading-state">LOADING PRODUCTS...</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT VITEV ================= -->
+<section class="about-band">
+  <div class="about-inner">
+    <div class="section-label" style="text-align:center">ABOUT THE BRAND</div>
+    <h2 class="section-title">Vitev — <strong>น้ำที่ดีที่สุด</strong><br>เท่าที่มีในวันนี้</h2>
+    <p>
+      Vitev ก่อตั้งในสหรัฐอเมริกา ด้วยแนวคิดที่ว่า
+      การกรองน้ำให้สะอาดเป็นเพียงก้าวแรก
+      ก้าวถัดไปคือการทำให้น้ำนั้นเป็นประโยชน์ต่อร่างกายอย่างแท้จริง
+    </p>
+    <p>
+      ผ่านกระบวนการ Remineralization ที่เติมแร่ธาตุ Calcium, Magnesium และ Trace Minerals
+      กลับเข้าสู่น้ำ RO พร้อมปรับ pH และ ORP ให้เหมาะสม
+      ผลลัพธ์คือน้ำที่ทั้งสะอาดและมีคุณค่าทางโภชนาการ
+    </p>
+    <p>
+      UNIMERCE เป็นตัวแทนนำเข้า Vitev อย่างเป็นทางการในประเทศไทย
+    </p>
+    <a class="vitev-link" href="https://vitev.com" target="_blank">
+      เยี่ยมชม vitev.com →
+    </a>
+  </div>
+</section>
+
+<!-- ================= FOOTER MINI ================= -->
+<div class="footer-mini">
+  <a href="index.html">← กลับหน้าหลัก</a>
+  <span class="footer-copy">UNIMERCE GROUP · WATER PURIFICATION</span>
+  <a href="products.html">All Products →</a>
+</div>
+
+<!-- ================= JS: LOAD PRODUCTS ================= -->
+<script>
+const SHEET_API = "https://opensheet.elk.sh/1OMMHGc9nfZKtFox1uNz0rZ_7oD-Imi97EPeN9lsMyLU/Item_Master";
+const SHOPEE_URL  = "https://shopee.co.th/shop/123173321";
+const LAZADA_URL  = "https://www.lazada.co.th/shop/vitevthailand/";
+
+async function loadProducts(){
+  try {
+    const res  = await fetch(SHEET_API);
+    const data = await res.json();
+
+    // filter: MainCategory = Water Purification + not discontinued
+    const filtered = data.filter(p => {
+      const cat    = String(p.MainCategory || "").trim().toLowerCase();
+      const status = String(p.StockStatus  || "").trim().toLowerCase();
+      return (
+        (cat.includes("water purif") || cat.includes("water filter") || cat.includes("water")) &&
+        status !== "discontinued"
+      );
+    });
+
+    const grid = document.getElementById("product-grid");
+
+    if(!filtered.length){
+      // fallback: show all if category filter gets nothing
+      renderCards(data.filter(p => String(p.StockStatus||"").trim().toLowerCase() !== "discontinued").slice(0,8), grid);
+    } else {
+      renderCards(filtered, grid);
+    }
+  } catch(e){
+    document.getElementById("product-grid").innerHTML =
+      '<div class="loading-state">Could not load products.</div>';
+  }
+}
+
+function renderCards(items, grid){
+  if(!items.length){
+    grid.innerHTML = '<div class="loading-state">ยังไม่มีสินค้าในหมวดนี้</div>';
+    return;
+  }
+  grid.innerHTML = items.map(p => {
+    const img = (p.image_link01 || "").trim();
+    const listPrice  = p.ListPrice      ? '฿' + Number(p.ListPrice).toLocaleString()      : '';
+    const promoPrice = p.PromotionPrice ? '฿' + Number(p.PromotionPrice).toLocaleString() : '–';
+    const oh = p.OnHand || '0';
+    return `
+      <div class="pcard">
+        <img
+          src="${img || ''}"
+          alt="${p.Description || ''}"
+          onerror="this.src='https://via.placeholder.com/400x400?text=No+Image'"
+          loading="lazy"
+        />
+        <div class="pcard-body">
+          <div class="pcard-cat">${p.MainCategory || ''}</div>
+          <div class="pcard-name">${p.Description || '–'}</div>
+          <div class="pcard-bottom">
+            <div>
+              <div class="pcard-price-old">${listPrice}</div>
+              <div class="pcard-price">${promoPrice}</div>
+            </div>
+            <div class="pcard-stock">
+              คงเหลือ<strong>${oh}</strong>
+            </div>
+          </div>
+          <div class="pcard-links">
+            <a class="pcard-link" href="${SHOPEE_URL}" target="_blank">Shopee</a>
+            <a class="pcard-link" href="${LAZADA_URL}" target="_blank">Lazada</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+loadProducts();
+</script>
+</body>
+</html>
