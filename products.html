@@ -83,14 +83,14 @@ body{
    GRID
 ========================= */
 .container{
-  max-width:1600px;
+  max-width:1000px;
   margin:auto;
   padding:20px;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(5, minmax(0, 1fr));
+  grid-template-columns:repeat(4, minmax(0, 1fr));
   gap:22px;
   align-items:start;
 }
@@ -148,28 +148,46 @@ body{
 }
 
 /* =========================
-   CARD
+   CARD (FINAL FIXED)
 ========================= */
 .card{
   background:#fff;
-  border-radius:18px;
+  border-radius:16px;
+
   overflow:hidden;
-  box-shadow:0 4px 16px rgba(0,0,0,0.05);
-  transition:0.25s;
+
+  box-shadow:0 4px 14px rgba(0,0,0,0.06);
   border:1px solid #eee;
+
+  transition:0.2s ease;
+
+  /* IMPORTANT: กัน card ยืดผิดจังหวะ */
+  width:100%;
+  max-width:280px;
+  justify-self:center;
+
+  box-sizing:border-box;
 }
 
+/* hover */
 .card:hover{
-  transform:translateY(-4px);
-  box-shadow:0 10px 24px rgba(0,0,0,0.08);
+  transform:translateY(-3px);
+  box-shadow:0 10px 24px rgba(0,0,0,0.10);
 }
 
+/* image */
 .card img{
   width:100%;
   aspect-ratio:1/1;
   object-fit:cover;
-  background:#f0f0f0;
   display:block;
+  background:#f3f3f3;
+}
+
+/* optional: content spacing safety (กัน layout เพี้ยน) */
+.card .content{
+  padding:12px;
+  box-sizing:border-box;
 }
 
 .content{
