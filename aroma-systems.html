@@ -1,0 +1,1270 @@
+aroma-systems.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UNIMERCE | Aroma Systems</title>
+
+<style>
+
+/* =========================
+   GLOBAL
+========================= */
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f7f3ee;
+  color:#1d1d1d;
+  padding-top:72px;
+  overflow-x:hidden;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+img{
+  max-width:100%;
+  display:block;
+}
+
+/* =========================
+   TOPBAR
+========================= */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:72px;
+  padding:0 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:rgba(255,255,255,0.72);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(0,0,0,0.06);
+  z-index:999;
+}
+
+.logo{
+  font-size:12px;
+  letter-spacing:4px;
+  font-weight:600;
+}
+
+.menu-btn{
+  width:28px;
+  height:18px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  cursor:pointer;
+}
+
+.menu-btn span{
+  width:100%;
+  height:2px;
+  border-radius:999px;
+  background:#111;
+}
+
+/* =========================
+   DROPDOWN
+========================= */
+.menu-dropdown{
+  position:fixed;
+  top:72px;
+  right:18px;
+  width:240px;
+  background:#fff;
+  border-radius:18px;
+  border:1px solid rgba(0,0,0,0.08);
+  box-shadow:0 20px 40px rgba(0,0,0,0.12);
+  overflow:hidden;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(-10px);
+  transition:0.25s ease;
+  z-index:998;
+}
+
+.menu-dropdown.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0);
+}
+
+.menu-dropdown a{
+  display:block;
+  padding:16px 18px;
+  font-size:14px;
+  border-bottom:1px solid #f2f2f2;
+  transition:0.2s ease;
+}
+
+.menu-dropdown a:last-child{
+  border-bottom:none;
+}
+
+.menu-dropdown a:hover{
+  background:#faf7f2;
+}
+
+/* =========================
+   PAGE WIDTH
+========================= */
+.section-inner{
+  width:100%;
+  max-width:1180px;
+  margin:0 auto;
+  padding:0 24px;
+}
+
+/* =========================
+   HERO
+========================= */
+.hero{
+  position:relative;
+  min-height:92vh;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+  background:
+    linear-gradient(rgba(0,0,0,0.36), rgba(0,0,0,0.42)),
+    url('https://images.unsplash.com/photo-1515377905703-c4788e51af15?q=80&w=1800&auto=format&fit=crop') center/cover;
+}
+
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 60%);
+}
+
+.smoke{
+  position:absolute;
+  width:520px;
+  height:520px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.05);
+  filter:blur(70px);
+  animation:floatSmoke 14s infinite ease-in-out;
+}
+
+.smoke.one{
+  top:10%;
+  left:-120px;
+}
+
+.smoke.two{
+  bottom:-120px;
+  right:-120px;
+  animation-delay:4s;
+}
+
+@keyframes floatSmoke{
+  0%{transform:translateY(0) translateX(0) scale(1);}
+  50%{transform:translateY(-30px) translateX(20px) scale(1.05);}
+  100%{transform:translateY(0) translateX(0) scale(1);}
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+  max-width:720px;
+  color:#fff;
+}
+
+.breadcrumb{
+  font-size:12px;
+  letter-spacing:1px;
+  margin-bottom:20px;
+  opacity:0.8;
+}
+
+.breadcrumb a{
+  opacity:0.9;
+}
+
+.hero-kicker{
+  font-size:13px;
+  letter-spacing:4px;
+  margin-bottom:18px;
+  opacity:0.9;
+}
+
+.hero-title{
+  font-size:clamp(42px, 7vw, 82px);
+  line-height:0.98;
+  font-weight:700;
+  letter-spacing:-2px;
+  margin-bottom:26px;
+}
+
+.hero-desc{
+  max-width:640px;
+  font-size:17px;
+  line-height:1.9;
+  color:rgba(255,255,255,0.92);
+}
+
+.hero-actions{
+  margin-top:34px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+}
+
+.hero-btn{
+  padding:14px 22px;
+  border-radius:999px;
+  font-size:14px;
+  transition:0.25s ease;
+}
+
+.hero-btn.primary{
+  background:#fff;
+  color:#111;
+}
+
+.hero-btn.secondary{
+  border:1px solid rgba(255,255,255,0.35);
+  color:#fff;
+  backdrop-filter:blur(8px);
+}
+
+.hero-btn:hover{
+  transform:translateY(-2px);
+}
+
+/* =========================
+   SECTION
+========================= */
+.section{
+  padding:110px 0;
+}
+
+.section-soft{
+  background:#fbf8f4;
+}
+
+.section-dark{
+  background:#201c18;
+  color:#fff;
+}
+
+.section-head{
+  max-width:920px;
+  margin-bottom:56px;
+}
+
+.section-kicker{
+  font-size:12px;
+  letter-spacing:3px;
+  color:#9b7f63;
+  margin-bottom:14px;
+}
+
+.section-title{
+  font-size:clamp(30px, 5vw, 52px);
+  line-height:1.12;
+  margin-bottom:20px;
+  letter-spacing:-1px;
+}
+
+.section-desc{
+  font-size:17px;
+  line-height:1.9;
+  color:#555;
+  max-width:920px;
+}
+
+.section-dark .section-desc{
+  color:rgba(255,255,255,0.74);
+}
+
+/* =========================
+   TECHNOLOGY GRID
+========================= */
+.tech-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:26px;
+}
+
+.tech-card{
+  background:#fff;
+  border-radius:28px;
+  padding:34px;
+  border:1px solid rgba(0,0,0,0.06);
+  box-shadow:0 18px 40px rgba(0,0,0,0.05);
+}
+
+.tech-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:18px;
+  margin-bottom:24px;
+}
+
+.tech-icon{
+  width:58px;
+  height:58px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#ede1d2,#d4b99a);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  flex-shrink:0;
+}
+
+.tech-name{
+  font-size:28px;
+  line-height:1.1;
+  margin-bottom:10px;
+}
+
+.tech-sub{
+  color:#777;
+  font-size:14px;
+  line-height:1.7;
+}
+
+.tech-body{
+  font-size:15px;
+  line-height:1.95;
+  color:#444;
+}
+
+.tech-list{
+  margin-top:24px;
+  display:grid;
+  gap:10px;
+}
+
+.tech-list div{
+  padding:12px 14px;
+  border-radius:14px;
+  background:#f8f4ef;
+  font-size:14px;
+  line-height:1.7;
+}
+
+.coverage{
+  margin-top:22px;
+  padding:16px 18px;
+  border-radius:18px;
+  background:#1f1b18;
+  color:#fff;
+  font-size:14px;
+  line-height:1.8;
+}
+
+/* =========================
+   COMPARISON
+========================= */
+.compare-wrap{
+  overflow:auto;
+  border-radius:24px;
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.compare-table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:780px;
+}
+
+.compare-table th,
+.compare-table td{
+  padding:22px;
+  text-align:left;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  vertical-align:top;
+  font-size:14px;
+  line-height:1.8;
+}
+
+.compare-table th{
+  background:rgba(255,255,255,0.04);
+  font-size:13px;
+  letter-spacing:1px;
+}
+
+/* =========================
+   OIL SECTION
+========================= */
+.oil-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:40px;
+  align-items:start;
+}
+
+.info-box{
+  background:#fff;
+  border-radius:26px;
+  padding:32px;
+  border:1px solid rgba(0,0,0,0.06);
+  box-shadow:0 14px 32px rgba(0,0,0,0.05);
+}
+
+.info-box h3{
+  margin-top:0;
+  font-size:26px;
+  margin-bottom:20px;
+}
+
+.info-box p{
+  font-size:15px;
+  line-height:1.9;
+  color:#555;
+}
+
+.point-list{
+  display:grid;
+  gap:12px;
+  margin-top:22px;
+}
+
+.point-item{
+  padding:14px 16px;
+  border-radius:16px;
+  background:#f6f1ea;
+  font-size:14px;
+  line-height:1.7;
+}
+
+/* =========================
+   PD08 / PD10
+========================= */
+.control-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:26px;
+}
+
+.control-card{
+  background:#fff;
+  border-radius:28px;
+  padding:32px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+
+.control-card h3{
+  margin-top:0;
+  font-size:28px;
+}
+
+.control-card ul{
+  padding-left:18px;
+  line-height:2;
+  color:#444;
+}
+
+/* =========================
+   CTA
+========================= */
+.cta{
+  position:relative;
+  overflow:hidden;
+  border-radius:36px;
+  padding:70px 50px;
+  background:
+    linear-gradient(135deg,#2f241d,#5a4335);
+  color:#fff;
+}
+
+.cta::before{
+  content:"";
+  position:absolute;
+  width:420px;
+  height:420px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.06);
+  right:-100px;
+  top:-100px;
+  filter:blur(10px);
+}
+
+.cta-title{
+  position:relative;
+  z-index:2;
+  font-size:clamp(32px,4vw,52px);
+  line-height:1.1;
+  margin-bottom:20px;
+  max-width:760px;
+}
+
+.cta-desc{
+  position:relative;
+  z-index:2;
+  max-width:720px;
+  line-height:1.9;
+  color:rgba(255,255,255,0.82);
+}
+
+.cta-actions{
+  position:relative;
+  z-index:2;
+  margin-top:34px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+}
+
+.cta-btn{
+  padding:14px 22px;
+  border-radius:999px;
+  background:#fff;
+  color:#111;
+  font-size:14px;
+  transition:0.25s ease;
+}
+
+.cta-btn:hover{
+  transform:translateY(-2px);
+}
+
+/* =========================
+   FOOTER
+========================= */
+.footer{
+  padding:80px 0 50px;
+  background:#151311;
+  color:#fff;
+}
+
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr;
+  gap:40px;
+}
+
+.footer-brand{
+  font-size:14px;
+  line-height:2;
+  color:rgba(255,255,255,0.72);
+}
+
+.footer-title{
+  font-size:13px;
+  letter-spacing:2px;
+  margin-bottom:18px;
+  opacity:0.7;
+}
+
+.footer-link{
+  display:block;
+  margin-bottom:12px;
+  color:rgba(255,255,255,0.76);
+  font-size:14px;
+}
+
+.footer-bottom{
+  margin-top:60px;
+  padding-top:26px;
+  border-top:1px solid rgba(255,255,255,0.08);
+  font-size:12px;
+  color:rgba(255,255,255,0.45);
+  line-height:1.9;
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media(max-width:900px){
+
+  .hero{
+    min-height:auto;
+    padding:120px 0 90px;
+  }
+
+  .hero-desc{
+    font-size:15px;
+    line-height:1.85;
+  }
+
+  .section{
+    padding:80px 0;
+  }
+
+  .tech-grid,
+  .oil-layout,
+  .control-grid,
+  .footer-grid{
+    grid-template-columns:1fr;
+  }
+
+  .tech-card,
+  .info-box,
+  .control-card{
+    padding:24px;
+    border-radius:22px;
+  }
+
+  .cta{
+    padding:46px 28px;
+    border-radius:28px;
+  }
+
+  .section-inner{
+    padding:0 18px;
+  }
+
+  .section-desc{
+    font-size:15px;
+    line-height:1.85;
+  }
+
+  .topbar{
+    padding:0 18px;
+  }
+
+  .hero-actions,
+  .cta-actions{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .hero-btn,
+  .cta-btn{
+    width:100%;
+    text-align:center;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+
+  <a class="logo" href="index.html">
+    UNIMERCE
+  </a>
+
+  <div class="menu-btn" id="menuBtn">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+</div>
+
+<!-- MENU -->
+<div class="menu-dropdown" id="menuDropdown">
+  <a href="index.html">Home</a>
+  <a href="products.html">Products</a>
+  <a href="inventory.html">Inventory</a>
+  <a href="water-purification.html">Water Purification</a>
+  <a href="aroma-systems.html">Aroma Systems</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+
+  <div class="smoke one"></div>
+  <div class="smoke two"></div>
+
+  <div class="section-inner">
+
+    <div class="hero-content">
+
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        /
+        <a href="products.html">Products</a>
+        /
+        Aroma Systems
+      </div>
+
+      <div class="hero-kicker">
+        SENSORY EXPERIENCE
+      </div>
+
+      <div class="hero-title">
+        Aroma Systems
+        for Modern
+        Spaces
+      </div>
+
+      <div class="hero-desc">
+        กลิ่นไม่ได้เป็นเพียง “ความหอม” แต่เป็นส่วนหนึ่งของประสบการณ์ภายในพื้นที่ ตั้งแต่บ้าน ห้องนั่งเล่น สปา showroom ไปจนถึงโรงแรมและธุรกิจระดับ luxury เทคโนโลยีการกระจายกลิ่นที่เหมาะสม จะช่วยสร้างบรรยากาศ ความรู้สึก และภาพจำให้กับพื้นที่ได้อย่างสมบูรณ์ยิ่งขึ้น
+      </div>
+
+      <div class="hero-actions">
+        <a class="hero-btn primary" href="#technology">
+          Explore Technologies
+        </a>
+
+        <a
+          class="hero-btn secondary"
+          href="https://shopee.co.th/vitevthailand?shopCollection=264446710#product_list"
+          target="_blank"
+        >
+          View Shopee Collection
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- INTRO -->
+<section class="section section-soft">
+
+  <div class="section-inner">
+
+    <div class="section-head">
+
+      <div class="section-kicker">
+        DIFFUSION TECHNOLOGIES
+      </div>
+
+      <div class="section-title">
+        เทคโนโลยีเครื่องพ่นกลิ่น
+        มีกี่แบบ ต่างกันอย่างไร?
+      </div>
+
+      <div class="section-desc">
+        เครื่องพ่นกลิ่นในปัจจุบันไม่ได้มีเพียงรูปแบบเดียว แต่ใช้เทคโนโลยีที่แตกต่างกัน ซึ่งส่งผลต่อความเข้มของกลิ่น การกระจายตัวของละออง ระดับเสียง การใช้น้ำมัน รวมถึงประสบการณ์โดยรวมของผู้ใช้งาน บางระบบเน้นเพิ่มความชื้น บางระบบเน้น aromatherapy แบบเข้มข้น และบางระบบถูกออกแบบสำหรับธุรกิจ scent marketing หรือพื้นที่ขนาดใหญ่โดยเฉพาะ
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- TECHNOLOGY -->
+<section class="section" id="technology">
+
+  <div class="section-inner">
+
+    <div class="tech-grid">
+
+      <!-- ULTRASONIC -->
+      <div class="tech-card">
+
+        <div class="tech-top">
+
+          <div>
+            <div class="tech-name">
+              Ultrasonic
+              Diffuser
+            </div>
+
+            <div class="tech-sub">
+              Humidifying Aroma Technology
+            </div>
+          </div>
+
+          <div class="tech-icon">
+            ✧
+          </div>
+
+        </div>
+
+        <div class="tech-body">
+          ใช้คลื่น ultrasonic vibration ทำให้น้ำและ essential oil แตกเป็นละอองละเอียดคล้ายไอน้ำ กลิ่นจะค่อย ๆ กระจายพร้อมเพิ่มความชื้นเล็กน้อยให้กับอากาศ เหมาะกับห้องที่เปิดแอร์บ่อยหรือมีอากาศแห้ง
+        </div>
+
+        <div class="tech-list">
+          <div>เพิ่มความชื้นให้ห้องเล็กน้อย</div>
+          <div>เสียงเงียบ ใช้งานง่าย</div>
+          <div>เหมาะกับห้องนอน คอนโด ห้องทำงาน</div>
+          <div>ต้องเติมน้ำเป็นระยะ และกลิ่นไม่เข้มมาก</div>
+        </div>
+
+        <div class="coverage">
+          พื้นที่ที่ได้กลิ่นชัดจริงประมาณ 10–30 ตร.ม.
+        </div>
+
+      </div>
+
+      <!-- NEBULIZING -->
+      <div class="tech-card">
+
+        <div class="tech-top">
+
+          <div>
+            <div class="tech-name">
+              Nebulizing
+              Diffuser
+            </div>
+
+            <div class="tech-sub">
+              Traditional Waterless System
+            </div>
+          </div>
+
+          <div class="tech-icon">
+            ◌
+          </div>
+
+        </div>
+
+        <div class="tech-body">
+          ใช้แรงดันอากาศทำให้น้ำมัน essential oil แตกเป็นละอองโดยตรงโดยไม่ต้องผสมน้ำ ทำให้ได้กลิ่นที่เข้ม ชัด และบริสุทธิ์ เหมาะกับการทำ aromatherapy หรือ spa ขนาดเล็ก
+        </div>
+
+        <div class="tech-list">
+          <div>กลิ่นเข้มและชัดมาก</div>
+          <div>ไม่ต้องเติมน้ำ</div>
+          <div>ใช้น้ำมันค่อนข้างเร็ว</div>
+          <div>บางรุ่นมีเสียงจากปั๊มลม และต้องทำความสะอาดบ่อย</div>
+        </div>
+
+        <div class="coverage">
+          พื้นที่ที่ได้กลิ่นชัดจริงประมาณ 20–80 ตร.ม.
+        </div>
+
+      </div>
+
+      <!-- COLD AIR -->
+      <div class="tech-card">
+
+        <div class="tech-top">
+
+          <div>
+            <div class="tech-name">
+              Cold-Air
+              Diffuser
+            </div>
+
+            <div class="tech-sub">
+              Nano Dry Mist Technology
+            </div>
+          </div>
+
+          <div class="tech-icon">
+            ⟡
+          </div>
+
+        </div>
+
+        <div class="tech-body">
+          เทคโนโลยีรุ่นใหม่ที่ใช้ atomization technology ทำให้น้ำมัน fragrance แตกเป็นละอองระดับ nano dry mist โดยไม่ใช้น้ำและไม่ใช้ความร้อน กลิ่นจึงกระจายสม่ำเสมอ เงียบ และลอยอยู่ในอากาศได้นาน
+        </div>
+
+        <div class="tech-list">
+          <div>กลิ่นหอมชัด กระจายได้ไกล</div>
+          <div>เครื่องเงียบ ไม่ต้องเติมน้ำ</div>
+          <div>ตั้งเวลาเปิด-ปิดอัตโนมัติได้</div>
+          <div>นิยมในโรงแรม luxury, spa และ showroom</div>
+        </div>
+
+        <div class="coverage">
+          พื้นที่ครอบคลุมตั้งแต่ 40–1000+ ตร.ม. ตามขนาดเครื่อง
+        </div>
+
+      </div>
+
+      <!-- HVAC -->
+      <div class="tech-card">
+
+        <div class="tech-top">
+
+          <div>
+            <div class="tech-name">
+              HVAC
+              Scent System
+            </div>
+
+            <div class="tech-sub">
+              Commercial Scent Marketing
+            </div>
+          </div>
+
+          <div class="tech-icon">
+            △
+          </div>
+
+        </div>
+
+        <div class="tech-body">
+          ระบบ diffuser เชื่อมต่อเข้ากับระบบแอร์ของอาคาร กลิ่นจะกระจายผ่านท่อลมไปทั่วพื้นที่ เหมาะสำหรับโรงแรม ห้าง สนามบิน หรืออาคารขนาดใหญ่ที่ต้องการสร้าง signature scent ของแบรนด์
+        </div>
+
+        <div class="tech-list">
+          <div>ครอบคลุมพื้นที่ขนาดใหญ่มาก</div>
+          <div>กระจายกลิ่นสม่ำเสมอทั้งอาคาร</div>
+          <div>ใช้ใน scent marketing ระดับองค์กร</div>
+          <div>เหมาะกับโรงแรม luxury และ commercial spaces</div>
+        </div>
+
+        <div class="coverage">
+          ครอบคลุมประมาณ 500 – มากกว่า 5000 ตร.ม.
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- COMPARISON -->
+<section class="section section-dark">
+
+  <div class="section-inner">
+
+    <div class="section-head">
+
+      <div class="section-kicker">
+        SIMPLE COMPARISON
+      </div>
+
+      <div class="section-title">
+        เลือกเทคโนโลยีให้เหมาะ
+        กับพื้นที่และประสบการณ์
+      </div>
+
+      <div class="section-desc">
+        การเลือกเครื่องพ่นกลิ่นที่เหมาะสม ไม่ได้ดูเพียงความหอม แต่ควรดูทั้งขนาดพื้นที่ ความเข้มของกลิ่นที่ต้องการ ความเงียบ ความสะดวกในการดูแลรักษา และรูปแบบการใช้งานในชีวิตประจำวัน
+      </div>
+
+    </div>
+
+    <div class="compare-wrap">
+
+      <table class="compare-table">
+
+        <thead>
+          <tr>
+            <th>Technology</th>
+            <th>Strength</th>
+            <th>Coverage</th>
+            <th>Best For</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>Ultrasonic</td>
+            <td>เพิ่มความชื้น เสียงเงียบ ใช้งานง่าย</td>
+            <td>10–30 ตร.ม.</td>
+            <td>Bedroom / Condo / Small Office</td>
+          </tr>
+
+          <tr>
+            <td>Nebulizing</td>
+            <td>กลิ่น essential oil เข้มมาก</td>
+            <td>20–80 ตร.ม.</td>
+            <td>Spa / Aromatherapy</td>
+          </tr>
+
+          <tr>
+            <td>Cold-Air</td>
+            <td>กระจายไกล เงียบ ไม่ต้องเติมน้ำ</td>
+            <td>40–1000+ ตร.ม.</td>
+            <td>Luxury Home / Showroom / Hotel</td>
+          </tr>
+
+          <tr>
+            <td>HVAC</td>
+            <td>กระจายทั้งอาคาร</td>
+            <td>500–5000+ ตร.ม.</td>
+            <td>Commercial Scent Marketing</td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- OIL -->
+<section class="section section-soft">
+
+  <div class="section-inner">
+
+    <div class="section-head">
+
+      <div class="section-kicker">
+        WATERLESS OIL GUIDE
+      </div>
+
+      <div class="section-title">
+        Cold-Air Diffuser
+        ใช้น้ำมันแบบไหน?
+      </div>
+
+    </div>
+
+    <div class="oil-layout">
+
+      <div class="info-box">
+
+        <h3>
+          น้ำมันที่เหมาะกับ
+          Cold-Air Diffuser
+        </h3>
+
+        <p>
+          เครื่องประเภท Cold-Air หรือ Waterless Diffuser ต้องใช้น้ำมันที่ออกแบบมาสำหรับระบบ diffuser โดยเฉพาะ สามารถเทใส่เครื่องได้โดยตรงโดยไม่ต้องผสมน้ำ
+        </p>
+
+        <div class="point-list">
+
+          <div class="point-item">
+            ใช้ได้ทั้ง Essential Oil และ Fragrance Oil
+          </div>
+
+          <div class="point-item">
+            ต้องเป็นเกรดสำหรับ Diffuser / Cold-Air / Nebulizer
+          </div>
+
+          <div class="point-item">
+            ไม่ต้องหยดผสมน้ำ
+          </div>
+
+          <div class="point-item">
+            ไม่มีตะกอน และไม่ผสมแอลกอฮอล์สูง
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="info-box">
+
+        <h3>
+          จุดสังเกตน้ำหอม
+          สำหรับ Cold-Air
+        </h3>
+
+        <div class="point-list">
+
+          <div class="point-item">
+            ส่วนใหญ่เริ่มที่ 100 ml ขึ้นไป ไม่ใช่ขวดหยดเล็กแบบ ultrasonic
+          </div>
+
+          <div class="point-item">
+            ระบุชัดว่าใช้กับ Cold Air / Waterless / Nebulizing
+          </div>
+
+          <div class="point-item">
+            ความหนืดเหลวกำลังดี ไม่เหนียวแบบ perfume oil
+          </div>
+
+          <div class="point-item">
+            ไม่ใช่น้ำหอมสำหรับ reed diffuser หรือก้านไม้
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- PD08 -->
+<section class="section">
+
+  <div class="section-inner">
+
+    <div class="section-head">
+
+      <div class="section-kicker">
+        PD08 / PD10 SETTINGS
+      </div>
+
+      <div class="section-title">
+        Misting Control
+        & Timer Settings
+      </div>
+
+    </div>
+
+    <div class="control-grid">
+
+      <div class="control-card">
+
+        <h3>
+          Misting Control
+        </h3>
+
+        <ul>
+          <li>L1 : 30s / พัก 60s</li>
+          <li>L2 : 30s / พัก 120s</li>
+          <li>L3 : 30s / พัก 180s</li>
+          <li>L4 : 30s / พัก 240s</li>
+          <li>L5 : 30s / พัก 300s</li>
+          <li>L6 : 30s / พัก 360s</li>
+        </ul>
+
+      </div>
+
+      <div class="control-card">
+
+        <h3>
+          Timer Settings
+        </h3>
+
+        <ul>
+          <li>กดสองครั้ง : 1 ชั่วโมง</li>
+          <li>กดสองครั้งอีก : 2 ชั่วโมง</li>
+          <li>กดสองครั้งอีก : 4 ชั่วโมง</li>
+          <li>กดสองครั้งอีก : 8 ชั่วโมง</li>
+          <li>กดอีกครั้ง : ยกเลิก Timer</li>
+        </ul>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- CTA -->
+<section class="section">
+
+  <div class="section-inner">
+
+    <div class="cta">
+
+      <div class="cta-title">
+        สร้างประสบการณ์กลิ่น
+        ให้พื้นที่ของคุณ
+      </div>
+
+      <div class="cta-desc">
+        กลิ่นสามารถเปลี่ยนอารมณ์ ความรู้สึก และภาพจำของพื้นที่ได้ ตั้งแต่บ้าน ห้องนั่งเล่น ร้านนวด สปา ไปจนถึงธุรกิจ hospitality และ luxury retail การเลือกเทคโนโลยี diffuser ที่เหมาะสม จะช่วยให้กลิ่นกระจายได้อย่างสม่ำเสมอ นุ่มนวล และเป็นธรรมชาติยิ่งขึ้น
+      </div>
+
+      <div class="cta-actions">
+
+        <a
+          class="cta-btn"
+          href="https://shopee.co.th/vitevthailand?shopCollection=264446710#product_list"
+          target="_blank"
+        >
+          Browse Aroma Collection
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+
+  <div class="section-inner">
+
+    <div class="footer-grid">
+
+      <div>
+
+        <div class="footer-title">
+          UNIMERCE
+        </div>
+
+        <div class="footer-brand">
+          Curated systems and lifestyle technologies designed for modern living spaces. From water purification to aroma diffusion systems, every category is selected with a focus on functionality, atmosphere, and long-term user experience.
+        </div>
+
+      </div>
+
+      <div>
+
+        <div class="footer-title">
+          Sitemap
+        </div>
+
+        <a class="footer-link" href="index.html">Home</a>
+        <a class="footer-link" href="products.html">Products</a>
+        <a class="footer-link" href="inventory.html">Inventory</a>
+        <a class="footer-link" href="water-purification.html">Water Purification</a>
+
+      </div>
+
+      <div>
+
+        <div class="footer-title">
+          Aroma Systems
+        </div>
+
+        <a
+          class="footer-link"
+          href="https://shopee.co.th/vitevthailand?shopCollection=264446710#product_list"
+          target="_blank"
+        >
+          Shopee Collection
+        </a>
+
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      Aroma diffusion technology should feel subtle, immersive, and effortless. The right system does more than make a room smell pleasant — it shapes atmosphere, emotion, and memory.
+    </div>
+
+  </div>
+
+</footer>
+
+<script>
+
+/* =========================
+   MENU TOGGLE
+========================= */
+
+const menuBtn = document.getElementById("menuBtn");
+const menuDropdown = document.getElementById("menuDropdown");
+
+menuBtn.addEventListener("click", () => {
+  menuDropdown.classList.toggle("show");
+});
+
+window.addEventListener("click", (e) => {
+
+  if(
+    !menuBtn.contains(e.target)
+    &&
+    !menuDropdown.contains(e.target)
+  ){
+    menuDropdown.classList.remove("show");
+  }
+
+});
+
+</script>
+
+</body>
+</html>
