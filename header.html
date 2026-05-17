@@ -1,0 +1,177 @@
+<!-- ================= HEADER ================= -->
+
+<style>
+
+/* =========================
+   TOPBAR
+========================= */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:18px 28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid #eee;
+  z-index:100;
+  box-sizing:border-box;
+}
+
+.logo{
+  font-size:12px;
+  letter-spacing:3px;
+  color:#111;
+  text-decoration:none;
+}
+
+.menu{
+  width:28px;
+  height:14px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  cursor:pointer;
+}
+
+.menu span{
+  height:2px;
+  background:#111;
+  width:100%;
+  border-radius:999px;
+  transition:0.3s;
+}
+
+/* =========================
+   MENU DROPDOWN
+========================= */
+.menu-dropdown{
+  position:fixed;
+  top:70px;
+  right:24px;
+  width:240px;
+  background:rgba(255,255,255,0.96);
+  backdrop-filter:blur(14px);
+  border:1px solid #eee;
+  border-radius:18px;
+  padding:14px;
+  display:none;
+  flex-direction:column;
+  gap:4px;
+  z-index:200;
+  box-shadow:0 18px 40px rgba(0,0,0,0.08);
+}
+
+.menu-dropdown.active{
+  display:flex;
+  animation:fadeDown 0.25s ease;
+}
+
+.menu-dropdown a{
+  text-decoration:none;
+  color:#111;
+  font-size:14px;
+  padding:12px 14px;
+  border-radius:12px;
+  transition:0.2s;
+}
+
+.menu-dropdown a:hover{
+  background:#f5f5f5;
+  transform:translateX(3px);
+}
+
+@keyframes fadeDown{
+  from{
+    opacity:0;
+    transform:translateY(-10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media(max-width:768px){
+
+  .menu-dropdown{
+    width:calc(100% - 32px);
+    right:16px;
+    top:72px;
+  }
+
+}
+
+</style>
+
+<div class="topbar">
+
+  <a class="logo" href="index.html">
+    UNIMERCE
+  </a>
+
+  <div class="menu" id="menuBtn">
+    <span></span>
+    <span></span>
+  </div>
+
+</div>
+
+<!-- ================= MENU DROPDOWN ================= -->
+<div class="menu-dropdown" id="menuDropdown">
+
+  <a href="index.html">
+    Home
+  </a>
+
+  <a href="products.html">
+    All Products
+  </a>
+
+  <a href="inventory.html">
+    Inventory
+  </a>
+
+  <a href="water-purification.html">
+    Water Purification
+  </a>
+
+  <a href="aroma-systems.html">
+    Aroma Systems
+  </a>
+
+</div>
+
+<script>
+
+/* =========================
+   HAMBURGER MENU
+========================= */
+const menuBtn = document.getElementById("menuBtn");
+const menuDropdown = document.getElementById("menuDropdown");
+
+menuBtn.addEventListener("click", () => {
+  menuDropdown.classList.toggle("active");
+});
+
+/* =========================
+   CLOSE WHEN CLICK OUTSIDE
+========================= */
+window.addEventListener("click", (e) => {
+
+  if(
+    !menuBtn.contains(e.target) &&
+    !menuDropdown.contains(e.target)
+  ){
+    menuDropdown.classList.remove("active");
+  }
+
+});
+
+</script>
