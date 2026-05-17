@@ -687,13 +687,8 @@ body{
 </head>
 <body>
 
-<!-- ================= TOPBAR ================= -->
-<div class="topbar">
-  <a class="logo" href="index.html">UNIMERCE</a>
-  <div class="breadcrumb-nav">
-    <a href="index.html">HOME</a> &nbsp;/&nbsp; <a href="index.html#categories">CATEGORIES</a> &nbsp;/&nbsp; WATER PURIFICATION
-  </div>
-</div>
+<!-- HEADER -->
+<div id="header-placeholder"></div>
 
 <!-- ================= HERO ================= -->
 <section class="hero">
@@ -912,12 +907,8 @@ body{
   </div>
 </section>
 
-<!-- ================= FOOTER MINI ================= -->
-<div class="footer-mini">
-  <a href="index.html">← กลับหน้าหลัก</a>
-  <span class="footer-copy">UNIMERCE GROUP · WATER PURIFICATION</span>
-  <a href="products.html">All Products →</a>
-</div>
+<!-- FOOTER -->
+<div id="footer-placeholder"></div>
 
 <!-- ================= JS: LOAD PRODUCTS ================= -->
 <script>
@@ -994,7 +985,38 @@ function renderCards(items, grid){
   }).join('');
 }
 
+fetch("header.html")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("header-placeholder").innerHTML = data;
+
+    // IMPORTANT: re-run script inside header
+    const scripts = document
+      .getElementById("header-placeholder")
+      .querySelectorAll("script");
+
+    scripts.forEach(oldScript => {
+      const newScript = document.createElement("script");
+
+      if(oldScript.src){
+        newScript.src = oldScript.src;
+      } else {
+        newScript.textContent = oldScript.textContent;
+      }
+
+      document.body.appendChild(newScript);
+      oldScript.remove();
+    });
+  });
+
+  fetch("footer.html")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("footer-placeholder").innerHTML = data;
+  });
+
 loadProducts();
+
 </script>
 </body>
 </html>
