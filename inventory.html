@@ -61,6 +61,37 @@ body{
 }
 
 /* =========================
+   CATEGORY FILTER BAR
+========================= */
+.category-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+  background: #fff;
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.category-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
+}
+
+.category-label input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: #2f5ea8;
+}
+
+/* =========================
    FILTER BAR
 ========================= */
 .filterbar{
@@ -219,6 +250,22 @@ tbody tr:hover{
     </label>
   </div>
 
+  <!-- CATEGORY CHECKBOX FILTERS (Default: Unchecked) -->
+  <div class="category-filter-bar">
+    <label class="category-label">
+      <input type="checkbox" class="cat-checkbox" value="WaterPurification" /> กรองน้ำ
+    </label>
+    <label class="category-label">
+      <input type="checkbox" class="cat-checkbox" value="WaterQualityTools" /> วัดค่าน้ำ
+    </label>
+    <label class="category-label">
+      <input type="checkbox" class="cat-checkbox" value="MeasurementTools" /> วัดค่าทั่วไป
+    </label>
+    <label class="category-label">
+      <input type="checkbox" class="cat-checkbox" value="AromaSystems" /> อโรม่า
+    </label>
+  </div>
+
   <!-- FILTER -->
   <div class="filterbar">
     <input id="searchBox" type="text" placeholder="Search Item Code / Description / OH..." />
@@ -294,9 +341,22 @@ function applyAll(){
   const q        = document.getElementById("searchBox").value.toLowerCase().trim();
   const hideZero = document.getElementById("hideZero").checked;
 
-  // 1. FILTER BY SEARCH
+  // ดึงค่าจาก Checkboxes ของกลุ่ม MainCategory ที่ถูกเลือกไว้
+  const checkedCategories = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value);
+
   let result = rawData;
 
+  // 1. FILTER BY MAIN CATEGORY CHECKBOXES
+  // ถ้าไม่มีการติ๊กอะไรเลย (checkedCategories ว่าง) -> ให้ผ่านไปทั้งหมด (Select All)
+  // แต่ถ้ามีการติ๊กอย่างน้อย 1 อัน -> จะคัดกรองเฉพาะตัวที่มีชื่อตรงกับใน array เท่านั้น
+  if (checkedCategories.length > 0) {
+    result = result.filter(i => {
+      const cat = String(i.MainCategory || "").trim();
+      return checkedCategories.includes(cat);
+    });
+  }
+
+  // 2. FILTER BY SEARCH
   if(q){
     result = result.filter(i =>
       String(i.Item_Code   || "").toLowerCase().includes(q) ||
@@ -305,7 +365,7 @@ function applyAll(){
     );
   }
 
-  // 2. HIDE ZERO / DASH
+  // 3. HIDE ZERO / DASH
   if(hideZero){
     result = result.filter(i => {
       const v = String(i.OnHand || "").trim();
@@ -318,7 +378,7 @@ function applyAll(){
 
   filteredData = result;
 
-  // 3. SORT
+  // 4. SORT
   if(sortState.key){
     applySortOnFiltered();
   } else {
@@ -383,7 +443,7 @@ function renderTable(data){
     <tr>
       <td class="col-code">${p.Item_Code   || "-"}</td>
       <td class="col-desc">${p.Description || "-"}</td>
-      <td class="col-stock">${p.OnHand     || "0"}</td>
+      <td class="col-stock">${p.OnHand      || "0"}</td>
     </tr>
   `).join("");
 }
@@ -414,6 +474,13 @@ window.addEventListener("load", () => {
 
   document.getElementById("hideZero").addEventListener("change", () => {
     applyAll();
+  });
+
+  // ผูก Event Listener ให้กับ Checkbox ทุกตัวในกลุ่ม MainCategory ให้เรียกใช้ applyAll() เมื่อมีการกดเลือก/ยกเลิก
+  document.querySelectorAll('.cat-checkbox').forEach(cb => {
+    cb.addEventListener("change", () => {
+      applyAll();
+    });
   });
 
   loadTable();
