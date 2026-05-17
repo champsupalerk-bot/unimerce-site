@@ -73,6 +73,57 @@ body{
   background:#111;
   width:100%;
   border-radius:999px;
+  transition:0.3s;
+}
+
+/* =========================
+   MENU DROPDOWN
+========================= */
+.menu-dropdown{
+  position:fixed;
+  top:70px;
+  right:24px;
+  width:240px;
+  background:rgba(255,255,255,0.96);
+  backdrop-filter:blur(14px);
+  border:1px solid #eee;
+  border-radius:18px;
+  padding:14px;
+  display:none;
+  flex-direction:column;
+  gap:4px;
+  z-index:200;
+  box-shadow:0 18px 40px rgba(0,0,0,0.08);
+}
+
+.menu-dropdown.active{
+  display:flex;
+  animation:fadeDown 0.25s ease;
+}
+
+.menu-dropdown a{
+  text-decoration:none;
+  color:#111;
+  font-size:14px;
+  padding:12px 14px;
+  border-radius:12px;
+  transition:0.2s;
+}
+
+.menu-dropdown a:hover{
+  background:#f5f5f5;
+  transform:translateX(3px);
+}
+
+@keyframes fadeDown{
+  from{
+    opacity:0;
+    transform:translateY(-10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 
 /* =========================
@@ -385,6 +436,121 @@ h1{
 }
 
 /* =========================
+   LUXURY FOOTER
+========================= */
+.footer{
+  background:#111;
+  color:#ddd;
+  padding:70px 24px 40px;
+  margin-top:80px;
+  position:relative;
+  overflow:hidden;
+}
+
+.footer::before{
+  content:"";
+  position:absolute;
+  width:500px;
+  height:500px;
+  background:radial-gradient(circle, rgba(255,255,255,0.06), transparent 70%);
+  top:-200px;
+  right:-200px;
+}
+
+.footer-inner{
+  max-width:1100px;
+  margin:0 auto;
+  position:relative;
+  z-index:2;
+}
+
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:40px;
+}
+
+.footer-logo{
+  font-size:14px;
+  letter-spacing:4px;
+  margin-bottom:20px;
+  color:#fff;
+}
+
+.footer-text{
+  font-size:14px;
+  line-height:1.9;
+  color:#aaa;
+  max-width:420px;
+}
+
+.footer-title{
+  font-size:13px;
+  letter-spacing:2px;
+  color:#fff;
+  margin-bottom:18px;
+}
+
+.footer-links{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.footer-links a{
+  text-decoration:none;
+  color:#aaa;
+  font-size:14px;
+  transition:0.2s;
+}
+
+.footer-links a:hover{
+  color:#fff;
+  transform:translateX(3px);
+}
+
+.footer-bottom{
+  margin-top:50px;
+  padding-top:24px;
+  border-top:1px solid rgba(255,255,255,0.08);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.footer-copy{
+  font-size:12px;
+  color:#777;
+}
+
+.footer-social{
+  display:flex;
+  gap:10px;
+}
+
+.footer-social a{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  text-decoration:none;
+  font-size:11px;
+  transition:0.25s;
+}
+
+.footer-social a:hover{
+  background:#fff;
+  color:#111;
+  transform:translateY(-2px);
+}
+
+/* =========================
    MOBILE
 ========================= */
 @media(max-width:768px){
@@ -423,9 +589,27 @@ h1{
     line-height:1.5;
   }
 
+  .menu-dropdown{
+    width:calc(100% - 32px);
+    right:16px;
+    top:72px;
+  }
+
+  .footer-grid{
+    grid-template-columns:1fr;
+    gap:34px;
+  }
+
+  .footer{
+    padding:60px 20px 34px;
+  }
+
+  .footer-bottom{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
 }
-
-
 
 </style>
 </head>
@@ -434,17 +618,8 @@ h1{
 
 <div class="bg"></div>
 
-<!-- ================= TOPBAR ================= -->
-<div class="topbar">
-
-  <a class="logo" href="index.html">UNIMERCE</a>
-
-  <div class="menu">
-    <span></span>
-    <span></span>
-  </div>
-
-</div>
+<!-- ================= HEADER LOAD ================= -->
+<div id="header-placeholder"></div>
 
 <!-- ================= HERO ================= -->
 <section class="hero">
@@ -513,8 +688,6 @@ h1{
       </div>
     </a>
 
-
-  
     <a href="#" class="category-btn">
       <div class="card">
         <h3>Measurement Tools</h3>
@@ -661,15 +834,68 @@ h1{
   <div class="social">
 
     <a href="#" class="li">LI</a>
+
     <a href="#" class="tt">TT</a>
+
     <a href="#" class="fb">FB</a>
+
     <a href="#" class="ig">IG</a>
+
     <a href="#" class="yt">YT</a>
+
     <a href="#" class="x">X</a>
 
   </div>
 
 </section>
+
+<!-- ================= FOOTER LOAD ================= -->
+<div id="footer-placeholder"></div>
+
+<script>
+
+/* =========================
+   LOAD HEADER
+========================= */
+fetch("header.html")
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById("header-placeholder").innerHTML = data;
+
+    const menuBtn = document.getElementById("menuBtn");
+    const menuDropdown = document.getElementById("menuDropdown");
+
+    if(menuBtn && menuDropdown){
+
+      menuBtn.addEventListener("click", () => {
+        menuDropdown.classList.toggle("active");
+      });
+
+      window.addEventListener("click", (e) => {
+
+        if(
+          !menuBtn.contains(e.target) &&
+          !menuDropdown.contains(e.target)
+        ){
+          menuDropdown.classList.remove("active");
+        }
+
+      });
+
+    }
+
+  });
+
+/* =========================
+   LOAD FOOTER
+========================= */
+fetch("footer.html")
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById("footer-placeholder").innerHTML = data;
+  });
+
+</script>
 
 </body>
 </html>
