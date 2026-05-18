@@ -39,6 +39,124 @@ body{
 }
 
 /* =========================
+   CUSTOM CIRCULAR FILTER BAR
+========================= */
+.category-filter-bar {
+  max-width: 1000px;
+  margin: 0 auto 15px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.category-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #444;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+/* ซ่อน Checkbox ดั้งเดิม */
+.category-label input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* สร้างวงกลม Custom ออกแบบเลียนแบบ UI ทันสมัย */
+.checkmark {
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+/* เมื่อ Hover ปุ่ม */
+.category-label:hover input ~ .checkmark {
+  border-color: #2f5ea8;
+}
+
+/* เมื่อ Checkbox ถูกเลือก เปลี่ยนสีกรอบและพื้นหลัง */
+.category-label input:checked ~ .checkmark {
+  background-color: #2f5ea8;
+  border-color: #2f5ea8;
+}
+
+/* จุดกลมตรงกลางสีขาวตอนแอคทีฟ */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  top: 5px;
+  left: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+.category-label input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* =========================
+   PAGINATION NAVIGATION BAR
+========================= */
+.pagination-bar {
+  max-width: 1000px;
+  margin: 30px auto 10px auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  background: #fff;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover {
+  background: #f0f0f0;
+  border-color: #bbb;
+}
+
+.page-btn.active {
+  background: #2f5ea8;
+  color: #fff;
+  border-color: #2f5ea8;
+}
+
+.page-btn:disabled {
+  background: #f5f5f5;
+  color: #ccc;
+  border-color: #eaeaea;
+  cursor: not-allowed;
+}
+
+/* =========================
    GRID
 ========================= */
 .container{
@@ -358,6 +476,26 @@ body{
 
 </div>
 
+<!-- CATEGORY FILTER BAR (เพิ่มด้านบนของกริด) -->
+<div class="category-filter-bar">
+  <label class="category-label">
+    <input type="checkbox" class="cat-checkbox" value="WaterPurification" />
+    <span class="checkmark"></span> กรองน้ำ
+  </label>
+  <label class="category-label">
+    <input type="checkbox" class="cat-checkbox" value="WaterQualityTools" />
+    <span class="checkmark"></span> วัดค่าน้ำ
+  </label>
+  <label class="category-label">
+    <input type="checkbox" class="cat-checkbox" value="MeasurementTools" />
+    <span class="checkmark"></span> วัดค่าทั่วไป
+  </label>
+  <label class="category-label">
+    <input type="checkbox" class="cat-checkbox" value="AromaSystems" />
+    <span class="checkmark"></span> อโรม่า
+  </label>
+</div>
+
 <!-- GRID -->
 <div class="container">
 
@@ -370,6 +508,9 @@ body{
   </div>
 
 </div>
+
+<!-- PAGINATION CONTAINER (เพิ่มด้านล่างของกริด) -->
+<div id="pagination-controls" class="pagination-bar"></div>
 
 <script>
 
@@ -462,71 +603,109 @@ const promoCard = `
 `;
 
 /* =========================
-   PRODUCT RENDER
+   GLOBAL STATE FOR FILTER & PAGINATION
 ========================= */
+let currentPage = 1;
+const itemsPerPage = 25;
 
-const productCards = filtered.map(p => {
+// ฟังก์ชันหลักที่ทำงานร่วมกันทั้ง Filter และ Pagination
+function processAndRender() {
+  // 1. ดึงข้อมูลตัวคัดกรองจาก Checkbox
+  const checkedCategories = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value);
+  
+  let targetProducts = filtered;
+  
+  // ถ้ายกเลิกไม่ติ๊กเลย = แสดงทั้งหมด, ถ้าติ๊กอย่างน้อยหนึ่งอัน = คัดกรองตรงตาม MainCategory
+  if (checkedCategories.length > 0) {
+    targetProducts = filtered.filter(p => {
+      const cat = String(p.MainCategory || "").trim();
+      return checkedCategories.includes(cat);
+    });
+  }
 
-  const img = (p.image_link01 || "").trim();
+  // 2. คำนวณขอบเขต Pagination (25 รายการต่อหน้า)
+  const totalItems = targetProducts.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+  
+  // ป้องกันกรณีเปลี่ยนฟิลเตอร์แล้วตัวเลขหน้าเกินขอบเขตจริง
+  if (currentPage > totalPages) {
+    currentPage = totalPages;
+  }
+  if (currentPage < 1) {
+    currentPage = 1;
+  }
 
-  const sku = p.Item_Code || '-';
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedProducts = targetProducts.slice(startIndex, endIndex);
 
-  const category = p.MainCategory || '-';
+  /* =========================
+     PRODUCT RENDER
+  ========================= */
+  const productCards = paginatedProducts.map(p => {
 
-  const onhand = p.OnHand || '0';
+    const img = (p.image_link01 || "").trim();
 
-  return `
+    const sku = p.Item_Code || '-';
 
-    <div class="card">
+    const category = p.MainCategory || '-';
 
-      <img 
-        src="${img}"
-        onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'"
-      />
+    const onhand = p.OnHand || '0';
 
-      <div class="content">
+    return `
 
-        <!-- TOP INFO -->
-        <div class="top-info">
+      <div class="card">
 
-          <div class="sku">
-            ${sku}
-          </div>
+        <img 
+          src="${img}"
+          onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'"
+        />
 
-          <div class="category">
-            ${category}
-          </div>
+        <div class="content">
 
-        </div>
+          <!-- TOP INFO -->
+          <div class="top-info">
 
-        <!-- PRODUCT NAME -->
-        <div class="name">
-          ${p.Description || '-'}
-        </div>
-
-        <!-- PRICE + STOCK -->
-        <div class="bottom-row">
-
-          <div class="price-box">
-
-            <div class="price-old">
-              ${p.ListPrice ? '฿' + p.ListPrice : ''}
+            <div class="sku">
+              ${sku}
             </div>
 
-            <div class="price-new">
-              ${p.PromotionPrice ? '฿' + p.PromotionPrice : '-'}
+            <div class="category">
+              ${category}
             </div>
 
           </div>
 
-          <div class="stock-box">
+          <!-- PRODUCT NAME -->
+          <div class="name">
+            ${p.Description || '-'}
+          </div>
 
-            <div class="stock-label">
-              คงเหลือ
+          <!-- PRICE + STOCK -->
+          <div class="bottom-row">
+
+            <div class="price-box">
+
+              <div class="price-old">
+                ${p.ListPrice ? '฿' + p.ListPrice : ''}
+              </div>
+
+              <div class="price-new">
+                ${p.PromotionPrice ? '฿' + p.PromotionPrice : '-'}
+              </div>
+
             </div>
 
-            <div class="stock-value">
-              ${onhand}
+            <div class="stock-box">
+
+              <div class="stock-label">
+                คงเหลือ
+              </div>
+
+              <div class="stock-value">
+                ${onhand}
+              </div>
+
             </div>
 
           </div>
@@ -535,17 +714,61 @@ const productCards = filtered.map(p => {
 
       </div>
 
-    </div>
+    `;
 
-  `;
+  }).join('');
 
-}).join('');
+  /* =========================
+     FINAL RENDER
+  ========================= */
+  grid.innerHTML = promoCard + productCards;
+  
+  // สร้างปุ่มนำทางควบคุมหน้าเว็บบริเวณด้านล่าง
+  renderPaginationControls(totalPages);
+}
 
-/* =========================
-   FINAL RENDER
-========================= */
+function renderPaginationControls(totalPages) {
+  const container = document.getElementById("pagination-controls");
+  if (!container) return;
 
-grid.innerHTML = promoCard + productCards;
+  if (totalPages <= 1) {
+    container.innerHTML = "";
+    return;
+  }
+
+  let html = ``;
+  
+  // ปุ่มก่อนหน้า (<)
+  html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">ก่อนหน้า</button>`;
+
+  // แสดงหมายเลขลำดับหน้าทั้งหมด 1, 2, 3, ... n
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<button class="page-btn ${currentPage === i ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+  }
+
+  // ปุ่มถัดไป (>)
+  html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">ถัดไป</button>`;
+
+  container.innerHTML = html;
+}
+
+// ฟังก์ชันเปลี่ยนหน้าและสั่งเลื่อนหน้าจอกลับขึ้นไปด้านบนอย่างนุ่มนวล
+window.changePage = function(page) {
+  currentPage = page;
+  processAndRender();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+// ผูกตัวดักจับเหตุการณ์การเลือก Checkbox คัดกรอง
+document.querySelectorAll('.cat-checkbox').forEach(cb => {
+  cb.addEventListener('change', () => {
+    currentPage = 1; // สลับฟิลเตอร์เมื่อไรให้เคลียร์กลับไปหน้าแรกก่อนเสมอ
+    processAndRender();
+  });
+});
+
+// เริ่มต้นเรียกทำงานฟังก์ชันประมวลผลเป็นครั้งแรก
+processAndRender();
 
 }
 
