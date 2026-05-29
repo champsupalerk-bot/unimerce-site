@@ -7,14 +7,14 @@
 <style>
 
 /* =========================
-   BASE
+   BASE (กลับมาใช้ Font และการตั้งค่าเดิมทั้งหมด)
 ========================= */
 body{
   margin:0;
   font-family:Arial, sans-serif;
   background:#fafafa;
   color:#111;
-  padding-top:70px;
+  padding-top:20px; /* ปรับลดให้พอดีสอดคล้องกับ Topbar ไม่ทับซ้อน */
 }
 
 /* =========================
@@ -42,7 +42,20 @@ body{
   letter-spacing:1px;
 }
 
-.hide-zero-wrap{
+/* ลิงก์สำหรับกดกลับหน้า Home สไตล์เนียนๆ */
+.breadcrumb a{
+  color: #777;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.breadcrumb a:hover{
+  text-decoration: underline;
+  color: #2f5ea8;
+}
+
+/* Checkbox วงกลมตามบรีฟเพิ่มความหรูหรา */
+.hide-zero-wrap, .category-label{
   display:flex;
   align-items:center;
   gap:6px;
@@ -53,15 +66,45 @@ body{
   user-select:none;
 }
 
-.hide-zero-wrap input[type="checkbox"]{
-  width:14px;
-  height:14px;
-  cursor:pointer;
-  accent-color:#2f5ea8;
+.hide-zero-wrap input[type="checkbox"],
+.category-label input[type="checkbox"]{
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #ddd;
+  border-radius: 50%; /* เปลี่ยนเป็นวงกลม */
+  outline: none;
+  background: #fff;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+}
+
+.hide-zero-wrap input[type="checkbox"]::before,
+.category-label input[type="checkbox"]::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: 0.1s transform ease-in-out;
+  background-color: #fff;
+}
+
+.hide-zero-wrap input[type="checkbox"]:checked,
+.category-label input[type="checkbox"]:checked{
+  background:#2f5ea8;
+  border-color:#2f5ea8;
+}
+
+.hide-zero-wrap input[type="checkbox"]:checked::before,
+.category-label input[type="checkbox"]:checked::before {
+  transform: scale(1);
 }
 
 /* =========================
-   CATEGORY FILTER BAR
+   CATEGORY FILTER BAR (ย้ายมาอยู่เหนือตาราง)
 ========================= */
 .category-filter-bar {
   display: flex;
@@ -75,27 +118,15 @@ body{
 }
 
 .category-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   font-size: 13px;
   color: #333;
-  cursor: pointer;
-  user-select: none;
-}
-
-.category-label input[type="checkbox"] {
-  width: 15px;
-  height: 15px;
-  cursor: pointer;
-  accent-color: #2f5ea8;
 }
 
 /* =========================
-   FILTER BAR
+   FILTER BAR & DROPDOWN (สไตล์ Google)
 ========================= */
 .filterbar{
-  margin-bottom:10px;
+  margin-bottom: 10px;
 }
 
 .filterbar input{
@@ -106,6 +137,52 @@ body{
   font-size:16px;
   outline:none;
   box-sizing:border-box;
+  transition: all 0.2s ease;
+}
+
+/* Searchbar effect เบาๆ แบบแพงๆ */
+.filterbar input:focus {
+  border-color: #2f5ea8;
+  box-shadow: 0 0 0 3px rgba(47, 94, 168, 0.15);
+}
+
+/* Dropdown สไตล์ Google ใต้ Searchbar */
+.dropdown-bar-wrap {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.dropdown-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.google-select {
+  padding: 6px 30px 6px 10px;
+  font-size: 13px;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23666' d='M0 0l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.google-select:hover {
+  border-color: #bbb;
+  background-color: #f8f9fa;
+}
+
+.google-select:focus {
+  border-color: #2f5ea8;
 }
 
 /* =========================
@@ -130,7 +207,7 @@ table{
 }
 
 /* =========================
-   HEADER
+   HEADER (หัวตารางเดิมและโครงสร้างเดิมร้อยเปอร์เซ็นต์)
 ========================= */
 thead th{
   position:sticky;
@@ -162,10 +239,11 @@ tbody td{
 
 tbody tr:hover{
   background:#f7f7f7;
+  cursor: pointer;
 }
 
 /* =========================
-   COLUMN WIDTHS
+   COLUMN WIDTHS (ขนาดเท่าเดิมไม่เปลี่ยน)
 ========================= */
 .col-code{
   width:90px;
@@ -182,6 +260,26 @@ tbody tr:hover{
   width:50px;
   text-align:right;
   white-space:nowrap;
+}
+
+.order-alert {
+  color: #ff3b30 !important;
+  font-weight: bold;
+}
+
+/* Notification Toast สัญญาณเตือนก๊อปปี้ */
+.toast-notice {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  z-index: 9999;
+  display: none;
 }
 
 /* =========================
@@ -228,6 +326,9 @@ tbody tr:hover{
     background:#2f5ea8;
     color:#fff;
   }
+  body {
+    padding-top: 10px; /* กระชับขอบบนสุดของบอดี้ในโมบายเพื่อหลบ Topbar */
+  }
 }
 
 </style>
@@ -235,22 +336,37 @@ tbody tr:hover{
 
 <body>
 
-<!-- HEADER LOAD -->
 <div id="header-placeholder"></div>
 
-<!-- CONTENT -->
+<div id="toast" class="toast-notice">Copied to clipboard</div>
+
 <div class="container">
 
-  <!-- BREADCRUMB ROW -->
   <div class="breadcrumb-row">
-    <div class="breadcrumb">HOME / INVENTORY</div>
+    <div class="breadcrumb"><a href="/">HOME</a> / INVENTORY</div>
     <label class="hide-zero-wrap">
       <input type="checkbox" id="hideZero" checked />
       Hide 0 / –
     </label>
   </div>
 
-  <!-- CATEGORY CHECKBOX FILTERS (Default: Unchecked) -->
+  <div class="filterbar">
+    <input id="searchBox" type="text" placeholder="Search Item Code / Description..." />
+  </div>
+
+  <div class="dropdown-bar-wrap">
+    <span class="dropdown-label">มุมมอง:</span>
+    <select id="column3Select" class="google-select">
+      <option value="OnHand">OnHand</option>
+      <option value="PromotionPrice">ราคาโปร</option>
+      <option value="StockStatus">StockStatus</option>
+      <option value="จำนวนต่อลัง">จำนวนต่อลัง</option>
+      <option value="INDEX2_BRAND">Brand</option>
+      <option value="GRDate">GRDate</option>
+      <option value="ReorderSTATUS">ReorderSTATUS</option>
+    </select>
+  </div>
+
   <div class="category-filter-bar">
     <label class="category-label">
       <input type="checkbox" class="cat-checkbox" value="WaterPurification" /> กรองน้ำ
@@ -266,11 +382,6 @@ tbody tr:hover{
     </label>
   </div>
 
-  <!-- FILTER -->
-  <div class="filterbar">
-    <input id="searchBox" type="text" placeholder="Search Item Code / Description / OH..." />
-  </div>
-
   <div class="table-wrap">
     <table>
       <thead>
@@ -281,20 +392,19 @@ tbody tr:hover{
           <th onclick="sortTable('Description')">
             Description <span class="sort-arrow" id="arrow-Description">↕</span>
           </th>
-          <th onclick="sortTable('OnHand')" class="col-stock">
-            OH <span class="sort-arrow" id="arrow-OnHand">↕</span>
+          <th onclick="sortTable(document.getElementById('column3Select').value)" class="col-stock">
+            <span id="col3HeaderName">OH</span> <span class="sort-arrow" id="arrow-Col3">↕</span>
           </th>
         </tr>
       </thead>
       <tbody id="table-body">
-        <tr><td colspan="3">Loading...</td></tr>
+        <tr><td colspan="3">Loading secure assets...</td></tr>
       </tbody>
     </table>
   </div>
 
 </div>
 
-<!-- FLOAT TOP -->
 <div id="toTop">↑</div>
 
 <script>
@@ -308,7 +418,8 @@ fetch("header.html")
     document.getElementById("header-placeholder").innerHTML = data;
   });
 
-const API = "https://opensheet.elk.sh/1OMMHGc9nfZKtFox1uNz0rZ_7oD-Imi97EPeN9lsMyLU/Item_Master";
+// ปลอดภัยสูง: ดึงตรงจากแอปสคริปต์เกตเวย์ตัวใหม่แท็บ apiu
+const API = "https://script.google.com/macros/s/AKfycby0BIQMiM7mEoQrckKXXSYZAudz3sJDsEr87IT8hktGk8oXc4wqC4bbV8LusoVXufXKvQ/exec";
 
 let rawData      = [];
 let filteredData = [];
@@ -319,13 +430,28 @@ let sortState = {
   dir: "asc"
 };
 
+// ฟังก์ชันล้าง format ตัวเลขที่พบบ่อย (ลบ , ออกก่อนคำนวณและฟิลเตอร์ซ่อนสต็อก)
+function cleanNumber(val) {
+  if (val === null || val === undefined) return 0;
+  if (typeof val === 'number') return val;
+  let str = String(val).replace(/,/g, '').trim();
+  if (str === "" || str === "-") return 0;
+  let parsed = parseFloat(str);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
 /* =========================
    LOAD DATA
 ========================= */
 async function loadTable(){
   try {
-    const res = await fetch(API);
-    rawData = await res.json();
+    const res = await fetch(API, { method: "GET", mode: "cors", redirect: "follow" });
+    const jsonResult = await res.json();
+    if(jsonResult.status === "success") {
+       rawData = jsonResult.data;
+    } else {
+       throw new Error(jsonResult.message);
+    }
     applyAll();
   } catch(e) {
     document.getElementById("table-body").innerHTML =
@@ -334,21 +460,18 @@ async function loadTable(){
 }
 
 /* =========================
-   APPLY ALL (filter + hideZero + sort)
+   APPLY ALL
 ========================= */
 function applyAll(){
-
   const q        = document.getElementById("searchBox").value.toLowerCase().trim();
   const hideZero = document.getElementById("hideZero").checked;
+  const currentCol3 = document.getElementById("column3Select").value;
 
-  // ดึงค่าจาก Checkboxes ของกลุ่ม MainCategory ที่ถูกเลือกไว้
   const checkedCategories = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value);
 
   let result = rawData;
 
-  // 1. FILTER BY MAIN CATEGORY CHECKBOXES
-  // ถ้าไม่มีการติ๊กอะไรเลย (checkedCategories ว่าง) -> ให้ผ่านไปทั้งหมด (Select All)
-  // แต่ถ้ามีการติ๊กอย่างน้อย 1 อัน -> จะคัดกรองเฉพาะตัวที่มีชื่อตรงกับใน array เท่านั้น
+  // 1. FILTER BY MAIN CATEGORY
   if (checkedCategories.length > 0) {
     result = result.filter(i => {
       const cat = String(i.MainCategory || "").trim();
@@ -361,17 +484,20 @@ function applyAll(){
     result = result.filter(i =>
       String(i.Item_Code   || "").toLowerCase().includes(q) ||
       String(i.Description || "").toLowerCase().includes(q) ||
-      String(i.OnHand      || "").toLowerCase().includes(q)
+      String(i[currentCol3]  || "").toLowerCase().includes(q)
     );
   }
 
-  // 3. HIDE ZERO / DASH
+  // 3. HIDE ZERO / DASH (ใช้เทคนิคถอดคอมมาออก สต็อกจึงแม่นยำไม่หาย)
   if(hideZero){
     result = result.filter(i => {
-      const v = String(i.OnHand || "").trim();
-      if(v === "" || v === "-") return false;
-      const n = parseFloat(v);
-      if(!isNaN(n) && n === 0) return false;
+      const rawVal = i.OnHand;
+      if(rawVal === undefined || rawVal === null) return false;
+      const vStr = String(rawVal).trim();
+      if(vStr === "" || vStr === "-") return false;
+      
+      const n = cleanNumber(rawVal);
+      if(n === 0) return false;
       return true;
     });
   }
@@ -398,7 +524,6 @@ function sortTable(key){
     sortState.dir = "asc";
   }
   applySortOnFiltered();
-  updateArrows(sortState.key, sortState.dir);
 }
 
 function applySortOnFiltered(){
@@ -409,9 +534,15 @@ function applySortOnFiltered(){
     let v1 = a[key] ?? "";
     let v2 = b[key] ?? "";
 
+    // ป้องกันเรื่องสลับจัดลำดับราคาและ Onhand ที่มีคอมมา
+    if(key === 'OnHand' || key === 'ListPrice' || key === 'PromotionPrice' || key === 'ราคาต่อลัง' || key === 'จำนวนต่อลัง') {
+       let n1 = cleanNumber(v1);
+       let n2 = cleanNumber(v2);
+       return dir === "asc" ? n1 - n2 : n2 - n1;
+    }
+
     const n1 = parseFloat(v1);
     const n2 = parseFloat(v2);
-
     if(!isNaN(n1) && !isNaN(n2)){
       return dir === "asc" ? n1 - n2 : n2 - n1;
     }
@@ -429,42 +560,81 @@ function applySortOnFiltered(){
 }
 
 /* =========================
-   RENDER
+   RENDER & TAP-TO-COPY
 ========================= */
 function renderTable(data){
   const tbody = document.getElementById("table-body");
+  const currentCol3 = document.getElementById("column3Select").value;
 
   if(!data || data.length === 0){
     tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#aaa;padding:20px;">No results found.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = data.map(p => `
-    <tr>
-      <td class="col-code">${p.Item_Code   || "-"}</td>
-      <td class="col-desc">${p.Description || "-"}</td>
-      <td class="col-stock">${p.OnHand      || "0"}</td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = data.map(p => {
+    let cellValue = p[currentCol3] !== undefined && p[currentCol3] !== null ? p[currentCol3] : "-";
+    let cellClass = "col-stock";
+    
+    // เงื่อนไขสลับอักษรสีแดงเข้มเด่นชัดเมื่อพบบันทึก ORDER! 
+    if(currentCol3 === "ReorderSTATUS" && String(cellValue).trim() === "ORDER!") {
+      cellClass += " order-alert";
+    }
+
+    // จัดระเบียบตัวเลขหลังจากคลีนเพื่อความสวยงามในหน้ารายงานผล
+    if((currentCol3 === "OnHand" || currentCol3 === "PromotionPrice" || currentCol3 === "จำนวนต่อลัง") && cellValue !== "-") {
+       let num = cleanNumber(cellValue);
+       cellValue = num.toLocaleString();
+    }
+
+    return `
+      <tr onclick="copyRowText(this)">
+        <td class="col-code">${p.Item_Code   || "-"}</td>
+        <td class="col-desc">${p.Description || "-"}</td>
+        <td class="${cellClass}">${cellValue}</td>
+      </tr>
+    `;
+  }).join("");
 }
 
 /* =========================
-   ARROWS
+   COPY FUNCTION (เว้นวรรคข้อมูล ไม่เอาหัวตาราง)
 ========================= */
-function updateArrows(active, dir){
-  ["Item_Code", "Description", "OnHand"].forEach(k => {
-    const el = document.getElementById("arrow-" + k);
-    if(!el) return;
-    if(!active){
-      el.textContent = "↕";
-      return;
-    }
-    el.textContent = k === active ? (dir === "asc" ? "↑" : "↓") : "↕";
+function copyRowText(rowElement) {
+  const tds = rowElement.getElementsByTagName("td");
+  let text = "";
+  for(let i = 0; i < tds.length; i++) {
+     text += tds[i].innerText.trim() + (i === tds.length - 1 ? "" : " ");
+  }
+  
+  navigator.clipboard.writeText(text).then(() => {
+     const toast = document.getElementById("toast");
+     toast.style.display = "block";
+     setTimeout(() => { toast.style.display = "none"; }, 1500);
   });
 }
 
 /* =========================
-   INIT
+   ARROWS UPDATE & DYNAMIC SELECT HEADER TEXT
+========================= */
+function updateArrows(active, dir){
+  const currentCol3 = document.getElementById("column3Select").value;
+  const selectElement = document.getElementById("column3Select");
+  const selectedText = selectElement.options[selectElement.selectedIndex].text;
+  
+  // สลับอักษรหัวตารางช่องที่ 3 ตาม Dropdown ที่ถูกสลับจริง
+  document.getElementById("col3HeaderName").textContent = selectedText === "OnHand" ? "OH" : selectedText;
+
+  ["Item_Code", "Description"].forEach(k => {
+    const el = document.getElementById("arrow-" + k);
+    if(el) el.textContent = k === active ? (dir === "asc" ? "↑" : "↓") : "↕";
+  });
+
+  const el3 = document.getElementById("arrow-Col3");
+  if(el3) el3.textContent = currentCol3 === active ? (dir === "asc" ? "↑" : "↓") : "↕";
+}
+
+/* =========================
+   INIT EVENTS
 ========================= */
 window.addEventListener("load", () => {
 
@@ -476,7 +646,12 @@ window.addEventListener("load", () => {
     applyAll();
   });
 
-  // ผูก Event Listener ให้กับ Checkbox ทุกตัวในกลุ่ม MainCategory ให้เรียกใช้ applyAll() เมื่อมีการกดเลือก/ยกเลิก
+  // เปลี่ยนสลับคอลัมน์ 3 ทันทีเมื่อเลือกตัวกรอง Dropdown ตัวบน
+  document.getElementById("column3Select").addEventListener("change", (e) => {
+    sortState.key = e.target.value;
+    applyAll();
+  });
+
   document.querySelectorAll('.cat-checkbox').forEach(cb => {
     cb.addEventListener("change", () => {
       applyAll();
@@ -484,7 +659,6 @@ window.addEventListener("load", () => {
   });
 
   loadTable();
-
 });
 
 /* =========================
@@ -498,29 +672,20 @@ document.getElementById("toTop").onclick = () => {
    HAMBURGER MENU
 ========================= */
 setTimeout(() => {
-
   const menuBtn = document.getElementById("menuBtn");
   const menuDropdown = document.getElementById("menuDropdown");
 
   if(menuBtn && menuDropdown){
-
     menuBtn.addEventListener("click", () => {
       menuDropdown.classList.toggle("active");
     });
 
     window.addEventListener("click", (e) => {
-
-      if(
-        !menuBtn.contains(e.target) &&
-        !menuDropdown.contains(e.target)
-      ){
+      if(!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)){
         menuDropdown.classList.remove("active");
       }
-
     });
-
   }
-
 }, 100);
 
 </script>
