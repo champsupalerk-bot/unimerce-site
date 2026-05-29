@@ -14,7 +14,7 @@ body{
   font-family:Arial, sans-serif;
   background:#fafafa;
   color:#111;
-  padding-top:20px; /* ปรับลดให้พอดีสอดคล้องกับ Topbar ไม่ทับซ้อน */
+  padding-top:50px; /* 👈 ปรับเพิ่มระยะเพื่อดันเนื้อหาทั้งหมดลงมา ไม่ทับซ้อนกับ Topbar Header */
 }
 
 /* =========================
@@ -33,11 +33,12 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  margin-top: 10px; /* 👈 ดันระยะแถวลงมาเพิ่ม ป้องกันอาการจม */
   margin-bottom:12px;
 }
 
 .breadcrumb{
-  font-size:12px;
+  font-size:11px; /* 👈 ปรับตัวเล็กลงตามบรีฟ เพื่อลดความสำคัญ */
   color:#777;
   letter-spacing:1px;
 }
@@ -79,6 +80,7 @@ body{
   cursor: pointer;
   display: grid;
   place-content: center;
+  transition: all 0.2s ease; /* เพิ่ม Transition เพื่อให้เอฟเฟกต์สมูท */
 }
 
 .hide-zero-wrap input[type="checkbox"]::before,
@@ -90,6 +92,13 @@ body{
   transform: scale(0);
   transition: 0.1s transform ease-in-out;
   background-color: #fff;
+}
+
+/* 👈 เพิ่ม Interactive เวลาเมาส์วิ่งผ่าน Checkbox (เกิดแสงวงแหวนจางๆ รอบวงกลม) */
+.hide-zero-wrap:hover input[type="checkbox"],
+.category-label:hover input[type="checkbox"] {
+  border-color: #2f5ea8;
+  box-shadow: 0 0 0 4px rgba(47, 94, 168, 0.15);
 }
 
 .hide-zero-wrap input[type="checkbox"]:checked,
@@ -146,43 +155,51 @@ body{
   box-shadow: 0 0 0 3px rgba(47, 94, 168, 0.15);
 }
 
-/* Dropdown สไตล์ Google ใต้ Searchbar */
+/* Dropdown สไตล์แพง มินิมอล ใต้ Searchbar */
 .dropdown-bar-wrap {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   justify-content: flex-end;
 }
 
 .dropdown-label {
   font-size: 12px;
-  color: #666;
+  color: #888;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
+/* 👈 ปรับดีไซน์โครงสร้างของตัว Dropdown Select ใหม่ให้ดูแพงและโมเดิร์นขึ้น */
 .google-select {
-  padding: 6px 30px 6px 10px;
+  padding: 8px 36px 8px 14px;
   font-size: 13px;
+  font-weight: 500;
   color: #333;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
   background: #fff;
   outline: none;
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23666' d='M0 0l5 5 5-5z'/></svg>");
+  /* ใช้ไอคอนลูกศรเส้นไลน์สไตล์ Minimal Luxury */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
   background-repeat: no-repeat;
-  background-position: right 10px center;
+  background-position: right 12px center;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .google-select:hover {
   border-color: #bbb;
-  background-color: #f8f9fa;
+  background-color: #fbfbfb;
 }
 
 .google-select:focus {
   border-color: #2f5ea8;
+  box-shadow: 0 0 0 3px rgba(47, 94, 168, 0.12), 0 4px 12px rgba(0,0,0,0.04);
 }
 
 /* =========================
@@ -327,7 +344,7 @@ tbody tr:hover{
     color:#fff;
   }
   body {
-    padding-top: 10px; /* กระชับขอบบนสุดของบอดี้ในโมบายเพื่อหลบ Topbar */
+    padding-top: 40px; /* 👈 ให้ขยับหลบ Topbar บนนมัดมือถือด้วยเพื่อไม่ให้ Breadcrumb โดนบัง */
   }
 }
 
