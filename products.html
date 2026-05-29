@@ -14,14 +14,14 @@ body{
   font-family:Arial, sans-serif;
   background:#fafafa;
   color:#111;
-  padding-top:70px;
+  padding-top:40px;
 }
 
 /* =========================
    HEADER
 ========================= */
 .header{
-  max-width:1600px;
+  max-width:1000px; /* ปรับลดจาก 1600px เหลือ 1000px เพื่อให้จัดวางตรงกลางแนวเดียวกับเนื้อหา */
   margin:auto;
   padding:24px 20px 10px;
 }
@@ -32,10 +32,46 @@ body{
   margin-bottom:10px;
 }
 
+/* ลิงก์สำหรับกดกลับหน้า Home สไตล์เนียนๆ */
+.breadcrumb a{
+  color: #888;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.breadcrumb a:hover{
+  text-decoration: underline;
+  color: #2f5ea8;
+}
+
 .title{
   font-size:28px;
   font-weight:bold;
   letter-spacing:1px;
+  margin-bottom: 16px;
+}
+
+/* SEARCHBAR แบบมินิมอลใต้หัวข้อหลัก */
+.filterbar{
+  max-width: 1000px;
+  margin: 0 auto 15px auto;
+  padding: 0 20px;
+}
+
+.filterbar input{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  font-size:16px;
+  outline:none;
+  box-sizing:border-box;
+  transition: all 0.2s ease;
+}
+
+.filterbar input:focus {
+  border-color: #2f5ea8;
+  box-shadow: 0 0 0 3px rgba(47, 94, 168, 0.15);
 }
 
 /* =========================
@@ -188,7 +224,6 @@ body{
   overflow:hidden;
 }
 
-/* ✅ ADD THIS PART (สำคัญ) */
 .promo-card{
   width:100%;
   box-sizing:border-box;
@@ -208,12 +243,10 @@ body{
   font-size:20px;
   font-weight:700;
   line-height:1.15;
-
   display:-webkit-box;
   -webkit-line-clamp:3;
   -webkit-box-orient:vertical;
   overflow:hidden;
-
   word-break:break-word;
   margin-bottom:12px;
 }
@@ -230,19 +263,13 @@ body{
 .card{
   background:#fff;
   border-radius:16px;
-
   overflow:hidden;
-
   box-shadow:0 4px 14px rgba(0,0,0,0.06);
   border:1px solid #eee;
-
   transition:0.2s ease;
-
-  /* IMPORTANT: กัน card ยืดผิดจังหวะ */
   width:100%;
   max-width:280px;
   justify-self:center;
-
   box-sizing:border-box;
 }
 
@@ -261,7 +288,6 @@ body{
   background:#f3f3f3;
 }
 
-/* optional: content spacing safety (กัน layout เพี้ยน) */
 .card .content{
   padding:12px;
   box-sizing:border-box;
@@ -369,14 +395,12 @@ body{
     padding:12px;
   }
 
-  /* masonry mobile layout */
   .grid{
     column-count:2;
     column-gap:6px;
     display:block;
   }
 
-  
   .card,
   .promo-card{
     break-inside: avoid;
@@ -385,7 +409,6 @@ body{
     width:100%;
   }
 
-  /* promo card only */
   .promo-card{
    min-height:140px;
    border-radius:16px;
@@ -460,14 +483,12 @@ body{
 
 <body>
 
-<!-- HEADER LOAD -->
 <div id="header-placeholder"></div>
 
-<!-- HEADER -->
 <div class="header">
 
   <div class="breadcrumb">
-    Home / Products
+    <a href="/">HOME</a> / PRODUCTS
   </div>
 
   <div class="title">
@@ -476,7 +497,10 @@ body{
 
 </div>
 
-<!-- CATEGORY FILTER BAR (เพิ่มด้านบนของกริด) -->
+<div class="filterbar">
+  <input id="searchBox" type="text" placeholder="Search Item Code / Description..." />
+</div>
+
 <div class="category-filter-bar">
   <label class="category-label">
     <input type="checkbox" class="cat-checkbox" value="WaterPurification" />
@@ -496,7 +520,6 @@ body{
   </label>
 </div>
 
-<!-- GRID -->
 <div class="container">
 
   <div id="product-grid" class="grid">
@@ -509,7 +532,6 @@ body{
 
 </div>
 
-<!-- PAGINATION CONTAINER (เพิ่มด้านล่างของกริด) -->
 <div id="pagination-controls" class="pagination-bar"></div>
 
 <script>
@@ -556,174 +578,172 @@ fetch("footer.html")
     document.body.insertAdjacentHTML("beforeend", data);
   });
 
+// ปลอดภัยสูง: ย้ายมาเชื่อมต่อผ่านเซิร์ฟเวอร์ระบบ API Gateway ตัวใหม่โดยตรง
+const API = "https://script.google.com/macros/s/AKfycby0BIQMiM7mEoQrckKXXSYZAudz3sJDsEr87IT8hktGk8oXc4wqC4bbV8LusoVXufXKvQ/exec";
+
+let rawProducts = [];
+let filtered    = [];
+let currentPage = 1;
+const itemsPerPage = 25;
+
+// ฟังก์ชันล้าง format คอมมาเพื่อจัดเรียงและการคำนวณตัวเลขสต็อกสินค้าได้อย่างแม่นยำ
+function cleanNumber(val) {
+  if (val === null || val === undefined) return 0;
+  if (typeof val === 'number') return val;
+  let str = String(val).replace(/,/g, '').trim();
+  if (str === "" || str === "-") return 0;
+  let parsed = parseFloat(str);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
 async function loadProducts(){
+  try {
+    const res = await fetch(API, { method: "GET", mode: "cors", redirect: "follow" });
+    const jsonResult = await res.json();
+    
+    if(jsonResult.status === "success") {
+       rawProducts = jsonResult.data;
+    } else {
+       throw new Error(jsonResult.message);
+    }
 
-  const res = await fetch(
-    "https://opensheet.elk.sh/1OMMHGc9nfZKtFox1uNz0rZ_7oD-Imi97EPeN9lsMyLU/Item_Master"
-  );
+    /* =========================
+       FILTER DISCONTINUED
+    ========================= */
+    filtered = rawProducts.filter(p => {
+      const status = String(p.StockStatus || "").trim().toLowerCase();
+      return status !== "discontinued";
+    });
 
-  const data = await res.json();
+    processAndRender();
 
-  const grid = document.getElementById("product-grid");
-
-/* =========================
-   FILTER STOCK STATUS
-========================= */
-
-const filtered = data.filter(p => {
-
-  const status = String(p.StockStatus || "")
-    .trim()
-    .toLowerCase();
-
-  return status !== "discontinued";
-
-});
+  } catch(e) {
+    document.getElementById("product-grid").innerHTML =
+      '<div class="loading">Failed to secure product master data.</div>';
+  }
+}
 
 /* =========================
    PROMOTION CARD
 ========================= */
-
 const promoCard = `
-
   <div class="promo-card">
-
     <div class="promo-tag">
       UNIMERCE SYSTEM
     </div>
-
     <div class="promo-title">
       Essential<br>
       Product<br>
       Collection
     </div>
-
   </div>
-
 `;
 
 /* =========================
-   GLOBAL STATE FOR FILTER & PAGINATION
+   GLOBAL STATE FOR FILTER & PAGINATION & SEARCH
 ========================= */
-let currentPage = 1;
-const itemsPerPage = 25;
-
-// ฟังก์ชันหลักที่ทำงานร่วมกันทั้ง Filter และ Pagination
 function processAndRender() {
-  // 1. ดึงข้อมูลตัวคัดกรองจาก Checkbox
+  const q = document.getElementById("searchBox").value.toLowerCase().trim();
   const checkedCategories = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value);
   
   let targetProducts = filtered;
   
-  // ถ้ายกเลิกไม่ติ๊กเลย = แสดงทั้งหมด, ถ้าติ๊กอย่างน้อยหนึ่งอัน = คัดกรองตรงตาม MainCategory
+  // 1. FILTER BY MAIN CATEGORY
   if (checkedCategories.length > 0) {
-    targetProducts = filtered.filter(p => {
+    targetProducts = targetProducts.filter(p => {
       const cat = String(p.MainCategory || "").trim();
       return checkedCategories.includes(cat);
     });
   }
 
-  // 2. คำนวณขอบเขต Pagination (25 รายการต่อหน้า)
+  // 2. FILTER BY SEARCH KEYWORD
+  if (q) {
+    targetProducts = targetProducts.filter(p => 
+      String(p.Item_Code   || "").toLowerCase().includes(q) ||
+      String(p.Description || "").toLowerCase().includes(q)
+    );
+  }
+
+  // 3. CALC PAGINATION
   const totalItems = targetProducts.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
   
-  // ป้องกันกรณีเปลี่ยนฟิลเตอร์แล้วตัวเลขหน้าเกินขอบเขตจริง
-  if (currentPage > totalPages) {
-    currentPage = totalPages;
-  }
-  if (currentPage < 1) {
-    currentPage = 1;
-  }
+  if (currentPage > totalPages) currentPage = totalPages;
+  if (currentPage < 1) currentPage = 1;
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedProducts = targetProducts.slice(startIndex, endIndex);
 
   /* =========================
-     PRODUCT RENDER
+       PRODUCT RENDER
   ========================= */
+  const grid = document.getElementById("product-grid");
+  
+  if(paginatedProducts.length === 0) {
+    grid.innerHTML = '<div class="loading">No products found matching your criteria.</div>';
+    renderPaginationControls(1);
+    return;
+  }
+
   const productCards = paginatedProducts.map(p => {
-
     const img = (p.image_link01 || "").trim();
-
     const sku = p.Item_Code || '-';
-
     const category = p.MainCategory || '-';
-
-    const onhand = p.OnHand || '0';
+    
+    let onhand = p.OnHand || '0';
+    if(onhand !== "-") {
+      onhand = cleanNumber(onhand).toLocaleString();
+    }
 
     return `
-
       <div class="card">
-
         <img 
           src="${img}"
           onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'"
         />
-
         <div class="content">
-
-          <!-- TOP INFO -->
           <div class="top-info">
-
             <div class="sku">
               ${sku}
             </div>
-
             <div class="category">
               ${category}
             </div>
-
           </div>
 
-          <!-- PRODUCT NAME -->
           <div class="name">
             ${p.Description || '-'}
           </div>
 
-          <!-- PRICE + STOCK -->
           <div class="bottom-row">
-
             <div class="price-box">
-
               <div class="price-old">
                 ${p.ListPrice ? '฿' + p.ListPrice : ''}
               </div>
-
               <div class="price-new">
                 ${p.PromotionPrice ? '฿' + p.PromotionPrice : '-'}
               </div>
-
             </div>
-
             <div class="stock-box">
-
               <div class="stock-label">
                 คงเหลือ
               </div>
-
               <div class="stock-value">
                 ${onhand}
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     `;
-
   }).join('');
 
   /* =========================
-     FINAL RENDER
+      FINAL RENDER
   ========================= */
-  grid.innerHTML = promoCard + productCards;
+  grid.innerHTML = (currentPage === 1 && !q && checkedCategories.length === 0 ? promoCard : "") + productCards;
   
-  // สร้างปุ่มนำทางควบคุมหน้าเว็บบริเวณด้านล่าง
   renderPaginationControls(totalPages);
 }
 
@@ -759,20 +779,26 @@ window.changePage = function(page) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
-// ผูกตัวดักจับเหตุการณ์การเลือก Checkbox คัดกรอง
-document.querySelectorAll('.cat-checkbox').forEach(cb => {
-  cb.addEventListener('change', () => {
-    currentPage = 1; // สลับฟิลเตอร์เมื่อไรให้เคลียร์กลับไปหน้าแรกก่อนเสมอ
+/* =========================
+   INIT EVENTS
+========================= */
+window.addEventListener("load", () => {
+  // ดักจับสัญญาณการกรองคำค้นหา
+  document.getElementById("searchBox").addEventListener("input", () => {
+    currentPage = 1;
     processAndRender();
   });
+
+  // ผูกตัวดักจับเหตุการณ์การเลือก Checkbox คัดกรองหมวดหมู่สินค้า
+  document.querySelectorAll('.cat-checkbox').forEach(cb => {
+    cb.addEventListener('change', () => {
+      currentPage = 1; 
+      processAndRender();
+    });
+  });
+
+  loadProducts();
 });
-
-// เริ่มต้นเรียกทำงานฟังก์ชันประมวลผลเป็นครั้งแรก
-processAndRender();
-
-}
-
-loadProducts();
 
 </script>
 
