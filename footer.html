@@ -35,11 +35,17 @@
   gap:40px;
 }
 
+/* ปรับ Layout กล่องโลโก้ Footer */
 .footer-logo{
-  font-size:14px;
-  letter-spacing:4px;
   margin-bottom:20px;
-  color:#fff;
+  display: block;
+}
+
+/* 🛠️ จุดสำหรับเข้าปรับขนาด Width / Height ของโลโก้ Footer ด้วยตัวเอง */
+.footer-logo-img {
+  height: 22px; /* 👈 แก้ไขความสูงของโลโก้ที่บรรทัดนี้ตามต้องการ */
+  width: auto;  /* ล็อกสัดส่วน auto ไว้เพื่อป้องกันภาพบี้หรือเพี้ยน */
+  display: block;
 }
 
 .footer-text{
@@ -158,7 +164,7 @@
       <div>
 
         <div class="footer-logo">
-          UNIMERCE
+          <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780643459/ULOGO_CLEAR_500w_a5fcda.png" alt="UNIMERCE" class="footer-logo-img" />
         </div>
 
         <div class="footer-text">
@@ -202,7 +208,7 @@
       <div>
 
         <div class="footer-title">
-          MARKETPLACE
+          MARKPLACE
         </div>
 
         <div class="footer-links">
@@ -215,7 +221,7 @@
             Lazada
           </a>
 
-          <a href="#">
+          <a href="#" target="_blank">
             TikTok Shop
           </a>
 
