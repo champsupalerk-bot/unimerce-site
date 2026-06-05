@@ -1,7 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
-/* =========================
-   TOPBAR
-========================= */
+/* ===================================================
+   TOPBAR & HEADER STYLES (Production-Ready)
+=================================================== */
 .topbar {
   position: fixed;
   top: 0;
@@ -19,24 +24,24 @@
   box-sizing: border-box;
 }
 
-/* ปุ่ม Home (ฝั่งซ้าย) - ปรับขนาดให้เล็กลงเรียบหรูขึ้น */
+/* ปุ่ม Home (ฝั่งซ้าย) - ล็อก Layout ป้องกันสเกลเพี้ยน */
 .header-home-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
   transition: opacity 0.2s ease;
-  height: 16px; /* ปรับลดจาก 20px เหลือ 16px เพื่อให้ปุ่ม Home เล็กลงกระชับพอดีสายตา */
+  height: 16px; /* ปรับขนาดให้เล็กลงเรียบหรูตามบรีฟ */
 }
 
 .header-home-link:hover {
   opacity: 0.5;
 }
 
-/* ตัวไอคอนรูปใหม่ที่ตัดขอบบนล่างแล้ว จะสเกลตัวเองได้อย่างสวยงาม */
+/* ล็อกขนาดความสูงที่ตัวแท็กรูปภาพโดยตรง เพื่อป้องกันภาพแตก/พัง บนเซิร์ฟเวอร์จริง */
 .header-logo-icon {
-  height: 100%; /* สูงเต็มพื้นที่ 16px ของตัวครอบ */
-  width: auto;  /* ปล่อยความกว้างขยายออกด้านข้างตามสัดส่วนภาพจริง */
+  height: 16px; /* บังคับความสูง 16px ตายตัวเพื่อความเสถียรบน Production */
+  width: auto;  /* ปล่อยความกว้างคำนวณอัตโนมัติตามสัดส่วนไฟล์ภาพจริง */
   display: block;
 }
 
@@ -124,11 +129,13 @@
   }
 }
 </style>
+</head>
+<body>
 
 <div class="topbar">
 
   <a class="header-home-link" href="/" title="Home">
-    <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780633543/unimerce_home_btn_ii1fh1.png" alt="UNIMERCE HOME" class="header-logo-icon" />
+    <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780642657/unimerce_home_btn_320_omzc5g.png" alt="UNIMERCE HOME" class="header-logo-icon" />
   </a>
 
   <div class="menu" id="menuBtn">
@@ -165,3 +172,6 @@
   }
 })();
 </script>
+
+</body>
+</html>
