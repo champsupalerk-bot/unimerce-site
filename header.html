@@ -1,9 +1,72 @@
-<!-- ================= HEADER ================= -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- ===================================================
+   STANDARD SEO META TAGS (ปรับปรุงภาษาไทยสำหรับ Google และผู้ใช้งาน)
+=================================================== -->
+<title>UNIMERCE GROUP | Curated Essential Tools เครื่องมือเพื่อคุณภาพชีวิต</title>
+<meta name="description" content="UNIMERCE - แหล่งรวมระบบเครื่องมือที่คัดสรรมาเพื่อความสมดุลและคุณภาพชีวิตในระยะยาว ค้นพบระบบกรองน้ำดื่มสะอาดและระบบกระจายกลิ่นอโรมาสำหรับไลฟ์สไตล์ร่วมสมัย" />
+<meta name="keywords" content="UNIMERCE, เครื่องกรองน้ำ, ระบบอโรมา, เครื่องมือวัดคุณภาพน้ำ, Vitev Thailand, ระบบน้ำดื่มสะอาด" />
+<meta name="author" content="UNIMERCE GROUP" />
+<meta name="robots" content="index, follow" />
+
+<!-- Canonical URL -->
+<link rel="canonical" href="https://yourdomain.com/" />
+
+<!-- ===================================================
+   OPEN GRAPH / FACEBOOK SEO (แสดงผลเป็นภาษาไทยตอนแชร์ลง LINE / FB)
+=================================================== -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="UNIMERCE GROUP | คัดสรรเครื่องมือเพื่อสมดุลแห่งคุณภาพชีวิต" />
+<meta property="og:description" content="A curated system of essential tools. ค้นพบระบบกรองน้ำและเครื่องหอมอโรมาที่ออกแบบมาเพื่อความพอดีและยั่งยืน" />
+<meta property="og:url" content="https://yourdomain.com/" />
+<meta property="og:site_name" content="UNIMERCE GROUP" />
+<meta property="og:image" content="https://yourdomain.com/assets/og-image.jpg" /> 
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<!-- ===================================================
+   TWITTER CARD SEO
+=================================================== -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="UNIMERCE GROUP | คัดสรรเครื่องมือเพื่อสมดุลแห่งคุณภาพชีวิต" />
+<meta name="twitter:description" content="A curated system of essential tools. ค้นพบระบบกรองน้ำและเครื่องหอมอโรมาที่ออกแบบมาเพื่อความพอดีและยั่งยืน" />
+<meta name="twitter:image" content="https://yourdomain.com/assets/og-image.jpg" />
 
 <style>
 
 /* =========================
-   TOPBAR
+   BASE
+========================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Kanit", Arial, sans-serif;
+}
+
+body{
+  background:#ffffff;
+  color:#111;
+  overflow-x:hidden;
+}
+
+/* subtle background */
+.bg{
+  position:fixed;
+  width:700px;
+  height:700px;
+  background:radial-gradient(circle, rgba(0,0,0,0.04), transparent 70%);
+  top:-250px;
+  right:-250px;
+  z-index:-1;
+}
+
+/* =========================
+   TOP BAR (minimal)
 ========================= */
 .topbar{
   position:fixed;
@@ -18,7 +81,6 @@
   backdrop-filter:blur(10px);
   border-bottom:1px solid #eee;
   z-index:100;
-  box-sizing:border-box;
 }
 
 .logo{
@@ -96,9 +158,467 @@
 }
 
 /* =========================
+   HERO
+========================= */
+.hero{
+  min-height:70vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:100px 20px 60px;
+}
+
+.tag{
+  font-size:12px;
+  letter-spacing:3px;
+  color:#666;
+}
+
+h1{
+  font-size:84px;
+  letter-spacing:18px;
+  margin:30px 0;
+  text-align:center;
+  width:100%;
+}
+
+.sub{
+  max-width:720px;
+  font-size:18px;
+  color:#555;
+  line-height:1.8;
+}
+
+/* =========================
+   HERO CTA
+========================= */
+.hero-action{
+  margin-top:28px;
+}
+
+.hero-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px 22px;
+  border-radius:999px;
+  background:#111;
+  color:#fff;
+  text-decoration:none;
+  font-size:12px;
+  letter-spacing:1px;
+  border:1px solid #111;
+  transition:0.25s;
+}
+
+.hero-btn:hover{
+  background:#fff;
+  color:#111;
+  transform:translateY(-2px);
+}
+
+/* =========================
+   SECTION SYSTEM
+========================= */
+.section{
+  padding:60px 20px;
+}
+
+.title{
+  text-align:center;
+  font-size:24px;
+  margin-bottom:30px;
+  letter-spacing:2px;
+}
+
+.textblock{
+  max-width:720px;
+  margin:0 auto;
+  line-height:1.8;
+  color:#444;
+}
+
+/* =========================
+   SHOP (MINIMAL BUTTON ROW)
+========================= */
+.shopbar{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.shopbtn{
+  font-size:12px;
+  padding:8px 14px;
+  border:1px solid #ddd;
+  border-radius:999px;
+  text-decoration:none;
+  color:#111;
+  transition:0.2s;
+}
+
+.shopbtn:hover{
+  background:#111;
+  color:#fff;
+}
+
+/* =========================
+   ALL PRODUCT LINK
+========================= */
+.allproduct-link-wrap{
+  text-align:center;
+  margin-top:18px;
+}
+
+.allproduct-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none;
+  color:#666;
+  font-size:13px;
+  transition:0.2s;
+}
+
+.allproduct-link:hover{
+  color:#111;
+  transform:translateX(3px);
+}
+
+/* =========================
+   GRID
+========================= */
+.grid{
+  max-width:1100px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+}
+
+.card{
+  border:1px solid #eee;
+  border-radius:16px;
+  padding:22px;
+  transition:0.25s;
+  background:#fff;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+  border-color:#ddd;
+  background:#f5f5f5;
+}
+
+.card h3{
+  font-size:16px;
+  margin-bottom:8px;
+}
+
+.card p{
+  font-size:13px;
+  color:#666;
+  line-height:1.6;
+}
+
+/* =========================
+   CATEGORY BUTTONS
+========================= */
+.category-btn{
+  text-decoration:none;
+  color:inherit;
+  display:block;
+}
+
+/* =========================
+   CATEGORIES ZONE
+========================= */
+.categories-section{
+  background:#fafafa;
+}
+
+/* =========================
+   RECOMMENDED ZONE
+========================= */
+.recommend{
+  background:#fff;
+  border-top:1px solid #eee;
+  border-bottom:1px solid #eee;
+}
+
+/* =========================
+   BRANDS
+========================= */
+.brands{
+  max-width:900px;
+  margin:0 auto;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+}
+
+.brandtag{
+  font-size:12px;
+  border:1px solid #ddd;
+  padding:6px 12px;
+  border-radius:999px;
+}
+
+/* =========================
+   CONTACT
+========================= */
+.contact{
+  padding:60px 20px;
+  text-align:center;
+}
+
+/* =========================
+   SOCIAL BASE
+========================= */
+
+.social{
+  margin-top:20px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+}
+
+.social a{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  text-decoration:none;
+  font-weight:500;
+  transition:0.2s;
+}
+
+/* =========================
+   BRAND COLORS
+========================= */
+
+/* LINE */
+.social a.li{
+  background:#00C300;
+  color:#fff;
+  border:1px solid #00C300;
+}
+
+/* Facebook */
+.social a.fb{
+  background:#1877F2;
+  color:#fff;
+  border:1px solid #1877F2;
+}
+
+/* TikTok */
+.social a.tt{
+  background:#000;
+  color:#fff;
+  border:1px solid #000;
+}
+
+/* Instagram */
+.social a.ig{
+  background:radial-gradient(circle at 30% 110%,
+    #fdf497 0%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285AEB 90%);
+  color:#fff;
+  border:1px solid transparent;
+}
+
+/* YouTube */
+.social a.yt{
+  background:#FF0000;
+  color:#fff;
+  border:1px solid #FF0000;
+}
+
+/* X (Twitter / X) */
+.social a.x{
+  background:#000;
+  color:#fff;
+  border:1px solid #000;
+}
+
+/* =========================
+   HOVER
+========================= */
+
+.social a:hover{
+  transform:translateY(-2px);
+  opacity:0.9;
+}
+
+.social a:hover{
+  transform:translateY(-2px);
+  opacity:0.9;
+}
+
+/* =========================
+   LUXURY FOOTER
+========================= */
+.footer{
+  background:#111;
+  color:#ddd;
+  padding:70px 24px 40px;
+  margin-top:80px;
+  position:relative;
+  overflow:hidden;
+}
+
+.footer::before{
+  content:"";
+  position:absolute;
+  width:500px;
+  height:500px;
+  background:radial-gradient(circle, rgba(255,255,255,0.06), transparent 70%);
+  top:-200px;
+  right:-200px;
+}
+
+.footer-inner{
+  max-width:1100px;
+  margin:0 auto;
+  position:relative;
+  z-index:2;
+}
+
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:40px;
+}
+
+.footer-logo{
+  font-size:14px;
+  letter-spacing:4px;
+  margin-bottom:20px;
+  color:#fff;
+}
+
+.footer-text{
+  font-size:14px;
+  line-height:1.9;
+  color:#aaa;
+  max-width:420px;
+}
+
+.footer-title{
+  font-size:13px;
+  letter-spacing:2px;
+  color:#fff;
+  margin-bottom:18px;
+}
+
+.footer-links{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.footer-links a{
+  text-decoration:none;
+  color:#aaa;
+  font-size:14px;
+  transition:0.2s;
+}
+
+.footer-links a:hover{
+  color:#fff;
+  transform:translateX(3px);
+}
+
+.footer-bottom{
+  margin-top:50px;
+  padding-top:24px;
+  border-top:1px solid rgba(255,255,255,0.08);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.footer-copy{
+  font-size:12px;
+  color:#777;
+}
+
+.footer-social{
+  display:flex;
+  gap:10px;
+}
+
+.footer-social a{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  text-decoration:none;
+  font-size:11px;
+  transition:0.25s;
+}
+
+.footer-social a:hover{
+  background:#fff;
+  color:#111;
+  transform:translateY(-2px);
+}
+
+/* =========================
    MOBILE
 ========================= */
 @media(max-width:768px){
+
+  h1{
+    font-size:44px;
+    letter-spacing:8px;
+    line-height:1.2;
+    text-align:center;
+  }
+
+  .hero{
+    padding:120px 24px 60px;
+  }
+
+  .sub{
+    font-size:15px;
+  }
+
+  .grid{
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+
+  .card{
+    padding:18px;
+    border-radius:14px;
+  }
+
+  .card h3{
+    font-size:14px;
+  }
+
+  .card p{
+    font-size:12px;
+    line-height:1.5;
+  }
 
   .menu-dropdown{
     width:calc(100% - 32px);
@@ -106,72 +626,307 @@
     top:72px;
   }
 
+  .footer-grid{
+    grid-template-columns:1fr;
+    gap:34px;
+  }
+
+  .footer{
+    padding:60px 20px 34px;
+  }
+
+  .footer-bottom{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
 }
 
 </style>
+</head>
 
-<div class="topbar">
+<body>
 
-  <a class="logo" href="index.html">
-    UNIMERCE
-  </a>
+<div class="bg"></div>
 
-  <div class="menu" id="menuBtn">
-    <span></span>
-    <span></span>
+<!-- ================= HEADER LOAD ================= -->
+<div id="header-placeholder"></div>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+
+  <div class="tag">ADAPTIVE ESSENTIAL SYSTEM</div>
+
+  <h1>UNIMERCE</h1>
+
+  <div class="sub">
+    A curated system of essential tools designed for balance, usability, and long-term quality of life.
   </div>
 
-</div>
+  <!-- HERO BUTTON -->
+  <div class="hero-action">
+    <a class="hero-btn" href="/products">
+      ALL PRODUCTS
+    </a>
+    <a class="hero-btn" href="/inventory" style="background:#2f5ea8;border-color:#2f5ea8;">
+      INVENTORY
+    </a>
+  </div>
 
-<!-- ================= MENU DROPDOWN ================= -->
-<div class="menu-dropdown" id="menuDropdown">
+</section>
 
-  <a href="index.html">
-    Home
-  </a>
+<!-- ================= SHOP (MINIMAL) ================= -->
+<section class="section">
 
-  <a href="products.html">
-    All Products
-  </a>
+  <div class="title">SHOP</div>
 
-  <a href="inventory.html">
-    Inventory
-  </a>
+  <div class="shopbar">
 
-  <a href="water-purification.html">
-    Water Purification
-  </a>
+    <a class="shopbtn" href="https://shopee.co.th/shop/123173321" target="_blank">
+      Shopee
+    </a>
 
-  <a href="aroma-systems.html">
-    Aroma Systems
-  </a>
+    <a class="shopbtn" href="https://www.lazada.co.th/shop/vitevthailand/" target="_blank">
+      Lazada
+    </a>
 
-</div>
+    <a class="shopbtn" href="#">
+      TikTok (soon)
+    </a>
+
+  </div>
+
+</section>
+
+<!-- ================= CATEGORIES ================= -->
+<section class="section categories-section">
+
+  <div class="title">CATEGORIES</div>
+
+  <div class="grid">
+
+    <a href="/water-purification" class="category-btn">
+      <div class="card">
+        <h3>Water Purification</h3>
+        <p>Clean water systems for essential daily living.</p>
+      </div>
+    </a>
+
+    <a href="#" class="category-btn">
+      <div class="card">
+        <h3>Water Quality Tools</h3>
+        <p>Measurement instruments for environmental precision.</p>
+      </div>
+    </a>
+
+    <a href="#" class="category-btn">
+      <div class="card">
+        <h3>Measurement Tools</h3>
+        <p>Practical tools for modern daily applications.</p>
+      </div>
+    </a>
+
+    <a href="/aroma-systems" class="category-btn">
+      <div class="card">
+        <h3>Aroma Systems</h3>
+        <p>Environmental scent and lifestyle balance tools.</p>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- MINIMAL ALL PRODUCT LINK -->
+  <div class="allproduct-link-wrap">
+
+    <a class="allproduct-link" href="/products">
+      สินค้าทั้งหมด →
+    </a>
+
+  </div>
+
+</section>
+
+<!-- ================= RECOMMENDED PRODUCTS ================= -->
+<section class="section recommend">
+
+  <div class="title">RECOMMENDED PRODUCTS</div>
+
+  <div class="textblock">
+    <!-- EMPTY ZONE -->
+  </div>
+
+</section>
+
+<!-- ================= WHO WE ARE ================= -->
+<section class="section">
+
+  <div class="title">WHO WE ARE</div>
+
+  <div class="textblock">
+
+    <p>
+      <strong>Essence of Presence</strong><br>
+      เราไม่ได้ยึดอยู่กับสิ่งที่ปรากฏต่อสายตา หากแต่ให้ความสำคัญกับแก่นแท้ที่อยู่ภายใต้รูปของสรรพสิ่ง ในความเปลี่ยนแปลงของโลก ทุกสิ่งแปรเปลี่ยนอยู่เสมอ แต่ยังมีภาวะหนึ่งที่นิ่งสงบ นั่นคือความโน้มเอียงของชีวิตในการแสวงหาความพอดี
+    </p>
+
+    <br>
+
+    <p>
+      <strong>Space Between Meaning</strong><br>
+      ระหว่างรูปและความหมาย คือพื้นที่ที่ไม่ต้องการคำอธิบาย  
+      เป็นการรับรู้ความสัมพันธ์อันลึกซึ้งของสรรพสิ่งที่ดำรงอยู่ร่วมกัน
+    </p>
+
+    <br>
+
+    <p>
+      <strong>Refinement of Selection</strong><br>
+      การเลือกสรรคือการมองให้ลึกกว่ารูปลักษณ์  
+      ค่อย ๆ ลดทอนสิ่งที่ไม่จำเป็น จนเหลือเพียงสิ่งที่มีเหตุผลของการดำรงอยู่
+    </p>
+
+    <br>
+
+    <p>
+      <strong>Natural Balance</strong><br>
+      เมื่อสิ่งใดสอดคล้องกับธรรมชาติของตน  
+      มันจะดำเนินไปอย่างพอดี และคงอยู่ในสมดุลที่เงียบงามของชีวิต
+    </p>
+
+  </div>
+
+</section>
+
+<br><br>
+
+<!-- ================= WHAT WE DO ================= -->
+<section class="section">
+
+  <div class="title">WHAT WE DO</div>
+
+  <div class="textblock">
+
+    <p>
+      เราคัดเลือกองค์ประกอบของการใช้ชีวิตร่วมสมัย ผ่านมุมมองของความสมดุลระหว่างประสบการณ์ คุณภาพ และความยั่งยืนในระยะยาว
+    </p>
+
+    <br>
+
+    <p>
+      โดยยึดแนวคิด longevity เป็นแกนกลาง มากกว่าความเร็วหรือความสะดวกชั่วคราว  
+      ทุกสิ่งผ่านการคัดกรองจากการใช้งานจริง ไม่ใช่เพียงภาพลักษณ์หรือความซับซ้อนที่เกินจำเป็น
+    </p>
+
+    <br>
+
+    <p>
+      เพื่อสนับสนุนชีวิตที่ดำเนินไปอย่างต่อเนื่อง ทั้งในระดับร่างกาย ความรู้สึก และจังหวะของการมีอยู่
+    </p>
+
+  </div>
+
+</section>
+
+<!-- ================= OUR BRANDS ================= -->
+<section class="section">
+
+  <div class="title">OUR BRANDS</div>
+
+  <div class="brands">
+
+    <div class="brandtag">
+      <a href="https://vitev.com" target="_blank">Vitev</a>
+    </div>
+
+    <div class="brandtag">
+      Tower Luxury
+    </div>
+
+    <div class="brandtag">
+      Smart Sensor
+    </div>
+
+    <div class="brandtag">
+      GVDA
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="contact">
+
+  <div class="title">CONTACT</div>
+
+  <p>Email: champsupalerk@gmail.com</p>
+  <p>Mobile: +66 944 955 505</p>
+
+  <div class="social">
+
+    <a href="#" class="li">LI</a>
+
+    <a href="#" class="tt">TT</a>
+
+    <a href="#" class="fb">FB</a>
+
+    <a href="#" class="ig">IG</a>
+
+    <a href="#" class="yt">YT</a>
+
+    <a href="#" class="x">X</a>
+
+  </div>
+
+</section>
+
+<!-- ================= FOOTER LOAD ================= -->
+<div id="footer-placeholder"></div>
 
 <script>
 
 /* =========================
-   HAMBURGER MENU
+   LOAD HEADER
 ========================= */
-const menuBtn = document.getElementById("menuBtn");
-const menuDropdown = document.getElementById("menuDropdown");
+fetch("header.html")
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById("header-placeholder").innerHTML = data;
 
-menuBtn.addEventListener("click", () => {
-  menuDropdown.classList.toggle("active");
-});
+    const menuBtn = document.getElementById("menuBtn");
+    const menuDropdown = document.getElementById("menuDropdown");
+
+    if(menuBtn && menuDropdown){
+
+      menuBtn.addEventListener("click", () => {
+        menuDropdown.classList.toggle("active");
+      });
+
+      window.addEventListener("click", (e) => {
+
+        if(
+          !menuBtn.contains(e.target) &&
+          !menuDropdown.contains(e.target)
+        ){
+          menuDropdown.classList.remove("active");
+        }
+
+      });
+
+    }
+
+  });
 
 /* =========================
-   CLOSE WHEN CLICK OUTSIDE
+   LOAD FOOTER
 ========================= */
-window.addEventListener("click", (e) => {
-
-  if(
-    !menuBtn.contains(e.target) &&
-    !menuDropdown.contains(e.target)
-  ){
-    menuDropdown.classList.remove("active");
-  }
-
-});
+fetch("footer.html")
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById("footer-placeholder").innerHTML = data;
+  });
 
 </script>
+
+</body>
+</html>
