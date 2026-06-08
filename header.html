@@ -176,16 +176,16 @@
     });
   }
 
-  // 🛠️ จุดที่เพิ่มเข้าไป: บังคับยัดแท็ก Favicon เข้า <head> หลักของหน้านั้นๆ ทันทีที่ Fetch ไฟล์นี้ไปใช้
+  // 🛠️ ส่วนแก้ไขเจาะจงจุด: ปรับให้อัปเดตตัวแปรชี้เป้าไปที่ไฟล์ใน GitHub นอกสุด เพื่อแก้ปัญหารูปหายใน Clean URL หน้าอื่น
   try {
-    let faviconLink = document.querySelector("link[rel~='icon']");
+    let faviconLink = document.querySelector("link[rel*='icon']");
     if (!faviconLink) {
         faviconLink = document.createElement('link');
         faviconLink.rel = 'icon';
         document.head.appendChild(faviconLink);
     }
-    faviconLink.type = 'image/jpeg';
-    faviconLink.href = 'https://res.cloudinary.com/dzgaej1wo/image/upload/v1780894829/favicon.ico_ne14ft.jpg?v=3';
+    faviconLink.type = 'image/x-icon';
+    faviconLink.href = '/favicon.ico?v=99';
   } catch(e) { console.error(e); }
 })();
 </script>
