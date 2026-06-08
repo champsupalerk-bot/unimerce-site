@@ -10,6 +10,7 @@
   margin-top:80px;
   position:relative;
   overflow:hidden;
+  font-family: system-ui, -apple-system, sans-serif; /* เพิ่ม Font-family มาตรฐานเพื่อให้จัดสเปซสวยขึ้น */
 }
 
 .footer::before{
@@ -80,31 +81,86 @@
   transform:translateX(3px);
 }
 
+/* =========================
+   FOOTER BOTTOM (ปรับปรุงใหม่)
+========================= */
 .footer-bottom{
   margin-top:50px;
-  padding-top:24px;
-  border-top:1px solid rgba(255,255,255,0.08);
+  padding-top:30px;
+  border-top:1px solid rgba(255,255,255,0.06);
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  gap:20px;
-  flex-wrap:wrap;
+  align-items: flex-end; /* ปรับให้เนื้อหาฐานล่างระนาบเดียวกัน */
+  gap:30px;
+}
+
+/* โซนข้อมูลบริษัทและ Tax */
+.footer-company-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 700px;
+}
+
+.footer-address {
+  font-size: 13px;
+  color: #aaa;
+  line-height: 1.6;
+}
+
+.footer-tax-contact {
+  font-size: 12px;
+  color: #777; /* ดรอปสีลงเล็กน้อยเพื่อให้ดูสะอาดตา ไม่แย่งซีน */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.footer-tax-contact span::after {
+  content: "|";
+  margin-left: 12px;
+  color: rgba(255,255,255,0.15);
+}
+
+.footer-tax-contact span:last-child::after {
+  content: ""; /* ตัวสุดท้ายไม่ต้องมีเส้นแบ่ง */
+}
+
+.footer-tax-contact a {
+  color: #777;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-tax-contact a:hover {
+  color: #fff;
+}
+
+/* โซน Copyright และ Social */
+.footer-meta-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+  flex-shrink: 0;
 }
 
 .footer-copy{
   font-size:12px;
-  color:#aaa;
+  color:#666;
+  text-align: right;
 }
 
 /* สไตล์ลิงก์ลับสำหรับเข้าหน้า Dashboard (เนียนตา ไม่ขีดเส้น) */
 .secret-dash-link {
-  color: #aaa;
+  color: #666;
   text-decoration: none;
   cursor: default;
 }
 
 .secret-dash-link:hover {
-  color: #aaa; /* คงสีเดิมไว้ไม่ให้สะดุดตา */
+  color: #666; /* คงสีเดิมไว้ไม่ให้สะดุดตา */
 }
 
 .footer-social{
@@ -113,14 +169,14 @@
 }
 
 .footer-social a{
-  width:38px;
-  height:38px;
+  width:36px;
+  height:36px;
   border-radius:50%;
-  border:1px solid rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.08);
   display:flex;
   align-items:center;
   justify-content:center;
-  color:#fff;
+  color:#aaa;
   text-decoration:none;
   font-size:11px;
   transition:0.25s;
@@ -133,7 +189,7 @@
 }
 
 /* =========================
-   MOBILE
+   MOBILE RESPONSIVE
 ========================= */
 @media(max-width:768px){
 
@@ -147,8 +203,24 @@
   }
 
   .footer-bottom{
-    flex-direction:column;
-    align-items:flex-start;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .footer-tax-contact {
+    gap: 6px 12px;
+  }
+
+  .footer-meta-right {
+    align-items: flex-start;
+    width: 100%;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    padding-top: 20px;
+  }
+
+  .footer-copy {
+    text-align: left;
   }
 
 }
@@ -162,93 +234,61 @@
     <div class="footer-grid">
 
       <div>
-
         <div class="footer-logo">
           <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780643459/ULOGO_CLEAR_500w_a5fcda.png" alt="UNIMERCE" class="footer-logo-img" />
         </div>
-
         <div class="footer-text">
           A curated system of essential products focused on balance, usability, environmental harmony, and long-term quality of life.
         </div>
-
       </div>
 
       <div>
-
-        <div class="footer-title">
-          NAVIGATION
-        </div>
-
+        <div class="footer-title">NAVIGATION</div>
         <div class="footer-links">
-
-          <a href="index.html">
-            Home
-          </a>
-
-          <a href="products.html">
-            All Products
-          </a>
-
-          <a href="inventory.html">
-            Inventory
-          </a>
-
-          <a href="water-purification.html">
-            Water Purification
-          </a>
-
-          <a href="aroma-systems.html">
-            Aroma Systems
-          </a>
-
+          <a href="index.html">Home</a>
+          <a href="products.html">All Products</a>
+          <a href="inventory.html">Inventory</a>
+          <a href="water-purification.html">Water Purification</a>
+          <a href="aroma-systems.html">Aroma Systems</a>
         </div>
-
       </div>
 
       <div>
-
-        <div class="footer-title">
-          MARKPLACE
-        </div>
-
+        <div class="footer-title">MARKETPLACE</div>
         <div class="footer-links">
-
-          <a href="https://shopee.co.th/shop/123173321" target="_blank">
-            Shopee
-          </a>
-
-          <a href="https://www.lazada.co.th/shop/vitevthailand/" target="_blank">
-            Lazada
-          </a>
-
-          <a href="#" target="_blank">
-            TikTok Shop
-          </a>
-
+          <a href="https://shopee.co.th/shop/123173321" target="_blank">Shopee</a>
+          <a href="https://www.lazada.co.th/shop/vitevthailand/" target="_blank">Lazada</a>
+          <a href="#" target="_blank">TikTok Shop</a>
         </div>
-
       </div>
 
     </div>
 
     <div class="footer-bottom">
 
-      <div class="footer-copy">
-        © 2026 <a href="cm.html" class="secret-dash-link">UNIMERCE CO., LTD. </a> — Adaptive Essential System
-      <br>บริษัท ยูนิเมิร์ซ จำกัด (สำนักงานใหญ่)
-      <br>10/100 ซ.ลาดพร้าว 10 แขวงจอมพล เขตจตุจักร กรุงเทพฯ 10900
-      <br>TAX ID: 0105569099432 — Email:contact@unimercegroup.com
-      
-    
-    </div>
+      <div class="footer-company-info">
+        <div class="footer-address">
+          <strong>บริษัท ยูนิเมิร์ซ จำกัด (สำนักงานใหญ่)</strong><br>
+          10/100 ซ.ลาดพร้าว 10 แขวงจอมพล เขตจตุจักร กรุงเทพฯ 10900
+        </div>
+        <div class="footer-tax-contact">
+          <span><strong>TAX ID:</strong> 0105569099432</span>
+          <span><strong>Email:</strong> <a href="mailto:contact@unimercegroup.com">contact@unimercegroup.com</a></span>
+        </div>
+      </div>
 
-      <div class="footer-social">
-        <a href="#">LI</a>
-        <a href="#">TT</a>
-        <a href="#">FB</a>
-        <a href="#">IG</a>
-        <a href="#">YT</a>
-
+      <div class="footer-meta-right">
+        <div class="footer-social">
+          <a href="#">LI</a>
+          <a href="#">TT</a>
+          <a href="#">FB</a>
+          <a href="#">IG</a>
+          <a href="#">YT</a>
+        </div>
+        <div class="footer-copy">
+          © 2026 <a href="cm.html" class="secret-dash-link">UNIMERCE CO., LTD.</a> All Rights Reserved.
+          <br>Adaptive Essential System
+        </div>
       </div>
 
     </div>
