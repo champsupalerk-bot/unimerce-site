@@ -40,7 +40,7 @@
 
 /* ล็อกขนาดความสูงที่ตัวแท็กรูปภาพโดยตรง เพื่อป้องกันภาพแตก/พัง บนเซิร์ฟเวอร์จริง */
 .header-logo-icon {
-  height: 18px; /* บังคับความสูง 16px ตายตัวเพื่อความเสถียรบน Production */
+  height: 18px; /* บังคับความสูง 18px ตายตัวเพื่อความเสถียรบน Production */
   width: auto;  /* ปล่อยความกว้างคำนวณอัตโนมัติตามสัดส่วนไฟล์ภาพจริง */
   display: block;
 }
@@ -149,7 +149,7 @@
   <a href="/">Home</a>
   <a href="/products">All Products</a>
   <a href="/inventory">Inventory</a>
-  <a href="/water-purification">Water Purification</a>
+  <a href="/vitev-water">Water Purification</a>
   <a href="/aroma-systems">Aroma Systems</a>
 </div>
 
@@ -170,6 +170,19 @@
       }
     });
   }
+})();
+</script>
+
+<script>
+(function() {
+  let link = document.querySelector("link[rel~='icon']");
+  if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+  }
+  link.type = 'image/jpeg';
+  link.href = 'https://res.cloudinary.com/dzgaej1wo/image/upload/v1780894829/favicon.ico_ne14ft.jpg';
 })();
 </script>
 
