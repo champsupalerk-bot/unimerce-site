@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-<link rel="icon" type="image/jpeg" href="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780903215/favicon.ico_vnm1uh.png" />
-
-<title>UNIMERCE</title>
-
 <style>
 /* ===================================================
    TOPBAR & HEADER STYLES (Production-Ready)
@@ -158,8 +148,6 @@
   }
 }
 </style>
-</head>
-<body>
 
 <div class="topbar">
 
@@ -193,23 +181,30 @@
 
 <script>
 (function() {
-  const menuBtn = document.getElementById("menuBtn");
-  const menuDropdown = document.getElementById("menuDropdown");
+  // ฟังก์ชันผูก Event ภายในตัวเอง เพื่อให้กดติดทันทีไม่ว่าจะโดน Fetch ไปที่หน้าไหน
+  function initMenuBehavior() {
+    const menuBtn = document.getElementById("menuBtn");
+    const menuDropdown = document.getElementById("menuDropdown");
 
-  if (menuBtn && menuDropdown) {
-    menuBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      menuDropdown.classList.toggle("active");
-    });
+    if (menuBtn && menuDropdown) {
+      // ใช้ onclick แทนการ addEventListener ซ้ำซ้อน ป้องกันปัญหา Event หลุดเวลาดึง Component
+      menuBtn.onclick = function(e) {
+        e.stopPropagation();
+        menuDropdown.classList.toggle("active");
+      };
 
-    window.addEventListener("click", (e) => {
-      if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
-        menuDropdown.classList.remove("active");
-      }
-    });
+      window.onclick = function(e) {
+        if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+          menuDropdown.classList.remove("active");
+        }
+      };
+    }
   }
 
-  // 🛠️ ส่วนแก้ไขเจาะจงจุด: ปรับให้อัปเดตตัวแปรชี้เป้าไปที่ไฟล์ใน GitHub นอกสุด เพื่อแก้ปัญหารูปหายใน Clean URL หน้าอื่น
+  // รันระบบเปิด-ปิดเมนูทันที
+  initMenuBehavior();
+
+  // 🛠️ อัปเดตตัวแปรชี้เป้าไปที่ไฟล์ใน GitHub นอกสุด เพื่อแก้ปัญหารูปหายใน Clean URL หน้าอื่น
   try {
     let faviconLink = document.querySelector("link[rel*='icon']");
     if (!faviconLink) {
@@ -222,6 +217,3 @@
   } catch(e) { console.error(e); }
 })();
 </script>
-
-</body>
-</html>
