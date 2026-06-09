@@ -622,12 +622,91 @@
             }
         }
 
-        @media (max-width: 768px) {
-            /* เวอร์ชันโมบาย ขยับดันระยะ Banner เพิ่มขึ้นเพื่อหลบจาก Layout Top Bar ที่มีความสูงผันแปร โดยไม่ให้จมหาย */
+
+            @media (max-width: 768px) {
+            /* --- โดเนมเดิมที่มีอยู่แล้ว --- */
             .full-width-hero {
                 margin-top: 50px; 
             }
-            /* จัดการความสูงระยะติดหนึบของชุด Navigation 4 ปุ่มให้สอดรับตาม */
+            .tool-sticky-nav {
+                top: 50px; 
+            }
+            .nav-row-wrapper {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+                padding: 8px 4px;
+            }
+            .nav-btn-item {
+                padding: 8px 4px;
+                flex-direction: column;
+                gap: 4px;
+            }
+            .nav-btn-dot {
+                width: 18px;
+                height: 18px;
+                font-size: 10px;
+            }
+            .nav-btn-label {
+                font-size: 11px;
+            }
+            .section-big-header {
+                gap: 14px;
+            }
+            .section-giant-circle {
+                width: 48px;
+                height: 48px;
+                font-size: 22px;
+            }
+            .section-title-text {
+                font-size: 20px;
+            }
+
+            /* ======================================================== */
+            /* เพิ่มโค้ดปรับขนาด Font สำหรับ Mobile ตรงนี้ได้เลยครับ     */
+            /* ======================================================== */
+            
+            /* 1. ปรับขนาดตัวอักษรเนื้อหาทั่วไป (Paragraph) และการ์ดต่างๆ */
+            body {
+                font-size: 17.5px; /* เพิ่มจากเดิม 16px เพื่อให้อ่านง่ายเต็มตาขึ้น */
+            }
+
+            .paragraph-block p, 
+            .side-warning-card p, 
+            .mineral-classic-card p, 
+            .science-split-row p, 
+            .pitcher-brief, 
+            .tech-mini-card p {
+                font-size: 16.5px !important; /* ปรับขนาดเนื้อความให้อ่านง่าย */
+            }
+
+            /* 2. ปรับขนาดหัวข้อของการ์ด/กล่องเนื้อหา */
+            .side-warning-card h4,
+            .mineral-classic-card h4,
+            .science-split-row h4,
+            .pitcher-info-box h4,
+            .tech-mini-card h4,
+            .flow-node-text h5 {
+                font-size: 18px !important; 
+            }
+
+            /* 3. ปรับขนาดรายละเอียดในตาราง Spec และชิปข้อมูล */
+            .pitcher-specs li {
+                font-size: 15px !important;
+            }
+
+            .stick-chip-node {
+                font-size: 15px !important;
+            }
+            
+            .stick-chip-node strong {
+                font-size: 16px !important;
+            }
+
+            .flow-node-text p {
+                font-size: 15px !important;
+            }
+
+        /* จัดการความสูงระยะติดหนึบของชุด Navigation 4 ปุ่มให้สอดรับตาม */
             .tool-sticky-nav {
                 top: 50px; 
             }
