@@ -540,8 +540,9 @@ section {
 
 .food-flow-card.full-width-gallery-layout .food-flow-img-box img {
     width: 100%;
-    max-height: 400px;
-    object-fit: cover;
+    height: auto; /* 💡 ปลดล็อกความสูงให้ขยายตามอัตราส่วนจริงของรูปภาพ */
+    max-height: none; /* 💡 ยกเลิกการจำกัดความสูงเดิม */
+    object-fit: normal; 
 }
 
 /* กลุ่มอุตสาหกรรมเป้าหมาย สลับภาพไปชิดขวาในระบบ Desktop */
