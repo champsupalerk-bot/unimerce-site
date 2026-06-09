@@ -12,7 +12,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:title" content="UNIMERCE | คลังเครื่องวัดค่าน้ำและเครื่องวัดคุณภาพน้ำประสิทธิภาพสูง" />
 <meta property="og:description" content="วิเคราะห์และคัดสรรระบบเครื่องวัดค่าน้ำ เครื่องวัดคุณภาพน้ำ เครื่องวัดอาหาร เครื่องวัดครีม และเครื่องวัดเฉพาะทางมาตรฐานสากล" />
-<meta property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780976031/ph818-banner_001_c7dvts.png" />
+<meta property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780977780/ph818-banner_002_gt8fxl.png" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,8 +20,8 @@
 
 <style>
 /* ===================================================
-   DESIGN SYSTEM & GLOBAL VARIABLES (Minimal & Lab Style)
-   =================================================== */
+    DESIGN SYSTEM & GLOBAL VARIABLES (Minimal & Lab Style)
+    =================================================== */
 :root {
     --bg-base: #fcfdfd;
     --bg-dark: #0a0f1d;
@@ -71,15 +71,15 @@ img {
 }
 
 /* ===================================================
-   HERO BANNER SECTION (ภาพสว่างคมชัด ไม่ครอปดำ)
-   =================================================== */
+    HERO BANNER SECTION (ภาพสว่างคมชัด ไม่ครอปดำ)
+    =================================================== */
 .hero-banner {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
     min-height: 450px;
     background: linear-gradient(rgba(10, 15, 29, 0.15), rgba(10, 15, 29, 0.35)), 
-                url('https://res.cloudinary.com/dzgaej1wo/image/upload/v1780976031/ph818-banner_001_c7dvts.png') center/cover no-repeat;
+                url('https://res.cloudinary.com/dzgaej1wo/image/upload/v1780977780/ph818-banner_002_gt8fxl.png') center/cover no-repeat;
     display: flex;
     align-items: center;
     color: #fff;
@@ -171,29 +171,60 @@ img {
 }
 
 /* ===================================================
-   SMART STICKY DEEP NAVIGATION BAR (ถอดโลโก้ เพิ่ม All Products)
-   =================================================== */
+    SMART STICKY DEEP NAVIGATION BAR & UTILITY
+    =================================================== */
 .sticky-nav-container {
     position: sticky;
     top: 55px; 
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
     z-index: 90;
 }
 
+.sticky-nav-wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 0 10px 0;
+}
+
+.nav-utility-top {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.minimal-all-products-link {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s ease;
+    padding: 2px 6px;
+}
+
+.minimal-all-products-link:hover {
+    color: var(--accent-blue);
+    text-decoration: underline;
+}
+
 .sticky-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
 }
 
 .nav-links-cluster {
     display: flex;
-    gap: 4px;
+    gap: 6px;
+    width: 100%;
+    flex-wrap: nowrap;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     scrollbar-width: none; 
 }
 
@@ -208,7 +239,9 @@ img {
     color: var(--text-secondary);
     border-radius: 6px;
     white-space: nowrap;
-    transition: 0.2s ease;
+    transition: all 0.2s ease;
+    background-color: transparent;
+    flex-shrink: 0;
 }
 
 .sticky-nav-btn:hover {
@@ -216,24 +249,9 @@ img {
     background-color: var(--accent-blue-light);
 }
 
-.btn-nav-all-products {
-    padding: 6px 14px;
-    font-size: 13px;
-    border-radius: 4px;
-    background-color: var(--accent-blue);
-    color: #fff;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-}
-
-.btn-nav-all-products:hover {
-    background-color: #244b88;
-}
-
 /* ===================================================
-   MAIN SESSION HEADINGS SYSTEM (Midnight Blue Circle Indicator)
-   =================================================== */
+    MAIN SESSION HEADINGS SYSTEM (Midnight Blue Circle Indicator)
+    =================================================== */
 .session-title-container {
     display: flex;
     align-items: center;
@@ -263,8 +281,8 @@ img {
 }
 
 /* ===================================================
-   DISTINCT BACKGROUND COLORS FOR SESSIONS
-   =================================================== */
+    DISTINCT BACKGROUND COLORS FOR SESSIONS
+    =================================================== */
 .section-padding {
     padding: 70px 0;
 }
@@ -286,8 +304,8 @@ img {
 }
 
 /* ===================================================
-   BUSINESS OVERVIEW & VALUE PROPOSITION
-   =================================================== */
+    BUSINESS OVERVIEW & VALUE PROPOSITION
+    =================================================== */
 .editorial-head {
     max-width: 800px;
     margin-bottom: 40px;
@@ -329,8 +347,8 @@ img {
 }
 
 /* ===================================================
-   SECTION 1: HIGH-PRECISION pH ONLY (pH-818)
-   =================================================== */
+    SECTION 1: HIGH-PRECISION pH ONLY (pH-818)
+    =================================================== */
 .product-showcase-layout {
     display: grid;
     grid-template-columns: 1fr 1.2fr;
@@ -340,7 +358,7 @@ img {
 
 .showcase-sticky-gallery {
     position: sticky;
-    top: 140px;
+    top: 150px;
     display: grid;
     gap: 20px;
 }
@@ -421,8 +439,8 @@ img {
 }
 
 /* ===================================================
-   SECTION 2: BRIX DESIGN ALTERNATING LAYOUT (Multi-Function)
-   =================================================== */
+    SECTION 2: BRIX DESIGN ALTERNATING LAYOUT (Multi-Function)
+    =================================================== */
 .brix-container {
     display: flex;
     flex-direction: column;
@@ -487,8 +505,8 @@ img {
 }
 
 /* ===================================================
-   SECTION 3: EDITORIAL FLOW DESIGN (Food & Cream Analyzer)
-   =================================================== */
+    SECTION 3: EDITORIAL FLOW DESIGN (Food & Cream Analyzer)
+    =================================================== */
 .food-editorial-flow {
     display: flex;
     flex-direction: column;
@@ -563,6 +581,7 @@ img {
     padding: 26px;
     border-radius: 4px 14px 14px 4px;
     color: #1f2937;
+    margin-top: 20px;
 }
 
 .food-caution-box h5 {
@@ -573,8 +592,8 @@ img {
 }
 
 /* ===================================================
-   SECTION 4: CHLORINE ANALYTICAL SYSTEM
-   =================================================== */
+    SECTION 4: CHLORINE ANALYTICAL SYSTEM
+    =================================================== */
 .chlorine-split {
     display: grid;
     grid-template-columns: 0.8fr 1.2fr;
@@ -590,8 +609,8 @@ img {
 }
 
 /* ===================================================
-   BOTTOM BUSINESS LEADS CTA BLOCK (Minimal Clean Architecture)
-   =================================================== */
+    BOTTOM BUSINESS LEADS CTA BLOCK (Minimal Clean Architecture)
+    =================================================== */
 .commercial-cta-block {
     background: #ffffff;
     border: 1px solid var(--border-color);
@@ -599,6 +618,7 @@ img {
     padding: 45px;
     text-align: center;
     box-shadow: 0 4px 25px rgba(0,0,0,0.02);
+    margin-top: 40px;
 }
 
 .cta-main-title {
@@ -662,8 +682,8 @@ img {
 }
 
 /* ===================================================
-   GO TO TOP BUTTON ARCHITECTURE
-   =================================================== */
+    GO TO TOP BUTTON ARCHITECTURE
+    =================================================== */
 .scroll-top-indicator {
     position: fixed;
     bottom: 30px;
@@ -702,8 +722,8 @@ img {
 }
 
 /* ===================================================
-   RESPONSIVE LAYOUT SYSTEM
-   =================================================== */
+    RESPONSIVE LAYOUT SYSTEM
+    =================================================== */
 @media (max-width: 960px) {
     .product-showcase-layout,
     .editorial-split-grid,
@@ -750,11 +770,27 @@ img {
         padding: 100px 0 60px 0;
     }
     
+    /* บังคับคอลัมน์ Navigation ให้อยู่ในแถวเดียวกันบน Mobile ไม่ให้แตกจมล้น */
+    .sticky-nav-wrapper {
+        padding: 4px 0 8px 0;
+    }
     .sticky-nav {
-        flex-direction: column;
-        gap: 12px;
+        flex-direction: row; 
+        justify-content: flex-start;
         align-items: center;
-        text-align: center;
+        width: 100%;
+    }
+    .nav-links-cluster {
+        display: flex;
+        flex-direction: row; 
+        flex-wrap: nowrap; 
+        justify-content: flex-start;
+        gap: 4px;
+        width: 100%;
+    }
+    .sticky-nav-btn {
+        padding: 6px 10px;
+        font-size: 12.5px;
     }
     
     .commercial-cta-block {
@@ -787,14 +823,21 @@ img {
 
 <div class="sticky-nav-container">
     <div class="section-inner">
-        <div class="sticky-nav">
-            <nav class="nav-links-cluster">
-                <a href="#precision-ph" class="sticky-nav-btn">1. เครื่องวัด pH เฉพาะทาง</a>
-                <a href="#multi-function" class="sticky-nav-btn">2. เครื่องวัดมัลติฟังก์ชั่น</a>
-                <a href="#food-liquid" class="sticky-nav-btn">3. เครื่องวัดค่าอาหารและครีม</a>
-                <a href="#chlorine-meter" class="sticky-nav-btn">4. เครื่องวัดค่าคลอรีน</a>
-            </nav>
-            <a href="/all-products" class="btn-nav-all-products">All Products</a>
+        <div class="sticky-nav-wrapper">
+            <div class="nav-utility-top">
+                <a href="/all-products" class="minimal-all-products-link">
+                    All Products 
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+            <div class="sticky-nav">
+                <nav class="nav-links-cluster">
+                    <a href="#precision-ph" class="sticky-nav-btn">1. เครื่องวัด pH เฉพาะทาง</a>
+                    <a href="#multi-function" class="sticky-nav-btn">2. เครื่องวัดมัลติฟังก์ชั่น</a>
+                    <a href="#food-liquid" class="sticky-nav-btn">3. เครื่องวัดค่าอาหารและครีม</a>
+                    <a href="#chlorine-meter" class="sticky-nav-btn">4. เครื่องวัดค่าคลอรีน</a>
+                </nav>
+            </div>
         </div>
     </div>
 </div>
@@ -949,7 +992,7 @@ img {
                 </div>
                 <div class="food-flow-text">
                     <h4>ขอบข่ายการนำไปใช้งานเพื่อประสิทธิภาพการควบคุมคุณภาพ</h4>
-                    <p>ขอบข่ายการใช้งานเครื่องวัดคุณภาพสูงครอบคลุมตั้งแต่ห้องปฏิบัติการวิจัยพัฒนาสูตร (R&D) ไปจนถึงการสุ่มตรวจในไลน์ผลิตจริงของฝ่ายควบคุมคุณภาพ (QC) การแสดงผลตัวเลขที่แม่นยำช่วยให้ทีมวิศวกรโรงงานสามารถควบคุมปฏิกิริยาเคมี การเซ็ตตัวของเนื้อครีม หรือการหมักของแป้งเบเกอรี่ได้อย่างเป็นระบบ ช่วยลดของเสียจากการผลิตและคงมาตรฐานแบรนด์ให้สม่ำเสมอในทุกล็อตการจัดส่ง</p>
+                    <p>ขอบข่ายการใช้งานเครื่องวัดคุณภาพสูงครอบคลุมตั้งแต่ห้องปฏิบัติการวิจัยพัฒนาสูตร (R&D) ไปจนถึงการสุ่มตรวจในไลน์ผลิตจริงของฝ่ายควบคุมคุณภาพ (QC) การแสดงผลตัวเลขที่แม่นยำช่วยให้ทีมวิศวกรโรงงานสามารถควบคุมปฏิกิริยาเคมี การเซ็ตตัวของเนื้อครีม หรือการหมักของแป้งเบเกอรี่ได้อย่างเป็นระบบ ช่วยลดของเสียจากการผลิตและคงมาตรฐานแบรนด์ให้สม่เหมอในทุกล็อตการจัดส่ง</p>
                 </div>
             </div>
 
@@ -969,23 +1012,23 @@ img {
                 </div>
                 <div class="food-flow-text">
                     <h4>ความจำเป็นวิกฤตในการวัดเนื้อสัตว์และประเมินความสดใหม่</h4>
-                    <p>การวัดเนื้อสัตว์ในโรงงานแปรรูปอาหารสดและเนื้อแช่แข็งมีความจำเป็นทางวิทยาศาสตร์อย่างมาก เนื่องจากหลังสัตว์ล้ม ค่า pH ในกล้ามเนื้อจะเกิดการเปลี่ยนแปลงตามธรรมชาติ ซึ่งส่งผลโดยตรงต่อความสามารถในการอุ้มน้ำ สีสัน และความนุ่มของเนื้อ การตรวจวัดค่า pH ด้วยเครื่องมือเฉพาะทางช่วยให้โรงงานตรวจสอบความสดใหม่ คาดการณ์อายุการเก็บรักษา และป้องกันการเจริญเติบโตของเชื้อแบคทีเรียอันตรายได้อย่างทันท่วงที เป็นการการันตีความปลอดภัยก่อนส่งถึงมือผู้บริโภค</p>
+                    <p>การวัดเนื้อสัตว์ในโรงงานแปรรูปอาหารสดและเนื้อแช่แข็งมีความจำเป็นทางวิทยาศาสตร์อย่างมาก เนื่องจากหลังสัตว์ล้ม ค่า pH ในกล้ามเนื้อจะเกิดการเปลี่ยนแปลงตามธรรมชาติ ซึ่งส่งส่งผลโดยตรงต่อความสามารถในการอุ้มน้ำ สีสัน และความนุ่มของเนื้อ การตรวจวัดค่า pH ด้วยเครื่องมือเฉพาะทางช่วยให้โรงงานตรวจสอบความสดใหม่ คาดการณ์อายุการเก็บรักษา และป้องกันการเจริญเติบโตของเชื้อแบคทีเรียอันตรายได้อย่างทันท่วงที เป็นการการันตีความปลอดภัยก่อนส่งถึงมือผู้บริโภค</p>
                 </div>
             </div>
 
             <div class="food-flow-card split-right-img">
                 <div class="food-flow-text">
                     <h4>คุณลักษณะพิเศษและการออกแบบของหัววัดปลายแหลม (Spike Probe)</h4>
-                    <p>โครงสร้างหัวเซนเซอร์แก้วดีไซน์รูปทรงปลายแหลมคม (Spike Glass Electrode) ถูกคิดค้นขึ้นมาเพื่อแก้ไขข้อจำกัดของหัววัดแบบเดิม โครงสร้างกระจกมีความหนาและแข็งแกร่งเป็นพิเศษ ทนต่อแรงกดดันเมื่อต้องทำการทิ่มแทงทะลุลงไปในชั้นกล้ามเนื้อสัตว์ เนื้อแป้งโดว์ที่มีความเหนียวแน่น หรือครีมโลชั่นที่มีความข้นสูง พื้นผิวสัมผัสถูกออกแบบให้ทำความสะอาดง่าย ไม่สะสมคราบไขมันเหนียวข้น จึงมอบผลการวัดที่รวดเร็ว ฉับไว และมีเสถียรภาพยาวนาน</p>
+                    <p>โครงสร้างหัวเซนเซอร์แก้วดีไซน์รูปทรงปลายแหลมคม (Spike Glass Electrode) ถูกคิดค้นขึ้นมาเพื่อแก้ไขข้อจำกัดของหัววัดแบบเดิม โครงสร้างกระจกมีความหนาและแข็งแกร่งเป็นพิเศษ ทนต่อแรงกดดันเมื่อต้องทำการทิ่มแทงทะลุลงไปในชั้นกล้ามเนื้อสัตว์ เนื้อแป้งโดว์ที่มีความเหนียวแน่น หรือครีมโลชั่นที่มีความข้นสูง พื้นผิวสัมผัสแก้วที่ผ่านการปรับสภาพทางเคมีช่วยให้อ่านค่าได้เร็วและลดการยึดเกาะของคราบไขมัน ทำให้สามารถล้างทำความสะอาดได้ง่าย ยืดอายุการใช้งานเครื่องมือได้อย่างสูงสุด</p>
                 </div>
                 <div class="food-flow-img-box">
-                    <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780976920/ph_tester_for_thick_liquid_cream_or_food_spike_probe_om9gkr.jpg" alt="High Quality Spike Probe Core Detail" />
+                    <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780976930/pH-12_17_ph_tester_for_thick_liquid_cream_or_food_a7bpx9.jpg" alt="Glass Sensor Technology Close-up" />
                 </div>
             </div>
 
             <div class="food-caution-box">
-                <h5>ข้อควรระวังสำคัญและข้อแนะนำในการบำรุงรักษา</h5>
-                <p><strong>ข้อควรระวังด้านการใช้งาน:</strong> ห้ามนำหัววัดปลายแหลมไปจุ่มวัดในสารละลาย ซอส หรือส่วนผสมอาหารที่กำลังต้มเดือด หรือมีความร้อนสูงเกินกว่าขีดจำกัดพิกัดของตัวเครื่อง เนื่องจากอุณหภูมิที่สูงวิกฤตจะทำให้กระจกเซนเซอร์ขยายตัวรวดเร็วและอาจแตกร้าวหรือเสื่อมสภาพถาวรได้ หลังการใช้งานในของเหลวหนืดหรือไขมันสัตว์ทุกครั้ง ควรล้างทำความสะอาดหัวตรวจด้วยน้ำอุ่นผสมน้ำยาล้างสูตรอ่อนโยนอย่างระมัดระวัง ซับให้แห้งสนิทด้วยผ้านุ่ม และเก็บรักษาในปลอกสวมที่มีน้ำยาถนอมหัววัดเสมอ</p>
+                <h5>ข้อแนะนำและมาตรการป้องกันการเสียหายจากห้องปฏิบัติการ</h5>
+                <p>แม้หัววัดประเภท Spike Probe จะถูกออกแบบมาเพื่อความทนทานต่ออุตสาหกรรม แต่อย่างไรก็ตาม โครงสร้างภายในยังคงเป็นวัสดุสารกึ่งตัวนำแก้วที่เซนซิทีฟ ห้ามนำไปใช้แทงวัตถุที่มีความแข็งระดับกระดูก ห้ามใช้ขันหรือบิดขณะทำการเจาะเนื้อ และหลักการทำความสะอาดที่ดีควรใช้สารละลายทำความสะอาดประเภทเอนไซม์หรือน้ำอุ่นเจือจางเพื่อขจัดคราบไขมันอุดตัน แทนการใช้ของมีคมขูดเด็ดขาด เพื่อป้องกันผิวแก้วชำรุดเสียหาย</p>
             </div>
         </div>
     </div>
@@ -1000,99 +1043,80 @@ img {
         
         <div class="chlorine-split">
             <div class="chlorine-img-box">
-                <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780975286/portable_Chlorine_meter_pc102_white_background_kygw4r.jpg" alt="Portable Chlorine Meter PC102" />
+                <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780975308/residual_chlorine_tester_smart_sensor_white_background_esdclh.jpg" alt="SMART SENSOR Residual Chlorine Analyser" />
             </div>
-            
             <div>
-                <p class="editorial-kicker">Sanitation & Disinfection Control</p>
-                <h3>เครื่องวัดค่าคลอรีนพกพา (Chlorine Meter)</h3>
+                <p class="editorial-kicker">Chemical Disinfection Management</p>
+                <h3>เครื่องวิเคราะห์ปริมาณคลอรีนตกค้างในระบบน้ำ</h3>
                 <p class="editorial-desc">
-                    คลอรีนคือหัวใจหลักในการฆ่าเชื้อโรคในระบบน้ำ แต่อัตราส่วนที่เข้มข้นมากหรือน้อยเกินไปย่อมส่งผลกระทบและอันตรายโดยตรงต่อผู้ใช้งาน เครื่องวัดค่าคลอรีนรุ่นพกพาช่วยให้อุตสาหกรรมสามารถตรวจสอบระดับคลอรีนอิสระในน้ำได้อย่างรวดเร็ว รักษาความสมดุลระหว่างความสะอาดปลอดภัยและการควบคุมสารเคมีตกค้างอย่างเป็นระบบ
+                    ออกแบบมาเพื่อการควบคุมกระบวนการฆ่าเชื้อโรคอย่างเป็นระบบ ตรวจสอบปริมาณ Free Chlorine หรือคลอรีนอิสระคงเหลือในน้ำได้อย่างแม่นยำ ป้องกันการใช้สารเคมีเกินขนาดที่เป็นพิษต่อสิ่งแวดล้อมและมนุษย์ หรือการใช้ปริมาณน้อยเกินไปจนไม่สามารถฆ่าเชื้อโรคได้เต็มประสิทธิภาพ ตอบโจทย์ข้อบังคับทางกฎหมายสาธารณสุข
                 </p>
-
-                <h4>อุตสาหกรรมและกลุ่มเป้าหมาย</h4>
+                
+                <h4>กลุ่มเป้าหมายการประยุกต์ใช้งาน</h4>
                 <ul class="feature-bullet-list">
-                    <li>ระบบการจัดการน้ำประปาชุมชน ส่วนภูมิภาค และเทศบาล</li>
-                    <li>ธุรกิจสระว่ายน้ำเชิงพาณิชย์ สวนน้ำ สโมสรกีฬา และโรงแรมรีสอร์ต</li>
-                    <li>อุตสาหกรรมล้างผัก ผลไม้ และไลน์การเตรียมอาหารสดก่อนบรรจุถุงส่งออก</li>
+                    <li>วิศวกรผู้ดูแลระบบน้ำประปาชุมชนและน้ำบาดาลสำหรับบริโภค</li>
+                    <li>ผู้บริหารจัดการสระว่ายน้ำเชิงพาณิชย์ โรงแรม และรีสอร์ตระดับสากล</li>
+                    <li>โรงงานแปรรูปอาหารและเครื่องดื่มที่ใช้น้ำคลอรีนล้างไลน์ผลิตและบรรจุภัณฑ์</li>
                 </ul>
 
-                <h4>กรณีการใช้งาน (Use Case)</h4>
+                <h4>Use Case ในชีวิตจริง</h4>
                 <p class="editorial-desc" style="font-size: 14px;">
-                    **การควบคุมมาตรฐานสระว่ายน้ำโรงแรมหรู:** ฝ่ายอาคารและสถานที่ใช้เครื่องวัดเพื่อเช็กปริมาณคลอรีนในสระน้ำช่วงเช้ามืด เพื่อให้มั่นใจว่าค่าน้ำใสสะอาด ปลอดภัย ไร้กลิ่นฉุนเคมีรบกวนจมูก ก่อนที่แขกผู้เข้าพักจะลงเล่นน้ำในแต่ละวัน
+                    **การตรวจสอบน้ำในสระว่ายน้ำโอลิมปิก:** ทีมช่างเทคนิคสุ่มตักตัวอย่างน้ำจากมุมสระสี่ด้านในช่วงเช้า เพื่อวัดปริมาณคลอรีนตกค้างให้อยู่ในเกณฑ์มาตรฐาน 1.0 - 3.0 ppm ก่อนเปิดให้ประชาชนเข้าใช้งานเพื่อความปลอดภัยของผิวหนังและดวงตา
                 </p>
             </div>
         </div>
-    </div>
-</section>
 
-<section class="section-padding section-gray" style="border-top: 1px solid var(--border-color); background-color: #f8fafc;">
-    <div class="section-inner">
         <div class="commercial-cta-block">
-            <h3 class="cta-main-title">ติดต่อสอบถามและขอใบเสนอราคา</h3>
+            <h3 class="cta-main-title">สนใจสั่งซื้อและขอคำปรึกษาทางเทคนิคเพื่อภาคธุรกิจ</h3>
             <div class="marketplace-buttons-wrap">
-                <a href="mailto:contact@unimercegroup.com?subject=ขอใบเสนอราคาจัดซื้อเครื่องมือวัดค่าน้ำ" class="btn btn-minimal-cta btn-minimal-email">
-                    ขอใบเสนอราคา (Email)
-                </a>
-                <a href="https://shopee.co.th/shop/123173321" target="_blank" class="btn btn-minimal-cta btn-minimal-shopee">
-                    สั่งซื้อผ่าน Shopee
-                </a>
-                <a href="https://www.lazada.co.th/shop/vitevthailand/" target="_blank" class="btn btn-minimal-cta btn-minimal-lazada">
-                    สั่งซื้อผ่าน Lazada
-                </a>
+                <a href="mailto:contact@unimercegroup.com?subject=สอบถามข้อมูลเครื่องวัดคุณภาพน้ำอุตสาหกรรม" class="btn-minimal-cta btn-minimal-email">ส่งอีเมลติดต่อฝ่ายขาย (Corporate Direct)</a>
+                <a href="https://shopee.co.th/shop/123173321" target="_blank" class="btn-minimal-cta btn-minimal-shopee">สั่งซื้อผ่านระบบ Shopee Store</a>
+                <a href="https://www.lazada.co.th" target="_blank" class="btn-minimal-cta btn-minimal-lazada">สั่งซื้อผ่านระบบ Lazada Store</a>
             </div>
         </div>
     </div>
 </section>
 
-<div id="scrollTopBtn" class="scroll-top-indicator" title="เลื่อนกลับไปด้านบน">
-    <svg class="arrow-up-svg" viewBox="0 0 16 16">
-        <path d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+<div id="footer-placeholder"></div>
+
+<div class="scroll-top-indicator" id="scrollTopBtn" title="Go to top">
+    <svg class="arrow-up-svg" viewBox="0 0 24 24">
+        <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>
     </svg>
 </div>
 
 <script>
-/* ===================================================
-   GO TO TOP LOGIC & DYNAMIC EFFECT
-   =================================================== */
-const scrollTopBtn = document.getElementById("scrollTopBtn");
-
-window.addEventListener("scroll", () => {
-    if (window.pageYOffset > 400) {
-        scrollTopBtn.classList.add("visible");
-    } else {
-        scrollTopBtn.classList.remove("visible");
+document.addEventListener("DOMContentLoaded", function() {
+    // โหลดไฟล์โครงสร้าง Layout กลาง (Header/Footer) ร่วมกับระบบหลัก
+    const headerBox = document.getElementById('header-placeholder');
+    if(headerBox) {
+        fetch('/header.html')
+            .then(res => { if(res.ok) return res.text(); })
+            .then(html => { if(html) headerBox.innerHTML = html; })
+            .catch(err => console.log("Header loading skipped or local mode active."));
     }
-});
 
-scrollTopBtn.addEventListener("click", () => {
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
+    const footerBox = document.getElementById('footer-placeholder');
+    if(footerBox) {
+        fetch('/footer.html')
+            .then(res => { if(res.ok) return res.text(); })
+            .then(html => { if(html) footerBox.innerHTML = html; })
+            .catch(err => console.log("Footer loading skipped or local mode active."));
+    }
+
+    // ฟังก์ชันเปิด-ปิดปุ่ม Scroll To Top ตามพฤติกรรมการเลื่อนหน้าจอ
+    const scrollTopBtn = document.getElementById("scrollTopBtn");
+    window.addEventListener("scroll", function() {
+        if (window.pageYOffset > 400) {
+            scrollTopBtn.classList.add("visible");
+        } else {
+            scrollTopBtn.classList.remove("visible");
+        }
     });
-});
 
-/* ===================================================
-   FALLBACK LAYOUT INJECTION
-   =================================================== */
-document.addEventListener("DOMContentLoaded", () => {
-    const headerBox = document.getElementById("header-placeholder");
-    if (headerBox && !headerBox.dataset.loaded) {
-        fetch("header.html")
-            .then(res => res.text())
-            .then(html => {
-                headerBox.innerHTML = html;
-                headerBox.dataset.loaded = "true";
-            }).catch(e => console.log("Header loaded."));
-    }
-    
-    if (!document.querySelector(".footer")) {
-        fetch("footer.html")
-            .then(res => res.text())
-            .then(html => {
-                document.body.insertAdjacentHTML("beforeend", html);
-            }).catch(e => console.log("Footer loaded."));
-    }
+    scrollTopBtn.addEventListener("click", function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 });
 </script>
 
