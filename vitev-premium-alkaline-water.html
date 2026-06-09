@@ -59,15 +59,21 @@
         }
 
         /* --- Layout Header Placement (โหลดไฟล์โครงสร้างเดิมของคุณ) --- */
+        /* บังคับให้ Top Bar ดึงมาจาก Layout แสดงผลค้างไว้ตลอดเวลา ไม่หุบ ไม่ซ่อน ทั้ง Mobile และ Desktop */
         .global-header-layout {
             width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
-        /* --- Full Width Hero Banner --- */
+        /* ป้องกันไม่ให้ Banner จมลงไปใต้ Top bar ทั้งเวอร์ชัน Mobile และ Desktop ด้วยการใช้ความลึกของกล่องดันสัดส่วน */
         .full-width-hero {
             width: 100%;
             background-color: var(--primary-navy);
             overflow: hidden;
+            margin-top: 60px; /* ความสูงเฉลี่ยสำหรับ Desktop ชดเชยจุดทับซ้อน */
         }
         
         .full-width-hero img {
@@ -81,7 +87,7 @@
             background-color: var(--pure-white);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
-            top: 0; /* จะถูกคำนวณผ่าน JS หากมี Header ด้านบน */
+            top: 60px; /* เกาะติดด้านล่างต่อจาก Top Bar ตลอดเวลา */
             z-index: 999;
         }
 
@@ -617,6 +623,14 @@
         }
 
         @media (max-width: 768px) {
+            /* เวอร์ชันโมบาย ขยับดันระยะ Banner เพิ่มขึ้นเพื่อหลบจาก Layout Top Bar ที่มีความสูงผันแปร โดยไม่ให้จมหาย */
+            .full-width-hero {
+                margin-top: 50px; 
+            }
+            /* จัดการความสูงระยะติดหนึบของชุด Navigation 4 ปุ่มให้สอดรับตาม */
+            .tool-sticky-nav {
+                top: 50px; 
+            }
             /* ควบคุมให้เมนู 1 แถว 4 ปุ่ม เรียงกระดานพอดีหน้าจอเสมอ */
             .nav-row-wrapper {
                 grid-template-columns: repeat(4, 1fr);
@@ -689,7 +703,7 @@
             </div>
             
             <div class="hero-inline-box">
-                <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780991972/vitev_mineral_homepage_02_dp30lz.png" alt="Vitev Stream Layer">
+                <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780999973/a_glass_of_water_qkh5cn.jpg" alt="Vitev Stream Layer">
             </div>
 
             <div class="intro-two-col">
@@ -887,7 +901,7 @@
                     <div class="tech-double-row">
                         <div class="tech-mini-card">
                             <h4>Time-Released Ball</h4>
-                            <p>ลูกบอลเซรามิกควบคุมการปลดปล่อยประจุไอออนแร่ธาตุ ช่วยให้น้ำคงสภาวะความเสถียรและเหมาะสมยาวนาน</p>
+                            <p>ลูกบอลเซรามิกควบคุมการปลดปล่อยประจุไออนแร่ธาตุ ช่วยให้น้ำคงสภาวะความเสถียรและเหมาะสมยาวนาน</p>
                         </div>
                         <div class="tech-mini-card">
                             <h4>Sub-Cluster Tech</h4>
@@ -931,11 +945,14 @@
                 })
                 .then(data => {
                     document.querySelector(".global-header-layout").innerHTML = data;
+                    // ทำการปรับค่าคำนวณตำแหน่งเมนูติดหนึบหลังจาก Header โหลดมาเสร็จสิ้น
+                    adjustStickyNavPosition();
                 })
                 .catch(error => {
                     console.error('Error loading the header:', error);
                     // Fallback เผื่อไว้แสดงชื่อแบรนด์แบบคลีนในระบบหลังบ้าน
                     document.querySelector(".global-header-layout").innerHTML = `<div style="padding:20px; background:#152535; color:#fff; font-weight:600; text-align:center;">UNIMERCE GROUP</div>`;
+                    adjustStickyNavPosition();
                 });
 
             // โดดร่มไปดึง Footer
@@ -952,6 +969,21 @@
                 });
         });
 
+        // ฟังก์ชันช่วยคำนวณตำแหน่งความสูงของ Header ล่าสุด เพื่อตั้งค่า CSS top และ margin ให้แม่นยำขึ้นแบบไดนามิก
+        function adjustStickyNavPosition() {
+            const header = document.querySelector('.global-header-layout');
+            const hero = document.querySelector('.full-width-hero');
+            const stickyNav = document.querySelector('.tool-sticky-nav');
+            
+            if (header && hero && stickyNav) {
+                const headerHeight = header.offsetHeight || 60;
+                hero.style.marginTop = headerHeight + 'px';
+                stickyNav.style.top = headerHeight + 'px';
+            }
+        }
+        
+        window.addEventListener('resize', adjustStickyNavPosition);
+
         // 3. SMOOTH SCROLL MECHANICS: ระบบเลื่อนสไลด์หน้าเพจแบบนุ่มนวล
         function scrollAnchor(event, targetId) {
             event.preventDefault();
@@ -959,8 +991,9 @@
             if (!targetSection) return;
 
             // คืนค่า Offset เผื่อไว้กรณี Sticky Nav มีการซ้อนทับกัน
-            const navHeight = document.querySelector('.tool-sticky-nav').offsetHeight || 60;
-            const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - navHeight + 2;
+            const headerHeight = document.querySelector('.global-header-layout').offsetHeight || 60;
+            const navHeight = document.querySelector('.tool-sticky-nav').offsetHeight || 50;
+            const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - (headerHeight + navHeight) + 2;
 
             window.scrollTo({
                 top: targetPosition,
@@ -974,7 +1007,7 @@
 
         const observerOptions = {
             root: null,
-            rootMargin: "-120px 0px -60px 0px", // ชดเชยจุดสายตาเผื่อหัวเมนูแบบ Sticky
+            rootMargin: "-180px 0px -60px 0px", // เพิ่มการชดเชยจุดสายตาเนื่องจากพื้นที่ด้านบนเปิดค้างไว้หนาขึ้น
             threshold: 0.2
         };
 
