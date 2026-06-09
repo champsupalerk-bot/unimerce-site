@@ -70,6 +70,11 @@ img {
     padding: 0 24px;
 }
 
+/* ระยะเยื้องของการกระโดด Anchor Link ให้เห็นหัวข้อเลข 1 2 3 4 ได้ชัดเจนพอดี */
+section {
+    scroll-margin-top: 140px;
+}
+
 /* ===================================================
     HERO BANNER SECTION (ภาพสว่างคมชัด ไม่ครอปดำ)
     =================================================== */
@@ -119,7 +124,7 @@ img {
 }
 
 .hero-desc {
-    font-size: clamp(15px, 1.8vw, 16px);
+    font-size: clamp(16px, 1.8vw, 17px);
     font-weight: 400;
     opacity: 0.95;
     margin-bottom: 30px;
@@ -171,82 +176,65 @@ img {
 }
 
 /* ===================================================
-    SMART STICKY DEEP NAVIGATION BAR & UTILITY
+    SMART STICKY DEEP NAVIGATION BAR (1*4 Grid No-Button Style)
     =================================================== */
 .sticky-nav-container {
     position: sticky;
     top: 55px; 
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
     z-index: 90;
 }
 
-.sticky-nav-wrapper {
-    display: flex;
-    flex-direction: column;
-    padding: 6px 0 10px 0;
-}
-
-.nav-utility-top {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-bottom: 4px;
-}
-
-.minimal-all-products-link {
-    font-size: 12px;
-    color: var(--text-secondary);
-    font-weight: 400;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: color 0.2s ease;
-    padding: 2px 6px;
-}
-
-.minimal-all-products-link:hover {
-    color: var(--accent-blue);
-    text-decoration: underline;
-}
-
 .sticky-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 12px 0;
 }
 
+/* บังคับหน้ากระดานเรียงหนึ่ง 1 แถว 4 คอลัมน์ (1*4) เสมอทั้ง Desktop และ Mobile */
 .nav-links-cluster {
-    display: flex;
-    gap: 6px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
     width: 100%;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; 
 }
 
-.nav-links-cluster::-webkit-scrollbar {
-    display: none; 
-}
-
+/* ดีไซน์เน้นความเป็นลิงก์ข้อความคลีนๆ ถอดรูปลักษณ์แบบบล็อกปุ่มหนาๆ ออก */
 .sticky-nav-btn {
-    padding: 8px 14px;
-    font-size: 13.5px;
-    font-weight: 500;
+    padding: 6px 4px;
+    font-size: 14px;
+    font-weight: 400;
     color: var(--text-secondary);
-    border-radius: 6px;
-    white-space: nowrap;
-    transition: all 0.2s ease;
     background-color: transparent;
-    flex-shrink: 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    line-height: 1.3;
+    transition: color 0.2s ease;
+    border: none;
 }
 
-.sticky-nav-btn:hover {
+.sticky-nav-btn span.btn-row1 {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.sticky-nav-btn span.btn-row2 {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+}
+
+/* เวลา Hover จะเปลี่ยนเฉพาะสีตัวอักษรเรียบๆ ไม่ขึ้นกล่องหนา */
+.sticky-nav-btn:hover span.btn-row1,
+.sticky-nav-btn:hover span.btn-row2 {
     color: var(--accent-blue);
-    background-color: var(--accent-blue-light);
 }
 
 /* ===================================================
@@ -256,7 +244,7 @@ img {
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-bottom: 35px;
+    margin-bottom: 25px;
 }
 
 .session-number-circle {
@@ -274,41 +262,30 @@ img {
 }
 
 .session-main-title {
-    font-size: clamp(24px, 4vw, 36px);
+    font-size: clamp(24px, 4vw, 34px);
     font-weight: 600;
     line-height: 1.3;
     color: var(--text-primary);
 }
 
 /* ===================================================
-    DISTINCT BACKGROUND COLORS FOR SESSIONS
+    COMPACT PADDING FOR SESSIONS
     =================================================== */
 .section-padding {
-    padding: 70px 0;
+    padding: 45px 0;
 }
 
-.session-style-1 {
-    background-color: #f8fafc; /* Soft Light Gray */
-}
-
-.session-style-2 {
-    background-color: #ffffff; /* Clean White */
-}
-
-.session-style-3 {
-    background-color: #f1f5f9; /* Soft Steel Slate */
-}
-
-.session-style-4 {
-    background-color: #ffffff; /* Clean White */
-}
+.session-style-1 { background-color: #f8fafc; }
+.session-style-2 { background-color: #ffffff; }
+.session-style-3 { background-color: #f1f5f9; }
+.session-style-4 { background-color: #ffffff; }
 
 /* ===================================================
     BUSINESS OVERVIEW & VALUE PROPOSITION
     =================================================== */
 .editorial-head {
     max-width: 800px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .editorial-kicker {
@@ -316,7 +293,7 @@ img {
     text-transform: uppercase;
     letter-spacing: 2px;
     color: var(--accent-gold);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     font-weight: 600;
 }
 
@@ -324,12 +301,12 @@ img {
     font-size: clamp(24px, 4vw, 38px);
     line-height: 1.3;
     font-weight: 600;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .editorial-desc {
     color: var(--text-secondary);
-    font-size: clamp(15px, 3.5vw, 16px);
+    font-size: 16.5px;
     font-weight: 400;
 }
 
@@ -385,7 +362,7 @@ img {
 }
 
 .sub-img-card p {
-    font-size: 13px;
+    font-size: 13.5px;
     margin-top: 8px;
     color: var(--text-secondary);
     line-height: 1.4;
@@ -399,9 +376,9 @@ img {
 }
 
 .showcase-content h4 {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 500;
-    margin: 24px 0 10px;
+    margin: 20px 0 10px;
     border-left: 3px solid var(--accent-gold);
     padding-left: 10px;
 }
@@ -414,10 +391,10 @@ img {
 .feature-bullet-list li {
     position: relative;
     padding-left: 18px;
-    font-size: clamp(14px, 3.5vw, 15px);
+    font-size: 16.5px;
     margin-bottom: 10px;
     color: var(--text-secondary);
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 .feature-bullet-list li::before {
@@ -428,24 +405,41 @@ img {
     font-weight: bold;
 }
 
+.btn-seo-learnmore {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 14.5px;
+    color: var(--accent-blue);
+    font-weight: 500;
+    border-bottom: 1px dashed var(--accent-blue);
+    padding-bottom: 2px;
+    transition: all 0.2s ease;
+}
+.btn-seo-learnmore:hover {
+    color: #1e3f75;
+    border-bottom-style: solid;
+}
+
 .warning-notice-box {
     background: #f1f5f9;
     padding: 14px 18px;
     border-left: 3px solid #64748b;
     border-radius: 4px 10px 10px 4px;
-    font-size: 13px;
+    font-size: 14px;
     color: #475569;
     margin-top: 14px;
 }
 
 /* ===================================================
-    SECTION 2: BRIX DESIGN ALTERNATING LAYOUT (Multi-Function)
+    SECTION 2: BRIX DESIGN ALTERNATING LAYOUT
     =================================================== */
 .brix-container {
     display: flex;
     flex-direction: column;
-    gap: 40px;
-    margin-top: 30px;
+    gap: 30px;
+    margin-top: 20px;
 }
 
 .brix-row {
@@ -510,8 +504,8 @@ img {
 .food-editorial-flow {
     display: flex;
     flex-direction: column;
-    gap: 45px;
-    margin-top: 20px;
+    gap: 35px;
+    margin-top: 10px;
 }
 
 .food-flow-card {
@@ -529,16 +523,39 @@ img {
     align-items: center;
 }
 
-.food-flow-card.split-left-img {
+/* ขอบข่ายการนำไปใช้งาน กางออก Desktop กว้าง 1000px ภาพอยู่บน เนื้อหาอยู่ล่าง */
+.food-flow-card.full-width-gallery-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.food-flow-card.full-width-gallery-layout .food-flow-img-box {
+    width: 100%;
+    background: #ffffff;
+}
+
+.food-flow-card.full-width-gallery-layout .food-flow-img-box img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+}
+
+/* กลุ่มอุตสาหกรรมเป้าหมาย สลับภาพไปชิดขวาในระบบ Desktop */
+.food-flow-card.split-right-img {
     display: grid;
-    grid-template-columns: 1fr 1.2fr;
+    grid-template-columns: 1.2fr 1fr;
     gap: 50px;
     align-items: center;
 }
 
-.food-flow-card.split-right-img {
+/* ความจำเป็นเนื้อสัตว์ */
+.food-flow-card.split-left-img {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
+    grid-template-columns: 1fr 1.2fr;
     gap: 50px;
     align-items: center;
 }
@@ -570,7 +587,7 @@ img {
 }
 
 .food-flow-text p {
-    font-size: 15px;
+    font-size: 16.5px;
     color: var(--text-secondary);
     line-height: 1.8;
 }
@@ -581,14 +598,18 @@ img {
     padding: 26px;
     border-radius: 4px 14px 14px 4px;
     color: #1f2937;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .food-caution-box h5 {
-    font-size: 16px;
+    font-size: 16.5px;
     font-weight: 600;
     color: #b91c1c;
     margin-bottom: 8px;
+}
+
+.food-caution-box p {
+    font-size: 16px;
 }
 
 /* ===================================================
@@ -609,20 +630,20 @@ img {
 }
 
 /* ===================================================
-    BOTTOM BUSINESS LEADS CTA BLOCK (Minimal Clean Architecture)
+    BOTTOM BUSINESS LEADS CTA BLOCK & ALL PRODUCTS BUTTON
     =================================================== */
 .commercial-cta-block {
     background: #ffffff;
     border: 1px solid var(--border-color);
     border-radius: 14px;
-    padding: 45px;
+    padding: 40px;
     text-align: center;
     box-shadow: 0 4px 25px rgba(0,0,0,0.02);
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
 .cta-main-title {
-    font-size: clamp(22px, 3.5vw, 26px);
+    font-size: clamp(22px, 3.5vw, 25px);
     font-weight: 600;
     margin-bottom: 24px;
     color: var(--text-primary);
@@ -637,12 +658,13 @@ img {
 
 .btn-minimal-cta {
     padding: 12px 28px;
-    font-size: 14px;
+    font-size: 14.5px;
     font-weight: 500;
     border-radius: 6px;
     transition: all 0.2s ease;
 }
 
+/* สีน้ำเงิน Unimerce */
 .btn-minimal-email {
     background-color: var(--accent-blue);
     color: #fff;
@@ -655,30 +677,58 @@ img {
     box-shadow: 0 6px 15px rgba(47, 94, 168, 0.15);
 }
 
-.btn-minimal-shopee {
-    background-color: #f9fafb;
-    color: #ff5722;
-    border: 1px solid #ff5722;
+/* สีขาวกรอบน้ำเงิน Unimerce */
+.btn-minimal-corporate {
+    background-color: #ffffff;
+    color: var(--accent-blue);
+    border: 1px solid var(--accent-blue);
 }
 
-.btn-minimal-shopee:hover {
-    background-color: #ff5722;
-    color: #fff;
+.btn-minimal-corporate:hover {
+    background-color: var(--accent-blue-light);
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(255, 87, 34, 0.15);
 }
 
-.btn-minimal-lazada {
-    background-color: #f9fafb;
-    color: #000088;
-    border: 1px solid #000088;
+/* สี Midnight Blue */
+.btn-minimal-midnight {
+    background-color: var(--bg-dark);
+    color: #ffffff;
+    border: 1px solid var(--bg-dark);
 }
 
-.btn-minimal-lazada:hover {
-    background-color: #000088;
-    color: #fff;
+.btn-minimal-midnight:hover {
+    background-color: #131b30;
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 136, 0.15);
+    box-shadow: 0 6px 15px rgba(10, 15, 29, 0.15);
+}
+
+/* โซนจัดวางปุ่ม All Products ท้ายสุดสไตล์มินิมอล จัดกึ่งกลาง */
+.bottom-all-products-zone {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0 10px 0;
+}
+
+.btn-bottom-all-products {
+    padding: 10px 24px;
+    font-size: 14px;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-bottom-all-products:hover {
+    background-color: var(--bg-dark);
+    color: #ffffff;
+    border-color: var(--bg-dark);
+    transform: translateY(-1px);
 }
 
 /* ===================================================
@@ -770,31 +820,54 @@ img {
         padding: 100px 0 60px 0;
     }
     
-    /* บังคับคอลัมน์ Navigation ให้อยู่ในแถวเดียวกันบน Mobile ไม่ให้แตกจมล้น */
-    .sticky-nav-wrapper {
-        padding: 4px 0 8px 0;
-    }
+    /* ===================================================
+        MOBILE STICKY NAV: 1*4 ROW GRID ARCHITECTURE (NO BUTTON LOOK)
+        บังคับเรียงแถวเดี่ยว 4 คอลัมน์ ไม่ล้นออกซ้ายขวา เลื่อนแนวตั้งอย่างเดียว
+       =================================================== */
     .sticky-nav {
-        flex-direction: row; 
-        justify-content: flex-start;
-        align-items: center;
-        width: 100%;
+        padding: 8px 0;
     }
+    
     .nav-links-cluster {
-        display: flex;
-        flex-direction: row; 
-        flex-wrap: nowrap; 
-        justify-content: flex-start;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* บังคับ 1*4 แถวเดี่ยวครบถ้วนหน้าจอ */
         gap: 4px;
         width: 100%;
     }
+    
     .sticky-nav-btn {
-        padding: 6px 10px;
-        font-size: 12.5px;
+        padding: 4px 2px;
+        /* ปรับสเกลฟอนต์ให้พอดี ไม่เบียดกันเกินไป */
+        font-size: 11.5px; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        white-space: normal; /* ตัดคำขึ้นบรรทัดใหม่ตามการ Wrap */
+        word-break: keep-all; 
+    }
+    
+    .sticky-nav-btn span.btn-row1 {
+        font-size: 11.5px;
+        font-weight: 500;
+        display: block;
+        margin-bottom: 1px;
+    }
+    
+    .sticky-nav-btn span.btn-row2 {
+        font-size: 11px;
+        display: block;
     }
     
     .commercial-cta-block {
-        padding: 30px 20px;
+        padding: 24px 16px;
+    }
+    .marketplace-buttons-wrap {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .btn-minimal-cta {
+        width: 100%;
     }
 }
 </style>
@@ -823,21 +896,25 @@ img {
 
 <div class="sticky-nav-container">
     <div class="section-inner">
-        <div class="sticky-nav-wrapper">
-            <div class="nav-utility-top">
-                <a href="/all-products" class="minimal-all-products-link">
-                    All Products 
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <div class="sticky-nav">
+            <nav class="nav-links-cluster">
+                <a href="#precision-ph" class="sticky-nav-btn">
+                    <span class="btn-row1">1. เครื่องวัด</span>
+                    <span class="btn-row2">pH เฉพาะทาง</span>
                 </a>
-            </div>
-            <div class="sticky-nav">
-                <nav class="nav-links-cluster">
-                    <a href="#precision-ph" class="sticky-nav-btn">1. เครื่องวัด pH เฉพาะทาง</a>
-                    <a href="#multi-function" class="sticky-nav-btn">2. เครื่องวัดมัลติฟังก์ชั่น</a>
-                    <a href="#food-liquid" class="sticky-nav-btn">3. เครื่องวัดค่าอาหารและครีม</a>
-                    <a href="#chlorine-meter" class="sticky-nav-btn">4. เครื่องวัดค่าคลอรีน</a>
-                </nav>
-            </div>
+                <a href="#multi-function" class="sticky-nav-btn">
+                    <span class="btn-row1">2. เครื่องวัด</span>
+                    <span class="btn-row2">มัลติฟังก์ชั่น</span>
+                </a>
+                <a href="#food-liquid" class="sticky-nav-btn">
+                    <span class="btn-row1">3. เครื่องวัดค่า</span>
+                    <span class="btn-row2">อาหารและครีม</span>
+                </a>
+                <a href="#chlorine-meter" class="sticky-nav-btn">
+                    <span class="btn-row1">4. เครื่องวัด</span>
+                    <span class="btn-row2">ค่าคลอรีน</span>
+                </a>
+            </nav>
         </div>
     </div>
 </div>
@@ -900,9 +977,14 @@ img {
                 </ul>
 
                 <h4>กรณีการใช้งาน (Use Case)</h4>
-                <p class="editorial-desc" style="font-size: 14px;">
-                    **การสอบเทียบเพื่อวิเคราะห์น้ำกลั่นในห้องแล็บ:** นักวิจัยใช้ pH-818 ควบคู่กับชุด Calibrate Full Set ในบรรจุภัณฑ์เพื่อตรวจเช็กความคลาดเคลื่อนระดับทศนิยมสองตำแหน่ง ก่อนเริ่มการทดลองเคมีสังเคราะห์ที่ละเอียดอ่อน
+                <p class="editorial-desc">
+                    <strong>การตรวจสอบค่าน้ำดื่มอัลคาไลน์เพื่อสุขภาพ:</strong> ในกระบวนการผลิตและตรวจสอบน้ำด่างหรือน้ำดื่มอัลคาไลน์ (Alkaline Water) การควบคุมค่า pH ให้มีความเสถียรและแม่นยำตามมาตรฐานที่ตั้งไว้ถือเป็นสิ่งสำคัญที่สุด วิศวกรควบคุมคุณภาพใช้เครื่องวัดรุ่น pH-818 ในการตรวจสอบและยืนยันค่าความเป็นด่างที่เหมาะสม เพื่อให้มั่นใจในโครงสร้างโมเลกุลน้ำและสารอาหารที่ครบถ้วนก่อนส่งต่อไปยังขั้นตอนบรรจุภัณฑ์
                 </p>
+                
+                <a href="https://unimercegroup.com/vitev-alkaline-water" class="btn-seo-learnmore">
+                    เรียนรู้เพิ่มเติมเกี่ยวกับระบบน้ำดื่มอัลคาไลน์ 
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
 
                 <div class="main-product-img" style="margin-top: 24px;">
                     <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780975057/ph_818_pen_type_full_set_includeing_calibration_solution_white_background_miodyc.jpg" alt="pH-818 Full Set Box" />
@@ -926,20 +1008,20 @@ img {
         <div class="editorial-head" style="margin-bottom: 20px;">
             <p class="editorial-kicker">Versatile Multi-Parameter Testing</p>
             <p class="editorial-desc">
-                ระบบตรวจวัดแบบองค์รวมที่จัดกลุ่มข้อมูล use case ของการตรวจสอบระบบน้ำไว้อย่างครบถ้วน เพื่ออำนวยความสะดวกให้ผู้ใช้งานที่ต้องการวิเคราะห์หลายตัวแปรในคราวเดียว โดยไม่ต้องพกพาเครื่องมือหลายชิ้น ช่วยประหยัดเวลาและค่าใช้จ่ายในภาคปฏิบัติการได้อย่างมหาศาล
+                ระบบตรวจวัดแบบองค์รวมที่จัดกลุ่มข้อมูล use case ของการตรวจสอบระบบน้ำไว้อย่างครบถ้วน เพื่ออำนวยความสะดวกให้ผู้ใช้งานที่ต้องการวิเคราะห์หลายตัวแปรในคราวเดียว โดยไม่ต้องพกพาเครื่องมือหลายชิ้น ช่วยประหยัดเวลาและค่าใช้จ่ายในภาคปฏิบัติการได้อย่างมหาศาล รุ่นเหล่านี้รองรับฟังก์ชันสูงสุดถึง 10 ฟังก์ชั่น มีให้เลือกหลายรุ่นตามความต้องการใช้งานของแต่ละอุตสาหกรรม
             </p>
         </div>
         
         <div class="brix-container">
             <div class="brix-row">
                 <div class="brix-img-wrap">
-                    <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780975132/JQ-006_10_in_1_model_white_background_in1jth.jpg" alt="JQ-006 10 in 1 Tester" />
+                    <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780975132/JQ-006_10_in_1_model_white_background_in1jth.jpg" alt="JQ-006 Multi Parameter Tester" />
                 </div>
                 <div class="brix-content">
                     <span class="card-meta-tag">Flagship Multi-Parameter</span>
-                    <h5>เครื่องวัดคุณภาพน้ำมัลติฟังก์ชั่น 10 in 1</h5>
-                    <p class="editorial-desc" style="font-size: 14.5px; margin-bottom: 12px;">
-                        ที่สุดแห่งความคุ้มค่าและครบครันในหนึ่งเดียว เครื่องวัดค่าน้ำและเครื่องวัดคุณภาพน้ำรุ่นเรือธงนี้ รวมความสามารถในการตรวจวัดดัชนีสำคัญ 10 ชนิดไว้ในแผงวงจรและเซนเซอร์ชุดเดียวอย่างแม่นยำ ไม่ว่าจะเป็นการวัด pH, TDS, EC, Salt, S.G., ORP, Temperature รวมถึงค่าเฉพาะทางอื่น ๆ ทำให้คุณไม่ต้องซื้อเครื่องมือวัดแยกประเภทให้ซับซ้อน เหมาะอย่างยิ่งสำหรับการประเมินภาพรวมสภาพน้ำอย่างรวดเร็วและเบ็ดเสร็จ
+                    <h5>เครื่องวัดคุณภาพน้ำมัลติฟังก์ชั่นประสิทธิภาพสูง</h5>
+                    <p class="editorial-desc">
+                        ที่สุดแห่งความคุ้มค่าและครบครันในหนึ่งเดียว เครื่องวัดค่าน้ำและเครื่องวัดคุณภาพน้ำรุ่นเรือธงนี้ รวมความสามารถในการตรวจวัดดัชนีสำคัญไว้ในแผงวงจรและเซนเซอร์ชุดเดียวอย่างแม่นยำ ไม่ว่าจะเป็นการวัด pH, TDS, EC, Salt, S.G., ORP, Temperature รวมถึงค่าเฉพาะทางอื่น ๆ ทำให้คุณไม่ต้องซื้อเครื่องมือวัดแยกประเภทให้ซับซ้อน เหมาะอย่างยิ่งสำหรับการประเมินภาพรวมสภาพน้ำอย่างรวดเร็วและเบ็ดเสร็จ
                     </p>
                     <ul class="feature-bullet-list" style="margin-bottom: 0;">
                         <li><strong>การประยุกต์ใช้งาน:</strong> งานดูแลตู้ปลาทะเลและไม้น้ำราคาแพง, สวนน้ำและสระว่ายน้ำ DIY, ระบบน้ำปุ๋ยเกษตรกรรมไฮโดรโปนิกส์แนวตั้ง</li>
@@ -955,7 +1037,7 @@ img {
                 <div class="brix-content">
                     <span class="card-meta-tag">Eco Essential Series</span>
                     <h5>เครื่องวัดคุณภาพน้ำ รุ่นเริ่มต้น วัดค่าได้หลากหลาย ในราคาที่จับต้องง่าย</h5>
-                    <p class="editorial-desc" style="font-size: 14.5px; margin-bottom: 12px;">
+                    <p class="editorial-desc">
                         ออกแบบมาเพื่อมอบความคุ้มค่าสูงสุดสำหรับผู้ที่ต้องการเริ่มต้นใช้งานเครื่องวัดค่าน้ำที่ได้มาตรฐาน โดยไม่จำเป็นต้องลงทุนสูง เครื่องรุ่นนี้รวบรวมฟังก์ชันพื้นฐานที่จำเป็น 5 ค่าหลัก (5-in-1) เอาไว้ครบถ้วน บอดี้มีความเพรียวบาง น้ำหนักเบา พกพาสะดวกไปได้ทุกหน้างาน ชิปประมวลผลภายในตอบสนองไว อ่านค่าได้เสถียรและทนทาน เหมาะสำหรับเจ้าของกิจการหรือช่างเทคนิคที่ต้องการความคล่องตัวในการเช็กค่าน้ำประจำวัน
                     </p>
                     <ul class="feature-bullet-list" style="margin-bottom: 0;">
@@ -986,9 +1068,9 @@ img {
                 </div>
             </div>
 
-            <div class="food-flow-card standard-grid">
+            <div class="food-flow-card full-width-gallery-layout">
                 <div class="food-flow-img-box">
-                    <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780976891/8_ph_tester_for_thick_liquid_cream_or_food_svtan4.jpg" alt="Application Use Case Grid" />
+                    <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780976891/8_ph_tester_for_thick_liquid_cream_or_food_svtan4.jpg" alt="Application Use Case Grid 1000px Width" />
                 </div>
                 <div class="food-flow-text">
                     <h4>ขอบข่ายการนำไปใช้งานเพื่อประสิทธิภาพการควบคุมคุณภาพ</h4>
@@ -996,13 +1078,13 @@ img {
                 </div>
             </div>
 
-            <div class="food-flow-card standard-grid">
-                <div class="food-flow-img-box">
-                    <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780976816/ph_tester_for_thick_liquid_cream_or_food_001_msgx5k.jpg" alt="Product Aesthetics Angle view" />
-                </div>
+            <div class="food-flow-card split-right-img">
                 <div class="food-flow-text">
                     <h4>กลุ่มอุตสาหกรรมเป้าหมายและการยกระดับจากระบบกะเกณฑ์</h4>
-                    <p>เครื่องวัดรุ่นนี้เป็นที่ต้องการอย่างมากในอุตสาหกรรมผลิตเครื่องสำอาง โลชั่นบำรุงผิว โรงงานซอสปรุงรส ผลิตภัณฑ์นมและชีส รวมถึงกลุ่มอาหารแปรรูปบรรจุเสร็จ ตัวอย่างการประยุกต์ใช้เช่น ในการผลิตน้ำแกงส้มสำเร็จรูปบรรจุถุง ช่างเทคนิคจะใช้เครื่องนี้วัดน้ำแกงส้มและวัดค่าต่างๆ เพื่อควบคุมระดับความเปรี้ยวและกรดให้ออกมาคงที่สม่ำเสมอตามมาตรฐานรสชาติเดิมทุกครั้ง แทนการใช้ทักษะความชำนาญส่วนบุคคลในการชิมหรือกะเอาด้วยสายตา ซึ่งช่วยเปลี่ยนผ่านโรงงานสู่ระบบมาตรฐานสากล</p>
+                    <p>เครื่องวัดรุ่นนี้เป็นที่ต้องการอย่างมากในอุตสาหกรรมผลิตเครื่องสำอาง โลชั่นบำรุงผิว โรงงานซอสปรุงรส ผลิตภัณฑ์นมและชีส รวมถึงกลุ่มอาหารแปรรูปบรรจุเสร็จ ตัวอย่างการประยุกต์ใช้เช่น ในระบบการผลิตของโรงงานทำน้ำจิ้ม หรือน้ำแกง ต่างๆ ที่ต้องการความเปรี้ยวและระดับกรดสม่ำเสมอ ช่างเทคนิคจะใช้เครื่องนี้วัดค่าต่างๆ เพื่อควบคุมระดับโครงสร้างทางเคมีของรสชาติให้ออกมาคงที่สม่ำเสมอตามมาตรฐานเดิมทุกครั้ง แทนการใช้ทักษะความชำนาญส่วนบุคคลในการชิมหรือกะเอาด้วยสายตา ซึ่งช่วยเปลี่ยนผ่านโรงงานสู่ระบบมาตรฐานสากล</p>
+                </div>
+                <div class="food-flow-img-box">
+                    <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780976816/ph_tester_for_thick_liquid_cream_or_food_001_msgx5k.jpg" alt="Product Aesthetics Angle view" />
                 </div>
             </div>
 
@@ -1011,8 +1093,8 @@ img {
                     <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780976858/pH-12_15_ph_tester_for_thick_liquid_cream_or_food_k7chxh.jpg" alt="In-Meat Probe Testing Focus" />
                 </div>
                 <div class="food-flow-text">
-                    <h4>ความจำเป็นวิกฤตในการวัดเนื้อสัตว์และประเมินความสดใหม่</h4>
-                    <p>การวัดเนื้อสัตว์ในโรงงานแปรรูปอาหารสดและเนื้อแช่แข็งมีความจำเป็นทางวิทยาศาสตร์อย่างมาก เนื่องจากหลังสัตว์ล้ม ค่า pH ในกล้ามเนื้อจะเกิดการเปลี่ยนแปลงตามธรรมชาติ ซึ่งส่งส่งผลโดยตรงต่อความสามารถในการอุ้มน้ำ สีสัน และความนุ่มของเนื้อ การตรวจวัดค่า pH ด้วยเครื่องมือเฉพาะทางช่วยให้โรงงานตรวจสอบความสดใหม่ คาดการณ์อายุการเก็บรักษา และป้องกันการเจริญเติบโตของเชื้อแบคทีเรียอันตรายได้อย่างทันท่วงที เป็นการการันตีความปลอดภัยก่อนส่งถึงมือผู้บริโภค</p>
+                    <h4>ความจำเป็นในการวัดเนื้อสัตว์และประเมินความสดใหม่</h4>
+                    <p>การวัดค่า pH ของเนื้อสัตว์ในโรงงานแปรรูปอาหารสดและเนื้อแช่แข็งมีความสำคัญอย่างยิ่ง เนื่องจากหลังการชำแหละ ค่า pH ในกล้ามเนื้อจะเปลี่ยนแปลงไปตามธรรมชาติ ซึ่งส่งผลโดยตรงต่อคุณภาพของเนื้อ ไม่ว่าจะเป็นความสามารถในการอุ้มน้ำ สีสัน และความนุ่ม การตรวจวัดค่า pH ด้วยเครื่องมือเฉพาะทางช่วยให้โรงงานสามารถประเมินความสด คาดการณ์อายุการเก็บรักษา และเฝ้าระวังความเสี่ยงจากการเจริญเติบโตของเชื้อจุลินทรีย์ที่เป็นอันตรายได้อย่างมีประสิทธิภาพ ช่วยสร้างความมั่นใจในคุณภาพและความปลอดภัยของผลิตภัณฑ์ก่อนถึงมือผู้บริโภค</p>
                 </div>
             </div>
 
@@ -1060,7 +1142,7 @@ img {
                 </ul>
 
                 <h4>Use Case ในชีวิตจริง</h4>
-                <p class="editorial-desc" style="font-size: 14px;">
+                <p class="editorial-desc" style="font-size: 15px;">
                     **การตรวจสอบน้ำในสระว่ายน้ำโอลิมปิก:** ทีมช่างเทคนิคสุ่มตักตัวอย่างน้ำจากมุมสระสี่ด้านในช่วงเช้า เพื่อวัดปริมาณคลอรีนตกค้างให้อยู่ในเกณฑ์มาตรฐาน 1.0 - 3.0 ppm ก่อนเปิดให้ประชาชนเข้าใช้งานเพื่อความปลอดภัยของผิวหนังและดวงตา
                 </p>
             </div>
@@ -1070,10 +1152,19 @@ img {
             <h3 class="cta-main-title">สนใจสั่งซื้อและขอคำปรึกษาทางเทคนิคเพื่อภาคธุรกิจ</h3>
             <div class="marketplace-buttons-wrap">
                 <a href="mailto:contact@unimercegroup.com?subject=สอบถามข้อมูลเครื่องวัดคุณภาพน้ำอุตสาหกรรม" class="btn-minimal-cta btn-minimal-email">ส่งอีเมลติดต่อฝ่ายขาย (Corporate Direct)</a>
-                <a href="https://shopee.co.th/shop/123173321" target="_blank" class="btn-minimal-cta btn-minimal-shopee">สั่งซื้อผ่านระบบ Shopee Store</a>
-                <a href="https://www.lazada.co.th" target="_blank" class="btn-minimal-cta btn-minimal-lazada">สั่งซื้อผ่านระบบ Lazada Store</a>
+                <a href="https://shopee.co.th/shop/123173321" target="_blank" class="btn-minimal-cta btn-minimal-corporate">สั่งซื้อผ่านระบบ Unimerce Shopee</a>
+                <a href="https://www.lazada.co.th" target="_blank" class="btn-minimal-cta btn-minimal-midnight">สั่งซื้อผ่านระบบ Unimerce Lazada</a>
             </div>
         </div>
+        
+        <div class="bottom-all-products-zone">
+            <a href="/all-products" class="btn-bottom-all-products">
+                <span>เรียกดูรายการสินค้าทั้งหมด</span>
+                <span style="font-weight: 600;">All Products</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+        
     </div>
 </section>
 
@@ -1087,7 +1178,6 @@ img {
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // โหลดไฟล์โครงสร้าง Layout กลาง (Header/Footer) ร่วมกับระบบหลัก
     const headerBox = document.getElementById('header-placeholder');
     if(headerBox) {
         fetch('/header.html')
@@ -1104,7 +1194,6 @@ document.addEventListener("DOMContentLoaded", function() {
             .catch(err => console.log("Footer loading skipped or local mode active."));
     }
 
-    // ฟังก์ชันเปิด-ปิดปุ่ม Scroll To Top ตามพฤติกรรมการเลื่อนหน้าจอ
     const scrollTopBtn = document.getElementById("scrollTopBtn");
     window.addEventListener("scroll", function() {
         if (window.pageYOffset > 400) {
