@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<link rel="icon" type="image/jpeg" href="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780894829/favicon.ico_ne14ft.jpg" />
+<link rel="icon" type="image/jpeg" href="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780903215/favicon.ico_vnm1uh.png" />
 
 <title>UNIMERCE</title>
 
@@ -69,13 +69,13 @@
 }
 
 /* =========================
-   MENU DROPDOWN (Clean URLs)
+   MENU DROPDOWN (Clean URLs & Direct Links)
 ========================= */
 .menu-dropdown {
   position: fixed;
   top: 70px;
   right: 24px;
-  width: 240px;
+  width: 280px;
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -106,6 +106,30 @@
 .menu-dropdown a:hover {
   background: #f5f5f5;
   transform: translateX(3px);
+}
+
+/* เส้นคั่นแบ่งกลุ่มเมนูให้ดูเป็นระเบียบเรียบร้อย */
+.menu-divider {
+  height: 1px;
+  background: #eee;
+  margin: 6px 14px;
+}
+
+/* หัวข้อกลุ่มย่อยย่อยภายในเมนู */
+.menu-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  padding: 6px 14px 2px;
+  font-weight: 500;
+}
+
+/* ขยับย่อหน้าสำหรับรายการย่อยใน Category */
+.menu-dropdown a.submenu-item {
+  padding-left: 24px;
+  font-size: 13.5px;
+  color: #333;
 }
 
 @keyframes fadeDown {
@@ -152,10 +176,19 @@
 
 <div class="menu-dropdown" id="menuDropdown">
   <a href="/">Home</a>
-  <a href="/products">All Products</a>
   <a href="/inventory">Inventory</a>
-  <a href="/vitev-water">Water Purification</a>
-  <a href="/aroma-systems">Aroma Systems</a>
+  <a href="/products">All Products</a>
+  
+  <div class="menu-divider"></div>
+  <div class="menu-section-title">Categories</div>
+  
+  <a href="vitev-premium-alkaline-water.html" class="submenu-item">Vitev Premium Alkaline Water</a>
+  <a href="water-quality-tools.html" class="submenu-item">Water Quality Tools</a>
+  <a href="#" class="submenu-item">Measurement Tools</a>
+  <a href="/aroma-systems" class="submenu-item">Aroma Systems</a>
+  
+  <div class="menu-divider"></div>
+  <a href="#contact" onclick="document.getElementById('menuDropdown').classList.remove('active');">Contact</a>
 </div>
 
 <script>
