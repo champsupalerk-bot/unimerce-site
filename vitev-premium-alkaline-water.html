@@ -21,7 +21,7 @@
             --accent-blue: #2A75A0;       /* Vitev Premium Blue */
             --bg-light: #F8FAFC;          /* สีพื้นหลังสลับ Section ที่ 1 */
             --bg-tint: #F0F4F8;           /* สีพื้นหลังสลับ Section ที่ 2 */
-            --text-dark: #2D3748;         /* ขนาดและสีอ่านง่ายเท่าหน้าแชท Gemini */
+            --text-dark: #2D3748;          /* ขนาดและสีอ่านง่ายเท่าหน้าแชท Gemini */
             --text-light: #64748B;
             --border-color: #E2E8F0;
             --pure-white: #FFFFFF;
@@ -81,7 +81,7 @@
             background-color: var(--pure-white);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
-            top: 0; /* หรือปรับตามความสูง Header เดิมของคุณ */
+            top: 0; /* จะถูกคำนวณผ่าน JS หากมี Header ด้านบน */
             z-index: 999;
         }
 
@@ -559,12 +559,12 @@
             transform: translateX(4px);
         }
 
-        /* --- Footer Placeholder Section --- */
+        /* --- Footer Placement --- */
         .global-footer-layout {
             width: 100%;
         }
 
-        /* --- Back To Top Mechanics (ถอดดีไซน์จากหน้าเดิมของคุณ) --- */
+        /* --- Back To Top Mechanics --- */
         #backToTopBtn {
             position: fixed;
             bottom: 30px;
@@ -863,134 +863,158 @@
                             <div class="flow-node-num">1</div>
                             <div class="flow-node-text">
                                 <h5>DROP (หย่อนแท่งอินฟิวเซอร์)</h5>
-                                <p>เตรียมบรรจุน้ำดื่มสะอาดลงในขวดพกพาประมาณครึ่งหนึ่ง จากนั้นหย่อนแท่งแร่พกพา MI ลงไป แล้วจึงเติมน้ำเพิ่มให้เต็มขวดในสัดส่วนปริมาณประมาณ 500 มิลลิลิตร</p>
+                                <p>เตรียมบรรจุน้ำดื่มสะอาดลงในขวดพกพาประมาณครึ่งหนึ่ง จากนั้นหย่อนแท่งแร่พกพา MI ลงไป แล้วจึงเติมน้ำเพิ่มให้เต็มขวดในสัดส่วนปริมาณประสงค์</p>
                             </div>
                         </div>
 
                         <div class="flow-node">
                             <div class="flow-node-num">2</div>
                             <div class="flow-node-text">
-                                <h5>SWIRL (หมุนแกว่งกระตุ้นประจุ)</h5>
-                                <p>ทำการหมุนวนหรือแกว่งขวดน้ำเบาๆ เพื่อให้มวลน้ำไหลผ่านชั้นกรองผลึกแร่ธาตุภายในแกนอินฟิวเซอร์ ซึ่งเป็นขั้นตอนการกระตุ้นปฏิกิริยาเคมีไฟฟ้าธรรมชาติ</p>
+                                <h5>SWIRL (เขย่ากระตุ้นการแตกตัว)</h5>
+                                <p>ปิดฝาขวดน้ำให้สนิท ทำการเขย่าหรือหมุนวนขวดน้ำเบาๆ เป็นเวลา 15-30 วินาที เพื่อกระตุ้นประจุผิวสัมผัสแร่ให้ทำปฏิกิริยากับโมเลกุลน้ำอย่างทั่วถึง</p>
                             </div>
                         </div>
 
                         <div class="flow-node">
                             <div class="flow-node-num">3</div>
                             <div class="flow-node-text">
-                                <h5>DRINK (พร้อมดื่มเพื่อความสดชื่น)</h5>
-                                <p>ตั้งพักทิ้งไว้ประมาณ 15 นาที เพื่อให้ประจุไฮโดรเจนและการกระจายตัวของค่า pH เข้าสู่เกณฑ์สมดุลที่สมบูรณ์ที่สุด จากนั้นสามารถเปิดดื่มเพื่อรับความสดชื่นได้ทันที</p>
+                                <h5>DRINK (ดื่มรับความสดชื่นสมดุล)</h5>
+                                <p>ทิ้งไว้ประมาณ 1-2 นาที คุณจะได้น้ำดื่มแร่อัลคาไลน์ธรรมชาติที่มีค่า pH บาลานซ์สม่ำเสมอ พร้อมโครงสร้างไฮโดรเจนที่พร้อมดูดซึมทันที</p>
                             </div>
                         </div>
                     </div>
-                    <div class="flow-image-anchor">
-                        <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780995604/05_drop_swirl_drink_vatohq.jpg" alt="Vitev Drop Swirl Drink Campaign Action Image">
+
+                    <div class="tech-double-row">
+                        <div class="tech-mini-card">
+                            <h4>Time-Released Ball</h4>
+                            <p>ลูกบอลเซรามิกควบคุมการปลดปล่อยประจุไอออนแร่ธาตุ ช่วยให้น้ำคงสภาวะความเสถียรและเหมาะสมยาวนาน</p>
+                        </div>
+                        <div class="tech-mini-card">
+                            <h4>Sub-Cluster Tech</h4>
+                            <p>ช่วยลดขนาดกลุ่มโมเลกุลน้ำให้เล็กลง เพื่อเพิ่มประสิทธิภาพและอัตราการซึมซับเข้าสู่เซลล์ร่างกายได้อย่างว่องไว</p>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="tech-double-row">
-                <div class="tech-mini-card">
-                    <h4>คุณประโยชน์เชิงโครงสร้างของแร่แมกนีเซียมไอออน</h4>
-                    <p>แมกนีเซียมจัดเป็นหนึ่งในสารอาหารหลักที่มีความจำเป็นอย่างยิ่งต่อความสมบูรณ์ของระบบชีวภาพภายใน โดยมีส่วนสนับสนุนกระบวนการทำงานของระบบกล้ามเนื้อและเนื้อเยื่อตามธรรมชาติ</p>
-                    <p>การบริโภคแมกนีเซียมที่ผ่านการแตกตัวให้อยู่ในรูปประจุสารละลายไอออน (Ionic Form) จะช่วยให้ร่างกายสามารถดูดซึมและนำไปหมุนเวียนเพื่อประคองสมดุลระดับอิเล็กโทรไลต์ได้มีประสิทธิภาพมากกว่าสภาวะทั่วไป</p>
-                    <div class="tech-card-graphic">
-                        <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780995661/03_minerals_oafgl7.jpg" alt="Vitev Premium Natural Active Mineral Mix">
-                    </div>
-                </div>
-
-                <div class="tech-mini-card">
-                    <h4>รอบวงจรการใช้งานและการบำรุงรักษาถนอมสารกรอง</h4>
-                    <p>แท่งน้ำแร่อัลคาไลน์ MI ถูกพัฒนาขึ้นบนฐานความคุ้มค่าระยะยาว โดยมีรอบอายุการใช้งานยาวนานถึง 3 เดือน หรือแปรค่าประสิทธิภาพการกรองรวมอยู่ที่ปริมาณ 525 ลิตร (เทียบเท่ารอบการเติมซ้ำประมาณ 750 ครั้ง ของขวดน้ำพกพาขนาดมาตรฐาน)</p>
-                    <p><strong>ข้อแนะนำการดูแลรักษา:</strong> เพื่อรักษาสุขอนามัยที่ดี ควรนำแท่งอินฟิวเซอร์ออกมารูปผ่านน้ำสะอาดและตั้งผึ่งลมให้แห้งสนิทอย่างน้อยสัปดาห์ละ 1 ครั้ง เพื่อลดการสะสมของคราบตะกอนแคลเซียมตามธรรมชาติ</p>
-                    <div class="tech-card-graphic">
-                        <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780995716/06_750_refills_gr5tc4.jpg" alt="Vitev 750 Refills Eco Lifespan Framework">
-                    </div>
-                </div>
-            </div>
-
         </div>
     </section>
 
     <div class="gate-utility-section">
         <div class="container">
             <a href="https://unimercegroup.com" class="minimal-arrow-btn">
-                <span>กลับสู่หน้าหลักและผลิตภัณฑ์ทั้งหมด</span>
-                <span class="arrow-symbol">&rarr;</span>
+                <span>กลับสู่หน้ารวมสินค้าทั้งหมด</span>
+                <span class="arrow-symbol">→</span>
             </a>
         </div>
     </div>
 
     <div class="global-footer-layout"></div>
 
-    <button id="backToTopBtn" title="Go to top" onclick="actionScrollTop()">
+    <button id="backToTopBtn" title="Go to top" onclick="scrollToTop()">
         <svg viewBox="0 0 24 24">
-            <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>
+            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
         </svg>
     </button>
 
     <script>
-        // Smooth Target Scrolling Mechanics (แก้ไขจุดบั๊กเลื่อนจอดิ่งไปหยุดตรงตำแหน่งหัวข้อพอดี)
-        function scrollAnchor(event, sectionId) {
-            event.preventDefault();
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) {
-                // คำนวณความสูงเมนูบาร์ 1x4 เพื่อไม่ให้ขอบบนบังหัวข้อ
-                const navBarOffset = 80; 
-                const elementTopPosition = targetSection.getBoundingClientRect().top;
-                const absoluteOffsetPosition = elementTopPosition + window.pageYOffset - navBarOffset;
+        // 1. CONFIGURATION: กำหนด path ของไฟล์ Header และ Footer ประจำเว็บของคุณที่นี่
+        const HEADER_PATH = 'header.html'; 
+        const FOOTER_PATH = 'footer.html';
 
-                window.scrollTo({
-                    top: absoluteOffsetPosition,
-                    behavior: "smooth"
+        // 2. FETCH MECHANICS: ฟังก์ชันโหลดชิ้นส่วนเว็บเข้ามาประกอบอัตโนมัติ
+        document.addEventListener("DOMContentLoaded", function() {
+            // โดดร่มไปดึง Header
+            fetch(HEADER_PATH)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response for Header was not ok');
+                    return response.text();
+                })
+                .then(data => {
+                    document.querySelector(".global-header-layout").innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error loading the header:', error);
+                    // Fallback เผื่อไว้แสดงชื่อแบรนด์แบบคลีนในระบบหลังบ้าน
+                    document.querySelector(".global-header-layout").innerHTML = `<div style="padding:20px; background:#152535; color:#fff; font-weight:600; text-align:center;">UNIMERCE GROUP</div>`;
                 });
+
+            // โดดร่มไปดึง Footer
+            fetch(FOOTER_PATH)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response for Footer was not ok');
+                    return response.text();
+                })
+                .then(data => {
+                    document.querySelector(".global-footer-layout").innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error loading the footer:', error);
+                });
+        });
+
+        // 3. SMOOTH SCROLL MECHANICS: ระบบเลื่อนสไลด์หน้าเพจแบบนุ่มนวล
+        function scrollAnchor(event, targetId) {
+            event.preventDefault();
+            const targetSection = document.getElementById(targetId);
+            if (!targetSection) return;
+
+            // คืนค่า Offset เผื่อไว้กรณี Sticky Nav มีการซ้อนทับกัน
+            const navHeight = document.querySelector('.tool-sticky-nav').offsetHeight || 60;
+            const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - navHeight + 2;
+
+            window.scrollTo({
+                top: targetPosition,
+                behavior: "smooth"
+            });
+        }
+
+        // 4. SCROLL INTERSECTION OBSERVER: อัปเดตสถานะ Active บนแถบเมนู 1 แถว 4 ปุ่ม ตามการมองเห็นจริง
+        const sections = document.querySelectorAll(".content-section");
+        const navItems = document.querySelectorAll(".nav-btn-item");
+
+        const observerOptions = {
+            root: null,
+            rootMargin: "-120px 0px -60px 0px", // ชดเชยจุดสายตาเผื่อหัวเมนูแบบ Sticky
+            threshold: 0.2
+        };
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const activeId = entry.target.getAttribute("id");
+                    navItems.forEach(item => {
+                        item.classList.remove("active");
+                        if (item.getAttribute("href") === `#${activeId}`) {
+                            item.classList.add("active");
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => sectionObserver.observe(section));
+
+        // 5. BACK TO TOP CONTROL: ระบบการทำงานของปุ่มกดขึ้นบนสุด
+        const backToTopBtn = document.getElementById("backToTopBtn");
+
+        window.onscroll = function() {
+            scrollProgressDetect();
+        };
+
+        function scrollProgressDetect() {
+            if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+                backToTopBtn.classList.add("show");
+            } else {
+                backToTopBtn.classList.remove("show");
             }
         }
 
-        // Action Top Scroll Trigger
-        function actionScrollTop() {
+        function scrollToTop() {
             window.scrollTo({
                 top: 0,
                 behavior: "smooth"
             });
         }
-
-        // Scroll Tracking Matrix (Auto Highlighting & Button States)
-        const uiSections = document.querySelectorAll('.content-section');
-        const uiNavButtons = document.querySelectorAll('.nav-btn-item');
-        const uiBackToTop = document.getElementById('backToTopBtn');
-
-        window.addEventListener('scroll', () => {
-            let activeId = '';
-            // เพิ่มความละเอียดจุดเช็คออฟเซ็ตไลน์ (120px) เพื่อความแม่นยำสูงขณะเลื่อนจอ
-            const triggerLinePosition = window.scrollY + 120; 
-
-            uiSections.forEach(section => {
-                const sectionOffsetTop = section.offsetTop;
-                const sectionTotalHeight = section.offsetHeight;
-
-                if (triggerLinePosition >= sectionOffsetTop && triggerLinePosition < sectionOffsetTop + sectionTotalHeight) {
-                    activeId = section.getAttribute('id');
-                }
-            });
-
-            // ปรับสีปุ่มไฮไลท์สีเข้มตามส่วนเนื้อหาแบบ Realtime
-            if (activeId) {
-                uiNavButtons.forEach(button => {
-                    button.classList.remove('active');
-                    if (button.getAttribute('href') === `#${activeId}`) {
-                        button.classList.add('active');
-                    }
-                });
-            }
-
-            // ควบคุมการแสดงผลของปุ่ม Back to Top
-            if (window.scrollY > 400) {
-                uiBackToTop.classList.add('show');
-            } else {
-                uiBackToTop.classList.remove('show');
-            }
-        });
     </script>
 </body>
 </html>
