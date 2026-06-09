@@ -1043,6 +1043,26 @@
                     document.querySelector(".global-header-layout").innerHTML = data;
                     // ทำการปรับค่าคำนวณตำแหน่งเมนูติดหนึบหลังจาก Header โหลดมาเสร็จสิ้น
                     adjustStickyNavPosition();
+
+                    /* ======================================================== */
+                    /* แก้ไขปุ่มแฮมเบอร์เกอร์กดไม่ติด (ผูก Event หลังโหลดเสร็จ)   */
+                    /* ======================================================== */
+                    const menuBtn = document.getElementById("menuBtn");
+                    const menuDropdown = document.getElementById("menuDropdown");
+
+                    if (menuBtn && menuDropdown) {
+                        menuBtn.addEventListener("click", function(e) {
+                            e.preventDefault();
+                            menuDropdown.classList.toggle("active");
+                        });
+
+                        // กดปิดเมื่อคลิกพื้นที่อื่นด้านนอกเมนูแบบเดียวกับหน้า index
+                        window.addEventListener("click", function(e) {
+                            if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+                                menuDropdown.classList.remove("active");
+                            }
+                        });
+                    }
                 })
                 .catch(error => {
                     console.error('Error loading the header:', error);
