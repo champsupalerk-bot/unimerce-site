@@ -30,6 +30,7 @@
 <meta name="twitter:title" content="UNIMERCE GROUP | คัดสรรเครื่องมือเพื่อสมดุลแห่งคุณภาพชีวิต" />
 <meta name="twitter:description" content="A curated system of essential tools. ค้นพบระบบกรองน้ำและเครื่องหอมอโรมาที่ออกแบบมาเพื่อความพอดีและยั่งยืน" />
 <meta name="twitter:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780633652/ULOGO_CLEAR_1060_jkvqqm.png" />
+
 <style>
 
 /* =========================
@@ -296,14 +297,142 @@ body{
    GRID
 ========================= */
 .grid{
-  max-width:1100px;
+  max-width:1000px;
   margin:0 auto;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:18px;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:22px;
+  align-items:start;
+}
+
+/* =========================
+   CARD (STYLE FROM PRODUCT PAGE)
+========================= */
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  justify-self: center;
+  width: 100%;
+  max-width: 280px;
 }
 
 .card{
+  background:#fff;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 4px 14px rgba(0,0,0,0.06);
+  border:1px solid #eee;
+  transition:0.2s ease;
+  width:100%;
+  box-sizing:border-box;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 24px rgba(0,0,0,0.10);
+}
+
+.card img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  display:block;
+  background:#f3f3f3;
+}
+
+.card .content{
+  padding:14px;
+  box-sizing:border-box;
+}
+
+.top-info{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  margin-bottom:8px;
+  gap:10px;
+}
+
+.sku{
+  font-size:14px;
+  font-weight:600;
+  color:#111;
+}
+
+.category{
+  font-size:11px;
+  color:#888;
+  text-align:right;
+}
+
+.name{
+  font-size:15px;
+  font-weight:600;
+  line-height:1.5;
+  margin-bottom:12px;
+  min-height:44px;
+}
+
+.bottom-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:end;
+  gap:10px;
+}
+
+.price-box{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.price-old{
+  font-size:13px;
+  color:#999;
+  text-decoration:line-through;
+}
+
+.price-new{
+  font-size:22px;
+  font-weight:700;
+  color:#111;
+  line-height:1;
+}
+
+.stock-box{
+  text-align:right;
+}
+
+.stock-label{
+  font-size:11px;
+  color:#999;
+  margin-bottom:2px;
+}
+
+.stock-value{
+  font-size:16px;
+  font-weight:600;
+  color:#111;
+}
+
+.loading{
+  text-align:center;
+  color:#888;
+  padding:40px;
+  grid-column:1/-1;
+}
+
+/* =========================
+   CATEGORY BUTTONS (INDEX ORIGINAL)
+========================= */
+.category-btn{
+  text-decoration:none;
+  color:inherit;
+  display:block;
+}
+
+.category-card {
   border:1px solid #eee;
   border-radius:16px;
   padding:22px;
@@ -311,30 +440,21 @@ body{
   background:#fff;
 }
 
-.card:hover{
+.category-card:hover {
   transform:translateY(-5px);
   border-color:#ddd;
   background:#f5f5f5;
 }
 
-.card h3{
+.category-card h3{
   font-size:16px;
   margin-bottom:8px;
 }
 
-.card p{
+.category-card p{
   font-size:13px;
   color:#666;
   line-height:1.6;
-}
-
-/* =========================
-   CATEGORY BUTTONS
-========================= */
-.category-btn{
-  text-decoration:none;
-  color:inherit;
-  display:block;
 }
 
 /* =========================
@@ -383,7 +503,6 @@ body{
 /* =========================
    SOCIAL BASE
 ========================= */
-
 .social{
   margin-top:20px;
   display:flex;
@@ -408,56 +527,15 @@ body{
 /* =========================
    BRAND COLORS
 ========================= */
-
-/* LINE */
-.social a.li{
-  background:#00C300;
-  color:#fff;
-  border:1px solid #00C300;
-}
-
-/* Facebook */
-.social a.fb{
-  background:#1877F2;
-  color:#fff;
-  border:1px solid #1877F2;
-}
-
-/* TikTok */
-.social a.tt{
-  background:#000;
-  color:#fff;
-  border:1px solid #000;
-}
-
-/* Instagram */
+.social a.li{ background:#00C300; color:#fff; border:1px solid #00C300; }
+.social a.fb{ background:#1877F2; color:#fff; border:1px solid #1877F2; }
+.social a.tt{ background:#000; color:#fff; border:1px solid #000; }
 .social a.ig{
-  background:radial-gradient(circle at 30% 110%,
-    #fdf497 0%,
-    #fd5949 45%,
-    #d6249f 60%,
-    #285AEB 90%);
-  color:#fff;
-  border:1px solid transparent;
+  background:radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+  color:#fff; border:1px solid transparent;
 }
-
-/* YouTube */
-.social a.yt{
-  background:#FF0000;
-  color:#fff;
-  border:1px solid #FF0000;
-}
-
-/* X (Twitter / X) */
-.social a.x{
-  background:#000;
-  color:#fff;
-  border:1px solid #000;
-}
-
-/* =========================
-   HOVER
-========================= */
+.social a.yt{ background:#FF0000; color:#fff; border:1px solid #FF0000; }
+.social a.x{ background:#000; color:#fff; border:1px solid #000; }
 
 .social a:hover{
   transform:translateY(-2px);
@@ -470,7 +548,7 @@ body{
 @media(max-width:768px){
 
   .hero-logo-wrap {
-    max-width: 280px; /* บีบขนาดโลโก้บริษัทลงอัตโนมัติเพื่อให้พอดีและสวยงามบนมือถือ */
+    max-width: 280px;
     margin: 20px 0;
   }
 
@@ -483,23 +561,37 @@ body{
   }
 
   .grid{
-    grid-template-columns:1fr 1fr;
-    gap:12px;
+    display:block;
+    column-count:2;
+    column-gap:12px;
   }
 
-  .card{
+  .card-link,
+  .category-btn{
+    break-inside: avoid;
+    margin-bottom:12px;
+    display:inline-block;
+    width:100%;
+  }
+
+  .card,
+  .category-card{
+    width:100%;
+  }
+
+  .category-card{
     padding:18px;
     border-radius:14px;
   }
 
-  .card h3{
-    font-size:14px;
-  }
+  .category-card h3{ font-size:14px; }
+  .category-card p{ font-size:12px; line-height:1.5; }
 
-  .card p{
-    font-size:12px;
-    line-height:1.5;
-  }
+  .card .content{ padding:12px; }
+  .name{ font-size:13px; min-height:auto; }
+  .price-new{ font-size:18px; }
+  .sku{ font-size:13px; }
+  .stock-value{ font-size:14px; }
 
   .menu-dropdown{
     width:calc(100% - 32px);
@@ -507,6 +599,13 @@ body{
     top:72px;
   }
 
+}
+
+@media(min-width:1024px){
+  .name{ font-weight:500; letter-spacing:0.2px; }
+  .price-new{ font-weight:600; }
+  .title{ font-weight:700; }
+  body{ font-weight:400; }
 }
 
 </style>
@@ -570,28 +669,28 @@ body{
   <div class="grid">
 
     <a href="vitev-premium-alkaline-water.html" class="category-btn">
-      <div class="card">
+      <div class="category-card">
         <h3>Vitev Premium Alkaline Water</h3>
         <p>Clean water systems for essential daily living.</p>
       </div>
     </a>
 
     <a href="water-quality-tools.html" class="category-btn">
-      <div class="card">
+      <div class="category-card">
         <h3>Water Quality Tools</h3>
         <p>Measurement instruments for environmental precision.</p>
       </div>
     </a>
 
     <a href="#" class="category-btn">
-      <div class="card">
+      <div class="category-card">
         <h3>Measurement Tools</h3>
         <p>Practical tools for modern daily applications.</p>
       </div>
     </a>
 
     <a href="/aroma-systems" class="category-btn">
-      <div class="card">
+      <div class="category-card">
         <h3>Aroma Systems</h3>
         <p>Environmental scent and lifestyle balance tools.</p>
       </div>
@@ -613,8 +712,11 @@ body{
 
   <div class="title">RECOMMENDED PRODUCTS</div>
 
-  <div class="textblock">
+  <div class="grid" id="recommend-grid">
+    <div class="loading">
+      Loading recommended products...
     </div>
+  </div>
 
 </section>
 
@@ -758,6 +860,102 @@ fetch("footer.html")
   .then(data => {
     document.getElementById("footer-placeholder").innerHTML = data;
   });
+
+/* =========================
+   FETCH & RENDER RECOMMENDED PRODUCTS
+========================= */
+const API = "https://script.google.com/macros/s/AKfycby0BIQMiM7mEoQrckKXXSYZAudz3sJDsEr87IT8hktGk8oXc4wqC4bbV8LusoVXufXKvQ/exec";
+const targetCodes = ["10001", "10002", "10003", "10006"];
+
+function cleanNumber(val) {
+  if (val === null || val === undefined) return 0;
+  if (typeof val === 'number') return val;
+  let str = String(val).replace(/,/g, '').trim();
+  if (str === "" || str === "-") return 0;
+  let parsed = parseFloat(str);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
+async function loadRecommendedProducts() {
+  try {
+    const res = await fetch(API, { method: "GET", mode: "cors", redirect: "follow" });
+    const jsonResult = await res.json();
+    
+    let rawProducts = [];
+    if(jsonResult.status === "success") {
+      rawProducts = jsonResult.data;
+    } else {
+      throw new Error(jsonResult.message);
+    }
+
+    // กรองและเรียงลำดับเฉพาะ 4 ชิ้นที่กำหนด
+    const recommendedProducts = rawProducts
+      .filter(p => targetCodes.includes(String(p.Item_Code || "").trim()))
+      .sort((a, b) => targetCodes.indexOf(String(a.Item_Code).trim()) - targetCodes.indexOf(String(b.Item_Code).trim()));
+
+    const grid = document.getElementById("recommend-grid");
+
+    if(recommendedProducts.length === 0) {
+      grid.innerHTML = '<div class="loading">No recommended products found.</div>';
+      return;
+    }
+
+    const htmlCards = recommendedProducts.map(p => {
+      const img = (p.image_link01 || "").trim();
+      const sku = p.Item_Code || '-';
+      const category = p.MainCategory || '-';
+      
+      let onhand = p.OnHand || '0';
+      if(onhand !== "-") {
+        onhand = cleanNumber(onhand).toLocaleString();
+      }
+
+      return `
+        <a href="productdetail.html?code=${sku}" class="card-link">
+          <div class="card">
+            <img 
+              src="${img}"
+              onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'"
+            />
+            <div class="content">
+              <div class="top-info">
+                <div class="sku">${sku}</div>
+                <div class="category">${category}</div>
+              </div>
+
+              <div class="name">
+                ${p.Description || '-'}
+              </div>
+
+              <div class="bottom-row">
+                <div class="price-box">
+                  <div class="price-old">
+                    ${p.ListPrice ? '฿' + p.ListPrice : ''}
+                  </div>
+                  <div class="price-new">
+                    ${p.PromotionPrice ? '฿' + p.PromotionPrice : '-'}
+                  </div>
+                </div>
+                <div class="stock-box">
+                  <div class="stock-label">คงเหลือ</div>
+                  <div class="stock-value">${onhand}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      `;
+    }).join('');
+
+    grid.innerHTML = htmlCards;
+
+  } catch(e) {
+    document.getElementById("recommend-grid").innerHTML =
+      '<div class="loading">Failed to master recommended products.</div>';
+  }
+}
+
+window.addEventListener("load", loadRecommendedProducts);
 
 </script>
 
