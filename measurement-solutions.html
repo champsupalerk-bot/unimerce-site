@@ -14,12 +14,12 @@
 <meta property="og:title" content="Measurement Solutions | UNIMERCE GROUP" />
 <meta property="og:description" content="เพราะคุณภาพงานที่ดี เริ่มต้นจากการวัดที่ถูกต้อง เปลี่ยนค่าที่มองไม่เห็นให้เป็นตัวเลขที่จับต้องได้เพื่อมาตรฐานสูงสุด" />
 <meta property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1781164970/lab_banner_jkohai.jpg" />
-<meta property="og:url" content="https://www.unimercegroup.com/measurement-solutions.html" />
+<meta property="og:url" content="https://www.unimercegroup.com/measurement-solutions" />
 <meta property="og:site_name" content="UNIMERCE GROUP" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght=200;300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 /* ==========================================
@@ -250,6 +250,12 @@ body {
     width: 100%;
     height: auto;
     object-fit: contain;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Micro-interaction Hover Image Effects (SEO Safe) */
+.img-pane img:hover {
+    transform: scale(1.03);
 }
 
 /* ==========================================
@@ -461,6 +467,24 @@ body {
    MOBILE RESPONSIVE CRISP OPTIMIZATION
    ========================================== */
 @media (max-width: 768px) {
+    /* ====================================================================
+       🎯 ชี้เป้าปรับฟอนต์ MOBILE: เปลี่ยนตัวเลขตรงนี้จุดเดียวเพื่อขยับฟอนต์ทั้งหน้าจอพร้อมกัน
+       ==================================================================== */
+    :root {
+        --mobile-font-size: 14.5px;
+    }
+
+    body, 
+    .text-pane, 
+    .manifesto-text, 
+    .premium-bullet li, 
+    .tacho-card p, 
+    .tacho-comparison-table td { 
+        font-size: var(--mobile-font-size) !important; 
+        line-height: 1.8;
+    }
+    /* ==================================================================== */
+
     .hero-banner {
         min-height: 420px;
         padding: 90px 20px 70px;
@@ -482,10 +506,7 @@ body {
         padding: 60px 20px;
     }
 
-    /* Core Compact Mobile Intro Font Layout (Strictly 8-10 lines max) */
     .manifesto-text {
-        font-size: 15.5px;
-        line-height: 1.75;
         text-align: justify;
     }
 
@@ -499,27 +520,25 @@ body {
         gap: 30px;
     }
 
-    /* Perfectly Expanding Img Panels */
+    /* Perfectly Centering and Expanding Img Panels for Mobile */
     .img-pane {
         width: 100%;
         max-width: 100%;
         flex: 0 0 auto;
         order: -1; 
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+        margin: 0 auto 15px auto;
     }
 
     .img-pane img {
-        width: 100%;
-        max-width: 100%;
+        width: auto;
+        max-width: 260px; /* จัดขนาดให้สมดุลไม่ล้นจอและอยู่กึ่งกลาง */
         height: auto;
-    }
-
-    .text-pane {
-        font-size: 15.5px;
-        line-height: 1.8;
-    }
-
-    .premium-bullet li {
-        font-size: 15px;
+        margin: 0 auto;
+        display: block;
     }
 
     .tachometer-split-zone {
@@ -551,7 +570,7 @@ body {
     <div class="hero-content">
         <div class="hero-tag">Adaptive Essential Systems</div>
         <h1>เพราะคุณภาพงานที่ดี<br>เริ่มต้นจากการวัดที่ถูกต้อง</h1>
-        
+         
         <div class="cta-wrapper">
             <a href="https://shopee.co.th/shop/123173321" target="_blank" class="btn-minimal btn-trans-white">
                 SHOPEE SHOP
@@ -569,7 +588,7 @@ body {
             <div class="quote-en">"If you cannot measure it, you cannot improve it."</div>
             <div class="quote-th">"หากคุณไม่สามารถวัดมันได้ คุณก็ไม่สามารถพัฒนามันได้"</div>
         </div>
-        
+         
         <div class="manifesto-text">
             <p>การตัดสินใจจากความรู้สึกเพียงอย่างเดียวอาจนำไปสู่ความคลาดเคลื่อนได้เสมอ <strong>UNIMERCE</strong> จึงมุ่งมั่นเปลี่ยนสิ่งที่คุณมองไม่เห็นให้กลายเป็นข้อมูลตัวเลขที่จับต้องได้ เพื่อลดความผิดพลาดและเพิ่มความแม่นยำสูงสุดในทุกกระบวนการทำงาน</p>
             <p>ไม่ว่าจะเป็นความชื้นสะสมเกินมาตรฐาน แสงสว่างที่ไม่เพียงพอ หรืออุณหภูมิที่สูงผิดปกติก่อนที่เครื่องจักรจะเสียหายจริง ข้อมูลการวัดที่ถูกต้องและรวดเร็วคือเครื่องมือสำคัญที่ช่วยให้คุณควบคุมคุณภาพ รักษามาตรฐาน และเพิ่มประสิทธิภาพขององค์กรได้อย่างยั่งยืน</p>
@@ -585,7 +604,7 @@ body {
                 <div class="text-pane">
                     <h2 class="tech-heading">Anemometer (เครื่องวัดความเร็วลม)</h2>
                     <p>การไหลเวียนของอากาศเป็นปัจจัยสำคัญที่ส่งผลต่อประสิทธิภาพของระบบระบายอากาศ ระบบปรับอากาศ (HVAC) และความปลอดภัยในพื้นที่ปิด การประเมินกระแสลมอย่างถูกต้องช่วยลดปัญหาความร้อนสะสมและลดการใช้พลังงานได้อย่างมีประสิทธิภาพ</p>
-                    
+                     
                     <ul class="premium-bullet">
                         <li><strong>การใช้งานหลัก:</strong> ตรวจสอบระบบท่อลม, งานติดตั้งระบบ HVAC, ห้องสะอาด (Clean Room) และงานด้านสิ่งแวดล้อม</li>
                         <li><strong>วิเคราะห์ผลลัพธ์:</strong> วัดความเร็วลม, อัตราการไหลของอากาศ (Air Flow), อุณหภูมิ และความชื้นได้ในเครื่องเดียว</li>
@@ -609,7 +628,7 @@ body {
                 <div class="text-pane">
                     <h2 class="tech-heading">LUX METER (เครื่องวัดความเข้มแสง)</h2>
                     <p>แสงสว่างที่เหมาะสมส่งผลโดยตรงต่อทั้งประสิทธิภาพการทำงาน ความปลอดภัย และสุขอนามัยทางสายตาของผู้ปฏิบัติงานในพื้นที่</p>
-                    
+                     
                     <ul class="premium-bullet">
                         <li><strong>พื้นที่เป้าหมาย:</strong> โรงงานอุตสาหกรรม, อาคารสำนักงาน, โรงเรียน, โรงพยาบาล และสถานที่สาธารณะ</li>
                         <li><strong>คุณประโยชน์:</strong> ตรวจวัดความเข้มแสงเพื่อปรับปรุงสภาพแวดล้อมให้ตรงตามมาตรฐานข้อกฎหมายและลดความเมื่อยล้าของสายตา</li>
@@ -628,7 +647,7 @@ body {
                 <div class="text-pane">
                     <h2 class="tech-heading">DB METER (เครื่องวัดระดับเสียง)</h2>
                     <p>มลภาวะทางเสียงที่เกินมาตรฐานส่งผลเสียต่อระบบการได้ยิน การสื่อสาร และสมาธิในการทำงาน การตรวจสอบอย่างสม่ำเสมอจึงเป็นสิ่งสำคัญ</p>
-                    
+                     
                     <ul class="premium-bullet">
                         <li><strong>การประยุกต์ใช้:</strong> ตรวจสอบระดับเสียงในสถานประกอบการ, โรงงาน, ร้านอาหาร, สถานบันเทิง และโซนก่อสร้าง</li>
                         <li><strong>จุดเด่นเทคนิค:</strong> แสดงผลแม่นยำในหน่วยเดซิเบล (dB) เพื่อใช้วางแผนควบคุมเสียงและปฏิบัติตามมาตรฐานความปลอดภัย</li>
@@ -647,7 +666,7 @@ body {
                 <div class="text-pane">
                     <h2 class="tech-heading">ปืนยิงวัดอุณหภูมิอินฟราเรด และกล้องถ่ายภาพความร้อน</h2>
                     <p>เปลี่ยนการตรวจสอบอุณหภูมิให้ปลอดภัยและรวดเร็วด้วยเทคโนโลยีไม่สัมผัสวัตถุโดยตรง ช่วยตรวจจับความผิดปกติของระบบงานได้ทันท่วงทีก่อนเกิดความเสียหายรุนแรง</p>
-                    
+                     
                     <ul class="premium-bullet">
                         <li><strong>กล้องถ่ายภาพความร้อน:</strong> แสดงการกระจายตัวของอุณหภูมิเป็นภาพสี ค้นหาจุดร้อน (Hot Spot) ที่ซ่อนอยู่ได้อย่างแม่นยำ</li>
                         <li><strong>การใช้งาน:</strong> งานซ่อมบำรุงระบบไฟฟ้า, ตรวจสอบแผงวงจร, อุณหภูมิเครื่องจักร และการควบคุมไลน์ผลิต</li>
@@ -666,9 +685,9 @@ body {
                 <div class="text-pane">
                     <h2 class="tech-heading">เครื่องวัดความชื้น (Moisture Meter)</h2>
                     <p>ป้องกันความเสียหายจากการสะสมของความชื้นที่เป็นต้นเหตุของเชื้อรา การเสื่อมสภาพ และโครงสร้างวัสดุที่ไม่ได้มาตรฐาน</p>
-                    
+                     
                     <ul class="premium-bullet">
-                        <li><strong>อุตสาหกรรมไม้และก่อสร้าง:</strong> วัดความชื้นในเนื้อไม้สำหรับทำเฟอร์นิเจอร์และโครงสร้างเพื่อความแข็งแรง</li>
+                        <li><strong>อุตสาหกรรมไม้และก่อสร้าง:</strong> วัดความชื้น in เนื้อไม้สำหรับทำเฟอร์นิเจอร์และโครงสร้างเพื่อความแข็งแรง</li>
                         <li><strong>อุตสาหกรรมเกษตร:</strong> ตรวจวัดเมล็ดพืชและผลผลิตก่อนการจัดเก็บเพื่อคงคุณภาพและยืดอายุสินค้า</li>
                     </ul>
                 </div>
@@ -680,15 +699,16 @@ body {
         <div class="section-inner">
             <div class="flex-layout reverse">
                 <div class="img-pane">
-                    <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1778665342/10024_mwexsc.png" alt="BRIX METER เครื่องวัดค่าความหวาน" />
+                    <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1778665343/10026_qlt2tg.jpg" alt="BRIX METER เครื่องวัดค่าความหวาน" />
                 </div>
                 <div class="text-pane">
                     <h2 class="tech-heading">BRIX METER (เครื่องวัดค่าความหวาน)</h2>
-                    <p>ควบคุมรสชาติและคุณภาพของสินค้าให้มีมาตรฐานเดียวกันในทุกชิ้นงาน ด้วยการวัดค่าความเข้มข้นของน้ำตาลในของเหลวที่เป็นระบบ</p>
-                    
+                    <p>ควบคุมรสชาติและควบคุมมาตรฐานความเข้มข้นของน้ำตาลในตัวอย่างของเหลวได้อย่างมีระบบในทุกกระบวนการผลิต</p>
+                     
                     <ul class="premium-bullet">
-                        <li><strong>กลุ่มเป้าหมาย:</strong> ผู้ผลิตอาหารและเครื่องดื่ม, โรงงานน้ำผลไม้, น้ำเชื่อม และเกษตรกรชาวสวน</li>
-                        <li><strong>ผลลัพธ์วิศวกรรม:</strong> แปลงค่าความหวานออกมาเป็นหน่วยบริกซ์ (Brix) ที่ชัดเจน ลดความคลาดเคลื่อนระหว่างล็อตผลิต</li>
+                        <li><strong>กลุ่มเป้าหมาย:</strong> ผู้ผลิตอาหารและเครื่องดื่ม, โรงงานน้ำผลไม้, น้ำเชื่อม, ซอสเข้มข้น และเกษตรกรชาวสวน</li>
+                        <li><strong>ข้อแนะนำการใช้งาน:</strong> อุปกรณ์ออกแบบมาสำหรับการตรวจวัดของเหลวที่มีความหนืดต่ำถึงปานกลาง หากสสารมีความหนืดสูงมาก (เช่น แยมข้น หรือน้ำผึ้งดิบ) แนะนำให้ทำการเจือจางด้วยน้ำกลั่นตามสัดส่วน (Ratio) ก่อนวัด เพื่อให้แสงหักเหผ่านปริซึมได้อย่างถูกต้อง แล้วจึงนำค่า Brix ที่ได้ไปคำนวณคูณกลับตามสัดส่วนต้นแบบ</li>
+                        <li><strong>ผลลัพธ์วิศวกรรม:</strong> แปลงค่าความหนาแน่นสารละลายออกมาเป็นหน่วยบริกซ์ (Brix) ที่ชัดเจน แม่นยำ คงที่ทุกสภาวะผลิต</li>
                     </ul>
                 </div>
             </div>
@@ -704,7 +724,7 @@ body {
                 <div class="text-pane">
                     <h2 class="tech-heading">EMF METER (เครื่องวัดคลื่นแม่เหล็กไฟฟ้า)</h2>
                     <p>ตรวจวัดระดับสนามแม่เหล็กไฟฟ้าจากอุปกรณ์และระบบจ่ายไฟที่มองไม่เห็น เพื่อการบริหารจัดการพื้นที่อยู่อาศัยและการทำงานให้ปลอดภัย</p>
-                    
+                     
                     <ul class="premium-bullet">
                         <li><strong>การบริหารพื้นที่:</strong> ตรวจสอบใกล้ตู้ไฟ, สายส่งกำลัง, เครื่องใช้ไฟฟ้า และอุปกรณ์สื่อสารขนาดใหญ่</li>
                         <li><strong>เพื่อสุขอนามัยครอบครัว:</strong> สำรวจห้องนอนเด็กเล็ก สตรีมีครรภ์ เพื่อหลีกเลี่ยงจุดสะสมคลื่นที่มีค่าสูงโดยไม่จำเป็น</li>
@@ -723,7 +743,7 @@ body {
                 <div class="text-pane">
                     <h2 class="tech-heading">Gas Detector (เครื่องตรวจจับก๊าซ)</h2>
                     <p>ก๊าซพิษหรือก๊าซไวไฟส่วนใหญ่ไม่มีสีและไม่มีกลิ่น เครื่องตรวจจับก๊าซจึงทำหน้าที่เฝ้าระวังความเสี่ยงแบบเรียลไทม์เพื่อปกป้องชีวิตและทรัพย์สิน</p>
-                    
+                     
                     <ul class="premium-bullet">
                         <li><strong>การแจ้งเตือนภัย:</strong> ส่งสัญญาณเตือนทันทีเมื่อระดับก๊าซเกินค่ามาตรฐาน เพื่อการอพยพและแก้ไขสถานการณ์อย่างรวดเร็ว</li>
                         <li><strong>ประเภทก๊าซที่รองรับ:</strong> ก๊าซไวไฟ, ก๊าซพิษ, ออกซิเจนต่ำ, คาร์บอนมอนอกไซด์ (CO) และไฮโดรเจนซัลไฟด์ (H₂S)</li>
@@ -743,7 +763,7 @@ body {
                 <div class="text-pane">
                     <h2 class="tech-heading">Tachometer (เครื่องวัดรอบหมุน)</h2>
                     <p>ตรวจสอบความเร็วรอบการทำงานในหน่วย RPM ของมอเตอร์ เพลา หรือสายพาน เพื่อการบำรุงรักษาเชิงป้องกัน (Preventive Maintenance) และยืดอายุเครื่องจักร</p>
-                    
+                     
                     <div class="tachometer-split-zone">
                         <div class="tacho-card">
                             <h4>แบบสัมผัส (Contact)</h4>
@@ -785,7 +805,7 @@ body {
 <section class="bottom-navigation-suite">
     <div class="nav-suite-inner">
         <div>
-            <a href="/products.html" class="all-product-trigger">All Products &rarr;</a>
+            <a href="/products" class="all-product-trigger">All Products &rarr;</a>
         </div>
         <div class="footer-buttons-row">
             <a href="mailto:contact@unimercegroup.com" class="btn-footer-action btn-f-dark">
@@ -808,13 +828,40 @@ body {
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Local Framework Async Injection
+
+    // ====================================================================
+    // 🎯 FIX: TARGETED PRODUCTION ENGINE FOR UNIMERCE HEADER
+    // ====================================================================
+    // ใช้ระบบ Event Delegation เพื่อไปจับ Element จริงของไฟล์ header.html ที่มี ID #menuBtn และ #menuDropdown
+    document.addEventListener('click', function(e) {
+        // ค้นหาเป้าหมายเมื่อผู้ใช้คลิกโดนปุ่มหรือชิ้นส่วนข้างในปุ่ม #menuBtn
+        const menuBtn = e.target.closest('#menuBtn');
+        const menuDropdown = document.getElementById("menuDropdown");
+        
+        if (menuBtn && menuDropdown) {
+            e.preventDefault();
+            e.stopPropagation();
+            // สลับ Class คลี่กางเมนูตามที่ดีไซน์ไว้ในสไตล์ของไฟล์ย่อย (.menu-dropdown.active)
+            menuDropdown.classList.toggle("active");
+        } else if (menuDropdown && !menuDropdown.contains(e.target)) {
+            // หากคลิกพื้นที่ภายนอกอื่นๆ ให้พับเก็บเมนูลดโอกาสบังหน้าเว็บ
+            menuDropdown.classList.remove("active");
+        }
+    });
+
+    // ====================================================================
+    // ASYNC NAVIGATION INJECTION LOADER
+    // ====================================================================
     const headerBox = document.getElementById('header-placeholder');
     if(headerBox) {
         fetch('/header.html')
             .then(res => { if(res.ok) return res.text(); })
-            .then(html => { if(html) headerBox.innerHTML = html; })
-            .catch(err => console.log("Header loader skipped."));
+            .then(html => { 
+                if(html) {
+                    headerBox.innerHTML = html;
+                } 
+            })
+            .catch(err => console.log("Header loader skipped.", err));
     }
 
     const footerBox = document.getElementById('footer-placeholder');
@@ -822,10 +869,12 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch('/footer.html')
             .then(res => { if(res.ok) return res.text(); })
             .then(html => { if(html) footerBox.innerHTML = html; })
-            .catch(err => console.log("Footer loader skipped."));
+            .catch(err => console.log("Footer loader skipped.", err));
     }
 
-    // Scroll Control Engine
+    // ====================================================================
+    // SCROLL TO TOP CONTROLLER
+    // ====================================================================
     const scrollTopBtn = document.getElementById("scrollTopBtn");
     window.addEventListener("scroll", function() {
         if (window.pageYOffset > 400) {
