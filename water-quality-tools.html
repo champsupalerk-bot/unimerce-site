@@ -1183,7 +1183,20 @@ document.addEventListener("DOMContentLoaded", function() {
     if(headerBox) {
         fetch('/header.html')
             .then(res => { if(res.ok) return res.text(); })
-            .then(html => { if(html) headerBox.innerHTML = html; })
+            .then(html => { 
+                if(html) {
+                    headerBox.innerHTML = html;
+                    
+                    // 💡 แก้ไขจุดนี้: บังคับให้ระบบประมวลผลสคริปต์ภายในแผงควบคุม Header (แก้ไขปัญหา Hamburger Menu ไม่ทำงานจากการใช้ innerHTML)
+                    const scripts = headerBox.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+                }
+            })
             .catch(err => console.log("Header loading skipped or local mode active."));
     }
 
@@ -1191,7 +1204,20 @@ document.addEventListener("DOMContentLoaded", function() {
     if(footerBox) {
         fetch('/footer.html')
             .then(res => { if(res.ok) return res.text(); })
-            .then(html => { if(html) footerBox.innerHTML = html; })
+            .then(html => { 
+                if(html) {
+                    footerBox.innerHTML = html;
+                    
+                    // 💡 บังคับสคริปต์ใน Footer ให้ทำงานด้วยเช่นกันเพื่อป้องกันปัญหาแบบเดียวกันในอนาคต
+                    const scripts = footerBox.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+                }
+            })
             .catch(err => console.log("Footer loading skipped or local mode active."));
     }
 
