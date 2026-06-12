@@ -271,6 +271,7 @@ body{
   max-width:280px;
   justify-self:center;
   box-sizing:border-box;
+  cursor:pointer; /* เพิ่มรูปมือเพื่อให้รู้ว่าคลิกเปิดหน้ารายละเอียดได้ */
 }
 
 /* hover */
@@ -696,8 +697,9 @@ function processAndRender() {
       onhand = cleanNumber(onhand).toLocaleString();
     }
 
+    // มีการผูกเหตุการณ์ onclick ให้เปิดหน้าต่างรายละเอียดสินค้าแบบระบุ parameter โค้ดสินค้า
     return `
-      <div class="card">
+      <div class="card" onclick="window.location.href='/productdetail.html?code=${encodeURIComponent(sku.trim())}'">
         <img 
           src="${img}"
           onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'"
@@ -740,7 +742,7 @@ function processAndRender() {
   }).join('');
 
   /* =========================
-      FINAL RENDER
+       FINAL RENDER
   ========================= */
   grid.innerHTML = (currentPage === 1 && !q && checkedCategories.length === 0 ? promoCard : "") + productCards;
   
