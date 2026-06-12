@@ -36,7 +36,7 @@
 body{
   background:#ffffff;
   color:#111;
-  padding-top:70px; /* รองรับ Fixed Topbar */
+  padding-top:70px;
   overflow-x:hidden;
 }
 
@@ -129,6 +129,8 @@ body{
 .info-zone {
   display: flex;
   flex-direction: column;
+  align-items: flex-start; /* ยุบเนื้อหาไม่ให้ทอดยาวกว้างเกินไปใน Desktop */
+  width: 100%;
 }
 
 .category-tag {
@@ -144,11 +146,13 @@ body{
   line-height: 1.4;
   margin-bottom: 16px;
   color: #111;
+  text-align: left;
 }
 
-/* SPEC TABLE (ข้อ 9: รหัสสินค้า, Brand, รุ่น) */
+/* SPEC TABLE (รหัสสินค้า, แบรนด์, รุ่น, หมวดหมู่) */
 .meta-table {
   width: 100%;
+  max-width: 380px; /* จำกัดความกว้างเพื่อความกะทัดรัด */
   border-collapse: collapse;
   margin-bottom: 20px;
 }
@@ -169,15 +173,17 @@ body{
   font-weight: 500;
 }
 
-/* ข้อ 6: ปรับการแสดงผลราคาตามสไตล์การ์ดหน้าหลัก (ราคาตั้งอยู่บน ราคาขายอยู่ล่าง) */
+/* ปรับราคาตั้งอยู่บน ราคาขายอยู่ล่างแบบหน้ารายการสินค้า */
 .price-box {
   display: flex;
   flex-direction: column;
   gap: 2px;
   margin-bottom: 20px;
   background: #fafafa;
-  padding: 12px;
+  padding: 10px 14px;
   border-radius: 12px;
+  width: 100%;
+  max-width: 380px;
 }
 
 .price-old {
@@ -192,12 +198,12 @@ body{
   color: #111;
 }
 
-/* QUANTITY SELECTOR (ข้อ 10) */
+/* QUANTITY SELECTOR */
 .qty-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .qty-label {
@@ -214,8 +220,8 @@ body{
 }
 
 .qty-btn {
-  width: 36px;
-  height: 34px;
+  width: 34px;
+  height: 32px;
   background: #fff;
   border: none;
   cursor: pointer;
@@ -227,8 +233,8 @@ body{
 .qty-btn:hover { background: #f5f5f5; }
 
 .qty-input {
-  width: 44px;
-  height: 34px;
+  width: 40px;
+  height: 32px;
   text-align: center;
   border: none;
   border-left: 1px solid #ddd;
@@ -238,51 +244,56 @@ body{
   outline: none;
 }
 
-/* ACTION BUTTONS (ข้อ 4) */
+/* ACTION BUTTONS (ปรับดีไซน์ให้กะทัดรัด มินิมอล ไม่เทอะทะ) */
 .btn-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+  max-width: 320px; /* บีบขนาดปุ่มใน Desktop ให้ดูเล็กสไตล์ Premium */
 }
 
 .btn-primary {
-  background: #111;
+  background: #2f5ea8; /* เปลี่ยนเป็นสีน้ำเงินสว่างสไตล์หน้าหลัก */
   color: #fff;
-  border: 1px solid #111;
-  padding: 14px;
+  border: 1px solid #2f5ea8;
+  padding: 12px 24px;
   border-radius: 999px;
   font-size: 13px;
   font-weight: 500;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   text-align: center;
   cursor: pointer;
   transition: 0.2s;
+  display: inline-block;
+  width: 100%;
 }
 
 .btn-primary:hover {
   background: #fff;
-  color: #111;
+  color: #2f5ea8;
 }
 
 .btn-email-direct {
   background: #fff;
-  color: #555;
+  color: #666;
   border: 1px solid #ddd;
-  padding: 10px;
+  padding: 9px 20px;
   border-radius: 999px;
   font-size: 12px;
   text-align: center;
   text-decoration: none;
   transition: 0.2s;
+  width: 100%;
 }
 
 .btn-email-direct:hover {
-  border-color: #111;
-  color: #111;
+  border-color: #2f5ea8;
+  color: #2f5ea8;
 }
 
 /* =========================
-   BOTTOM ZONE: SECTIONS (ข้อ 7)
+   BOTTOM ZONE: SECTIONS
 ========================= */
 .detail-sections {
   display: flex;
@@ -293,7 +304,7 @@ body{
 }
 
 .sec-block h2 {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   letter-spacing: 1px;
   margin-bottom: 12px;
@@ -307,14 +318,10 @@ body{
   font-size: 14px;
   color: #444;
   line-height: 1.7;
-  white-space: pre-line; /* รักษารูปแบบการขึ้นบรรทัดใหม่จากชีต */
+  white-space: pre-line;
 }
 
-/* สไตล์เฉพาะสำหรับ Key Features (Bullet points) */
-.features-list {
-  list-style: none;
-}
-
+.features-list { list-style: none; }
 .features-list li {
   font-size: 14px;
   color: #444;
@@ -323,7 +330,6 @@ body{
   padding-left: 20px;
   margin-bottom: 6px;
 }
-
 .features-list li::before {
   content: "•";
   color: #2f5ea8;
@@ -334,7 +340,7 @@ body{
 }
 
 /* =========================
-   POPUP MODAL (ข้อ 10)
+   POPUP MODAL & UTILITIES
 ========================= */
 .modal-overlay {
   position: fixed;
@@ -354,7 +360,7 @@ body{
   background: #fff;
   border-radius: 16px;
   width: 100%;
-  max-width: 440px;
+  max-width: 460px;
   padding: 24px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.15);
   animation: popUp 0.25s ease;
@@ -369,25 +375,80 @@ body{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
 }
 
-.modal-title { font-size: 16px; font-weight: 600; }
-.modal-close { font-size: 20px; cursor: pointer; color: #aaa; border:none; background:none; }
+.modal-title { font-size: 15px; font-weight: 600; color: #111; }
+.modal-close { font-size: 22px; cursor: pointer; color: #aaa; border:none; background:none; line-height: 1; }
+
+.modal-instruction-text {
+  font-size: 12.5px;
+  color: #555;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.email-row-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 14px;
+  border: 1px solid #eee;
+}
+
+.btn-inline-copy {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #2f5ea8;
+  font-weight: 500;
+}
+.btn-inline-copy:hover { background: #f5f5f5; border-color: #2f5ea8; }
 
 .copy-area {
   background: #f5f5f5;
   border: 1px solid #eee;
-  padding: 14px;
-  border-radius: 10px;
-  font-size: 13px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 12.5px;
   color: #333;
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-all;
-  margin-bottom: 16px;
-  max-height: 180px;
+  margin-bottom: 14px;
+  max-height: 140px;
   overflow-y: auto;
+}
+
+/* โซนบัญชีธนาคารขัดเกลาพิเศษ */
+.bank-payment-box {
+  background: #fff8f8;
+  border: 1px dashed #ffccc7;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+.bank-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #c41d7f;
+  margin-bottom: 6px;
+}
+.bank-detail-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #222;
 }
 
 .toast-msg {
@@ -395,8 +456,23 @@ body{
   color: #00C300;
   text-align: center;
   margin-top: 8px;
-  display: none;
+  min-height: 18px;
+  font-weight: 500;
 }
+
+/* LINK LINE ADMIN */
+.line-admin-notice {
+  text-align: center;
+  font-size: 12.5px;
+  color: #666;
+  margin-top: 12px;
+}
+.line-admin-notice a {
+  color: #00C300;
+  text-decoration: none;
+  font-weight: 600;
+}
+.line-admin-notice a:hover { text-decoration: underline; }
 
 /* STATUS CONTAINER */
 .status-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 50vh; text-align: center; }
@@ -412,12 +488,15 @@ body{
     grid-template-columns: 1fr;
     gap: 20px;
   }
+  .info-zone {
+    align-items: stretch;
+  }
+  .meta-table, .price-box, .btn-group {
+    max-width: 100%;
+  }
   .product-name {
     font-size: 18px;
     margin-bottom: 12px;
-  }
-  .price-new {
-    font-size: 22px;
   }
 }
 </style>
@@ -439,6 +518,22 @@ body{
 <script>
 const API = "https://script.google.com/macros/s/AKfycby0BIQMiM7mEoQrckKXXSYZAudz3sJDsEr87IT8hktGk8oXc4wqC4bbV8LusoVXufXKvQ/exec";
 let currentProductData = null;
+
+// ฟังก์ชันล้าง format คอมมาและแปลงค่าตัวเลขเพื่อให้ใส่คอมมากลับเข้าไปใหม่ได้แม่นยำ
+function cleanNumber(val) {
+  if (val === null || val === undefined) return 0;
+  if (typeof val === 'number') return val;
+  let str = String(val).replace(/,/g, '').trim();
+  if (str === "" || str === "-") return 0;
+  let parsed = parseFloat(str);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
+// ฟังก์ชันจัดฟอร์แมตตัวเลขคั่นคอมมาหลักพันสำหรับราคาในชุดข้อความป๊อปอัป
+function formatMoney(val) {
+  let num = cleanNumber(val);
+  return num > 0 ? num.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2}) : '-';
+}
 
 async function loadProductDetail() {
   const mainContent = document.getElementById("main-content");
@@ -466,7 +561,7 @@ async function loadProductDetail() {
 
     currentProductData = product;
 
-    // อัปเดตข้อมูล SEO & OG Tags (ข้อ 1)
+    // อัปเดตข้อมูล SEO & OG Tags
     const pageTitle = `UNIMERCE | ${product.Description || 'Product Detail'}`;
     document.title = pageTitle;
     document.getElementById("meta-title").innerText = pageTitle;
@@ -480,14 +575,12 @@ async function loadProductDetail() {
       document.getElementById("og-image").setAttribute("content", product.image_link01.trim());
     }
 
-    // จัดระเบียบชุดภาพแกลเลอรี
     const images = [];
     if(product.image_link01) images.push(product.image_link01.trim());
     if(product.ImageLink02) images.push(product.ImageLink02.trim());
     if(product.ImageLink03) images.push(product.ImageLink03.trim());
     if(images.length === 0) images.push('https://via.placeholder.com/600x600?text=No+Image');
 
-    // แปลงข้อมูล Key Features เป็นโครงสร้าง List (ข้อ 7)
     let featuresHTML = '';
     if(product.KeyFeatures) {
       const items = product.KeyFeatures.split('\n').filter(i => i.trim() !== '');
@@ -496,7 +589,10 @@ async function loadProductDetail() {
       featuresHTML = '<div class="body-text">-</div>';
     }
 
-    // เรนเดอร์โครงสร้าง Layout หลัก
+    // แปลงราคาสนับสนุนคอมมาคั่นหลักพันโชว์หน้าการ์ด
+    const listPriceFormatted = product.ListPrice ? formatMoney(product.ListPrice) : '';
+    const promoPriceFormatted = product.PromotionPrice ? formatMoney(product.PromotionPrice) : '-';
+
     mainContent.innerHTML = `
       <div class="breadcrumb">
         <a href="/">HOME</a> / <a href="/products">PRODUCTS</a> / ${product.Item_Code}
@@ -535,15 +631,19 @@ async function loadProductDetail() {
               <td class="lbl">รุ่น</td>
               <td class="val">${product.INDEX3_SERIES || '-'}</td>
             </tr>
+            <tr>
+              <td class="lbl">หมวดหมู่</td>
+              <td class="val">${product.MainCategory || '-'}</td>
+            </tr>
           </table>
           
           <div class="price-box">
-            ${product.ListPrice ? `<div class="price-old">฿${product.ListPrice}</div>` : ''}
-            <div class="price-new">${product.PromotionPrice ? '฿' + product.PromotionPrice : '-'}</div>
+            ${listPriceFormatted ? `<div class="price-old">฿${listPriceFormatted}</div>` : ''}
+            <div class="price-new">฿${promoPriceFormatted}</div>
           </div>
           
           <div class="qty-row">
-            <div class="qty-label">จำนวนที่ต้องการสั่งซื้อ:</div>
+            <div class="qty-label">จำนวนสั่งซื้อ:</div>
             <div class="qty-control">
               <button class="qty-btn" onclick="updateQty(-1)">-</button>
               <input type="number" id="order-qty" class="qty-input" value="1" min="1" readonly />
@@ -587,17 +687,44 @@ async function loadProductDetail() {
       <div class="modal-overlay" id="order-modal">
         <div class="modal-box">
           <div class="modal-header">
-            <div class="modal-title">ขั้นตอนการสั่งซื้อสินค้า</div>
+            <div class="modal-title">ขั้นตอนการสั่งซื้อและชำระเงิน</div>
             <button class="modal-close" onclick="closeOrderModal()">×</button>
           </div>
-          <p style="font-size:13px; color:#666; margin-bottom:12px; line-height:1.5;">
-            กรุณากดปุ่มด้านล่างเพื่อคัดลอกข้อความรายละเอียดสินค้า จากนั้นนำไปวางในหน้าต่างเขียนอีเมลส่งหา <strong>sales@unimercegroup.com</strong>
+          
+          <div class="email-row-info">
+            <span>ส่งหา: <strong>sales@unimercegroup.com</strong></span>
+            <button class="btn-inline-copy" onclick="copyTextDirect('sales@unimercegroup.com', 'คัดลอกอีเมลเรียบร้อย!')">คัดลอกเมล</button>
+          </div>
+
+          <p class="modal-instruction-text">
+            <strong>ขั้นตอนที่ 1:</strong> กดปุ่มคัดลอกรายละเอียดสินค้าด้านล่างนี้ เพื่อนำไปวางลงในอีเมลของคุณ
           </p>
           <div class="copy-area" id="copy-text-target"></div>
+          
+          <p class="modal-instruction-text">
+            <strong>ขั้นตอนที่ 2:</strong> โอนเงินชำระค่าสินค้าผ่านบัญชีบริษัท และแนบหลักฐานการโอนมาพร้อมในอีเมลได้เลยครับ
+          </p>
+          
+          <div class="bank-payment-box">
+            <div class="bank-title">ธนาคารกสิกรไทย (บัญชีบริษัท)</div>
+            <div class="bank-detail-flex">
+              <div>
+                <strong>บจก. ยูนิเมิร์ซ</strong><br>
+                <span style="font-family:monospace; font-size:14px; letter-spacing:0.5px;">232-1-70687</span>
+              </div>
+              <button class="btn-inline-copy" onclick="copyTextDirect('232170687', 'คัดลอกเลขบัญชีเรียบร้อย!')">คัดลอกเลขบัญชี</button>
+            </div>
+          </div>
+
           <button class="btn-primary" style="width:100%; border-radius:10px;" onclick="copyOrderTextToClipboard()">
-            คัดลอกข้อความ & เปิดหน้าส่งอีเมล
+            คัดลอกข้อความสินค้า & เปิดหน้าต่างอีเมล
           </button>
-          <div class="toast-msg" id="toast-success">✓ คัดลอกข้อมูลลงคลิปบอร์ดเรียบร้อยแล้ว!</div>
+          
+          <div class="toast-msg" id="toast-success"></div>
+
+          <div class="line-admin-notice">
+            หรือส่งข้อมูลสั่งซื้อหาแอดมินได้ที่ไลน์ <a href="https://lin.ee/xxxxxxx" target="_blank">LINE @unimerce</a>
+          </div>
         </div>
       </div>
     `;
@@ -607,14 +734,12 @@ async function loadProductDetail() {
   }
 }
 
-// ระบบคำนวณสลับชุดรูปภาพย่อย
 window.switchThumb = function(element, imgSrc) {
   document.getElementById("view-main-img").src = imgSrc;
   document.querySelectorAll('.thumb-box').forEach(box => box.classList.remove('active'));
   element.classList.add('active');
 }
 
-// ระบบคำนวณจำนวนชิ้นสินค้า
 window.updateQty = function(amount) {
   const input = document.getElementById("order-qty");
   let current = parseInt(input.value) || 1;
@@ -623,12 +748,16 @@ window.updateQty = function(amount) {
   input.value = current;
 }
 
-// ฟังก์ชันเปิดป๊อปอัปสั่งซื้อและสร้างข้อความ (ข้อ 10)
 window.openOrderModal = function() {
   if(!currentProductData) return;
   const qty = document.getElementById("order-qty").value;
   
-  const textTemplate = `เรียน ฝ่ายขาย UNIMERCE GROUP,\n\nฉันมีความประสงค์ต้องการสั่งซื้อสินค้าชิ้นนี้ตามรายละเอียดดังต่อไปนี้:\n-----------------------------------------\nรหัสสินค้า (Item Code): ${currentProductData.Item_Code || '-'}\nชื่อสินค้า (Description): ${currentProductData.Description || '-'}\nแบรนด์ (Brand): ${currentProductData.INDEX2_BRAND || '-'}\nรุ่น (Series): ${currentProductData.INDEX3_SERIES || '-'}\nจำนวนที่ต้องการ: ${qty} ${currentProductData.UOM || 'หน่วย'}\nราคาต่อหน่วย: ฿${currentProductData.PromotionPrice || currentProductData.ListPrice || '-'}\n-----------------------------------------\n\nกรุณาติดต่อกลับเพื่อยืนยันรายการคำสั่งซื้อนี้ด้วยครับ/ค่ะ`;
+  // คำนวณราคาคั่นด้วยหลักพันใน Template ข้อความเมลอัตโนมัติ
+  const basePrice = currentProductData.PromotionPrice || currentProductData.ListPrice || '0';
+  const priceUnitFormatted = formatMoney(basePrice);
+  const totalPriceFormatted = formatMoney(cleanNumber(basePrice) * qty);
+  
+  const textTemplate = `เรียน ฝ่ายขาย UNIMERCE GROUP,\n\nฉันมีความประสงค์ต้องการสั่งซื้อสินค้าชิ้นนี้ตามรายละเอียดดังต่อไปนี้:\n-----------------------------------------\nรหัสสินค้า (Item Code): ${currentProductData.Item_Code || '-'}\nชื่อสินค้า (Description): ${currentProductData.Description || '-'}\nแบรนด์ (Brand): ${currentProductData.INDEX2_BRAND || '-'}\nรุ่น (Series): ${currentProductData.INDEX3_SERIES || '-'}\nหมวดหมู่ (Category): ${currentProductData.MainCategory || '-'}\nจำนวนที่ต้องการ: ${qty} ${currentProductData.UOM || 'หน่วย'}\nราคาต่อหน่วย: ฿${priceUnitFormatted}\nราคารวมทั้งสิ้น: ฿${totalPriceFormatted}\n-----------------------------------------\n[แนบหลักฐานการชำระเงินโอนเข้าบัญชี บจก. ยูนิเมิร์ซ]\n\nกรุณาตรวจสอบและจัดส่งตามที่อยู่นี้...\nชื่อผู้รับ:\nเบอร์โทรศัพท์:\nที่อยู่จัดส่ง:`;
   
   document.getElementById("copy-text-target").innerText = textTemplate;
   document.getElementById("order-modal").classList.add("active");
@@ -636,24 +765,34 @@ window.openOrderModal = function() {
 
 window.closeOrderModal = function() {
   document.getElementById("order-modal").classList.remove("active");
-  document.getElementById("toast-success").style.display = "none";
+  document.getElementById("toast-success").innerText = "";
 }
 
-// ฟังก์ชันคัดลอกลงคลิปบอร์ดแบบ One-touch Copy & Redirect เมล (ข้อ 10)
+// ฟังก์ชันคัดลอกค่าแบบระบุเป้าหมายโดยตรง (สำหรับก๊อปเมล และก๊อปเลขบัญชีล้วน)
+window.copyTextDirect = function(textToCopy, customMessage) {
+  navigator.clipboard.writeText(textToCopy).then(() => {
+    const toast = document.getElementById("toast-success");
+    toast.innerText = customMessage;
+    toast.style.color = "#00C300";
+    setTimeout(() => { toast.innerText = ""; }, 2500);
+  });
+}
+
+// ฟังก์ชันคัดลอกข้อความสินค้าหลักทั้งหมดลงเครื่องอัตโนมัติ
 window.copyOrderTextToClipboard = function() {
   const text = document.getElementById("copy-text-target").innerText;
   const qty = document.getElementById("order-qty").value;
   
   navigator.clipboard.writeText(text).then(() => {
     const toast = document.getElementById("toast-success");
-    toast.style.display = "block";
+    toast.innerText = "✓ คัดลอกข้อความสินค้าลงคลิปบอร์ดแล้ว กำลังเปิดแอปอีเมล...";
+    toast.style.color = "#2f5ea8";
     
-    // หลังจากคัดลอกเสร็จ 1 วินาที ระบบจะเด้งไปที่โปรแกรมส่งเมลโดยอัตโนมัติ เพื่ออำนวยความสะดวกสูงสุด
     setTimeout(() => {
       const subject = encodeURIComponent(`สั่งซื้อสินค้า รหัส ${currentProductData.Item_Code} จำนวน ${qty} ชิ้น`);
       const body = encodeURIComponent(text);
       window.location.href = `mailto:sales@unimercegroup.com?subject=${subject}&body=${body}`;
-    }, 1000);
+    }, 1200);
   });
 }
 
