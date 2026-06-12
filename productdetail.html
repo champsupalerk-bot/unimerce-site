@@ -557,7 +557,83 @@ body {
 
 <div id="footer-placeholder"></div>
 
-<script src="layout-controller.js"></script>
+<script>
+// ====================================================================
+// ANTI-OVERWRITE ENGINE FOR CORE LAYOUT (ระบบล็อคตำแหน่งสกัดกั้นการเขียนทับ)
+// ====================================================================
+window.addEventListener("load", function() {
+    let layoutCache = { header: '', footer: '' };
+
+    function secureInject(targetId, filepath, cacheKey) {
+        const targetNode = document.getElementById(targetId);
+        if (!targetNode) return;
+
+        fetch(filepath)
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.text();
+            })
+            .then(html => {
+                if (html) {
+                    layoutCache[cacheKey] = html;
+                    targetNode.innerHTML = html;
+                    console.log(`[Secure Layout]: ${targetId} injected.`);
+
+                    // เปิดระบบเฝ้าระวังการโดนสคริปต์ตัวอื่นเข้ามาล้างเนื้อหาของช่องพักนี้
+                    const observer = new MutationObserver(function(mutations) {
+                        if (targetNode.innerHTML !== layoutCache[cacheKey]) {
+                            observer.disconnect();
+                            console.warn(`[Anti-Overwrite]: ตรวจพบการพยายามลบ/เขียนทับข้อมูลพื้นที่ ${targetId}! ระบบทำการฉีดกลับคืนเรียบร้อย...`);
+                            targetNode.innerHTML = layoutCache[cacheKey];
+                            observer.observe(targetNode, { childList: true, subtree: true, characterData: true });
+                            if (cacheKey === 'header') initMenuController();
+                        }
+                    });
+                    observer.observe(targetNode, { childList: true, subtree: true, characterData: true });
+                    if (cacheKey === 'header') initMenuController();
+                }
+            })
+            .catch(err => console.error(`[Secure Layout Error]: Cannot load ${filepath}`, err));
+    }
+
+    // สั่งรันชุดผู้พิทักษ์โครงสร้างอาคารแบบแยกเป็นลำดับสุดท้ายของหน้า
+    secureInject('header-placeholder', '/header.html', 'header');
+    secureInject('footer-placeholder', '/footer.html', 'footer');
+
+    // จัดการเมนูของ Header เมื่อโครงสร้างพร้อมใช้งาน
+    function initMenuController() {
+        document.removeEventListener('click', menuClickHandler);
+        document.addEventListener('click', menuClickHandler);
+    }
+
+    function menuClickHandler(e) {
+        const menuBtn = e.target.closest('#menuBtn');
+        const menuDropdown = document.getElementById("menuDropdown");
+        if (menuBtn && menuDropdown) {
+            e.preventDefault();
+            e.stopPropagation();
+            menuDropdown.classList.toggle("active");
+        } else if (menuDropdown && !menuDropdown.contains(e.target)) {
+            menuDropdown.classList.remove("active");
+        }
+    }
+
+    // ระบบ Scroll To Top Controller
+    const scrollTopBtn = document.getElementById("scrollTopBtn");
+    if (scrollTopBtn) {
+        window.addEventListener("scroll", function() {
+            if (window.pageYOffset > 400) {
+                scrollTopBtn.classList.add("visible");
+            } else {
+                scrollTopBtn.classList.remove("visible");
+            }
+        });
+        scrollTopBtn.addEventListener("click", function() {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    }
+});
+</script>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycby0BIQMiM7mEoQrckKXXSYZAudz3sJDsEr87IT8hktGk8oXc4wqC4bbV8LusoVXufXKvQ/exec";
