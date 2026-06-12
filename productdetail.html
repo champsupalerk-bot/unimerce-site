@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+
+<link rel="icon" type="image/jpeg" href="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780903215/favicon.ico_vnm1uh.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title id="meta-title">UNIMERCE | Product Detail</title>
+<meta id="meta-desc" name="description" content="ดูรายละเอียดสินค้า ข้อมูลทางเทคนิค และสั่งซื้อผ่านระบบอีเมลของ UNIMERCE GROUP" />
+<meta name="keywords" content="UNIMERCE, เครื่องกรองน้ำ, เครื่องพ่นอโรมา, เครื่องมือวัดคุณภาพน้ำ, Vitev Thailand, รายละเอียดสินค้า" />
+<meta name="author" content="UNIMERCE GROUP" />
+<meta name="robots" content="index, follow" />
+
+<meta property="og:type" content="website" />
+<meta id="og-title" property="og:title" content="UNIMERCE | รายละเอียดสินค้า" />
+<meta id="og-desc" property="og:description" content="ดูรายละเอียดสินค้า ข้อมูลทางเทคนิค และสั่งซื้อผ่านระบบอีเมลของ UNIMERCE GROUP" />
+<meta id="og-image" property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780633652/ULOGO_CLEAR_1060_jkvqqm.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* =========================
+   BASE & LAYOUT
+========================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Kanit", Arial, sans-serif;
+}
+
+body{
+  background:#ffffff;
+  color:#111;
+  padding-top:70px; /* รองรับ Fixed Topbar */
+  overflow-x:hidden;
+}
+
+.container{
+  max-width:1000px;
+  margin:0 auto;
+  padding:20px 16px 80px;
+}
+
+/* =========================
+   BREADCRUMB
+========================= */
+.breadcrumb{
+  font-size:12px;
+  color:#888;
+  margin-bottom:16px;
+  letter-spacing:1px;
+}
+
+.breadcrumb a{
+  color: #888;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover{
+  text-decoration: underline;
+  color: #2f5ea8;
+}
+
+/* =========================
+   MAIN PRODUCT GRID (TOP ZONE)
+========================= */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+/* IMAGE SYSTEM */
+.image-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.main-img-wrap {
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  background: #fdfdfd;
+}
+
+.main-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumb-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.thumb-box {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.thumb-box.active {
+  border-color: #2f5ea8;
+}
+
+.thumb-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* INFO ZONE */
+.info-zone {
+  display: flex;
+  flex-direction: column;
+}
+
+.category-tag {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.product-name {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 16px;
+  color: #111;
+}
+
+/* SPEC TABLE (ข้อ 9: รหัสสินค้า, Brand, รุ่น) */
+.meta-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.meta-table td {
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px dashed #eee;
+}
+
+.meta-table td.lbl {
+  color: #777;
+  width: 90px;
+}
+
+.meta-table td.val {
+  color: #111;
+  font-weight: 500;
+}
+
+/* ข้อ 6: ปรับการแสดงผลราคาตามสไตล์การ์ดหน้าหลัก (ราคาตั้งอยู่บน ราคาขายอยู่ล่าง) */
+.price-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 20px;
+  background: #fafafa;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.price-old {
+  font-size: 13px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.price-new {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111;
+}
+
+/* QUANTITY SELECTOR (ข้อ 10) */
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.qty-label {
+  font-size: 13px;
+  color: #666;
+}
+
+.qty-control {
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.qty-btn {
+  width: 36px;
+  height: 34px;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.qty-btn:hover { background: #f5f5f5; }
+
+.qty-input {
+  width: 44px;
+  height: 34px;
+  text-align: center;
+  border: none;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+}
+
+/* ACTION BUTTONS (ข้อ 4) */
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: #111;
+  color: #fff;
+  border: 1px solid #111;
+  padding: 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-primary:hover {
+  background: #fff;
+  color: #111;
+}
+
+.btn-email-direct {
+  background: #fff;
+  color: #555;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  text-align: center;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.btn-email-direct:hover {
+  border-color: #111;
+  color: #111;
+}
+
+/* =========================
+   BOTTOM ZONE: SECTIONS (ข้อ 7)
+========================= */
+.detail-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  border-top: 1px solid #eee;
+  padding-top: 32px;
+}
+
+.sec-block h2 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  color: #111;
+  text-transform: uppercase;
+  border-left: 3px solid #2f5ea8;
+  padding-left: 10px;
+}
+
+.sec-block .body-text {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.7;
+  white-space: pre-line; /* รักษารูปแบบการขึ้นบรรทัดใหม่จากชีต */
+}
+
+/* สไตล์เฉพาะสำหรับ Key Features (Bullet points) */
+.features-list {
+  list-style: none;
+}
+
+.features-list li {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.7;
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 6px;
+}
+
+.features-list li::before {
+  content: "•";
+  color: #2f5ea8;
+  font-weight: bold;
+  position: absolute;
+  left: 5px;
+  top: 0;
+}
+
+/* =========================
+   POPUP MODAL (ข้อ 10)
+========================= */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal-box {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 440px;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  animation: popUp 0.25s ease;
+}
+
+@keyframes popUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-title { font-size: 16px; font-weight: 600; }
+.modal-close { font-size: 20px; cursor: pointer; color: #aaa; border:none; background:none; }
+
+.copy-area {
+  background: #f5f5f5;
+  border: 1px solid #eee;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #333;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-bottom: 16px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.toast-msg {
+  font-size: 12px;
+  color: #00C300;
+  text-align: center;
+  margin-top: 8px;
+  display: none;
+}
+
+/* STATUS CONTAINER */
+.status-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 50vh; text-align: center; }
+.loading-text { font-size: 15px; color: #888; }
+.error-text { font-size: 15px; color: #ff4d4f; margin-bottom: 12px; }
+.back-btn { display: inline-block; padding: 8px 18px; background: #111; color: #fff; text-decoration: none; border-radius: 8px; font-size: 13px; }
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .product-name {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .price-new {
+    font-size: 22px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main class="container" id="main-content">
+  <div class="status-container">
+    <div class="loading-text">กำลังเรียกดูข้อมูลสินค้า...</div>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="layout-controller.js"></script>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycby0BIQMiM7mEoQrckKXXSYZAudz3sJDsEr87IT8hktGk8oXc4wqC4bbV8LusoVXufXKvQ/exec";
+let currentProductData = null;
+
+async function loadProductDetail() {
+  const mainContent = document.getElementById("main-content");
+  
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const productCode = urlParams.get('code');
+    
+    if (!productCode) {
+      showError("ไม่พบรหัสสินค้าในลิงก์การเชื่อมต่อ");
+      return;
+    }
+    
+    const res = await fetch(API, { method: "GET", mode: "cors", redirect: "follow" });
+    const jsonResult = await res.json();
+    
+    if (jsonResult.status !== "success") throw new Error(jsonResult.message);
+    
+    const product = jsonResult.data.find(p => String(p.Item_Code || "").trim() === String(productCode).trim());
+    
+    if (!product) {
+      showError(`ไม่พบฐานข้อมูลของรหัสสินค้า: ${productCode}`);
+      return;
+    }
+
+    currentProductData = product;
+
+    // อัปเดตข้อมูล SEO & OG Tags (ข้อ 1)
+    const pageTitle = `UNIMERCE | ${product.Description || 'Product Detail'}`;
+    document.title = pageTitle;
+    document.getElementById("meta-title").innerText = pageTitle;
+    document.getElementById("og-title").setAttribute("content", pageTitle);
+    
+    if(product.ProductOverview) {
+      document.getElementById("meta-desc").setAttribute("content", product.ProductOverview.substring(0, 150));
+      document.getElementById("og-desc").setAttribute("content", product.ProductOverview.substring(0, 150));
+    }
+    if(product.image_link01) {
+      document.getElementById("og-image").setAttribute("content", product.image_link01.trim());
+    }
+
+    // จัดระเบียบชุดภาพแกลเลอรี
+    const images = [];
+    if(product.image_link01) images.push(product.image_link01.trim());
+    if(product.ImageLink02) images.push(product.ImageLink02.trim());
+    if(product.ImageLink03) images.push(product.ImageLink03.trim());
+    if(images.length === 0) images.push('https://via.placeholder.com/600x600?text=No+Image');
+
+    // แปลงข้อมูล Key Features เป็นโครงสร้าง List (ข้อ 7)
+    let featuresHTML = '';
+    if(product.KeyFeatures) {
+      const items = product.KeyFeatures.split('\n').filter(i => i.trim() !== '');
+      featuresHTML = `<ul class="features-list">${items.map(i => `<li>${i.replace(/^[•\-\*]\s*/, '')}</li>`).join('')}</ul>`;
+    } else {
+      featuresHTML = '<div class="body-text">-</div>';
+    }
+
+    // เรนเดอร์โครงสร้าง Layout หลัก
+    mainContent.innerHTML = `
+      <div class="breadcrumb">
+        <a href="/">HOME</a> / <a href="/products">PRODUCTS</a> / ${product.Item_Code}
+      </div>
+      
+      <div class="main-grid">
+        <div class="image-gallery">
+          <div class="main-img-wrap">
+            <img id="view-main-img" src="${images[0]}" onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'" />
+          </div>
+          ${images.length > 1 ? `
+            <div class="thumb-row">
+              ${images.map((img, idx) => `
+                <div class="thumb-box ${idx === 0 ? 'active' : ''}" onclick="switchThumb(this, '${img}')">
+                  <img src="${img}" onerror="this.src='https://via.placeholder.com/100x100?text=No+Img'" />
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+        </div>
+        
+        <div class="info-zone">
+          <div class="category-tag">${product.MainCategory || '-'}</div>
+          <h1 class="product-name">${product.Description || '-'}</h1>
+          
+          <table class="meta-table">
+            <tr>
+              <td class="lbl">รหัสสินค้า</td>
+              <td class="val">${product.Item_Code || '-'}</td>
+            </tr>
+            <tr>
+              <td class="lbl">แบรนด์</td>
+              <td class="val">${product.INDEX2_BRAND || '-'}</td>
+            </tr>
+            <tr>
+              <td class="lbl">รุ่น</td>
+              <td class="val">${product.INDEX3_SERIES || '-'}</td>
+            </tr>
+          </table>
+          
+          <div class="price-box">
+            ${product.ListPrice ? `<div class="price-old">฿${product.ListPrice}</div>` : ''}
+            <div class="price-new">${product.PromotionPrice ? '฿' + product.PromotionPrice : '-'}</div>
+          </div>
+          
+          <div class="qty-row">
+            <div class="qty-label">จำนวนที่ต้องการสั่งซื้อ:</div>
+            <div class="qty-control">
+              <button class="qty-btn" onclick="updateQty(-1)">-</button>
+              <input type="number" id="order-qty" class="qty-input" value="1" min="1" readonly />
+              <button class="qty-btn" onclick="updateQty(1)">+</button>
+            </div>
+          </div>
+          
+          <div class="btn-group">
+            <button class="btn-primary" onclick="openOrderModal()">สั่งซื้อสินค้านี้</button>
+            <a href="mailto:sales@unimercegroup.com?subject=สอบถามข้อมูลสินค้า รหัส ${product.Item_Code}" class="btn-email-direct">
+              ส่งอีเมลสอบถามข้อมูลเพิ่มเติมทั่วไป
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="detail-sections">
+        <div class="sec-block">
+          <h2>Product Overview</h2>
+          <div class="body-text">${product.ProductOverview || '-'}</div>
+        </div>
+        
+        <div class="sec-block">
+          <h2>Key Features</h2>
+          ${featuresHTML}
+        </div>
+        
+        <div class="sec-block">
+          <h2>Technical Specifications</h2>
+          <div class="body-text">${product.TechnicalSpecifications || '-'}</div>
+        </div>
+
+        ${product.Productdetail ? `
+        <div class="sec-block">
+          <h2>Product Detail</h2>
+          <div class="body-text">${product.Productdetail}</div>
+        </div>
+        ` : ''}
+      </div>
+
+      <div class="modal-overlay" id="order-modal">
+        <div class="modal-box">
+          <div class="modal-header">
+            <div class="modal-title">ขั้นตอนการสั่งซื้อสินค้า</div>
+            <button class="modal-close" onclick="closeOrderModal()">×</button>
+          </div>
+          <p style="font-size:13px; color:#666; margin-bottom:12px; line-height:1.5;">
+            กรุณากดปุ่มด้านล่างเพื่อคัดลอกข้อความรายละเอียดสินค้า จากนั้นนำไปวางในหน้าต่างเขียนอีเมลส่งหา <strong>sales@unimercegroup.com</strong>
+          </p>
+          <div class="copy-area" id="copy-text-target"></div>
+          <button class="btn-primary" style="width:100%; border-radius:10px;" onclick="copyOrderTextToClipboard()">
+            คัดลอกข้อความ & เปิดหน้าส่งอีเมล
+          </button>
+          <div class="toast-msg" id="toast-success">✓ คัดลอกข้อมูลลงคลิปบอร์ดเรียบร้อยแล้ว!</div>
+        </div>
+      </div>
+    `;
+    
+  } catch (error) {
+    showError("ไม่สามารถเรียกดูชุดข้อมูลสินค้าจากระบบเซิร์ฟเวอร์ได้");
+  }
+}
+
+// ระบบคำนวณสลับชุดรูปภาพย่อย
+window.switchThumb = function(element, imgSrc) {
+  document.getElementById("view-main-img").src = imgSrc;
+  document.querySelectorAll('.thumb-box').forEach(box => box.classList.remove('active'));
+  element.classList.add('active');
+}
+
+// ระบบคำนวณจำนวนชิ้นสินค้า
+window.updateQty = function(amount) {
+  const input = document.getElementById("order-qty");
+  let current = parseInt(input.value) || 1;
+  current += amount;
+  if(current < 1) current = 1;
+  input.value = current;
+}
+
+// ฟังก์ชันเปิดป๊อปอัปสั่งซื้อและสร้างข้อความ (ข้อ 10)
+window.openOrderModal = function() {
+  if(!currentProductData) return;
+  const qty = document.getElementById("order-qty").value;
+  
+  const textTemplate = `เรียน ฝ่ายขาย UNIMERCE GROUP,\n\nฉันมีความประสงค์ต้องการสั่งซื้อสินค้าชิ้นนี้ตามรายละเอียดดังต่อไปนี้:\n-----------------------------------------\nรหัสสินค้า (Item Code): ${currentProductData.Item_Code || '-'}\nชื่อสินค้า (Description): ${currentProductData.Description || '-'}\nแบรนด์ (Brand): ${currentProductData.INDEX2_BRAND || '-'}\nรุ่น (Series): ${currentProductData.INDEX3_SERIES || '-'}\nจำนวนที่ต้องการ: ${qty} ${currentProductData.UOM || 'หน่วย'}\nราคาต่อหน่วย: ฿${currentProductData.PromotionPrice || currentProductData.ListPrice || '-'}\n-----------------------------------------\n\nกรุณาติดต่อกลับเพื่อยืนยันรายการคำสั่งซื้อนี้ด้วยครับ/ค่ะ`;
+  
+  document.getElementById("copy-text-target").innerText = textTemplate;
+  document.getElementById("order-modal").classList.add("active");
+}
+
+window.closeOrderModal = function() {
+  document.getElementById("order-modal").classList.remove("active");
+  document.getElementById("toast-success").style.display = "none";
+}
+
+// ฟังก์ชันคัดลอกลงคลิปบอร์ดแบบ One-touch Copy & Redirect เมล (ข้อ 10)
+window.copyOrderTextToClipboard = function() {
+  const text = document.getElementById("copy-text-target").innerText;
+  const qty = document.getElementById("order-qty").value;
+  
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.getElementById("toast-success");
+    toast.style.display = "block";
+    
+    // หลังจากคัดลอกเสร็จ 1 วินาที ระบบจะเด้งไปที่โปรแกรมส่งเมลโดยอัตโนมัติ เพื่ออำนวยความสะดวกสูงสุด
+    setTimeout(() => {
+      const subject = encodeURIComponent(`สั่งซื้อสินค้า รหัส ${currentProductData.Item_Code} จำนวน ${qty} ชิ้น`);
+      const body = encodeURIComponent(text);
+      window.location.href = `mailto:sales@unimercegroup.com?subject=${subject}&body=${body}`;
+    }, 1000);
+  });
+}
+
+function showError(message) {
+  document.getElementById("main-content").innerHTML = `
+    <div class="status-container">
+      <div class="error-text">${message}</div>
+      <a href="/products" class="back-btn">กลับสู่หน้าสินค้าทั้งหมด</a>
+    </div>
+  `;
+}
+
+window.addEventListener("load", loadProductDetail);
+</script>
+</body>
+</html>
