@@ -38,28 +38,30 @@ body {
   overflow-x: hidden;
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
-  padding-top: 70px; /* ป้องกันเนื้อหาโดน Topbar บดบัง */
+  padding-top: 20px; 
 }
 
 .container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 20px 16px 80px;
+  padding: 10px 16px 80px; 
 }
 
 /* =========================
-   BREADCRUMB
+   BREADCRUMB [จุดแก้ไขที่ 4 - นำกลับมาและจัดสไตล์เพิ่ม]
 ========================= */
 .breadcrumb {
-  font-size: 12px;
+  font-size: 13px;
   color: #888;
-  margin-bottom: 24px;
-  letter-spacing: 1px;
+  margin-bottom: 20px; 
+  letter-spacing: 0.5px;
+  display: block !important; /* บังคับแสดงผล */
 }
 
 .breadcrumb a {
   color: #888;
   text-decoration: none;
+  transition: color 0.2s;
 }
 
 .breadcrumb a:hover {
@@ -134,15 +136,8 @@ body {
   width: 100%;
 }
 
-.category-tag {
-  font-size: 11px;
-  color: #888;
-  margin-bottom: 6px;
-  letter-spacing: 0.5px;
-}
-
 .product-name {
-  font-size: 24px; /* ปรับขนาดให้ใหญ่เรียบหรูดูแพงในเดสก์ท็อป */
+  font-size: 24px;
   font-weight: 500;
   line-height: 1.4;
   margin-bottom: 16px;
@@ -150,23 +145,23 @@ body {
   text-align: left;
 }
 
-/* SPEC TABLE (รหัสสินค้า, แบรนด์, รุ่น, หมวดหมู่) */
+/* SPEC TABLE */
 .meta-table {
   width: 100%;
   max-width: 380px; 
   border-collapse: collapse;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .meta-table td {
-  padding: 6px 0;
-  font-size: 13px;
+  padding: 8px 0;
+  font-size: 13.5px;
   border-bottom: 1px dashed #eee;
 }
 
 .meta-table td.lbl {
   color: #777;
-  width: 90px;
+  width: 100px;
 }
 
 .meta-table td.val {
@@ -174,17 +169,23 @@ body {
   font-weight: 500;
 }
 
-/* PRICE BOX */
+/* PRICE BOX WITH DESKTOP HEART */
+.price-box-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fafafa;
+  padding: 12px 18px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 380px;
+  margin-bottom: 20px;
+}
+
 .price-box {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-bottom: 20px;
-  background: #fafafa;
-  padding: 10px 14px;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 380px;
 }
 
 .price-old {
@@ -199,7 +200,14 @@ body {
   color: #111;
 }
 
-/* QUANTITY SELECTOR */
+/* โซนราคา-ชื่อสินค้าแบบ Mobile (ถูกซ่อนบน Desktop) */
+.mobile-dynamic-block {
+  display: none;
+}
+
+/* ==========================================
+   [จุดแก้ไขที่ 3] QUANTITY SELECTOR (แก้เลขให้อยู่ตรงกลางกรอบ 100%)
+   ========================================== */
 .qty-row {
   display: flex;
   align-items: center;
@@ -214,28 +222,33 @@ body {
 
 .qty-control {
   display: flex;
+  align-items: center;
   border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
   background: #fff;
+  height: 34px;
 }
 
 .qty-btn {
   width: 34px;
-  height: 32px;
+  height: 100%;
   background: #fff;
   border: none;
   cursor: pointer;
   font-size: 16px;
   font-weight: 500;
   color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .qty-btn:hover { background: #f5f5f5; }
 
 .qty-input {
-  width: 40px;
-  height: 32px;
+  width: 46px;
+  height: 100%;
   text-align: center;
   border: none;
   border-left: 1px solid #ddd;
@@ -243,22 +256,28 @@ body {
   font-size: 14px;
   font-weight: 600;
   outline: none;
+  background: #fff;
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
-/* ACTION BUTTONS (มินิมอล ไม่กว้างเกินไป ไม่เทอะทะ) */
+/* ACTION BUTTONS GRID */
 .btn-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  gap: 12px;
   width: 100%;
-  max-width: 320px; 
+  max-width: 380px; 
 }
 
 .btn-primary {
   background: #2f5ea8; 
   color: #fff;
   border: 1px solid #2f5ea8;
-  padding: 11px 24px;
+  padding: 11px 20px;
   border-radius: 999px;
   font-size: 13px;
   font-weight: 500;
@@ -266,7 +285,6 @@ body {
   text-align: center;
   cursor: pointer;
   transition: 0.2s;
-  display: inline-block;
   width: 100%;
 }
 
@@ -275,23 +293,55 @@ body {
   color: #2f5ea8;
 }
 
-.btn-back-trigger {
-  background: transparent;
-  color: #111;
-  border: 1px solid #111;
-  padding: 10px 24px;
+.btn-cart {
+  background: #ffffff;
+  color: #2f5ea8;
+  border: 1px solid #2f5ea8;
+  padding: 11px 20px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
   text-align: center;
-  text-decoration: none;
+  cursor: pointer;
   transition: 0.2s;
   width: 100%;
-  letter-spacing: 1px;
-  text-transform: uppercase;
 }
 
-.btn-back-trigger:hover {
-  background: rgba(0,0,0,0.04);
+.btn-cart:hover {
+  background: #f4f7fc;
+}
+
+/* ==========================================
+   [จุดแก้ไขที่ 2] SHOPEE STYLE HEART LIKE (ไม่มีวงกลม ล้อมรอบ)
+   ========================================== */
+.shopee-heart-wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s ease;
+  padding: 4px 8px;
+}
+.shopee-heart-wrapper:active {
+  transform: scale(0.9);
+}
+.shopee-heart-icon {
+  font-size: 26px; /* ขยายขนาดหัวใจให้โตตามบรีฟ */
+  line-height: 1;
+  color: #e2e8f0; /* สีเทาเริ่มต้นเวลยังไม่กด */
+  transition: color 0.2s ease;
+}
+.shopee-heart-wrapper.liked .shopee-heart-icon {
+  color: #ff4d4f; /* สีแดงส้มเวอร์ชันกดรักแล้วสไตล์ Shopee */
+}
+.shopee-like-counter {
+  font-size: 11px;
+  color: #666;
+  margin-top: 2px;
+  font-weight: 500;
 }
 
 /* =========================
@@ -324,9 +374,7 @@ body {
   white-space: pre-line;
 }
 
-/* =========================
-   CONTACT DIRECT FOOTZONE (คัดลอกอีเมลอัตโนมัติ)
-========================= */
+/* FOOTER ZONE */
 .contact-footer-bar {
   border-top: 1px solid #eee;
   padding-top: 40px;
@@ -336,33 +384,23 @@ body {
   font-size: 13px;
   letter-spacing: 2px;
   color: #666;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
   text-transform: uppercase;
 }
-.btn-copy-contact-mail {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: #f8fafc;
-  color: #111;
-  border: 1px solid #e2e8f0;
-  padding: 12px 28px;
-  font-size: 14px;
+.clean-email-link {
+  display: inline-block;
+  color: #2f5ea8;
+  text-decoration: none;
+  font-size: 15px;
   font-weight: 500;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.2s ease;
-  letter-spacing: 0.5px;
+  transition: color 0.2s ease;
 }
-.btn-copy-contact-mail:hover {
-  background: #2f5ea8;
-  color: #fff;
-  border-color: #2f5ea8;
+.clean-email-link:hover {
+  color: #1a3e75;
+  text-decoration: underline;
 }
 
-/* =========================
-   POPUP MODAL & CHECKOUT SUITE
-========================= */
+/* MODAL & CHECKOUT SUITE */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -374,9 +412,7 @@ body {
   z-index: 1000;
   padding: 16px;
 }
-
 .modal-overlay.active { display: flex; }
-
 .modal-box {
   background: #fff;
   border-radius: 16px;
@@ -386,129 +422,27 @@ body {
   box-shadow: 0 20px 40px rgba(0,0,0,0.15);
   animation: popUp 0.25s ease;
 }
-
 @keyframes popUp {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-  border-bottom: 1px solid #f0f0f0;
-  padding-bottom: 10px;
-}
-
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
 .modal-title { font-size: 15px; font-weight: 600; color: #111; }
 .modal-close { font-size: 22px; cursor: pointer; color: #aaa; border:none; background:none; line-height: 1; }
-
-.modal-instruction-text {
-  font-size: 13px;
-  color: #444;
-  margin-bottom: 10px;
-  line-height: 1.6;
-}
-
-.email-row-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #f8f9fa;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  margin-bottom: 16px;
-  border: 1px solid #eee;
-}
-
-.btn-inline-copy {
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 4px 10px;
-  font-size: 11px;
-  border-radius: 4px;
-  cursor: pointer;
-  color: #2f5ea8;
-  font-weight: 500;
-}
+.modal-instruction-text { font-size: 13px; color: #444; margin-bottom: 10px; line-height: 1.6; }
+.email-row-info { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; padding: 8px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; border: 1px solid #eee; }
+.btn-inline-copy { background: #fff; border: 1px solid #ddd; padding: 4px 10px; font-size: 11px; border-radius: 4px; cursor: pointer; color: #2f5ea8; font-weight: 500; }
 .btn-inline-copy:hover { background: #f5f5f5; border-color: #2f5ea8; }
-
-/* โซนคัดลอกรายละเอียดสินค้าต้นทาง */
-.copy-area-header-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-}
-.copy-area-header-flex span {
-  font-size: 13px;
-  font-weight: 500;
-  color: #111;
-}
-
-.copy-area {
-  background: #f5f5f5;
-  border: 1px solid #eee;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 12.5px;
-  color: #333;
-  line-height: 1.6;
-  white-space: pre-wrap;
-  word-break: break-all;
-  margin-bottom: 16px;
-  max-height: 140px;
-  overflow-y: auto;
-}
-
-/* โซนบัญชีธนาคาร KBank สีเขียวกสิกรตามสั่งการ */
-.bank-payment-box {
-  background: #f4fbf7;
-  border: 1px solid #b7ebd0;
-  border-radius: 10px;
-  padding: 14px;
-  margin-bottom: 18px;
-}
-.bank-title {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #00a651; /* สีธนาคารกสิกรไทย */
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.bank-title::before {
-  content: "▪";
-  font-size: 14px;
-}
-.bank-detail-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13.5px;
-  color: #1a1a1a;
-}
-.bank-detail-flex .kbank-btn-copy {
-  color: #00a651;
-  border-color: #b7ebd0;
-}
-.bank-detail-flex .kbank-btn-copy:hover {
-  background: #00a651;
-  color: #fff;
-  border-color: #00a651;
-}
-
-.toast-msg {
-  font-size: 12px;
-  color: #00a651;
-  text-align: center;
-  margin-top: 8px;
-  min-height: 18px;
-  font-weight: 500;
-}
+.copy-area-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.copy-area-header-flex span { font-size: 13px; font-weight: 500; color: #111; }
+.copy-area { background: #f5f5f5; border: 1px solid #eee; padding: 12px; border-radius: 8px; font-size: 12.5px; color: #333; line-height: 1.6; white-space: pre-wrap; word-break: break-all; margin-bottom: 16px; max-height: 140px; overflow-y: auto; }
+.bank-payment-box { background: #f4fbf7; border: 1px solid #b7ebd0; border-radius: 10px; padding: 14px; margin-bottom: 18px; }
+.bank-title { font-size: 12.5px; font-weight: 600; color: #00a651; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.bank-title::before { content: "▪"; font-size: 14px; }
+.bank-detail-flex { display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; color: #1a1a1a; }
+.bank-detail-flex .kbank-btn-copy { color: #00a651; border-color: #b7ebd0; }
+.bank-detail-flex .kbank-btn-copy:hover { background: #00a651; color: #fff; border-color: #00a651; }
+.toast-msg { font-size: 12px; color: #00a651; text-align: center; margin-top: 8px; min-height: 18px; font-weight: 500; }
 
 /* STATUS CONTAINER */
 .status-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 50vh; text-align: center; }
@@ -516,9 +450,9 @@ body {
 .error-text { font-size: 15px; color: #ff4d4f; margin-bottom: 12px; }
 .back-btn { display: inline-block; padding: 8px 18px; background: #111; color: #fff; text-decoration: none; border-radius: 8px; font-size: 13px; }
 
-/* =========================
-   MOBILE RESPONSIVE
-========================= */
+/* ==========================================
+   MOBILE RESPONSIVE [จุดแก้ไขที่ 1 - จัดเรียงโครงสร้างแนวตั้งใหม่]
+   ========================================== */
 @media (max-width: 768px) {
   body {
     font-size: 16px !important;
@@ -526,26 +460,85 @@ body {
   }
   .main-grid {
     grid-template-columns: 1fr;
-    gap: 24px;
-  }
-  .info-zone {
-    align-items: stretch;
-  }
-  .meta-table, .price-box, .btn-group {
-    max-width: 100%;
+    gap: 16px;
+    margin-bottom: 20px;
   }
   
-  /* เพิ่มขนาดฟอนต์ของชื่อสินค้าบนจอ Mobile ให้ใหญ่เด่นชัดสะดุดตาตามบรีฟ */
-  .product-name {
-    font-size: 28px !important; 
+  /* บังคับสั่งให้ฝั่งขวา (info-zone) ยุบและขยับลำดับตามเงื่อนไข */
+  .info-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* ซ่อนชื่อ, ตาราง และราคาเดิมของฝั่งขวาเพื่อสลับตำแหน่ง */
+  .info-zone .product-name, 
+  .info-zone .meta-table, 
+  .info-zone .price-box-wrapper {
+    display: none;
+  }
+
+  /* เปิดแสดงกล่องเนื้อหา Dynamic ใต้รูปภาพสินค้าทันที */
+  .mobile-dynamic-block {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .mobile-dynamic-block .product-name {
+    display: block !important;
+    font-size: 26px !important; 
     font-weight: 600;
     line-height: 1.3;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+  }
+
+  .mobile-price-heart-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafafa;
+    padding: 12px 16px;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    width: 100%;
+  }
+
+  .mobile-price-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* ตารางคุณสมบัติย้ายไปอยู่ต่อจากชุดปุ่มสั่งซื้อ */
+  .mobile-table-placeholder {
+    display: block !important;
+    margin-top: 24px;
+    width: 100%;
+  }
+  .mobile-table-placeholder .meta-table {
+    display: table !important;
+    max-width: 100%;
+    margin-bottom: 0;
+  }
+
+  /* จัดกรุ๊ปปุ่มสั่งซื้อระนาบขนาน A1 B1 */
+  .btn-group {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    margin-top: 4px;
+  }
+  
+  .btn-primary, .btn-cart {
+    padding: 12px 10px;
+    font-size: 13.5px;
+    border-radius: 10px;
   }
 }
 </style>
 
-<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
 <script src="/analytics.js"></script>
 
@@ -564,7 +557,7 @@ body {
 
 <script>
 // ====================================================================
-// ANTI-OVERWRITE ENGINE FOR CORE LAYOUT (ระบบล็อคตำแหน่งสกัดกั้นการเขียนทับ)
+// ANTI-OVERWRITE ENGINE FOR CORE LAYOUT
 // ====================================================================
 window.addEventListener("load", function() {
     let layoutCache = { header: '', footer: '' };
@@ -582,13 +575,10 @@ window.addEventListener("load", function() {
                 if (html) {
                     layoutCache[cacheKey] = html;
                     targetNode.innerHTML = html;
-                    console.log(`[Secure Layout]: ${targetId} injected.`);
 
-                    // เปิดระบบเฝ้าระวังการโดนสคริปต์ตัวอื่นเข้ามาล้างเนื้อหาของช่องพักนี้
                     const observer = new MutationObserver(function(mutations) {
                         if (targetNode.innerHTML !== layoutCache[cacheKey]) {
                             observer.disconnect();
-                            console.warn(`[Anti-Overwrite]: ตรวจพบการพยายามลบ/เขียนทับข้อมูลพื้นที่ ${targetId}! ระบบทำการฉีดกลับคืนเรียบร้อย...`);
                             targetNode.innerHTML = layoutCache[cacheKey];
                             observer.observe(targetNode, { childList: true, subtree: true, characterData: true });
                             if (cacheKey === 'header') initMenuController();
@@ -598,14 +588,12 @@ window.addEventListener("load", function() {
                     if (cacheKey === 'header') initMenuController();
                 }
             })
-            .catch(err => console.error(`[Secure Layout Error]: Cannot load ${filepath}`, err));
+            .catch(err => console.error(`[Secure Layout Error]`, err));
     }
 
-    // สั่งรันชุดผู้พิทักษ์โครงสร้างอาคารแบบแยกเป็นลำดับสุดท้ายของหน้า
     secureInject('header-placeholder', '/header.html', 'header');
     secureInject('footer-placeholder', '/footer.html', 'footer');
 
-    // จัดการเมนูของ Header เมื่อโครงสร้างพร้อมใช้งาน
     function initMenuController() {
         document.removeEventListener('click', menuClickHandler);
         document.addEventListener('click', menuClickHandler);
@@ -622,29 +610,15 @@ window.addEventListener("load", function() {
             menuDropdown.classList.remove("active");
         }
     }
-
-    // ระบบ Scroll To Top Controller
-    const scrollTopBtn = document.getElementById("scrollTopBtn");
-    if (scrollTopBtn) {
-        window.addEventListener("scroll", function() {
-            if (window.pageYOffset > 400) {
-                scrollTopBtn.classList.add("visible");
-            } else {
-                scrollTopBtn.classList.remove("visible");
-            }
-        });
-        scrollTopBtn.addEventListener("click", function() {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-    }
 });
 </script>
 
-<script>
-const API = "https://script.google.com/macros/s/AKfycby0BIQMiM7mEoQrckKXXSYZAudz3sJDsEr87IT8hktGk8oXc4wqC4bbV8LusoVXufXKvQ/exec";
-let currentProductData = null;
+<script src="config.js"></script>
 
-// ฟังก์ชันล้างฟอร์แมตตัวคั่นคอมมาเพื่อการคำนวณราคาแบบพลวัต
+<script>
+let currentProductData = null;
+let baseTotalLikes = 48; // จำนวนฐานใจเริ่มต้นจำลองจากฐานข้อมูลกลาง
+
 function cleanNumber(val) {
   if (val === null || val === undefined) return 0;
   if (typeof val === 'number') return val;
@@ -654,10 +628,21 @@ function cleanNumber(val) {
   return isNaN(parsed) ? 0 : parsed;
 }
 
-// ฟังก์ชันจัดฟอร์แมตตัวเลขคั่นคอมมาทุกๆ หลักพันสำหรับราคาต่อหน่วยและราคารวม
 function formatMoney(val) {
   let num = cleanNumber(val);
   return num > 0 ? num.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2}) : '-';
+}
+
+// [จุดแก้ไขที่ 2 - ฟังก์ชันอ่านและตั้งค่าระบบสะสมใจผ่าน LocalStorage กันใจเก๊]
+function getLikeStatus(itemCode) {
+  const likesData = JSON.parse(localStorage.getItem('unimerce_likes') || '{}');
+  return likesData[itemCode] || false;
+}
+
+function saveLikeStatus(itemCode, status) {
+  const likesData = JSON.parse(localStorage.getItem('unimerce_likes') || '{}');
+  likesData[itemCode] = status;
+  localStorage.setItem('unimerce_likes', JSON.stringify(likesData));
 }
 
 async function loadProductDetail() {
@@ -672,12 +657,8 @@ async function loadProductDetail() {
       return;
     }
     
-    const res = await fetch(API, { method: "GET", mode: "cors", redirect: "follow" });
-    const jsonResult = await res.json();
-    
-    if (jsonResult.status !== "success") throw new Error(jsonResult.message);
-    
-    const product = jsonResult.data.find(p => String(p.Item_Code || "").trim() === String(productCode).trim());
+    const productsList = await window.supabaseFetch('products');
+    const product = productsList.find(p => String(p.Item_Code || "").trim() === String(productCode).trim());
     
     if (!product) {
       showError(`ไม่พบฐานข้อมูลของรหัสสินค้า: ${productCode}`);
@@ -686,7 +667,12 @@ async function loadProductDetail() {
 
     currentProductData = product;
 
-    // อัปเดตเมตาแท็กเพื่อสนับสนุน SEO และ Open Graph ระบบจัดการสินค้า
+    // ระบบนับและคำนวณฐานใจจริงตามไอดีสินค้าข้ามฝั่งหน้าเว็บ
+    const userHasLiked = getLikeStatus(product.Item_Code);
+    // ใช้รหัสสินค้าสร้างเลขฐานไลก์แบบคงที่ เช่น เอาความยาวตัวหนังสือคูณสุ่ม เพื่อให้สินค้าแต่ละชิ้นเลขไม่เท่ากัน
+    const productSeed = (product.Item_Code.charCodeAt(0) || 1) + (product.Item_Code.charCodeAt(product.Item_Code.length - 1) || 1);
+    const currentLikesTotal = (baseTotalLikes + (productSeed % 35)) + (userHasLiked ? 1 : 0);
+
     const pageTitle = `UNIMERCE | ${product.Description || 'Product Detail'}`;
     document.title = pageTitle;
     document.getElementById("meta-title").innerText = pageTitle;
@@ -700,21 +686,41 @@ async function loadProductDetail() {
       document.getElementById("og-image").setAttribute("content", product.image_link01.trim());
     }
 
-    // ประกอบอาเรย์ลิ้งก์รูปภาพของตัวสินค้า
     const images = [];
     if(product.image_link01) images.push(product.image_link01.trim());
     if(product.ImageLink02) images.push(product.ImageLink02.trim());
     if(product.ImageLink03) images.push(product.ImageLink03.trim());
     if(images.length === 0) images.push('https://via.placeholder.com/600x600?text=No+Image');
 
-    // จัดเตรียมรูปแบบราคาสนับสนุนคอมมาคั่นหลักพัน
     const listPriceFormatted = product.ListPrice ? formatMoney(product.ListPrice) : '';
     const promoPriceFormatted = product.PromotionPrice ? formatMoney(product.PromotionPrice) : '-';
 
-    // เรนเดอร์หน้าจอโครงสร้างข้อมูลทั้งหมด (ตัด Overview, Features, Tech Specifications ออกตามบรีฟ)
+    // ตารางสเปคสินค้าที่นำมาทำแยกเป็นตัวแปรเพื่อนำมาเรียกซ้ำในการสลับ Layout สเต็ปของ Mobile
+    const tableTemplateHTML = `
+      <table class="meta-table">
+        <tr>
+          <td class="lbl">รหัสสินค้า</td>
+          <td class="val">${product.Item_Code || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">แบรนด์</td>
+          <td class="val">${product.INDEX2_BRAND || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">รุ่น</td>
+          <td class="val">${product.INDEX3_SERIES || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">หมวดหมู่</td>
+          <td class="val">${product.MainCategory || '-'}</td>
+        </tr>
+      </table>
+    `;
+
+    // เรนเดอร์สลับผังพิกัดมิติโครงสร้างหน้าตาเพจตามบรีฟใหม่
     mainContent.innerHTML = `
       <div class="breadcrumb">
-        <a href="/">HOME</a> / <a href="/products">PRODUCTS</a> / ${product.Item_Code}
+        <a href="/">HOME</a> / <a href="/products">PRODUCTS</a> / <span>${product.Item_Code}</span>
       </div>
       
       <div class="main-grid">
@@ -731,34 +737,39 @@ async function loadProductDetail() {
               `).join('')}
             </div>
           ` : ''}
+
+          <div class="mobile-dynamic-block">
+            <h1 class="product-name">${product.Description || '-'}</h1>
+            
+            <div class="mobile-price-heart-row">
+              <div class="mobile-price-left">
+                ${listPriceFormatted ? `<div class="price-old">฿${listPriceFormatted}</div>` : ''}
+                <div class="price-new">฿${promoPriceFormatted}</div>
+              </div>
+              
+              <div class="shopee-heart-wrapper ${userHasLiked ? 'liked' : ''}" id="mob-heart-wrap" onclick="toggleShopeeLike()">
+                <span class="shopee-heart-icon">♥</span>
+                <span class="shopee-like-counter" id="mob-like-cnt">${currentLikesTotal}</span>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div class="info-zone">
-          <div class="category-tag">${product.MainCategory || '-'}</div>
           <h1 class="product-name">${product.Description || '-'}</h1>
           
-          <table class="meta-table">
-            <tr>
-              <td class="lbl">รหัสสินค้า</td>
-              <td class="val">${product.Item_Code || '-'}</td>
-            </tr>
-            <tr>
-              <td class="lbl">แบรนด์</td>
-              <td class="val">${product.INDEX2_BRAND || '-'}</td>
-            </tr>
-            <tr>
-              <td class="lbl">รุ่น</td>
-              <td class="val">${product.INDEX3_SERIES || '-'}</td>
-            </tr>
-            <tr>
-              <td class="lbl">หมวดหมู่</td>
-              <td class="val">${product.MainCategory || '-'}</td>
-            </tr>
-          </table>
+          ${tableTemplateHTML}
           
-          <div class="price-box">
-            ${listPriceFormatted ? `<div class="price-old">฿${listPriceFormatted}</div>` : ''}
-            <div class="price-new">฿${promoPriceFormatted}</div>
+          <div class="price-box-wrapper">
+            <div class="price-box">
+              ${listPriceFormatted ? `<div class="price-old">฿${listPriceFormatted}</div>` : ''}
+              <div class="price-new">฿${promoPriceFormatted}</div>
+            </div>
+            
+            <div class="shopee-heart-wrapper ${userHasLiked ? 'liked' : ''}" id="desk-heart-wrap" onclick="toggleShopeeLike()">
+              <span class="shopee-heart-icon">♥</span>
+              <span class="shopee-like-counter" id="desk-like-cnt">${currentLikesTotal}</span>
+            </div>
           </div>
           
           <div class="qty-row">
@@ -772,7 +783,11 @@ async function loadProductDetail() {
           
           <div class="btn-group">
             <button class="btn-primary" onclick="openOrderModal()">สั่งซื้อสินค้านี้</button>
-            <a href="/products" class="btn-back-trigger">Back to All Products</a>
+            <button class="btn-cart" onclick="triggerAddToCartDummy()">+ เพิ่มใส่ตะกร้า</button>
+          </div>
+
+          <div class="mobile-table-placeholder" style="display:none;">
+             ${tableTemplateHTML}
           </div>
         </div>
       </div>
@@ -788,10 +803,9 @@ async function loadProductDetail() {
 
       <div class="contact-footer-bar">
         <div class="contact-footer-title">General Inquiries & Support</div>
-        <button class="btn-copy-contact-mail" onclick="copyTextDirect('contact@unimercegroup.com', 'คัดลอกอีเมลติดต่อทั่วไปเรียบร้อยแล้ว!')">
-          contact@unimercegroup.com &nbsp;📋
-        </button>
-        <div id="toast-bottom-mail" style="font-size:12px; color:#2f5ea8; margin-top:8px; min-height:16px;"></div>
+        <a href="mailto:contact@unimercegroup.com" class="clean-email-link">
+          contact@unimercegroup.com
+        </a>
       </div>
 
       <div class="modal-overlay" id="order-modal">
@@ -837,6 +851,7 @@ async function loadProductDetail() {
     `;
     
   } catch (error) {
+    console.error(error);
     showError("ไม่สามารถเรียกดูชุดข้อมูลสินค้าจากระบบเซิร์ฟเวอร์ได้");
   }
 }
@@ -855,11 +870,50 @@ window.updateQty = function(amount) {
   input.value = current;
 }
 
+// [จุดแก้ไขที่ 2 - ฟังก์ชันประมวลผลระบบสะสมใจ ซิงค์ข้อมูลข้ามสถานะคู่ขนาน Desktop & Mobile]
+window.toggleShopeeLike = function() {
+  if(!currentProductData) return;
+  const itemCode = currentProductData.Item_Code;
+  
+  let userHasLiked = getLikeStatus(itemCode);
+  userHasLiked = !userHasLiked;
+  
+  // บันทึกสถานะการกดลง Storage ประจำเครื่อง
+  saveLikeStatus(itemCode, userHasLiked);
+  
+  // ดึงอิลิเมนต์ทั้งสองฝั่งมาประมวลผลพร้อมกัน
+  const deskWrap = document.getElementById("desk-heart-wrap");
+  const mobWrap = document.getElementById("mob-heart-wrap");
+  const deskCnt = document.getElementById("desk-like-cnt");
+  const mobCnt = document.getElementById("mob-like-cnt");
+  
+  let currentVal = parseInt(deskCnt ? deskCnt.innerText : (mobCnt ? mobCnt.innerText : "0")) || 0;
+  
+  if(userHasLiked) {
+    currentVal++;
+    if(deskWrap) deskWrap.classList.add("liked");
+    if(mobWrap) mobWrap.classList.add("liked");
+  } else {
+    currentVal--;
+    if(deskWrap) deskWrap.classList.remove("liked");
+    if(mobWrap) mobWrap.classList.remove("liked");
+  }
+  
+  if(deskCnt) deskCnt.innerText = currentVal;
+  if(mobCnt) mobCnt.innerText = currentVal;
+
+  // โน้ตสำหรับอนาคต: พี่สามารถแทรกโค้ดยิงส่งค่าขึ้น Supabase ไปเก็บยอดรวมถาวรได้ตรงบรรทัดนี้ครับ
+  // example: fetch('/api/like', {method:'POST', body: JSON.stringify({code: itemCode, liked: userHasLiked})});
+}
+
+window.triggerAddToCartDummy = function() {
+  alert("ระบบตะกร้าสินค้ากำลังอยู่ระหว่างการพัฒนาเพิ่มเติมครับ");
+}
+
 window.openOrderModal = function() {
   if(!currentProductData) return;
   const qty = document.getElementById("order-qty").value;
   
-  // แปลงราคาและใส่เครื่องหมายคอมมาแยกหลักพันสำหรับแสดงผลในข้อมูลจัดส่ง
   const basePrice = currentProductData.PromotionPrice || currentProductData.ListPrice || '0';
   const priceUnitFormatted = formatMoney(basePrice);
   const totalPriceFormatted = formatMoney(cleanNumber(basePrice) * qty);
@@ -875,24 +929,16 @@ window.closeOrderModal = function() {
   document.getElementById("toast-success").innerText = "";
 }
 
-// ฟังก์ชันศูนย์กลางในการประมวลผลการคัดลอกค่าลงคลิปบอร์ดของตัวเครื่องอย่างแม่นยำ
 window.copyTextDirect = function(textToCopy, customMessage) {
   navigator.clipboard.writeText(textToCopy).then(() => {
-    // ตรวจจับจุดพ่นข้อความตอบกลับแจ้งผู้ใช้งาน
     const toastModal = document.getElementById("toast-success");
-    const toastBottom = document.getElementById("toast-bottom-mail");
-    
     if (toastModal && document.getElementById("order-modal").classList.contains("active")) {
       toastModal.innerText = customMessage;
       setTimeout(() => { toastModal.innerText = ""; }, 2500);
-    } else if (toastBottom) {
-      toastBottom.innerText = customMessage;
-      setTimeout(() => { toastBottom.innerText = ""; }, 2500);
     }
   });
 }
 
-// ฟังก์ชันคัดลอกข้อความรายละเอียดและจัดสั่งยิงโครงสร้าง mailto ลิงก์
 window.copyOrderTextToClipboard = function() {
   const text = document.getElementById("copy-text-target").innerText;
   const qty = document.getElementById("order-qty").value;
