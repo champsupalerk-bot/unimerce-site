@@ -1,610 +1,632 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>UNIMERCE | Products</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico?v=99" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title id="meta-title">UNIMERCE | Product Detail</title>
+<meta id="meta-desc" name="description" content="ดูรายละเอียดสินค้า ข้อมูลทางเทคนิค และสั่งซื้อผ่านระบบอีเมลของ UNIMERCE GROUP" />
+<meta name="keywords" content="UNIMERCE, เครื่องกรองน้ำ, เครื่องพ่นอโรมา, เครื่องมือวัดคุณภาพน้ำ, Vitev Thailand, รายละเอียดสินค้า" />
+<meta name="author" content="UNIMERCE GROUP" />
+<meta name="robots" content="index, follow" />
+
+<meta property="og:type" content="website" />
+<meta id="og-title" property="og:title" content="UNIMERCE | รายละเอียดสินค้า" />
+<meta id="og-desc" property="og:description" content="ดูรายละเอียดสินค้า ข้อมูลทางเทคนิค และสั่งซื้อผ่านระบบอีเมลของ UNIMERCE GROUP" />
+<meta id="og-image" property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780633652/ULOGO_CLEAR_1060_jkvqqm.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght=200;300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-/* =========================
-   GLOBAL
-========================= */
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#fafafa;
-  color:#111;
-  padding-top:40px;
+/* ==========================================
+   CORE DESIGN SYSTEM & DETAIL LAYOUT
+   ========================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Kanit", Arial, sans-serif;
+}
+
+body {
+  background: #ffffff;
+  color: #1a1a1a;
+  overflow-x: hidden;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  padding-top: 20px; 
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 10px 16px 80px; 
 }
 
 /* =========================
-   HEADER
+   BREADCRUMB (กู้คืนกลับมาและเปิดให้แสดงผลทุกหน้าจอ)
 ========================= */
-.header{
-  max-width:1000px; /* ปรับลดจาก 1600px เหลือ 1000px เพื่อให้จัดวางตรงกลางแนวเดียวกับเนื้อหา */
-  margin:auto;
-  padding:24px 20px 10px;
+.breadcrumb {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 20px; 
+  letter-spacing: 0.5px;
+  display: block !important;
 }
 
-.breadcrumb{
-  font-size:12px;
-  color:#888;
-  margin-bottom:10px;
-}
-
-/* ลิงก์สำหรับกดกลับหน้า Home สไตล์เนียนๆ */
-.breadcrumb a{
+.breadcrumb a {
   color: #888;
   text-decoration: none;
-  font-weight: bold;
+  transition: color 0.2s;
 }
 
-.breadcrumb a:hover{
+.breadcrumb a:hover {
   text-decoration: underline;
   color: #2f5ea8;
 }
 
-.title{
-  font-size:28px;
-  font-weight:bold;
-  letter-spacing:1px;
-  margin-bottom: 16px;
-}
-
-/* SEARCHBAR แบบมินิมอลใต้หัวข้อหลัก */
-.filterbar{
-  max-width: 1000px;
-  margin: 0 auto 15px auto;
-  padding: 0 20px;
-}
-
-.filterbar input{
-  width:100%;
-  padding:10px 12px;
-  border:1px solid #ddd;
-  border-radius:8px;
-  font-size:16px;
-  outline:none;
-  box-sizing:border-box;
-  transition: all 0.2s ease;
-}
-
-.filterbar input:focus {
-  border-color: #2f5ea8;
-  box-shadow: 0 0 0 3px rgba(47, 94, 168, 0.15);
-}
-
 /* =========================
-   CUSTOM CIRCULAR FILTER BAR
+   MAIN PRODUCT GRID (TOP ZONE)
 ========================= */
-.category-filter-bar {
-  max-width: 1000px;
-  margin: 0 auto 15px auto;
-  padding: 0 20px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
 }
 
-.category-label {
+/* IMAGE SYSTEM (แก้ไขไม่ให้ Crop รูปภาพ) */
+.image-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.main-img-wrap {
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  background: #ffffff; /* ปรับพื้นหลังขาวสะอาด */
   display: flex;
   align-items: center;
+  justify-content: center;
+}
+
+.main-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* รูปจะไม่โดนตัด Crop ขอบ ถ้าแนวตั้งก็ยาวเต็มๆ สัดส่วนไม่เพี้ยน */
+}
+
+.thumb-row {
+  display: flex;
   gap: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #444;
+  overflow-x: auto;
+}
+
+.thumb-box {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #eee;
   cursor: pointer;
-  user-select: none;
-  position: relative;
-}
-
-/* ซ่อน Checkbox ดั้งเดิม */
-.category-label input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-/* สร้างวงกลม Custom ออกแบบเลียนแบบ UI ทันสมัย */
-.checkmark {
-  height: 18px;
-  width: 18px;
-  background-color: #fff;
-  border: 2px solid #ccc;
-  border-radius: 50%;
-  display: inline-block;
-  position: relative;
-  transition: all 0.2s ease;
-}
-
-/* เมื่อ Hover ปุ่ม */
-.category-label:hover input ~ .checkmark {
-  border-color: #2f5ea8;
-}
-
-/* เมื่อ Checkbox ถูกเลือก เปลี่ยนสีกรอบและพื้นหลัง */
-.category-label input:checked ~ .checkmark {
-  background-color: #2f5ea8;
-  border-color: #2f5ea8;
-}
-
-/* จุดกลมตรงกลางสีขาวตอนแอคทีฟ */
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-  top: 5px;
-  left: 5px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: white;
-}
-
-.category-label input:checked ~ .checkmark:after {
-  display: block;
-}
-
-/* =========================
-   PAGINATION NAVIGATION BAR (MODERN LOOK)
-========================= */
-.pagination-bar {
-  max-width: 1000px;
-  margin: 40px auto 10px auto;
-  padding: 0 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.page-btn {
+  flex-shrink: 0;
   background: #fff;
-  color: #444;
-  border: 1px solid #e5e7eb;
-  width: 38px;
-  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+}
+
+.thumb-box.active {
+  border-color: #2f5ea8;
+}
+
+.thumb-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* INFO ZONE */
+.info-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  width: 100%;
+}
+
+.product-name {
+  font-size: 24px;
   font-weight: 500;
-  border-radius: 10px;
+  line-height: 1.4;
+  margin-bottom: 16px;
+  color: #111;
+  text-align: left;
+}
+
+/* SPEC TABLE */
+.meta-table {
+  width: 100%;
+  max-width: 380px; 
+  border-collapse: collapse;
+  margin-bottom: 24px;
+}
+
+.meta-table td {
+  padding: 8px 0;
+  font-size: 13.5px;
+  border-bottom: 1px dashed #eee;
+}
+
+.meta-table td.lbl {
+  color: #777;
+  width: 100px;
+}
+
+.meta-table td.val {
+  color: #111;
+  font-weight: 500;
+}
+
+/* PRICE BOX WITH DESKTOP HEART */
+.price-box-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fafafa;
+  padding: 12px 18px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 380px;
+  margin-bottom: 20px;
+}
+
+.price-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.price-old {
+  font-size: 13px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.price-new {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111;
+}
+
+/* โซนราคา-ชื่อสินค้าแบบ Mobile (ถูกซ่อนบน Desktop) */
+.mobile-dynamic-block {
+  display: none;
+}
+
+/* QUANTITY SELECTOR */
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.qty-label {
+  font-size: 13px;
+  color: #666;
+}
+
+.qty-control {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  height: 34px;
+}
+
+.qty-btn {
+  width: 34px;
+  height: 100%;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qty-btn:hover { background: #f5f5f5; }
+
+.qty-input {
+  width: 46px;
+  height: 100%;
+  text-align: center;
+  border: none;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  background: #fff;
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* ACTION BUTTONS GRID */
+.btn-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  gap: 12px;
+  width: 100%;
+  max-width: 380px; 
+}
+
+.btn-primary {
+  background: #2f5ea8; 
+  color: #fff;
+  border: 1px solid #2f5ea8;
+  padding: 11px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background: #fff;
+  color: #2f5ea8;
+}
+
+.btn-cart {
+  background: #ffffff;
+  color: #2f5ea8;
+  border: 1px solid #2f5ea8;
+  padding: 11px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+  width: 100%;
+}
+
+.btn-cart:hover {
+  background: #f4f7fc;
+}
+
+/* SHOPEE STYLE HEART LIKE */
+.shopee-heart-wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   user-select: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  transition: transform 0.1s ease;
+  padding: 4px 8px;
+}
+.shopee-heart-wrapper:active {
+  transform: scale(0.9);
+}
+.shopee-heart-icon {
+  font-size: 26px; 
+  line-height: 1;
+  color: #e2e8f0; 
+  transition: color 0.2s ease;
+}
+.shopee-heart-wrapper.liked .shopee-heart-icon {
+  color: #ff4d4f; 
+}
+.shopee-like-counter {
+  font-size: 11px;
+  color: #666;
+  margin-top: 2px;
+  font-weight: 500;
 }
 
-/* ปุ่มถัดไป/ก่อนหน้า แบบกว้างขึ้นนิดหน่อยเพื่อให้สมดุลก้ามปู */
-.page-btn.nav-arrow {
-  width: 42px;
-  font-size: 16px;
+/* BOTTOM ZONE: PRODUCT DETAIL */
+.detail-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  border-top: 1px solid #eee;
+  padding-top: 32px;
+  margin-bottom: 60px;
 }
 
-.page-btn:hover:not(:disabled) {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  color: #1e293b;
-  transform: translateY(-1px);
-}
-
-.page-btn.active {
-  background: #2f5ea8;
-  color: #fff;
-  border-color: #2f5ea8;
+.sec-block h2 {
+  font-size: 15px;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(47, 94, 168, 0.25);
+  letter-spacing: 1px;
+  margin-bottom: 14px;
+  color: #111;
+  text-transform: uppercase;
+  border-left: 3px solid #2f5ea8;
+  padding-left: 10px;
 }
 
-.page-btn:disabled {
-  background: #f1f5f9;
-  color: #cbd5e1;
-  border-color: #e2e8f0;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+.sec-block .body-text {
+  font-size: 14.5px;
+  color: #333;
+  line-height: 1.8;
+  white-space: pre-line;
 }
 
-/* =========================
-   GRID
-========================= */
-.container{
-  max-width:1000px;
-  margin:auto;
-  padding:20px;
+/* FOOTER ZONE */
+.contact-footer-bar {
+  border-top: 1px solid #eee;
+  padding-top: 40px;
+  text-align: center;
+}
+.contact-footer-title {
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: #666;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.clean-email-link {
+  display: inline-block;
+  color: #2f5ea8;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+.clean-email-link:hover {
+  color: #1a3e75;
+  text-decoration: underline;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4, minmax(0, 1fr));
-  gap:22px;
-  align-items:start;
+/* MODAL & CHECKOUT SUITE */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
 }
-
-/* =========================
-   PROMOTION CARD
-========================= */
-.promo-card{
-  background: linear-gradient(135deg, #3a5a40, #344e41);
-  color:#fff;
-  border-radius:18px;
-  padding:18px;
-  min-height:280px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  position:relative;
-  overflow:hidden;
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  animation: popUp 0.25s ease;
 }
-
-.promo-card{
-  width:100%;
-  box-sizing:border-box;
-  break-inside: avoid;
-  -webkit-column-break-inside: avoid;
-  display:inline-block;
+@keyframes popUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
+.modal-title { font-size: 15px; font-weight: 600; color: #111; }
+.modal-close { font-size: 22px; cursor: pointer; color: #aaa; border:none; background:none; line-height: 1; }
+.modal-instruction-text { font-size: 13px; color: #444; margin-bottom: 10px; line-height: 1.6; }
+.email-row-info { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; padding: 8px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; border: 1px solid #eee; }
+.btn-inline-copy { background: #fff; border: 1px solid #ddd; padding: 4px 10px; font-size: 11px; border-radius: 4px; cursor: pointer; color: #2f5ea8; font-weight: 500; }
+.btn-inline-copy:hover { background: #f5f5f5; border-color: #2f5ea8; }
+.copy-area-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.copy-area-header-flex span { font-size: 13px; font-weight: 500; color: #111; }
+.copy-area { background: #f5f5f5; border: 1px solid #eee; padding: 12px; border-radius: 8px; font-size: 12.5px; color: #333; line-height: 1.6; white-space: pre-wrap; word-break: break-all; margin-bottom: 16px; max-height: 140px; overflow-y: auto; }
+.bank-payment-box { background: #f4fbf7; border: 1px solid #b7ebd0; border-radius: 10px; padding: 14px; margin-bottom: 18px; }
+.bank-title { font-size: 12.5px; font-weight: 600; color: #00a651; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.bank-title::before { content: "▪"; font-size: 14px; }
+.bank-detail-flex { display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; color: #1a1a1a; }
+.bank-detail-flex .kbank-btn-copy { color: #00a651; border-color: #b7ebd0; }
+.bank-detail-flex .kbank-btn-copy:hover { background: #00a651; color: #fff; border-color: #00a651; }
+.toast-msg { font-size: 12px; color: #00a651; text-align: center; margin-top: 8px; min-height: 18px; font-weight: 500; }
 
-.promo-tag{
-  font-size:11px;
-  letter-spacing:2px;
-  opacity:0.7;
-  margin-bottom:14px;
-}
+/* STATUS CONTAINER */
+.status-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 50vh; text-align: center; }
+.loading-text { font-size: 15px; color: #888; }
+.error-text { font-size: 15px; color: #ff4d4f; margin-bottom: 12px; }
+.back-btn { display: inline-block; padding: 8px 18px; background: #111; color: #fff; text-decoration: none; border-radius: 8px; font-size: 13px; }
 
-.promo-title{
-  font-size:20px;
-  font-weight:700;
-  line-height:1.15;
-  display:-webkit-box;
-  -webkit-line-clamp:3;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-  word-break:break-word;
-  margin-bottom:12px;
-}
-
-.promo-desc{
-  font-size:13px;
-  line-height:1.7;
-  opacity:0.8;
-}
-
-/* =========================
-   CARD (FINAL FIXED)
-========================= */
-.card{
-  background:#fff;
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:0 4px 14px rgba(0,0,0,0.06);
-  border:1px solid #eee;
-  transition:0.2s ease;
-  width:100%;
-  max-width:280px;
-  justify-self:center;
-  box-sizing:border-box;
-  cursor:pointer; /* เพิ่มรูปมือเพื่อให้รู้ว่าคลิกเปิดหน้ารายละเอียดได้ */
-}
-
-/* hover */
-.card:hover{
-  transform:translateY(-3px);
-  box-shadow:0 10px 24px rgba(0,0,0,0.10);
-}
-
-/* image */
-.card img{
-  width:100%;
-  aspect-ratio:1/1;
-  object-fit:cover;
-  display:block;
-  background:#f3f3f3;
-}
-
-.card .content{
-  padding:12px;
-  box-sizing:border-box;
-}
-
-.content{
-  padding:14px;
-}
-
-/* =========================
-   TOP INFO GRID
-========================= */
-.top-info{
-  display:grid;
-  grid-template-columns:1fr auto;
-  align-items:center;
-  margin-bottom:8px;
-  gap:10px;
-}
-
-.sku{
-  font-size:14px;
-  font-weight:600;
-  color:#111;
-}
-
-.category{
-  font-size:11px;
-  color:#888;
-  text-align:right;
-}
-
-/* =========================
-   PRODUCT INFO
-========================= */
-.name{
-  font-size:15px;
-  font-weight:600;
-  line-height:1.5;
-  margin-bottom:12px;
-  min-height:44px;
-}
-
-/* =========================
-   PRICE + STOCK GRID
-========================= */
-.bottom-row{
-  display:grid;
-  grid-template-columns:1fr auto;
-  align-items:end;
-  gap:10px;
-}
-
-.price-box{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-}
-
-.price-old{
-  font-size:13px;
-  color:#999;
-  text-decoration:line-through;
-}
-
-.price-new{
-  font-size:22px;
-  font-weight:700;
-  color:#111;
-  line-height:1;
-}
-
-.stock-box{
-  text-align:right;
-}
-
-.stock-label{
-  font-size:11px;
-  color:#999;
-  margin-bottom:2px;
-}
-
-.stock-value{
-  font-size:16px;
-  font-weight:600;
-  color:#111;
-}
-
-/* =========================
-   LOADING
-========================= */
-.loading{
-  text-align:center;
-  color:#888;
-  padding:40px;
-  grid-column:1/-1;
-}
-
-/* =========================
-   MOBILE
-========================= */
-@media(max-width:768px){
-
-  .container{
-    padding:12px;
+/* ==========================================
+   MOBILE RESPONSIVE (ปรับปรุงตามบรีฟล่าสุด)
+   ========================================== */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px !important;
+    line-height: 1.8;
+  }
+  .breadcrumb {
+    margin-bottom: 12px; /* ลดระยะห่างบนมือถือลง */
+  }
+  .main-grid {
+    grid-template-columns: 1fr;
+    gap: 12px; /* ชิดกระชับขึ้นเพื่อดันปุ่มสั่งซื้อขึ้นมา */
+    margin-bottom: 16px;
+  }
+  
+  .info-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .grid{
-    column-count:2;
-    column-gap:6px;
-    display:block;
+  .info-zone .product-name, 
+  .info-zone .meta-table, 
+  .info-zone .price-box-wrapper {
+    display: none;
   }
 
-  .card,
-  .promo-card{
-    break-inside: avoid;
-    margin-bottom:3px;
-    display:inline-block;
-    width:100%;
+  .mobile-dynamic-block {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 8px;
   }
 
-  .promo-card{
-   min-height:140px;
-   border-radius:16px;
-   padding:14px;
+  .mobile-dynamic-block .product-name {
+    display: block !important;
+    font-size: 22px !important; /* ปรับลดขนาดลงเล็กน้อยเพื่อให้กระชับขึ้น */
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 8px;
   }
 
-  .promo-title{
-    font-size:18px;
-    line-height:1.15;
-    margin-bottom:8px;
+  /* [จุดแก้ไข] บีบขนาดกล่องราคามือถือให้เล็กลงและไม่กินพื้นที่ */
+  .mobile-price-heart-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafafa;
+    padding: 8px 14px; /* ลดลงจาก 12px 16px */
+    border-radius: 10px;
+    margin-bottom: 12px; /* ปรับลด Gap ระยะห่าง */
+    width: 100%;
   }
 
-  .promo-desc{
-    font-size:11px;
-    line-height:1.5;
+  .mobile-price-left .price-old {
+    font-size: 11px;
+  }
+  .mobile-price-left .price-new {
+    font-size: 20px; /* ย่อขนาดตัวเลขลงเล็กลงเพื่อไม่ให้กล่องดูบวมโต */
   }
 
-  .promo-tag{
-    font-size:10px;
-    margin-bottom:10px;
+  .shopee-heart-icon {
+    font-size: 22px; /* ย่อหัวใจบนโมบายล์ลงเล็กน้อยให้สอดรับกับกล่อง */
   }
 
-  .content{
-    padding:12px;
+  .qty-row {
+    margin-bottom: 14px; /* บีบระยะช่องว่างระหว่างทาง */
   }
 
-  .name{
-    font-size:13px;
-    min-height:auto;
+  .mobile-table-placeholder {
+    display: block !important;
+    margin-top: 20px;
+    width: 100%;
+  }
+  .mobile-table-placeholder .meta-table {
+    display: table !important;
+    max-width: 100%;
+    margin-bottom: 0;
   }
 
-  .price-new{
-    font-size:18px;
+  .btn-group {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    margin-top: 2px;
   }
-
-  .sku{
-    font-size:13px;
+  
+  .btn-primary, .btn-cart {
+    padding: 10px 8px; /* ย่นความสูงของปุ่มสั่งซื้อลงเล็กน้อย */
+    font-size: 13.5px;
+    border-radius: 8px;
   }
-
-  .stock-value{
-    font-size:14px;
-  }
-
-  .title{
-    font-size:24px;
-  }
-
-}
-
-@media(min-width:1024px){
-
-  .name{
-    font-weight:500;
-    letter-spacing:0.2px;
-  }
-
-  .price-new{
-    font-weight:600;
-  }
-
-  .title{
-    font-weight:700;
-  }
-
-  body{
-    font-weight:400;
-  }
-
 }
 </style>
 
-</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
+<script src="/analytics.js"></script>
 
+</head>
 <body>
 
 <div id="header-placeholder"></div>
 
-<div class="header">
-
-  <div class="breadcrumb">
-    <a href="/">HOME</a> / PRODUCTS
+<main class="container" id="main-content">
+  <div class="status-container">
+    <div class="loading-text">กำลังเรียกดูข้อมูลสินค้า...</div>
   </div>
+</main>
 
-  <div class="title">
-    All Products
-  </div>
+<div id="footer-placeholder"></div>
 
-</div>
+<script>
+// ====================================================================
+// ANTI-OVERWRITE ENGINE FOR CORE LAYOUT
+// ====================================================================
+window.addEventListener("load", function() {
+    let layoutCache = { header: '', footer: '' };
 
-<div class="filterbar">
-  <input id="searchBox" type="text" placeholder="Search Item Code / Description..." />
-</div>
+    function secureInject(targetId, filepath, cacheKey) {
+        const targetNode = document.getElementById(targetId);
+        if (!targetNode) return;
 
-<div class="category-filter-bar">
-  <label class="category-label">
-    <input type="checkbox" class="cat-checkbox" value="WaterPurification" />
-    <span class="checkmark"></span> กรองน้ำ
-  </label>
-  <label class="category-label">
-    <input type="checkbox" class="cat-checkbox" value="WaterQualityTools" />
-    <span class="checkmark"></span> วัดค่าน้ำ
-  </label>
-  <label class="category-label">
-    <input type="checkbox" class="cat-checkbox" value="MeasurementTools" />
-    <span class="checkmark"></span> วัดค่าทั่วไป
-  </label>
-  <label class="category-label">
-    <input type="checkbox" class="cat-checkbox" value="AromaSystems" />
-    <span class="checkmark"></span> อโรม่า
-  </label>
-</div>
+        fetch(filepath)
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.text();
+            })
+            .then(html => {
+                if (html) {
+                    layoutCache[cacheKey] = html;
+                    targetNode.innerHTML = html;
 
-<div class="container">
+                    const observer = new MutationObserver(function(mutations) {
+                        if (targetNode.innerHTML !== layoutCache[cacheKey]) {
+                            observer.disconnect();
+                            targetNode.innerHTML = layoutCache[cacheKey];
+                            observer.observe(targetNode, { childList: true, subtree: true, characterData: true });
+                            if (cacheKey === 'header') initMenuController();
+                        }
+                    });
+                    observer.observe(targetNode, { childList: true, subtree: true, characterData: true });
+                    if (cacheKey === 'header') initMenuController();
+                }
+            })
+            .catch(err => console.error(`[Secure Layout Error]`, err));
+    }
 
-  <div id="product-grid" class="grid">
+    secureInject('header-placeholder', '/header.html', 'header');
+    secureInject('footer-placeholder', '/footer.html', 'footer');
 
-    <div class="loading">
-      Loading products...
-    </div>
+    function initMenuController() {
+        document.removeEventListener('click', menuClickHandler);
+        document.addEventListener('click', menuClickHandler);
+    }
 
-  </div>
-
-</div>
-
-<div id="pagination-controls" class="pagination-bar"></div>
+    function menuClickHandler(e) {
+        const menuBtn = e.target.closest('#menuBtn');
+        const menuDropdown = document.getElementById("menuDropdown");
+        if (menuBtn && menuDropdown) {
+            e.preventDefault();
+            e.stopPropagation();
+            menuDropdown.classList.toggle("active");
+        } else if (menuDropdown && !menuDropdown.contains(e.target)) {
+            menuDropdown.classList.remove("active");
+        }
+    }
+});
+</script>
 
 <script src="config.js"></script>
 
 <script>
+let currentProductData = null;
+let baseTotalLikes = 48; 
 
-/* =========================
-   LOAD HEADER
-========================= */
-fetch("header.html")
-  .then(res => res.text())
-  .then(data => {
-
-    document.getElementById("header-placeholder").innerHTML = data;
-
-    const menuBtn = document.getElementById("menuBtn");
-    const menuDropdown = document.getElementById("menuDropdown");
-
-    if(menuBtn && menuDropdown){
-
-      menuBtn.addEventListener("click", () => {
-        menuDropdown.classList.toggle("active");
-      });
-
-      window.addEventListener("click", (e) => {
-
-        if(
-          !menuBtn.contains(e.target) &&
-          !menuDropdown.contains(e.target)
-        ){
-          menuDropdown.classList.remove("active");
-        }
-
-      });
-
-    }
-
-  });
-
-/* =========================
-   LOAD FOOTER
-========================= */
-fetch("footer.html")
-  .then(res => res.text())
-  .then(data => {
-    document.body.insertAdjacentHTML("beforeend", data);
-  });
-
-let rawProducts = [];
-let filtered    = [];
-let currentPage = 1;
-const itemsPerPage = 30;
-
-// ฟังก์ชันล้าง format คอมมาเพื่อจัดเรียงและการคำนวณตัวเลขสต็อกสินค้าได้อย่างแม่นยำ
 function cleanNumber(val) {
   if (val === null || val === undefined) return 0;
   if (typeof val === 'number') return val;
@@ -614,206 +636,332 @@ function cleanNumber(val) {
   return isNaN(parsed) ? 0 : parsed;
 }
 
-async function loadProducts(){
-  try {
-    // ปรับเปลี่ยนมาเรียกใช้ API ระบบผ่าน Config ส่วนกลางดึงข้อมูลตรงตาราง products
-    rawProducts = await window.supabaseFetch('products');
-
-    /* =========================
-       FILTER DISCONTINUED
-    ========================= */
-    filtered = rawProducts.filter(p => {
-      const status = String(p.StockStatus || "").trim().toLowerCase();
-      return status !== "discontinued";
-    });
-
-    processAndRender();
-
-  } catch(e) {
-    document.getElementById("product-grid").innerHTML =
-      '<div class="loading">Failed to secure product master data.</div>';
-  }
+function formatMoney(val) {
+  let num = cleanNumber(val);
+  return num > 0 ? num.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2}) : '-';
 }
 
-/* =========================
-   PROMOTION CARD
-========================= */
-const promoCard = `
-  <div class="promo-card">
-    <div class="promo-tag">
-      UNIMERCE SYSTEM
-    </div>
-    <div class="promo-title">
-      Essential<br>
-      Product<br>
-      Collection
-    </div>
-  </div>
-`;
+function getLikeStatus(itemCode) {
+  const likesData = JSON.parse(localStorage.getItem('unimerce_likes') || '{}');
+  return likesData[itemCode] || false;
+}
 
-/* =========================
-   GLOBAL STATE FOR FILTER & PAGINATION & SEARCH
-========================= */
-function processAndRender() {
-  const q = document.getElementById("searchBox").value.toLowerCase().trim();
-  const checkedCategories = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value);
+function saveLikeStatus(itemCode, status) {
+  const likesData = JSON.parse(localStorage.getItem('unimerce_likes') || '{}');
+  likesData[itemCode] = status;
+  localStorage.setItem('unimerce_likes', JSON.stringify(likesData));
+}
+
+async function loadProductDetail() {
+  const mainContent = document.getElementById("main-content");
   
-  let targetProducts = filtered;
-  
-  // 1. FILTER BY MAIN CATEGORY
-  if (checkedCategories.length > 0) {
-    targetProducts = targetProducts.filter(p => {
-      const cat = String(p.MainCategory || "").trim();
-      return checkedCategories.includes(cat);
-    });
-  }
-
-  // 2. FILTER BY SEARCH KEYWORD
-  if (q) {
-    targetProducts = targetProducts.filter(p => 
-      String(p.Item_Code   || "").toLowerCase().includes(q) ||
-      String(p.Description || "").toLowerCase().includes(q)
-    );
-  }
-
-  // 3. CALC PAGINATION
-  const totalItems = targetProducts.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
-  
-  if (currentPage > totalPages) currentPage = totalPages;
-  if (currentPage < 1) currentPage = 1;
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedProducts = targetProducts.slice(startIndex, endIndex);
-
-  /* =========================
-        PRODUCT RENDER
-  ========================= */
-  const grid = document.getElementById("product-grid");
-  
-  if(paginatedProducts.length === 0) {
-    grid.innerHTML = '<div class="loading">No products found matching your criteria.</div>';
-    renderPaginationControls(1);
-    return;
-  }
-
-  const productCards = paginatedProducts.map(p => {
-    const img = (p.image_link01 || "").trim();
-    const sku = p.Item_Code || '-';
-    const category = p.MainCategory || '-';
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const productCode = urlParams.get('code');
     
-    let onhand = p.OnHand || '0';
-    if(onhand !== "-") {
-      onhand = cleanNumber(onhand).toLocaleString();
+    if (!productCode) {
+      showError("ไม่พบรหัสสินค้าในลิงก์การเชื่อมต่อ");
+      return;
+    }
+    
+    const productsList = await window.supabaseFetch('products');
+    const product = productsList.find(p => String(p.Item_Code || "").trim() === String(productCode).trim());
+    
+    if (!product) {
+      showError(`ไม่พบฐานข้อมูลของรหัสสินค้า: ${productCode}`);
+      return;
     }
 
-    // มีการผูกเหตุการณ์ onclick ให้เปิดหน้าต่างรายละเอียดสินค้าแบบระบุ parameter โค้ดสินค้า
-    return `
-      <div class="card" onclick="window.location.href='/productdetail.html?code=${encodeURIComponent(sku.trim())}'">
-        <img 
-          src="${img}"
-          onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'"
-        />
-        <div class="content">
-          <div class="top-info">
-            <div class="sku">
-              ${sku}
-            </div>
-            <div class="category">
-              ${category}
-            </div>
-          </div>
+    currentProductData = product;
 
-          <div class="name">
-            ${p.Description || '-'}
-          </div>
+    const userHasLiked = getLikeStatus(product.Item_Code);
+    const productSeed = (product.Item_Code.charCodeAt(0) || 1) + (product.Item_Code.charCodeAt(product.Item_Code.length - 1) || 1);
+    const currentLikesTotal = (baseTotalLikes + (productSeed % 35)) + (userHasLiked ? 1 : 0);
 
-          <div class="bottom-row">
-            <div class="price-box">
-              <div class="price-old">
-                ${p.ListPrice ? '฿' + p.ListPrice : ''}
-              </div>
-              <div class="price-new">
-                ${p.PromotionPrice ? '฿' + p.PromotionPrice : '-'}
-              </div>
+    const pageTitle = `UNIMERCE | ${product.Description || 'Product Detail'}`;
+    document.title = pageTitle;
+    document.getElementById("meta-title").innerText = pageTitle;
+    document.getElementById("og-title").setAttribute("content", pageTitle);
+    
+    if(product.Productdetail) {
+      document.getElementById("meta-desc").setAttribute("content", product.Productdetail.substring(0, 150));
+      document.getElementById("og-desc").setAttribute("content", product.Productdetail.substring(0, 150));
+    }
+    if(product.image_link01) {
+      document.getElementById("og-image").setAttribute("content", product.image_link01.trim());
+    }
+
+    const images = [];
+    if(product.image_link01) images.push(product.image_link01.trim());
+    if(product.ImageLink02) images.push(product.ImageLink02.trim());
+    if(product.ImageLink03) images.push(product.ImageLink03.trim());
+    if(images.length === 0) images.push('https://via.placeholder.com/600x600?text=No+Image');
+
+    const listPriceFormatted = product.ListPrice ? formatMoney(product.ListPrice) : '';
+    const promoPriceFormatted = product.PromotionPrice ? formatMoney(product.PromotionPrice) : '-';
+
+    const tableTemplateHTML = `
+      <table class="meta-table">
+        <tr>
+          <td class="lbl">รหัสสินค้า</td>
+          <td class="val">${product.Item_Code || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">แบรนด์</td>
+          <td class="val">${product.INDEX2_BRAND || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">รุ่น</td>
+          <td class="val">${product.INDEX3_SERIES || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">หมวดหมู่</td>
+          <td class="val">${product.MainCategory || '-'}</td>
+        </tr>
+      </table>
+    `;
+
+    mainContent.innerHTML = `
+      <div class="breadcrumb">
+        <a href="/">HOME</a> / <a href="/products">PRODUCTS</a> / <span>${product.Item_Code}</span>
+      </div>
+      
+      <div class="main-grid">
+        <div class="image-gallery">
+          <div class="main-img-wrap">
+            <img id="view-main-img" src="${images[0]}" onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'" />
+          </div>
+          ${images.length > 1 ? `
+            <div class="thumb-row">
+              ${images.map((img, idx) => `
+                <div class="thumb-box ${idx === 0 ? 'active' : ''}" onclick="switchThumb(this, '${img}')">
+                  <img src="${img}" onerror="this.src='https://via.placeholder.com/100x100?text=No+Img'" />
+                </div>
+              `).join('')}
             </div>
-            <div class="stock-box">
-              <div class="stock-label">
-                คงเหลือ
+          ` : ''}
+
+          <div class="mobile-dynamic-block">
+            <h1 class="product-name">${product.Description || '-'}</h1>
+            
+            <div class="mobile-price-heart-row">
+              <div class="mobile-price-left">
+                ${listPriceFormatted ? `<div class="price-old">฿${listPriceFormatted}</div>` : ''}
+                <div class="price-new">฿${promoPriceFormatted}</div>
               </div>
-              <div class="stock-value">
-                ${onhand}
+              
+              <div class="shopee-heart-wrapper ${userHasLiked ? 'liked' : ''}" id="mob-heart-wrap" onclick="toggleShopeeLike()">
+                <span class="shopee-heart-icon">♥</span>
+                <span class="shopee-like-counter" id="mob-like-cnt">${currentLikesTotal}</span>
               </div>
             </div>
           </div>
         </div>
+        
+        <div class="info-zone">
+          <h1 class="product-name">${product.Description || '-'}</h1>
+          
+          ${tableTemplateHTML}
+          
+          <div class="price-box-wrapper">
+            <div class="price-box">
+              ${listPriceFormatted ? `<div class="price-old">฿${listPriceFormatted}</div>` : ''}
+              <div class="price-new">฿${promoPriceFormatted}</div>
+            </div>
+            
+            <div class="shopee-heart-wrapper ${userHasLiked ? 'liked' : ''}" id="desk-heart-wrap" onclick="toggleShopeeLike()">
+              <span class="shopee-heart-icon">♥</span>
+              <span class="shopee-like-counter" id="desk-like-cnt">${currentLikesTotal}</span>
+            </div>
+          </div>
+          
+          <div class="qty-row">
+            <div class="qty-label">จำนวนสั่งซื้อ:</div>
+            <div class="qty-control">
+              <button class="qty-btn" onclick="updateQty(-1)">-</button>
+              <input type="number" id="order-qty" class="qty-input" value="1" min="1" readonly />
+              <button class="qty-btn" onclick="updateQty(1)">+</button>
+            </div>
+          </div>
+          
+          <div class="btn-group">
+            <button class="btn-primary" onclick="openOrderModal()">สั่งซื้อสินค้านี้</button>
+            <button class="btn-cart" onclick="triggerAddToCartDummy()">+ เพิ่มใส่ตะกร้า</button>
+          </div>
+
+          <div class="mobile-table-placeholder" style="display:none;">
+             ${tableTemplateHTML}
+          </div>
+        </div>
+      </div>
+      
+      <div class="detail-sections">
+        ${product.Productdetail ? `
+        <div class="sec-block">
+          <h2>Product Detail</h2>
+          <div class="body-text">${product.Productdetail}</div>
+        </div>
+        ` : `<div class="sec-block"><h2>Product Detail</h2><div class="body-text">-</div></div>`}
+      </div>
+
+      <div class="contact-footer-bar">
+        <div class="contact-footer-title">General Inquiries & Support</div>
+        <a href="mailto:contact@unimercegroup.com" class="clean-email-link">
+          contact@unimercegroup.com
+        </a>
+      </div>
+
+      <div class="modal-overlay" id="order-modal">
+        <div class="modal-box">
+          <div class="modal-header">
+            <div class="modal-title">ขั้นตอนการสั่งซื้อและชำระเงิน</div>
+            <button class="modal-close" onclick="closeOrderModal()">×</button>
+          </div>
+          
+          <div class="email-row-info">
+            <span>ส่งหา: <strong>sales@unimercegroup.com</strong></span>
+            <button class="btn-inline-copy" onclick="copyTextDirect('sales@unimercegroup.com', 'คัดลอกอีเมลฝ่ายขายเรียบร้อย!')">คัดลอกเมล</button>
+          </div>
+
+          <div class="copy-area-header-flex">
+            <span><strong>ขั้นตอนที่ 1:</strong> รายละเอียดสินค้าที่ต้องใช้สั่งซื้อ</span>
+            <button class="btn-inline-copy" onclick="copyTextDirect(document.getElementById('copy-text-target').innerText, 'คัดลอกรายละเอียดสินค้าเรียบร้อย!')">คัดลอก</button>
+          </div>
+          <div class="copy-area" id="copy-text-target"></div>
+          
+          <p class="modal-instruction-text" style="margin-top:4px;">
+            <strong>ขั้นตอนที่ 2:</strong> สามารถชำระเงินและแนบหลักฐาน พร้อมส่งอีเมลมาได้เลยครับ
+          </p>
+          
+          <div class="bank-payment-box">
+            <div class="bank-title">ธนาคารกสิกรไทย (บัญชีบริษัท)</div>
+            <div class="bank-detail-flex">
+              <div>
+                <strong>บจก. ยูนิเมิร์ซ</strong><br>
+                <span style="font-family:monospace; font-size:14.5px; letter-spacing:0.5px; font-weight:600;">232-1-70687-0</span>
+              </div>
+              <button class="btn-inline-copy kbank-btn-copy" onclick="copyTextDirect('2321706870', 'คัดลอกเลขบัญชี 2321706870 เรียบร้อย!')">คัดลอกเลขบัญชี</button>
+            </div>
+          </div>
+
+          <button class="btn-primary" style="width:100%; border-radius:10px;" onclick="copyOrderTextToClipboard()">
+            คัดลอกรายละเอียดทั้งหมด & เปิดหน้าต่างอีเมล
+          </button>
+          
+          <div class="toast-msg" id="toast-success"></div>
+        </div>
       </div>
     `;
-  }).join('');
-
-  /* =========================
-        FINAL RENDER
-  ========================= */
-  grid.innerHTML = (currentPage === 1 && !q && checkedCategories.length === 0 ? promoCard : "") + productCards;
-  
-  renderPaginationControls(totalPages);
+    
+  } catch (error) {
+    console.error(error);
+    showError("ไม่สามารถเรียกดูชุดข้อมูลสินค้าจากระบบเซิร์ฟเวอร์ได้");
+  }
 }
 
-function renderPaginationControls(totalPages) {
-  const container = document.getElementById("pagination-controls");
-  if (!container) return;
-
-  if (totalPages <= 1) {
-    container.innerHTML = "";
-    return;
-  }
-
-  let html = ``;
-  
-  // ปุ่มก่อนหน้า สไตล์โมเดิร์นลูกศรมินิมอล (←)
-  html += `<button class="page-btn nav-arrow" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">←</button>`;
-
-  // แสดงหมายเลขลำดับหน้าทั้งหมด 1, 2, 3, ... n
-  for (let i = 1; i <= totalPages; i++) {
-    html += `<button class="page-btn ${currentPage === i ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
-  }
-
-  // ปุ่มถัดไป สไตล์โมเดิร์นลูกศรมินิมอล (→)
-  html += `<button class="page-btn nav-arrow" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">→</button>`;
-
-  container.innerHTML = html;
+window.switchThumb = function(element, imgSrc) {
+  document.getElementById("view-main-img").src = imgSrc;
+  document.querySelectorAll('.thumb-box').forEach(box => box.classList.remove('active'));
+  element.classList.add('active');
 }
 
-// ฟังก์ชันเปลี่ยนหน้าและสั่งเลื่อนหน้าจอกลับขึ้นไปด้านบนอย่างนุ่มนวล
-window.changePage = function(page) {
-  currentPage = page;
-  processAndRender();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
+window.updateQty = function(amount) {
+  const input = document.getElementById("order-qty");
+  let current = parseInt(input.value) || 1;
+  current += amount;
+  if(current < 1) current = 1;
+  input.value = current;
+}
 
-/* =========================
-   INIT EVENTS
-========================= */
-window.addEventListener("load", () => {
-  // ดักจับสัญญาณการกรองคำค้นหา
-  document.getElementById("searchBox").addEventListener("input", () => {
-    currentPage = 1;
-    processAndRender();
+window.toggleShopeeLike = function() {
+  if(!currentProductData) return;
+  const itemCode = currentProductData.Item_Code;
+  
+  let userHasLiked = getLikeStatus(itemCode);
+  userHasLiked = !userHasLiked;
+  
+  saveLikeStatus(itemCode, userHasLiked);
+  
+  const deskWrap = document.getElementById("desk-heart-wrap");
+  const mobWrap = document.getElementById("mob-heart-wrap");
+  const deskCnt = document.getElementById("desk-like-cnt");
+  const mobCnt = document.getElementById("mob-like-cnt");
+  
+  let currentVal = parseInt(deskCnt ? deskCnt.innerText : (mobCnt ? mobCnt.innerText : "0")) || 0;
+  
+  if(userHasLiked) {
+    currentVal++;
+    if(deskWrap) deskWrap.classList.add("liked");
+    if(mobWrap) mobWrap.classList.add("liked");
+  } else {
+    currentVal--;
+    if(deskWrap) deskWrap.classList.remove("liked");
+    if(mobWrap) mobWrap.classList.remove("liked");
+  }
+  
+  if(deskCnt) deskCnt.innerText = currentVal;
+  if(mobCnt) mobCnt.innerText = currentVal;
+}
+
+window.triggerAddToCartDummy = function() {
+  alert("ระบบตะกร้าสินค้ากำลังอยู่ระหว่างการพัฒนาเพิ่มเติมครับ");
+}
+
+window.openOrderModal = function() {
+  if(!currentProductData) return;
+  const qty = document.getElementById("order-qty").value;
+  
+  const basePrice = currentProductData.PromotionPrice || currentProductData.ListPrice || '0';
+  const priceUnitFormatted = formatMoney(basePrice);
+  const totalPriceFormatted = formatMoney(cleanNumber(basePrice) * qty);
+  
+  const textTemplate = `เรียน ฝ่ายขาย UNIMERCE GROUP,\n\nฉันมีความประสงค์ต้องการสั่งซื้อสินค้าชิ้นนี้ตามรายละเอียดดังต่อไปนี้:\n-----------------------------------------\nรหัสสินค้า (Item Code): ${currentProductData.Item_Code || '-'}\nชื่อสินค้า (Description): ${currentProductData.Description || '-'}\nแบรนด์ (Brand): ${currentProductData.INDEX2_BRAND || '-'}\nรุ่น (Series): ${currentProductData.INDEX3_SERIES || '-'}\nหมวดหมู่ (Category): ${currentProductData.MainCategory || '-'}\nจำนวนที่ต้องการ: ${qty} ${currentProductData.UOM || 'หน่วย'}\nราคาต่อหน่วย: ฿${priceUnitFormatted}\nราคารวมทั้งสิ้น: ฿${totalPriceFormatted}\n-----------------------------------------\n[แนบหลักฐานการชำระเงินโอนเข้าบัญชี บจก. ยูนิเมิร์ซ]\n\nกรุณาตรวจสอบและจัดส่งตามที่อยู่นี้...\nชื่อผู้รับ:\nเบอร์โทรศัพท์:\nที่อยู่จัดส่ง:`;
+  
+  document.getElementById("copy-text-target").innerText = textTemplate;
+  document.getElementById("order-modal").classList.add("active");
+}
+
+window.closeOrderModal = function() {
+  document.getElementById("order-modal").classList.remove("active");
+  document.getElementById("toast-success").innerText = "";
+}
+
+window.copyTextDirect = function(textToCopy, customMessage) {
+  navigator.clipboard.writeText(textToCopy).then(() => {
+    const toastModal = document.getElementById("toast-success");
+    if (toastModal && document.getElementById("order-modal").classList.contains("active")) {
+      toastModal.innerText = customMessage;
+      setTimeout(() => { toastModal.innerText = ""; }, 2500);
+    }
   });
+}
 
-  // ผูกตัวดักจับเหตุการณ์การเลือก Checkbox คัดกรองหมวดหมู่สินค้า
-  document.querySelectorAll('.cat-checkbox').forEach(cb => {
-    cb.addEventListener('change', () => {
-      currentPage = 1; 
-      processAndRender();
-    });
+window.copyOrderTextToClipboard = function() {
+  const text = document.getElementById("copy-text-target").innerText;
+  const qty = document.getElementById("order-qty").value;
+  
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.getElementById("toast-success");
+    toast.innerText = "✓ คัดลอกรายละเอียดสินค้าแล้ว กำลังนำทางไปแอปพลิเคชันอีเมล...";
+    
+    setTimeout(() => {
+      const subject = encodeURIComponent(`สั่งซื้อสินค้า รหัส ${currentProductData.Item_Code} จำนวน ${qty} ชิ้น`);
+      const body = encodeURIComponent(text);
+      window.location.href = `mailto:sales@unimercegroup.com?subject=${subject}&body=${body}`;
+    }, 1200);
   });
+}
 
-  loadProducts();
-});
+function showError(message) {
+  document.getElementById("main-content").innerHTML = `
+    <div class="status-container">
+      <div class="error-text">${message}</div>
+      <a href="/products" class="back-btn">กลับสู่หน้าสินค้าทั้งหมด</a>
+    </div>
+  `;
+}
 
+window.addEventListener("load", loadProductDetail);
 </script>
-
 </body>
 </html>
