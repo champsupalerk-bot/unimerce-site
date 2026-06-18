@@ -48,14 +48,14 @@ body {
 }
 
 /* =========================
-   BREADCRUMB [จุดแก้ไขที่ 4 - นำกลับมาและจัดสไตล์เพิ่ม]
+   BREADCRUMB (กู้คืนกลับมาและเปิดให้แสดงผลทุกหน้าจอ)
 ========================= */
 .breadcrumb {
   font-size: 13px;
   color: #888;
   margin-bottom: 20px; 
   letter-spacing: 0.5px;
-  display: block !important; /* บังคับแสดงผล */
+  display: block !important;
 }
 
 .breadcrumb a {
@@ -79,7 +79,7 @@ body {
   margin-bottom: 40px;
 }
 
-/* IMAGE SYSTEM */
+/* IMAGE SYSTEM (แก้ไขไม่ให้ Crop รูปภาพ) */
 .image-gallery {
   display: flex;
   flex-direction: column;
@@ -92,13 +92,16 @@ body {
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid #eee;
-  background: #fdfdfd;
+  background: #ffffff; /* ปรับพื้นหลังขาวสะอาด */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .main-img-wrap img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain; /* รูปจะไม่โดนตัด Crop ขอบ ถ้าแนวตั้งก็ยาวเต็มๆ สัดส่วนไม่เพี้ยน */
 }
 
 .thumb-row {
@@ -116,6 +119,9 @@ body {
   cursor: pointer;
   flex-shrink: 0;
   background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .thumb-box.active {
@@ -125,7 +131,7 @@ body {
 .thumb-box img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 /* INFO ZONE */
@@ -205,9 +211,7 @@ body {
   display: none;
 }
 
-/* ==========================================
-   [จุดแก้ไขที่ 3] QUANTITY SELECTOR (แก้เลขให้อยู่ตรงกลางกรอบ 100%)
-   ========================================== */
+/* QUANTITY SELECTOR */
 .qty-row {
   display: flex;
   align-items: center;
@@ -312,9 +316,7 @@ body {
   background: #f4f7fc;
 }
 
-/* ==========================================
-   [จุดแก้ไขที่ 2] SHOPEE STYLE HEART LIKE (ไม่มีวงกลม ล้อมรอบ)
-   ========================================== */
+/* SHOPEE STYLE HEART LIKE */
 .shopee-heart-wrapper {
   display: inline-flex;
   flex-direction: column;
@@ -329,13 +331,13 @@ body {
   transform: scale(0.9);
 }
 .shopee-heart-icon {
-  font-size: 26px; /* ขยายขนาดหัวใจให้โตตามบรีฟ */
+  font-size: 26px; 
   line-height: 1;
-  color: #e2e8f0; /* สีเทาเริ่มต้นเวลยังไม่กด */
+  color: #e2e8f0; 
   transition: color 0.2s ease;
 }
 .shopee-heart-wrapper.liked .shopee-heart-icon {
-  color: #ff4d4f; /* สีแดงส้มเวอร์ชันกดรักแล้วสไตล์ Shopee */
+  color: #ff4d4f; 
 }
 .shopee-like-counter {
   font-size: 11px;
@@ -344,9 +346,7 @@ body {
   font-weight: 500;
 }
 
-/* =========================
-   BOTTOM ZONE: PRODUCT DETAIL
-========================= */
+/* BOTTOM ZONE: PRODUCT DETAIL */
 .detail-sections {
   display: flex;
   flex-direction: column;
@@ -451,70 +451,79 @@ body {
 .back-btn { display: inline-block; padding: 8px 18px; background: #111; color: #fff; text-decoration: none; border-radius: 8px; font-size: 13px; }
 
 /* ==========================================
-   MOBILE RESPONSIVE [จุดแก้ไขที่ 1 - จัดเรียงโครงสร้างแนวตั้งใหม่]
+   MOBILE RESPONSIVE (ปรับปรุงตามบรีฟล่าสุด)
    ========================================== */
 @media (max-width: 768px) {
   body {
     font-size: 16px !important;
     line-height: 1.8;
   }
+  .breadcrumb {
+    margin-bottom: 12px; /* ลดระยะห่างบนมือถือลง */
+  }
   .main-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
-    margin-bottom: 20px;
+    gap: 12px; /* ชิดกระชับขึ้นเพื่อดันปุ่มสั่งซื้อขึ้นมา */
+    margin-bottom: 16px;
   }
   
-  /* บังคับสั่งให้ฝั่งขวา (info-zone) ยุบและขยับลำดับตามเงื่อนไข */
   .info-zone {
     display: flex;
     flex-direction: column;
     align-items: stretch;
   }
 
-  /* ซ่อนชื่อ, ตาราง และราคาเดิมของฝั่งขวาเพื่อสลับตำแหน่ง */
   .info-zone .product-name, 
   .info-zone .meta-table, 
   .info-zone .price-box-wrapper {
     display: none;
   }
 
-  /* เปิดแสดงกล่องเนื้อหา Dynamic ใต้รูปภาพสินค้าทันที */
   .mobile-dynamic-block {
     display: flex;
     flex-direction: column;
     width: 100%;
-    margin-top: 4px;
+    margin-top: 8px;
   }
 
   .mobile-dynamic-block .product-name {
     display: block !important;
-    font-size: 26px !important; 
+    font-size: 22px !important; /* ปรับลดขนาดลงเล็กน้อยเพื่อให้กระชับขึ้น */
     font-weight: 600;
     line-height: 1.3;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
 
+  /* [จุดแก้ไข] บีบขนาดกล่องราคามือถือให้เล็กลงและไม่กินพื้นที่ */
   .mobile-price-heart-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: #fafafa;
-    padding: 12px 16px;
-    border-radius: 14px;
-    margin-bottom: 16px;
+    padding: 8px 14px; /* ลดลงจาก 12px 16px */
+    border-radius: 10px;
+    margin-bottom: 12px; /* ปรับลด Gap ระยะห่าง */
     width: 100%;
   }
 
-  .mobile-price-left {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  .mobile-price-left .price-old {
+    font-size: 11px;
+  }
+  .mobile-price-left .price-new {
+    font-size: 20px; /* ย่อขนาดตัวเลขลงเล็กลงเพื่อไม่ให้กล่องดูบวมโต */
   }
 
-  /* ตารางคุณสมบัติย้ายไปอยู่ต่อจากชุดปุ่มสั่งซื้อ */
+  .shopee-heart-icon {
+    font-size: 22px; /* ย่อหัวใจบนโมบายล์ลงเล็กน้อยให้สอดรับกับกล่อง */
+  }
+
+  .qty-row {
+    margin-bottom: 14px; /* บีบระยะช่องว่างระหว่างทาง */
+  }
+
   .mobile-table-placeholder {
     display: block !important;
-    margin-top: 24px;
+    margin-top: 20px;
     width: 100%;
   }
   .mobile-table-placeholder .meta-table {
@@ -523,18 +532,17 @@ body {
     margin-bottom: 0;
   }
 
-  /* จัดกรุ๊ปปุ่มสั่งซื้อระนาบขนาน A1 B1 */
   .btn-group {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     width: 100%;
-    margin-top: 4px;
+    margin-top: 2px;
   }
   
   .btn-primary, .btn-cart {
-    padding: 12px 10px;
+    padding: 10px 8px; /* ย่นความสูงของปุ่มสั่งซื้อลงเล็กน้อย */
     font-size: 13.5px;
-    border-radius: 10px;
+    border-radius: 8px;
   }
 }
 </style>
@@ -617,7 +625,7 @@ window.addEventListener("load", function() {
 
 <script>
 let currentProductData = null;
-let baseTotalLikes = 48; // จำนวนฐานใจเริ่มต้นจำลองจากฐานข้อมูลกลาง
+let baseTotalLikes = 48; 
 
 function cleanNumber(val) {
   if (val === null || val === undefined) return 0;
@@ -633,7 +641,6 @@ function formatMoney(val) {
   return num > 0 ? num.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2}) : '-';
 }
 
-// [จุดแก้ไขที่ 2 - ฟังก์ชันอ่านและตั้งค่าระบบสะสมใจผ่าน LocalStorage กันใจเก๊]
 function getLikeStatus(itemCode) {
   const likesData = JSON.parse(localStorage.getItem('unimerce_likes') || '{}');
   return likesData[itemCode] || false;
@@ -667,9 +674,7 @@ async function loadProductDetail() {
 
     currentProductData = product;
 
-    // ระบบนับและคำนวณฐานใจจริงตามไอดีสินค้าข้ามฝั่งหน้าเว็บ
     const userHasLiked = getLikeStatus(product.Item_Code);
-    // ใช้รหัสสินค้าสร้างเลขฐานไลก์แบบคงที่ เช่น เอาความยาวตัวหนังสือคูณสุ่ม เพื่อให้สินค้าแต่ละชิ้นเลขไม่เท่ากัน
     const productSeed = (product.Item_Code.charCodeAt(0) || 1) + (product.Item_Code.charCodeAt(product.Item_Code.length - 1) || 1);
     const currentLikesTotal = (baseTotalLikes + (productSeed % 35)) + (userHasLiked ? 1 : 0);
 
@@ -695,7 +700,6 @@ async function loadProductDetail() {
     const listPriceFormatted = product.ListPrice ? formatMoney(product.ListPrice) : '';
     const promoPriceFormatted = product.PromotionPrice ? formatMoney(product.PromotionPrice) : '-';
 
-    // ตารางสเปคสินค้าที่นำมาทำแยกเป็นตัวแปรเพื่อนำมาเรียกซ้ำในการสลับ Layout สเต็ปของ Mobile
     const tableTemplateHTML = `
       <table class="meta-table">
         <tr>
@@ -717,7 +721,6 @@ async function loadProductDetail() {
       </table>
     `;
 
-    // เรนเดอร์สลับผังพิกัดมิติโครงสร้างหน้าตาเพจตามบรีฟใหม่
     mainContent.innerHTML = `
       <div class="breadcrumb">
         <a href="/">HOME</a> / <a href="/products">PRODUCTS</a> / <span>${product.Item_Code}</span>
@@ -870,7 +873,6 @@ window.updateQty = function(amount) {
   input.value = current;
 }
 
-// [จุดแก้ไขที่ 2 - ฟังก์ชันประมวลผลระบบสะสมใจ ซิงค์ข้อมูลข้ามสถานะคู่ขนาน Desktop & Mobile]
 window.toggleShopeeLike = function() {
   if(!currentProductData) return;
   const itemCode = currentProductData.Item_Code;
@@ -878,10 +880,8 @@ window.toggleShopeeLike = function() {
   let userHasLiked = getLikeStatus(itemCode);
   userHasLiked = !userHasLiked;
   
-  // บันทึกสถานะการกดลง Storage ประจำเครื่อง
   saveLikeStatus(itemCode, userHasLiked);
   
-  // ดึงอิลิเมนต์ทั้งสองฝั่งมาประมวลผลพร้อมกัน
   const deskWrap = document.getElementById("desk-heart-wrap");
   const mobWrap = document.getElementById("mob-heart-wrap");
   const deskCnt = document.getElementById("desk-like-cnt");
@@ -901,9 +901,6 @@ window.toggleShopeeLike = function() {
   
   if(deskCnt) deskCnt.innerText = currentVal;
   if(mobCnt) mobCnt.innerText = currentVal;
-
-  // โน้ตสำหรับอนาคต: พี่สามารถแทรกโค้ดยิงส่งค่าขึ้น Supabase ไปเก็บยอดรวมถาวรได้ตรงบรรทัดนี้ครับ
-  // example: fetch('/api/like', {method:'POST', body: JSON.stringify({code: itemCode, liked: userHasLiked})});
 }
 
 window.triggerAddToCartDummy = function() {
