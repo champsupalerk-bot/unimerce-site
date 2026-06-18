@@ -609,7 +609,6 @@ body{
 }
 
 </style>
-<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
 <script src="/analytics.js"></script>
 </head>
@@ -760,7 +759,7 @@ body{
     <br>
 
     <p>
-      ในมิติของสิ่งแวดล้อมทางกายภาพ เรานำเสนอระบบวิเคราะห์เชิงลึกด้วยเครื่องมือผู้เชี่ยวชาญ ไม่ว่าจะเป็นอุปกรณ์เพื่อ **วัดคุณภาพน้ำ** และ **วัดค่าน้ำ** ให้บริสุทธิ์ปลอดภัย พร้อมชุดนวัตกรรมสำหรับวิเคราะห์ปัจจัยรอบตัวอย่างแม่นยำ ทั้งระบบตรวจสอบที่รองรับการ **วัดค่า pH**, เครื่องมือตรวจสอบความเข้มข้นเพื่อ **วัดBRIX** และ **วัดค่าความหวาน** ในสารละลาย ตลอดจนวิศวกรรมเฉพาะทางสำหรับการ **วัดแสง** และ **วัดเสียง** เพื่อควบคุมมลภาวะและจัดสรรสภาพแวดล้อมให้ลงตัวที่สุด
+      ในมิติของสิ่งแวดล้อมทางกายภาพ เรานำเสนอระบบวิเคราะห์เชิงลึกด้วยเครื่องมือผู้เชี่ยวชาญ ไม่ว่าจะเป็นอุปกรณ์เพื่อ **วัดคุณภาพน้ำ** และ **วัดค่าน้ำ** ให้บริสุทธิ์ปลอดภัย พร้อมชุดนวัตกรรมสำหรับวิเคราะห์ปัจจัยรอบตัวอย่างแม่นยำ ทั้งระบบตรวจสอบที่รองรับการ **วัดค่า pH**, เครื่องมือตรวจสอบความเข้มข้นเพื่อ **วัดBRIX** และ **วัดค่าความหวาน** ในสารละลาย ตลาดจนวิศวกรรมเฉพาะทางสำหรับการ **วัดแสง** และ **วัดเสียง** เพื่อควบคุมมลภาวะและจัดสรรสภาพแวดล้อมให้ลงตัวที่สุด
     </p>
 
     <br>
@@ -821,6 +820,8 @@ body{
 
 <div id="footer-placeholder"></div>
 
+<script src="config.js"></script>
+
 <script>
 
 /* =========================
@@ -867,7 +868,6 @@ fetch("footer.html")
 /* =========================
    FETCH & RENDER RECOMMENDED PRODUCTS
 ========================= */
-const API = "https://script.google.com/macros/s/AKfycby0BIQMiM7mEoQrckKXXSYZAudz3sJDsEr87IT8hktGk8oXc4wqC4bbV8LusoVXufXKvQ/exec";
 const targetCodes = ["10001", "10002", "10003", "10006"];
 
 function cleanNumber(val) {
@@ -881,15 +881,8 @@ function cleanNumber(val) {
 
 async function loadRecommendedProducts() {
   try {
-    const res = await fetch(API, { method: "GET", mode: "cors", redirect: "follow" });
-    const jsonResult = await res.json();
-    
-    let rawProducts = [];
-    if(jsonResult.status === "success") {
-      rawProducts = jsonResult.data;
-    } else {
-      throw new Error(jsonResult.message);
-    }
+    // โยกไปเรียกใช้งานศูนย์กลางสคริปต์ฟังก์ชันดึงข้อมูลจากตาราง products 
+    const rawProducts = await window.supabaseFetch('products');
 
     // กรองและเรียงลำดับเฉพาะ 4 ชิ้นที่กำหนด
     const recommendedProducts = rawProducts
@@ -953,6 +946,7 @@ async function loadRecommendedProducts() {
     grid.innerHTML = htmlCards;
 
   } catch(e) {
+    console.error(e);
     document.getElementById("recommend-grid").innerHTML =
       '<div class="loading">Failed to master recommended products.</div>';
   }
