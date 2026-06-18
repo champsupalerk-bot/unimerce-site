@@ -148,48 +148,65 @@ body{
 }
 
 /* =========================
-   PAGINATION NAVIGATION BAR
+   PAGINATION NAVIGATION BAR (MODERN LOOK)
 ========================= */
 .pagination-bar {
   max-width: 1000px;
-  margin: 30px auto 10px auto;
+  margin: 40px auto 10px auto;
   padding: 0 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .page-btn {
   background: #fff;
-  color: #333;
-  border: 1px solid #ddd;
-  padding: 8px 14px;
+  color: #444;
+  border: 1px solid #e5e7eb;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 14px;
-  font-weight: 600;
-  border-radius: 8px;
+  font-weight: 500;
+  border-radius: 10px;
   cursor: pointer;
   user-select: none;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
 }
 
-.page-btn:hover {
-  background: #f0f0f0;
-  border-color: #bbb;
+/* ปุ่มถัดไป/ก่อนหน้า แบบกว้างขึ้นนิดหน่อยเพื่อให้สมดุลก้ามปู */
+.page-btn.nav-arrow {
+  width: 42px;
+  font-size: 16px;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #1e293b;
+  transform: translateY(-1px);
 }
 
 .page-btn.active {
   background: #2f5ea8;
   color: #fff;
   border-color: #2f5ea8;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(47, 94, 168, 0.25);
 }
 
 .page-btn:disabled {
-  background: #f5f5f5;
-  color: #ccc;
-  border-color: #eaeaea;
+  background: #f1f5f9;
+  color: #cbd5e1;
+  border-color: #e2e8f0;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* =========================
@@ -536,6 +553,8 @@ body{
 
 <div id="pagination-controls" class="pagination-bar"></div>
 
+<script src="config.js"></script>
+
 <script>
 
 /* =========================
@@ -580,13 +599,10 @@ fetch("footer.html")
     document.body.insertAdjacentHTML("beforeend", data);
   });
 
-// ปลอดภัยสูง: ย้ายมาเชื่อมต่อผ่านเซิร์ฟเวอร์ระบบ API Gateway ตัวใหม่โดยตรง
-const API = "https://script.google.com/macros/s/AKfycby0BIQMiM7mEoQrckKXXSYZAudz3sJDsEr87IT8hktGk8oXc4wqC4bbV8LusoVXufXKvQ/exec";
-
 let rawProducts = [];
 let filtered    = [];
 let currentPage = 1;
-const itemsPerPage = 25;
+const itemsPerPage = 30;
 
 // ฟังก์ชันล้าง format คอมมาเพื่อจัดเรียงและการคำนวณตัวเลขสต็อกสินค้าได้อย่างแม่นยำ
 function cleanNumber(val) {
@@ -600,14 +616,8 @@ function cleanNumber(val) {
 
 async function loadProducts(){
   try {
-    const res = await fetch(API, { method: "GET", mode: "cors", redirect: "follow" });
-    const jsonResult = await res.json();
-    
-    if(jsonResult.status === "success") {
-       rawProducts = jsonResult.data;
-    } else {
-       throw new Error(jsonResult.message);
-    }
+    // ปรับเปลี่ยนมาเรียกใช้ API ระบบผ่าน Config ส่วนกลางดึงข้อมูลตรงตาราง products
+    rawProducts = await window.supabaseFetch('products');
 
     /* =========================
        FILTER DISCONTINUED
@@ -678,7 +688,7 @@ function processAndRender() {
   const paginatedProducts = targetProducts.slice(startIndex, endIndex);
 
   /* =========================
-       PRODUCT RENDER
+        PRODUCT RENDER
   ========================= */
   const grid = document.getElementById("product-grid");
   
@@ -743,7 +753,7 @@ function processAndRender() {
   }).join('');
 
   /* =========================
-       FINAL RENDER
+        FINAL RENDER
   ========================= */
   grid.innerHTML = (currentPage === 1 && !q && checkedCategories.length === 0 ? promoCard : "") + productCards;
   
@@ -761,16 +771,16 @@ function renderPaginationControls(totalPages) {
 
   let html = ``;
   
-  // ปุ่มก่อนหน้า (<)
-  html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">ก่อนหน้า</button>`;
+  // ปุ่มก่อนหน้า สไตล์โมเดิร์นลูกศรมินิมอล (←)
+  html += `<button class="page-btn nav-arrow" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">←</button>`;
 
   // แสดงหมายเลขลำดับหน้าทั้งหมด 1, 2, 3, ... n
   for (let i = 1; i <= totalPages; i++) {
     html += `<button class="page-btn ${currentPage === i ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
   }
 
-  // ปุ่มถัดไป (>)
-  html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">ถัดไป</button>`;
+  // ปุ่มถัดไป สไตล์โมเดิร์นลูกศรมินิมอล (→)
+  html += `<button class="page-btn nav-arrow" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">→</button>`;
 
   container.innerHTML = html;
 }
