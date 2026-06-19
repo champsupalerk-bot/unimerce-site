@@ -478,6 +478,98 @@ img{
 }
 
 /* =========================
+   [UPDATED] BRAND PRODUCT BANNER STYLES (.PNG ADAPTIVE)
+========================= */
+.product-showcase-section {
+  width: 100%;
+  background: radial-gradient(circle at top right, #fdfbf9 0%, #f1ebe5 100%);
+  padding: 60px 0;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.product-showcase-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.product-showcase-info {
+  flex: 1;
+  max-width: 580px;
+}
+
+.product-showcase-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9b7f63;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.product-showcase-heading {
+  font-size: clamp(28px, 3.8vw, 42px);
+  line-height: 1.25;
+  color: #0f172a;
+  margin: 0 0 16px 0;
+  font-weight: 600;
+}
+
+.product-showcase-heading span {
+  color: #9b7f63;
+}
+
+.product-showcase-p {
+  font-size: 16px;
+  line-height: 1.75;
+  color: #475569;
+  margin: 0 0 28px 0;
+  font-weight: 300;
+}
+
+.product-showcase-action-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 32px;
+  background: #0f172a;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 999px;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.1);
+  transition: all 0.3s ease;
+}
+
+.product-showcase-link:hover .product-showcase-action-btn {
+  background: #9b7f63;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 25px rgba(155, 127, 99, 0.2);
+}
+
+.product-showcase-media {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 500px;
+}
+
+.product-showcase-img {
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 35px rgba(15, 23, 42, 0.12));
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.product-showcase-link:hover .product-showcase-img {
+  transform: scale(1.04) translateY(-5px);
+}
+
+/* =========================
    FITTED COMPARISON TABLE (MOBILE PERFECT UX)
 ========================= */
 .compare-container {
@@ -745,7 +837,8 @@ img{
   .section-desc,
   .tech-body,
   .info-box p,
-  .tech-disclaimer-text {
+  .tech-disclaimer-text,
+  .product-showcase-p {
     font-size: 17px !important;
     line-height: 1.85;
   }
@@ -781,6 +874,35 @@ img{
   .recommend-badge {
     top: 20px;
     right: 20px;
+  }
+
+  /* Responsive Banner PNG Mobile Stack Optimization */
+  .product-showcase-section {
+    padding: 50px 0;
+  }
+  
+  .product-showcase-wrapper {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+  
+  .product-showcase-info {
+    max-width: 100%;
+  }
+
+  .product-showcase-media {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .product-showcase-img {
+    max-height: 260px;
+  }
+
+  .product-showcase-action-btn {
+    width: 100%;
+    justify-content: center;
   }
 
   .cta{
@@ -831,6 +953,7 @@ img{
 }
 </style>
 
+<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
 <script src="/analytics.js"></script>
 
@@ -856,7 +979,7 @@ img{
       </div>
       <div class="hero-actions">
         <a class="hero-btn primary" href="#technology">Explore Technologies</a>
-        <a class="hero-btn secondary" href="https://shopee.co.th/vitevthailand?shopCollection=264446710#product_list" target="_blank">View Shopee Collection</a>
+        <a class="hero-btn secondary" href="https://shopee.co.th/unimercegroup?shopCollection=264446710#product_list" target="_blank">View Shopee Collection</a>
       </div>
     </div>
   </div>
@@ -939,7 +1062,7 @@ img{
         <div class="tech-disclaimer-box">
           <div class="tech-disclaimer-title">⚠️ข้อเสียระบบ</div>
           <div class="tech-disclaimer-text">
-            HVAC Scent System มีต้นทุนติดตั้งและดูแลรักษาค่อนข้างสูงและซับซ้อน ทำให้ไม่ค่อยเหมาะกับโรงแรมที่ต้องการระบบกลิ่นที่ยืดหยุ่น ดูแลง่าย และควบคุมค่าใช้จ่ายได้อย่างมีประสิทธิภาพในระยะยาว
+            HVAC Scent System มีต้นทุนติดตั้งและดูแลรักษาค่อนข้างสูงและซับซ้อน ทำให้ไม่ค่อยเหมาะกับโรงแรมที่ต้องการระบบกลิ่นที่ยืดหยุ่น ดูแง่าย และควบคุมค่าใช้จ่ายได้อย่างมีประสิทธิภาพในระยะยาว
           </div>
         </div>
       </div>
@@ -948,6 +1071,27 @@ img{
 
   </div>
 </section>
+
+<!-- =========================================================
+     [UPDATED SECTION] INTERACTIVE PNG FEATURE DISPLAY
+     ========================================================= -->
+<div class="product-showcase-section">
+  <div class="section-inner">
+    <a href="https://shopee.co.th/unimercegroup?shopCollection=264446710#product_list" target="_blank" class="product-showcase-link">
+      <div class="product-showcase-wrapper">
+        <div class="product-showcase-info">
+          <div class="product-showcase-tag">Flagship Model</div>
+          <h2 class="product-showcase-heading">Aroma Diffuser <span>Model: PD10</span></h2>
+          <p class="product-showcase-p">สัมผัสที่สุดแห่งนวัตกรรมการกระจายกลิ่นระดับโรงแรมหรูได้ในพื้นที่ของคุณ โมเลกุลน้ำหอมระดับ Nano Dry Mist  ปรับแต่งรอบและเวลาการทำงานอัจฉริยะเพื่อประสบการณ์ระดับ Luxury</p>
+          <div class="product-showcase-action-btn">Explore Model PD10 on Shopee</div>
+        </div>
+        <div class="product-showcase-media">
+          <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1781863249/aroma_pd10_w_kiwjvw.png" alt="Aroma Diffuser PD10" class="product-showcase-img" />
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
 
 <section class="section section-dark">
   <div class="section-inner">
