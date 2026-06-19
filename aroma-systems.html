@@ -740,9 +740,14 @@ img{
     padding:120px 0 80px; 
   }
 
-  .hero-desc{
-    font-size:15px;
-    line-height:1.8;
+  /* 🎯 [จุดแก้ไขมัดรวมที่เดียว] อัปสเกลเนื้อหาคำอธิบาย/บทความทั้งหมดบนมือถือเป็น 17px โดยหัวข้อใหญ่คงเดิม */
+  .hero-desc,
+  .section-desc,
+  .tech-body,
+  .info-box p,
+  .tech-disclaimer-text {
+    font-size: 17px !important;
+    line-height: 1.85;
   }
 
   .section{
@@ -787,11 +792,6 @@ img{
     padding:0 20px;
   }
 
-  .section-desc{
-    font-size:15px;
-    line-height:1.8;
-  }
-
   .hero-actions,
   .cta-actions{
     flex-direction:column;
@@ -831,7 +831,6 @@ img{
 }
 </style>
 
-<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
 <script src="/analytics.js"></script>
 
