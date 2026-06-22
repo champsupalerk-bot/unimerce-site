@@ -350,7 +350,6 @@ tbody tr:hover{
 
 </style>
 
-<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
 <script src="/analytics.js"></script>
 
@@ -430,6 +429,8 @@ tbody tr:hover{
 
 <div id="toTop">↑</div>
 
+<script src="config.js"></script>
+
 <script>
 
 /* =========================
@@ -440,9 +441,6 @@ fetch("header.html")
   .then(data => {
     document.getElementById("header-placeholder").innerHTML = data;
   });
-
-// ปลอดภัยสูง: ดึงตรงจากแอปสคริปต์เกตเวย์ตัวใหม่แท็บ apiu
-const API = "https://script.google.com/macros/s/AKfycby0BIQMiM7mEoQrckKXXSYZAudz3sJDsEr87IT8hktGk8oXc4wqC4bbV8LusoVXufXKvQ/exec";
 
 let rawData      = [];
 let filteredData = [];
@@ -464,21 +462,17 @@ function cleanNumber(val) {
 }
 
 /* =========================
-   LOAD DATA
+   LOAD DATA (ย้ายมาดึงข้อมูลผ่านศูนย์กลาง window.supabaseFetch)
 ========================= */
 async function loadTable(){
   try {
-    const res = await fetch(API, { method: "GET", mode: "cors", redirect: "follow" });
-    const jsonResult = await res.json();
-    if(jsonResult.status === "success") {
-       rawData = jsonResult.data;
-    } else {
-       throw new Error(jsonResult.message);
-    }
+    // 📡 ยิงดึงข้อมูลผ่านโมดูลหลักของระบบ ปลอดภัย รวดเร็ว และรองรับ RLS แน่นอน
+    rawData = await window.supabaseFetch('products');
     applyAll();
   } catch(e) {
+    console.error("Supabase Connection Error:", e);
     document.getElementById("table-body").innerHTML =
-      '<tr><td colspan="3">Failed to load data.</td></tr>';
+      '<tr><td colspan="3" style="text-align:center; padding:20px;">Failed to load secure assets.</td></tr>';
   }
 }
 
