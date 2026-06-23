@@ -333,6 +333,138 @@ tbody tr:hover{
 }
 
 /* =========================
+   BARCODE SHORTCUT BUTTON (อัปเดต: ใช้ inline-flex เพื่อคุม SVG ให้อยู่กึ่งกลางพอดี)
+========================= */
+.btn-barcode-trigger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  border-radius: 4px;
+  transition: background 0.1s;
+}
+.btn-barcode-trigger:hover {
+  background: #e8e8e8;
+}
+
+/* =========================
+   MOBILE FRIENDLY POPUP MODAL STYLES
+========================= */
+.barcode-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+.barcode-modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  text-align: center;
+  box-sizing: border-box;
+}
+.barcode-modal-title {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* มาตราส่วนกล่องจำลองป้ายขนาด 30x20mm */
+.sticker-preview-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.actual-sticker-target {
+  width: 300px;
+  height: 200px;
+  background: #ffffff;
+  border: 1px dashed #bbb; /* เส้นประแสดงขอบเขตสำหรับสายตา (ตอนบันทึกภาพจะไม่ติดไป) */
+  padding: 12px 14px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  font-family: Arial, sans-serif;
+  color: #000000;
+}
+.sticker-p-name {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1.25;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* ล็อกไว้สูงสุด 2 บรรทัด */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sticker-barcode-area {
+  text-align: center;
+  margin: auto 0;
+  width: 100%; 
+}
+.sticker-barcode-area svg {
+  width: 100%; 
+  max-height: 85px; 
+}
+.sticker-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 10px;
+  font-weight: bold;
+}
+.sticker-web-url {
+  color: #111;
+}
+.sticker-location-field {
+  color: #555;
+}
+
+/* ปุ่มบันทึกขนาดใหญ่แบบ Mobile Friendly */
+.btn-save-jpeg {
+  background-color: #2f5ea8;
+  color: #fff;
+  border: none;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  width: 100%;
+  cursor: pointer;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(47, 94, 168, 0.2);
+  transition: background 0.2s;
+}
+.btn-save-jpeg:hover {
+  background-color: #214478;
+}
+.btn-cancel-modal {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* =========================
    MOBILE
 ========================= */
 @media(max-width:768px){
@@ -344,7 +476,7 @@ tbody tr:hover{
     color:#fff;
   }
   body {
-    padding-top: 40px; /* 👈 ให้ขยับหลบ Topbar บนนมัดมือถือด้วยเพื่อไม่ให้ Breadcrumb โดนบัง */
+    padding-top: 40px; 
   }
 }
 
@@ -353,6 +485,8 @@ tbody tr:hover{
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
 <script src="/analytics.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 </head>
 
@@ -427,6 +561,29 @@ tbody tr:hover{
 
 </div>
 
+<div id="barcodeModal" class="barcode-modal-overlay" onclick="closeModalOnOutsideClick(event)">
+  <div class="barcode-modal-content">
+    <div class="barcode-modal-title">Ready to Print Label</div>
+    
+    <div class="sticker-preview-box">
+      <div id="stickerTarget" class="actual-sticker-target">
+        <div id="lblProductName" class="sticker-p-name">Product Name</div>
+        <div class="sticker-barcode-area">
+          <svg id="barcodeSvgCanvas"></svg>
+        </div>
+        <div class="sticker-footer-row">
+          <span class="sticker-web-url">www.unimercegroup.com</span>
+          <span id="lblLocationField" class="sticker-location-field"></span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-save-jpeg" onclick="saveStickerToDevice()">Save to JPEG</button>
+    <br>
+    <button class="btn-cancel-modal" onclick="closeBarcodeModal()">Cancel</button>
+  </div>
+</div>
+
 <div id="toTop">↑</div>
 
 <script src="config.js"></script>
@@ -451,7 +608,6 @@ let sortState = {
   dir: "asc"
 };
 
-// ฟังก์ชันล้าง format ตัวเลขที่พบบ่อย (ลบ , ออกก่อนคำนวณและฟิลเตอร์ซ่อนสต็อก)
 function cleanNumber(val) {
   if (val === null || val === undefined) return 0;
   if (typeof val === 'number') return val;
@@ -462,11 +618,10 @@ function cleanNumber(val) {
 }
 
 /* =========================
-   LOAD DATA (ย้ายมาดึงข้อมูลผ่านศูนย์กลาง window.supabaseFetch)
+   LOAD DATA
 ========================= */
 async function loadTable(){
   try {
-    // 📡 ยิงดึงข้อมูลผ่านโมดูลหลักของระบบ ปลอดภัย รวดเร็ว และรองรับ RLS แน่นอน
     rawData = await window.supabaseFetch('products');
     applyAll();
   } catch(e) {
@@ -488,7 +643,6 @@ function applyAll(){
 
   let result = rawData;
 
-  // 1. FILTER BY MAIN CATEGORY
   if (checkedCategories.length > 0) {
     result = result.filter(i => {
       const cat = String(i.MainCategory || "").trim();
@@ -496,7 +650,6 @@ function applyAll(){
     });
   }
 
-  // 2. FILTER BY SEARCH
   if(q){
     result = result.filter(i =>
       String(i.Item_Code   || "").toLowerCase().includes(q) ||
@@ -505,7 +658,6 @@ function applyAll(){
     );
   }
 
-  // 3. HIDE ZERO / DASH (ใช้เทคนิคถอดคอมมาออก สต็อกจึงแม่นยำไม่หาย)
   if(hideZero){
     result = result.filter(i => {
       const rawVal = i.OnHand;
@@ -521,7 +673,6 @@ function applyAll(){
 
   filteredData = result;
 
-  // 4. SORT
   if(sortState.key){
     applySortOnFiltered();
   } else {
@@ -551,7 +702,6 @@ function applySortOnFiltered(){
     let v1 = a[key] ?? "";
     let v2 = b[key] ?? "";
 
-    // ป้องกันเรื่องสลับจัดลำดับราคาและ Onhand ที่มีคอมมา
     if(key === 'OnHand' || key === 'ListPrice' || key === 'PromotionPrice' || key === 'ราคาต่อลัง' || key === 'จำนวนต่อลัง') {
        let n1 = cleanNumber(v1);
        let n2 = cleanNumber(v2);
@@ -577,7 +727,7 @@ function applySortOnFiltered(){
 }
 
 /* =========================
-   RENDER & TAP-TO-COPY
+   RENDER & TAP-TO-COPY (อัปเดต: บรรจุสัญลักษณ์ปุ่ม SVG บาร์โค้ดสากลตัวใหม่เรียบร้อย)
 ========================= */
 function renderTable(data){
   const tbody = document.getElementById("table-body");
@@ -592,20 +742,36 @@ function renderTable(data){
     let cellValue = p[currentCol3] !== undefined && p[currentCol3] !== null ? p[currentCol3] : "-";
     let cellClass = "col-stock";
     
-    // เงื่อนไขสลับอักษรสีแดงเข้มเด่นชัดเมื่อพบบันทึก ORDER! 
     if(currentCol3 === "ReorderSTATUS" && String(cellValue).trim() === "ORDER!") {
       cellClass += " order-alert";
     }
 
-    // จัดระเบียบตัวเลขหลังจากคลีนเพื่อความสวยงามในหน้ารายงานผล
     if((currentCol3 === "OnHand" || currentCol3 === "PromotionPrice" || currentCol3 === "จำนวนต่อลัง") && cellValue !== "-") {
        let num = cleanNumber(cellValue);
        cellValue = num.toLocaleString();
     }
 
+    const safeItemCode = String(p.Item_Code || "-").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    const safeDesc = String(p.Description || "-").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
     return `
-      <tr onclick="copyRowText(this)">
-        <td class="col-code">${p.Item_Code   || "-"}</td>
+      <tr onclick="copyRowText(this, event)">
+        <td class="col-code">
+          <span>${p.Item_Code || "-"}</span>
+          <button class="btn-barcode-trigger" onclick="openBarcodeModal('${safeDesc}', '${safeItemCode}', event)" title="Generate Barcode">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
+              <line x1="6" y1="7" x2="6" y2="17" stroke-width="2.5" />
+              <line x1="9.5" y1="7" x2="9.5" y2="17" stroke-width="1" />
+              <line x1="12" y1="7" x2="12" y2="17" stroke-width="2" />
+              <line x1="14.5" y1="7" x2="14.5" y2="17" stroke-width="1" />
+              <line x1="18" y1="7" x2="18" y2="17" stroke-width="3" />
+              <path d="M 2,7 V 2 H 7" stroke-width="1.5" />
+              <path d="M 17,2 H 22 V 7" stroke-width="1.5" />
+              <path d="M 2,17 V 22 H 7" stroke-width="1.5" />
+              <path d="M 17,22 H 22 V 17" stroke-width="1.5" />
+            </svg>
+          </button>
+        </td>
         <td class="col-desc">${p.Description || "-"}</td>
         <td class="${cellClass}">${cellValue}</td>
       </tr>
@@ -614,19 +780,84 @@ function renderTable(data){
 }
 
 /* =========================
-   COPY FUNCTION (เว้นวรรคข้อมูล ไม่เอาหัวตาราง)
+   COPY FUNCTION
 ========================= */
-function copyRowText(rowElement) {
+function copyRowText(rowElement, event) {
+  if (event.target.closest('.btn-barcode-trigger')) {
+    return;
+  }
+
   const tds = rowElement.getElementsByTagName("td");
   let text = "";
   for(let i = 0; i < tds.length; i++) {
-     text += tds[i].innerText.trim() + (i === tds.length - 1 ? "" : " ");
+     let tempTd = tds[i].cloneNode(true);
+     const btn = tempTd.querySelector('.btn-barcode-trigger');
+     if(btn) btn.remove();
+     text += tempTd.innerText.trim() + (i === tds.length - 1 ? "" : " ");
   }
   
   navigator.clipboard.writeText(text).then(() => {
      const toast = document.getElementById("toast");
      toast.style.display = "block";
      setTimeout(() => { toast.style.display = "none"; }, 1500);
+  });
+}
+
+/* =========================
+   BARCODE POPUP LOGIC FUNCTIONS
+========================= */
+let activeProductCodeStr = "";
+
+function openBarcodeModal(productName, productCode, event) {
+  if(event) event.stopPropagation();
+
+  activeProductCodeStr = productCode;
+  
+  document.getElementById('lblProductName').innerText = productName;
+  document.getElementById('lblLocationField').innerText = ""; 
+
+  JsBarcode("#barcodeSvgCanvas", productCode, {
+    format: "CODE128",
+    width: 2.2,   
+    height: 70,   
+    displayValue: true, 
+    fontSize: 14,
+    fontOptions: "bold",
+    margin: 0
+  });
+
+  document.getElementById('barcodeModal').style.display = 'flex';
+}
+
+function closeBarcodeModal() {
+  document.getElementById('barcodeModal').style.display = 'none';
+}
+
+function closeModalOnOutsideClick(event) {
+  const modalOverlay = document.getElementById('barcodeModal');
+  if (event.target === modalOverlay) {
+    closeBarcodeModal();
+  }
+}
+
+function saveStickerToDevice() {
+  const element = document.getElementById('stickerTarget');
+  element.style.border = 'none';
+
+  html2canvas(element, {
+    backgroundColor: "#ffffff",
+    scale: 3, 
+    logging: false
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = `label-${activeProductCodeStr}.jpg`;
+    link.href = canvas.toDataURL('image/jpeg', 1.0); 
+    link.click();
+
+    element.style.border = '1px dashed #bbb';
+  }).catch(err => {
+    console.error("Error generating image asset:", err);
+    element.style.border = '1px dashed #bbb';
   });
 }
 
@@ -638,7 +869,6 @@ function updateArrows(active, dir){
   const selectElement = document.getElementById("column3Select");
   const selectedText = selectElement.options[selectElement.selectedIndex].text;
   
-  // สลับอักษรหัวตารางช่องที่ 3 ตาม Dropdown ที่ถูกสลับจริง
   document.getElementById("col3HeaderName").textContent = selectedText === "OnHand" ? "OH" : selectedText;
 
   ["Item_Code", "Description"].forEach(k => {
@@ -663,7 +893,6 @@ window.addEventListener("load", () => {
     applyAll();
   });
 
-  // เปลี่ยนสลับคอลัมน์ 3 ทันทีเมื่อเลือกตัวกรอง Dropdown ตัวบน
   document.getElementById("column3Select").addEventListener("change", (e) => {
     sortState.key = e.target.value;
     applyAll();
@@ -695,12 +924,6 @@ setTimeout(() => {
   if(menuBtn && menuDropdown){
     menuBtn.addEventListener("click", () => {
       menuDropdown.classList.toggle("active");
-    });
-
-    window.addEventListener("click", (e) => {
-      if(!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)){
-        menuDropdown.classList.remove("active");
-      }
     });
   }
 }, 100);
