@@ -842,11 +842,13 @@ function closeModalOnOutsideClick(event) {
 
 function saveStickerToDevice() {
   const element = document.getElementById('stickerTarget');
+  
+  // ซ่อนเส้นประชั่วคราวเพื่อให้ภาพเนียนสวย
   element.style.border = 'none';
 
   html2canvas(element, {
     backgroundColor: "#ffffff",
-    scale: 3, 
+    scale: 3, // ความคมชัดสูง 3 เท่า เส้นบาร์โค้ดไม่แตก
     logging: false
   }).then(canvas => {
     const imageData = canvas.toDataURL('image/jpeg', 1.0);
@@ -854,38 +856,25 @@ function saveStickerToDevice() {
     // คืนค่าเส้นประบนหน้าจอดังเดิม
     element.style.border = '1px dashed #bbb';
 
-    // 📱 ตรวจสอบว่าเป็นอุปกรณ์พกพา (Mobile/Tablet) หรือไม่
+    // ตรวจสอบว่าเป็นอุปกรณ์พกพา (Mobile/Tablet) หรือไม่
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
     if (isMobile) {
-      // วิธีสำหรับมือถือ: เปิดรูปภาพขึ้นมาในแท็บใหม่ เพื่อให้ผู้ใช้กดค้าง (Long Press) และเลือก "บันทึกไปยังแอปรูปภาพ/Save Image"
-      const newWindow = window.open();
-      if (newWindow) {
-        newWindow.document.write(`
-          <html>
-            <head>
-              <title>Save Label</title>
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <style>
-                body { margin: 0; background: #222; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; color: #fff; text-align: center; }
-                img { max-width: 90%; max-height: 70vh; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border-radius: 8px; }
-                .notice { margin-top: 20px; font-size: 16px; font-weight: bold; padding: 0 20px; line-height: 1.5; }
-              </style>
-            </head>
-            <body>
-              <img src="${imageData}" />
-              <div class="notice">💡 กดค้างที่รูปภาพเพื่อบันทึก <br>(Long press on image to Save to Photos)</div>
-            </body>
-          </html>
-        `);
-        newWindow.document.close();
-      } else {
-        // กรณีโดน Pop-up blocker บล็อก ให้สลับมาแสดงผลทับที่หน้าต่างเดิมชั่วคราว
-        alert("โปรดกดค้างที่รูปภาพเพื่อบันทึกในหน้าถัดไป");
-        window.location.href = imageData;
-      }
+      // 📱 สำหรับมือถือ: เปลี่ยนเนื้อหาในกล่อง Popup เดิมให้กลายเป็นรูปภาพสำหรับ "กดค้างเพื่อบันทึก" ทันที
+      const modalContent = document.querySelector('.barcode-modal-content');
+      
+      modalContent.innerHTML = `
+        <div class="barcode-modal-title" style="color: #2f5ea8;">✨ รูปภาพพร้อมบันทึก</div>
+        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">แตะนิ้วค้างไว้ที่รูปด้านล่าง แล้วเลือก <b>"บันทึกรูปภาพ" (Save Image)</b> เพื่อเซฟลงเครื่องได้เลยครับ</p>
+        
+        <div style="margin-bottom: 16px; display: flex; justify-content: center;">
+          <img src="${imageData}" style="width: 100%; max-width: 260px; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 6px;" />
+        </div>
+
+        <button class="btn-save-jpeg" style="background-color: #666;" onclick="closeBarcodeModal(); location.reload();">ปิดหน้าต่างนี้</button>
+      `;
     } else {
-      // 💻 วิธีสำหรับเดสก์ท็อป (ทำงานดาวน์โหลดออโต้เหมือนเดิม)
+      // 💻 สำหรับคอมพิวเตอร์: สั่งดาวน์โหลดอัตโนมัติลงเครื่องทันทีเหมือนเดิม
       const link = document.createElement('a');
       link.download = `label-${activeProductCodeStr}.jpg`;
       link.href = imageData; 
