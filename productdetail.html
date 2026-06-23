@@ -5,15 +5,15 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico?v=99" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title id="meta-title">UNIMERCE | Product Detail</title>
-<meta id="meta-desc" name="description" content="ดูรายละเอียดสินค้า ข้อมูลทางเทคนิค และสั่งซื้อผ่านระบบอีเมลของ UNIMERCE GROUP" />
-<meta name="keywords" content="UNIMERCE, เครื่องกรองน้ำ, เครื่องพ่นอโรมา, เครื่องมือวัดคุณภาพน้ำ, Vitev Thailand, รายละเอียดสินค้า" />
+<meta id="meta-desc" name="description" content="ดูรายละเอียดสินค้า ข้อมูลทางเทคนิค และสั่งซื้อสินค้าจากบริษัท UNIMERCE" />
+<meta name="keywords" content="UNIMERCE, เครื่องกรองน้ำ, เครื่องพ่นอโรมา, เครื่องมือวัดคุณภาพน้ำ, Vitev Thailand, รายละเอียดสินค้า, เครื่องกระจายกลิ่น" />
 <meta name="author" content="UNIMERCE GROUP" />
 <meta name="robots" content="index, follow" />
 
 <meta property="og:type" content="website" />
 <meta id="og-title" property="og:title" content="UNIMERCE | รายละเอียดสินค้า" />
 <meta id="og-desc" property="og:description" content="ดูรายละเอียดสินค้า ข้อมูลทางเทคนิค และสั่งซื้อผ่านระบบอีเมลของ UNIMERCE GROUP" />
-<meta id="og-image" property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780633652/ULOGO_CLEAR_1060_jkvqqm.png" />
+<meta id="og-image" property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1782202879/ogproductdetail85_hkiema.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 
@@ -163,6 +163,7 @@ body {
   padding: 8px 0;
   font-size: 13.5px;
   border-bottom: 1px dashed #eee;
+  vertical-align: middle;
 }
 
 .meta-table td.lbl {
@@ -451,6 +452,117 @@ body {
 .back-btn { display: inline-block; padding: 8px 18px; background: #111; color: #fff; text-decoration: none; border-radius: 8px; font-size: 13px; }
 
 /* ==========================================
+   ADDED BARCODE SYSTEM CUSTOM STYLES
+   ========================================== */
+.btn-barcode-trigger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  border-radius: 4px;
+  transition: background 0.1s;
+}
+.btn-barcode-trigger:hover {
+  background: #e8e8e8;
+}
+
+#hiddenStickerWrapper {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+}
+
+.actual-sticker-target {
+  width: 300px;
+  height: 200px;
+  background: #ffffff;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  font-family: Arial, sans-serif;
+  color: #000000;
+  padding: 12px 14px;
+}
+.sticker-p-name {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1.25;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sticker-barcode-area {
+  text-align: center;
+  margin: auto 0;
+  width: 100%; 
+}
+.sticker-barcode-area svg {
+  width: 100%; 
+  max-height: 85px; 
+}
+.sticker-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 12px; 
+  font-weight: bold;
+}
+.sticker-web-url {
+  color: #111;
+}
+.sticker-location-field {
+  color: #555;
+}
+
+.barcode-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+.barcode-modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  text-align: center;
+  box-sizing: border-box;
+}
+.barcode-modal-title {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #2f5ea8;
+}
+.btn-cancel-modal {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 5px;
+  padding: 10px;
+}
+
+/* ==========================================
    MOBILE RESPONSIVE (ปรับปรุงตามบรีฟล่าสุด)
    ========================================== */
 @media (max-width: 768px) {
@@ -564,6 +676,9 @@ body {
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
 <script src="/analytics.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 </head>
 <body>
 
@@ -576,6 +691,27 @@ body {
 </main>
 
 <div id="footer-placeholder"></div>
+
+<div id="hiddenStickerWrapper">
+  <div id="stickerTarget" class="actual-sticker-target">
+    <div id="lblProductName" class="sticker-p-name"></div>
+    <div class="sticker-barcode-area">
+      <svg id="barcodeSvgCanvas"></svg>
+    </div>
+    <div class="sticker-footer-row">
+      <span class="sticker-web-url">www.unimercegroup.com</span>
+      <span id="lblLocationField" class="sticker-location-field"></span>
+    </div>
+  </div>
+</div>
+
+<div id="barcodeModal" class="barcode-modal-overlay" onclick="closeBarcodeModalOnOutsideClick(event)">
+  <div class="barcode-modal-content">
+    <div class="barcode-modal-title">แตะค้างที่ป้ายเพื่อบันทึก</div>
+    <div style="margin: 15px 0 20px 0; display: flex; justify-content: center;" id="resultImageContainer"></div>
+    <button class="btn-cancel-modal" onclick="closeBarcodeModal()">Close</button>
+  </div>
+</div>
 
 <script>
 // ====================================================================
@@ -714,11 +850,30 @@ async function loadProductDetail() {
     const listPriceFormatted = product.ListPrice ? formatMoney(product.ListPrice) : '';
     const promoPriceFormatted = product.PromotionPrice ? formatMoney(product.PromotionPrice) : '-';
 
+    const safeItemCode = String(product.Item_Code || "-").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    const safeDesc = String(product.Description || "-").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    const safeLocation = String(product.Location || "").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
     const tableTemplateHTML = `
       <table class="meta-table">
         <tr>
           <td class="lbl">รหัสสินค้า</td>
-          <td class="val">${product.Item_Code || '-'}</td>
+          <td class="val">
+            <span>${product.Item_Code || '-'}</span>
+            <button class="btn-barcode-trigger" onclick="openBarcodeGenModal('${safeDesc}', '${safeItemCode}', '${safeLocation}', event)" title="Generate Barcode">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2f5ea8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
+                <line x1="6" y1="7" x2="6" y2="17" stroke-width="2.5" />
+                <line x1="9.5" y1="7" x2="9.5" y2="17" stroke-width="1" />
+                <line x1="12" y1="7" x2="12" y2="17" stroke-width="2" />
+                <line x1="14.5" y1="7" x2="14.5" y2="17" stroke-width="1" />
+                <line x1="18" y1="7" x2="18" y2="17" stroke-width="3" />
+                <path d="M 2,7 V 2 H 7" stroke-width="1.5" />
+                <path d="M 17,2 H 22 V 7" stroke-width="1.5" />
+                <path d="M 2,17 V 22 H 7" stroke-width="1.5" />
+                <path d="M 17,22 H 22 V 17" stroke-width="1.5" />
+              </svg>
+            </button>
+          </td>
         </tr>
         <tr>
           <td class="lbl">แบรนด์</td>
@@ -964,6 +1119,63 @@ window.copyOrderTextToClipboard = function() {
       window.location.href = `mailto:sales@unimercegroup.com?subject=${subject}&body=${body}`;
     }, 1200);
   });
+}
+
+/* ==========================================
+   ADDED FUNCTION: BARCODE CORE ENGINE
+   ========================================== */
+window.openBarcodeGenModal = function(productName, productCode, locationField, event) {
+  if(event) event.stopPropagation();
+  
+  document.getElementById('lblProductName').innerText = productName;
+  document.getElementById('lblLocationField').innerText = locationField || "";
+
+  JsBarcode("#barcodeSvgCanvas", productCode, {
+    format: "CODE128",
+    width: 2.3,   
+    height: 65,   
+    displayValue: true, 
+    fontSize: 20, 
+    fontOptions: "", 
+    margin: 0
+  });
+
+  const element = document.getElementById('stickerTarget');
+  const imgContainer = document.getElementById('resultImageContainer');
+  imgContainer.innerHTML = "<span style='font-size:13px; color:#aaa;'>กำลังประมวลผลฉลาก...</span>";
+
+  html2canvas(element, {
+    backgroundColor: "#ffffff",
+    scale: 3, 
+    logging: false
+  }).then(canvas => {
+    const imageData = canvas.toDataURL('image/jpeg', 1.0);
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      imgContainer.innerHTML = `<img src="${imageData}" style="width: 100%; max-width: 270px; border: 1px solid #e0e0e0; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 6px;" />`;
+      document.getElementById('barcodeModal').style.display = 'flex';
+    } else {
+      const link = document.createElement('a');
+      link.download = `label-${productCode}.jpg`;
+      link.href = imageData; 
+      link.click();
+    }
+  }).catch(err => {
+    console.error("Error standard automatic snapshot creation:", err);
+    imgContainer.innerHTML = "<span style='color:red;'>เกิดข้อผิดพลาดในการโหลดรูปภาพ</span>";
+  });
+}
+
+window.closeBarcodeModal = function() {
+  document.getElementById('barcodeModal').style.display = 'none';
+}
+
+window.closeBarcodeModalOnOutsideClick = function(event) {
+  const modalOverlay = document.getElementById('barcodeModal');
+  if (event.target === modalOverlay) {
+    closeBarcodeModal();
+  }
 }
 
 function showError(message) {
