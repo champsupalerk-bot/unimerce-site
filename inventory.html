@@ -14,7 +14,7 @@ body{
   font-family:Arial, sans-serif;
   background:#fafafa;
   color:#111;
-  padding-top:50px; /* 👈 ปรับเพิ่มระยะเพื่อดันเนื้อหาทั้งหมดลงมา ไม่ทับซ้อนกับ Topbar Header */
+  padding-top:50px; 
 }
 
 /* =========================
@@ -33,17 +33,16 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-top: 10px; /* 👈 ดันระยะแถวลงมาเพิ่ม ป้องกันอาการจม */
+  margin-top: 10px; 
   margin-bottom:12px;
 }
 
 .breadcrumb{
-  font-size:11px; /* 👈 ปรับตัวเล็กลงตามบรีฟ เพื่อลดความสำคัญ */
+  font-size:11px; 
   color:#777;
   letter-spacing:1px;
 }
 
-/* ลิงก์สำหรับกดกลับหน้า Home สไตล์เนียนๆ */
 .breadcrumb a{
   color: #777;
   text-decoration: none;
@@ -55,7 +54,7 @@ body{
   color: #2f5ea8;
 }
 
-/* Checkbox วงกลมตามบรีฟเพิ่มความหรูหรา */
+/* Checkbox วงกลม */
 .hide-zero-wrap, .category-label{
   display:flex;
   align-items:center;
@@ -74,13 +73,13 @@ body{
   width: 14px;
   height: 14px;
   border: 1px solid #ddd;
-  border-radius: 50%; /* เปลี่ยนเป็นวงกลม */
+  border-radius: 50%; 
   outline: none;
   background: #fff;
   cursor: pointer;
   display: grid;
   place-content: center;
-  transition: all 0.2s ease; /* เพิ่ม Transition เพื่อให้เอฟเฟกต์สมูท */
+  transition: all 0.2s ease; 
 }
 
 .hide-zero-wrap input[type="checkbox"]::before,
@@ -94,7 +93,6 @@ body{
   background-color: #fff;
 }
 
-/* 👈 เพิ่ม Interactive เวลาเมาส์วิ่งผ่าน Checkbox (เกิดแสงวงแหวนจางๆ รอบวงกลม) */
 .hide-zero-wrap:hover input[type="checkbox"],
 .category-label:hover input[type="checkbox"] {
   border-color: #2f5ea8;
@@ -113,7 +111,7 @@ body{
 }
 
 /* =========================
-   CATEGORY FILTER BAR (ย้ายมาอยู่เหนือตาราง)
+   CATEGORY FILTER BAR
 ========================= */
 .category-filter-bar {
   display: flex;
@@ -132,7 +130,7 @@ body{
 }
 
 /* =========================
-   FILTER BAR & DROPDOWN (สไตล์ Google)
+   FILTER BAR & DROPDOWN
 ========================= */
 .filterbar{
   margin-bottom: 10px;
@@ -149,13 +147,11 @@ body{
   transition: all 0.2s ease;
 }
 
-/* Searchbar effect เบาๆ แบบแพงๆ */
 .filterbar input:focus {
   border-color: #2f5ea8;
   box-shadow: 0 0 0 3px rgba(47, 94, 168, 0.15);
 }
 
-/* Dropdown สไตล์แพง มินิมอล ใต้ Searchbar */
 .dropdown-bar-wrap {
   margin-bottom: 14px;
   display: flex;
@@ -171,7 +167,6 @@ body{
   letter-spacing: 0.5px;
 }
 
-/* 👈 ปรับดีไซน์โครงสร้างของตัว Dropdown Select ใหม่ให้ดูแพงและโมเดิร์นขึ้น */
 .google-select {
   padding: 8px 36px 8px 14px;
   font-size: 13px;
@@ -184,7 +179,6 @@ body{
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
-  /* ใช้ไอคอนลูกศรเส้นไลน์สไตล์ Minimal Luxury */
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
   background-repeat: no-repeat;
   background-position: right 12px center;
@@ -215,17 +209,11 @@ body{
   max-height:75vh;
 }
 
-/* =========================
-   TABLE
-========================= */
 table{
   width:100%;
   border-collapse:collapse;
 }
 
-/* =========================
-   HEADER (หัวตารางเดิมและโครงสร้างเดิมร้อยเปอร์เซ็นต์)
-========================= */
 thead th{
   position:sticky;
   top:0;
@@ -245,9 +233,6 @@ thead th:hover{
   background:#244a86;
 }
 
-/* =========================
-   BODY
-========================= */
 tbody td{
   font-size:13px;
   padding:10px;
@@ -259,9 +244,6 @@ tbody tr:hover{
   cursor: pointer;
 }
 
-/* =========================
-   COLUMN WIDTHS (ขนาดเท่าเดิมไม่เปลี่ยน)
-========================= */
 .col-code{
   width:90px;
   white-space:nowrap;
@@ -284,7 +266,6 @@ tbody tr:hover{
   font-weight: bold;
 }
 
-/* Notification Toast สัญญาณเตือนก๊อปปี้ */
 .toast-notice {
   position: fixed;
   bottom: 80px;
@@ -323,9 +304,6 @@ tbody tr:hover{
   transform:translateY(-3px);
 }
 
-/* =========================
-   SORT ICON
-========================= */
 .sort-arrow{
   font-size:10px;
   margin-left:6px;
@@ -333,7 +311,7 @@ tbody tr:hover{
 }
 
 /* =========================
-   BARCODE SHORTCUT BUTTON (อัปเดต: ใช้ช่องไฟสเปซแบบกระจายสวยงามล้ำๆ)
+   BARCODE SHORTCUT BUTTON (SVG)
 ========================= */
 .btn-barcode-trigger {
   background: none;
@@ -383,19 +361,17 @@ tbody tr:hover{
   color: #333;
 }
 
-/* มาตราส่วนกล่องจำลองป้ายขนาด 30x20mm */
+/* อัตราส่วนกล่องจำลองป้ายขนาด 30x20mm */
 .sticker-preview-box {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
 }
-
-/* 🖼️ กล่องเป้าหมายสติกเกอร์ (แบบเดิมแท้ๆ ที่พนักงานเปิดมาแล้วกดค้างเซฟภาพได้เลย) */
 .actual-sticker-target {
   width: 300px;
   height: 200px;
   background: #ffffff;
-  border: 1px dashed #bbb; /* เส้นประแสดงขอบเขตหน้าจอ */
+  border: 1px dashed #bbb; 
   padding: 12px 14px;
   box-sizing: border-box;
   display: flex;
@@ -404,8 +380,6 @@ tbody tr:hover{
   text-align: left;
   font-family: Arial, sans-serif;
   color: #000000;
-  user-select: element; 
-  -webkit-user-select: element; /* เปิดให้ iOS ยอมรับการกดค้างเพื่อ Save ตัวบล็อกเนื้อหาข้างใน */
 }
 .sticker-p-name {
   font-size: 14px;
@@ -413,7 +387,7 @@ tbody tr:hover{
   line-height: 1.25;
   margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* ล็อกไว้สูงสุด 2 บรรทัด */
+  -webkit-line-clamp: 2; 
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -441,8 +415,8 @@ tbody tr:hover{
   color: #555;
 }
 
-/* 🖨️ ปุ่มสั่งพริ้นต์สไตล์โมเดิร์นล้ำๆ สำหรับเครื่องพิมพ์สติกเกอร์ความร้อน */
-.btn-print-hardware {
+/* ปุ่มบันทึก JPEG ขนาดใหญ่ */
+.btn-save-jpeg {
   background-color: #2f5ea8;
   color: #fff;
   border: none;
@@ -456,7 +430,7 @@ tbody tr:hover{
   box-shadow: 0 4px 12px rgba(47, 94, 168, 0.2);
   transition: background 0.2s;
 }
-.btn-print-hardware:hover {
+.btn-save-jpeg:hover {
   background-color: #214478;
 }
 .btn-cancel-modal {
@@ -466,51 +440,6 @@ tbody tr:hover{
   font-size: 14px;
   cursor: pointer;
   text-decoration: underline;
-}
-
-/* =========================
-   🖨️ CRITICAL FIX: PRINT MEDIA RULES 
-   (ลบล้าง Text และองค์ประกอบเว็บภายนอกออกทั้งหมดตอนสั่ง Print ส่งเฉพาะบาร์โค้ดลงเครื่องพิมพ์ฉลาก)
-========================= */
-@media print {
-  /* ซ่อนโครงสร้างทุกอย่างที่อยู่บนหน้าจอทั้งหมด */
-  body, html, .container, #header-placeholder, .barcode-modal-overlay, .barcode-modal-content, button, .barcode-modal-title {
-    visibility: hidden !important;
-    background: none !important;
-    box-shadow: none !important;
-  }
-  
-  /* ดึงเฉพาะเป้าหมายสติกเกอร์ให้ออกมาพิมพ์ตัวเดียวเดี่ยวๆ */
-  #stickerTarget, #stickerTarget * {
-    visibility: visible !important;
-  }
-  
-  /* ปรับแต่งตำแหน่งและขนาดหน้ากระดาษของเครื่องพิมพ์สติกเกอร์ฉลากด่วน (สัดส่วน 30x20mm พอดีเป๊ะ) */
-  #stickerTarget {
-    position: fixed !important;
-    left: 0 !important;
-    top: 0 !important;
-    margin: 0 !important;
-    padding: 1.5mm 2.5mm !important;
-    width: 30mm !important;
-    height: 20mm !important;
-    border: none !important; /* ลบเส้นประ Dashed ออกไม่ให้ติดไปในงานพิมพ์ */
-    box-sizing: border-box !important;
-    background: #fff !important;
-    page-break-inside: avoid;
-  }
-  
-  /* บังคับสัดส่วนขนาดตัวอักษรให้เล็กและคมชัดระดับงานสิ่งพิมพ์ */
-  .sticker-p-name {
-    font-size: 8.5pt !important;
-    line-height: 1.15 !important;
-  }
-  .sticker-barcode-area svg {
-    max-height: 9.5mm !important;
-  }
-  .sticker-footer-row {
-    font-size: 5.5pt !important;
-  }
 }
 
 /* =========================
@@ -535,6 +464,7 @@ tbody tr:hover{
 <script src="/analytics.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 </head>
 
@@ -610,26 +540,8 @@ tbody tr:hover{
 </div>
 
 <div id="barcodeModal" class="barcode-modal-overlay" onclick="closeModalOnOutsideClick(event)">
-  <div class="barcode-modal-content">
-    <div class="barcode-modal-title">Ready to Print Label</div>
-    
-    <div class="sticker-preview-box">
-      <div id="stickerTarget" class="actual-sticker-target">
-        <div id="lblProductName" class="sticker-p-name">Product Name</div>
-        <div class="sticker-barcode-area">
-          <svg id="barcodeSvgCanvas"></svg>
-        </div>
-        <div class="sticker-footer-row">
-          <span class="sticker-web-url">www.unimercegroup.com</span>
-          <span id="lblLocationField" class="sticker-location-field"></span>
-        </div>
-      </div>
-    </div>
-
-    <button class="btn-print-hardware" onclick="triggerHardwarePrint()">Print Label</button>
-    <br>
-    <button class="btn-cancel-modal" onclick="closeBarcodeModal()">Cancel</button>
-  </div>
+  <div class="barcode-modal-content" id="modalDynamicContent">
+     </div>
 </div>
 
 <div id="toTop">↑</div>
@@ -775,7 +687,7 @@ function applySortOnFiltered(){
 }
 
 /* =========================
-   RENDER & TAP-TO-COPY (บรรจุสัญลักษณ์ปุ่มคิวอาร์สแกนช่องไฟสวยงาม)
+   RENDER TABLE
 ========================= */
 function renderTable(data){
   const tbody = document.getElementById("table-body");
@@ -854,8 +766,34 @@ function copyRowText(rowElement, event) {
 /* =========================
    BARCODE POPUP LOGIC FUNCTIONS
 ========================= */
+let currentActiveCode = "";
+
 function openBarcodeModal(productName, productCode, event) {
   if(event) event.stopPropagation();
+  currentActiveCode = productCode;
+
+  // รีเซ็ตโครงสร้างเนื้อหา Popup กลับเป็นฉลากสดสำหรับเตรียมประมวลผลทุกครั้งที่เปิด
+  const wrap = document.getElementById('modalDynamicContent');
+  wrap.innerHTML = `
+    <div class="barcode-modal-title">Ready to Print Label</div>
+    
+    <div class="sticker-preview-box">
+      <div id="stickerTarget" class="actual-sticker-target">
+        <div id="lblProductName" class="sticker-p-name"></div>
+        <div class="sticker-barcode-area">
+          <svg id="barcodeSvgCanvas"></svg>
+        </div>
+        <div class="sticker-footer-row">
+          <span class="sticker-web-url">www.unimercegroup.com</span>
+          <span id="lblLocationField" class="sticker-location-field"></span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-save-jpeg" onclick="generateJpegInPlace()">Save to JPEG</button>
+    <br>
+    <button class="btn-cancel-modal" onclick="closeBarcodeModal()">Cancel</button>
+  `;
   
   document.getElementById('lblProductName').innerText = productName;
   document.getElementById('lblLocationField').innerText = ""; 
@@ -885,10 +823,52 @@ function closeModalOnOutsideClick(event) {
 }
 
 /* =========================
-   🚀 ฟังก์ชันสั่งพิมพ์ออกเครื่องพิมพ์ฮาร์ดแวร์ลาเบลสติกเกอร์ด่วน
+   📸 ฟังก์ชันแปลงฉลากเป็นภาพ JPEG สดๆ คมชัดสูงในหน้าเดิม 
 ========================= */
-function triggerHardwarePrint() {
-  window.print(); // สั่งพริ้นต์ผ่านไดรเวอร์ระบบปฏิบัติการทันที `@media print` จะเคลียร์สิ่งกีดขวางให้สะอาดกริ๊บ
+function generateJpegInPlace() {
+  const element = document.getElementById('stickerTarget');
+  element.style.border = 'none'; // เอาเส้นประออกเพื่อให้ภาพคลีนที่สุด
+
+  html2canvas(element, {
+    backgroundColor: "#ffffff",
+    scale: 3, // ขยายความชัด 3 เท่า เพื่อให้หัวพิมพ์ความร้อนสแกนบาร์โค้ดได้ง่าย ไม่แตกเป็นเม็ดพิกเซล
+    logging: false
+  }).then(canvas => {
+    const imageData = canvas.toDataURL('image/jpeg', 1.0);
+    
+    // คืนค่าหน้าจอกลับมา
+    element.style.border = '1px dashed #bbb';
+
+    // ตรวจสอบชนิดอุปกรณ์ของผู้ใช้
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      // 📱 สำหรับมือถือ: เปลี่ยนพื้นที่หน้า Popup เดิมให้เป็นภาพถ่ายสำเร็จรูปทันทีพนักงานกดค้างบันทึกได้เลย 100%
+      const wrap = document.getElementById('modalDynamicContent');
+      wrap.innerHTML = `
+        <div class="barcode-modal-title" style="color: #2f5ea8;">✨ รูปภาพพร้อมบันทึก</div>
+        <p style="font-size: 13px; color: #555; margin-bottom: 14px; padding: 0 10px;">
+          แตะนิ้วค้างไว้ที่ตัวฉลากด้านล่าง แล้วเลือก <b>"บันทึกรูปภาพ" (Save Image)</b> เพื่อเซฟเข้า Camera Roll ครับ
+        </p>
+        
+        <div style="margin-bottom: 18px; display: flex; justify-content: center;">
+          <img src="${imageData}" style="width: 100%; max-width: 260px; border: 1px solid #e0e0e0; box-shadow: 0 4px 14px rgba(0,0,0,0.1); border-radius: 6px;" />
+        </div>
+
+        <button class="btn-save-jpeg" style="background-color: #666;" onclick="closeBarcodeModal()">เสร็จสิ้น</button>
+      `;
+    } else {
+      // 💻 สำหรับคอมพิวเตอร์: ให้สั่งดาวน์โหลด Auto-Downloader ลงเครื่องทันทีแบบดั้งเดิม
+      const link = document.createElement('a');
+      link.download = `label-${currentActiveCode}.jpg`;
+      link.href = imageData; 
+      link.click();
+    }
+
+  }).catch(err => {
+    console.error("Error generating image asset:", err);
+    element.style.border = '1px dashed #bbb';
+  });
 }
 
 /* =========================
