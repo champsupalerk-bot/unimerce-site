@@ -355,24 +355,24 @@ tbody tr:hover{
   box-sizing: border-box;
 }
 .barcode-modal-title {
-  margin: 0 0 16px 0;
+  margin: 0 0 12px 0;
   font-size: 16px;
   font-weight: bold;
-  color: #333;
+  color: #2f5ea8;
+}
+
+/* ซ่อนกล่องแปลงภาพดิบ ไม่ให้พนักงานเห็นรอยต่อตอนสลับร่าง */
+#hiddenStickerWrapper {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
 }
 
 /* อัตราส่วนกล่องจำลองป้ายขนาด 30x20mm */
-.sticker-preview-box {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
 .actual-sticker-target {
   width: 300px;
   height: 200px;
   background: #ffffff;
-  border: 1px dashed #bbb; 
-  padding: 12px 14px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -380,6 +380,7 @@ tbody tr:hover{
   text-align: left;
   font-family: Arial, sans-serif;
   color: #000000;
+  padding: 12px 14px;
 }
 .sticker-p-name {
   font-size: 14px;
@@ -405,7 +406,7 @@ tbody tr:hover{
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  font-size: 10px;
+  font-size: 12px; /* 👈 ขยายขนาดแถวล่างขึ้นมาลดช่องว่างตามบรีฟ */
   font-weight: bold;
 }
 .sticker-web-url {
@@ -415,31 +416,15 @@ tbody tr:hover{
   color: #555;
 }
 
-/* ปุ่มบันทึก JPEG ขนาดใหญ่ */
-.btn-save-jpeg {
-  background-color: #2f5ea8;
-  color: #fff;
-  border: none;
-  padding: 14px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 10px;
-  width: 100%;
-  cursor: pointer;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 12px rgba(47, 94, 168, 0.2);
-  transition: background 0.2s;
-}
-.btn-save-jpeg:hover {
-  background-color: #214478;
-}
 .btn-cancel-modal {
   background: none;
   border: none;
   color: #666;
-  font-size: 14px;
+  font-size: 15px;
   cursor: pointer;
   text-decoration: underline;
+  margin-top: 5px;
+  padding: 10px;
 }
 
 /* =========================
@@ -539,9 +524,28 @@ tbody tr:hover{
 
 </div>
 
+<div id="hiddenStickerWrapper">
+  <div id="stickerTarget" class="actual-sticker-target">
+    <div id="lblProductName" class="sticker-p-name"></div>
+    <div class="sticker-barcode-area">
+      <svg id="barcodeSvgCanvas"></svg>
+    </div>
+    <div class="sticker-footer-row">
+      <span class="sticker-web-url">www.unimercegroup.com</span>
+      <span id="lblLocationField" class="sticker-location-field"></span>
+    </div>
+  </div>
+</div>
+
 <div id="barcodeModal" class="barcode-modal-overlay" onclick="closeModalOnOutsideClick(event)">
-  <div class="barcode-modal-content" id="modalDynamicContent">
-     </div>
+  <div class="barcode-modal-content">
+    <div class="barcode-modal-title">แตะค้างที่ป้ายเพื่อบันทึก</div>
+    
+    <div style="margin: 15px 0 20px 0; display: flex; justify-content: center;" id="resultImageContainer">
+       </div>
+
+    <button class="btn-cancel-modal" onclick="closeBarcodeModal()">Close</button>
+  </div>
 </div>
 
 <div id="toTop">↑</div>
@@ -764,51 +768,59 @@ function copyRowText(rowElement, event) {
 }
 
 /* =========================
-   BARCODE POPUP LOGIC FUNCTIONS
+   BARCODE POPUP LOGIC FUNCTIONS (เปิดปุ๊บ แปลงภาพปั๊บ เบื้องหลังทันที)
 ========================= */
-let currentActiveCode = "";
-
 function openBarcodeModal(productName, productCode, event) {
   if(event) event.stopPropagation();
-  currentActiveCode = productCode;
-
-  // รีเซ็ตโครงสร้างเนื้อหา Popup กลับเป็นฉลากสดสำหรับเตรียมประมวลผลทุกครั้งที่เปิด
-  const wrap = document.getElementById('modalDynamicContent');
-  wrap.innerHTML = `
-    <div class="barcode-modal-title">Ready to Print Label</div>
-    
-    <div class="sticker-preview-box">
-      <div id="stickerTarget" class="actual-sticker-target">
-        <div id="lblProductName" class="sticker-p-name"></div>
-        <div class="sticker-barcode-area">
-          <svg id="barcodeSvgCanvas"></svg>
-        </div>
-        <div class="sticker-footer-row">
-          <span class="sticker-web-url">www.unimercegroup.com</span>
-          <span id="lblLocationField" class="sticker-location-field"></span>
-        </div>
-      </div>
-    </div>
-
-    <button class="btn-save-jpeg" onclick="generateJpegInPlace()">Save to JPEG</button>
-    <br>
-    <button class="btn-cancel-modal" onclick="closeBarcodeModal()">Cancel</button>
-  `;
   
+  // 1. นำข้อมูลไปใส่ในกล่องลับ (Hidden Target) เพื่อเตรียมวาดบาร์โค้ด
   document.getElementById('lblProductName').innerText = productName;
   document.getElementById('lblLocationField').innerText = ""; 
 
+  // 2. วาดบาร์โค้ดพร้อมปรับขนาดตัวหนังสือ (Item Code) ให้ใหญ่ขึ้นชัดเจน (fontSize: 20) ไม่ปรับ Bold
   JsBarcode("#barcodeSvgCanvas", productCode, {
     format: "CODE128",
-    width: 2.2,   
-    height: 70,   
+    width: 2.3,   
+    height: 65,   
     displayValue: true, 
-    fontSize: 14,
-    fontOptions: "bold",
+    fontSize: 20, /* 👈 ปรับเพิ่มขนาดฟอนต์ตัวเลขให้ใหญ่เต็มที่สายตาผู้ใหญ่ชัดเจน */
+    fontOptions: "", /* 👈 ลบค่าความหนาออกตามบรีฟ */
     margin: 0
   });
 
-  document.getElementById('barcodeModal').style.display = 'flex';
+  // 3. เรียกใช้งาน html2canvas ทำการ Snap ภาพป้ายแบบเสี้ยววินาที โดยระบบคอมพิวเตอร์จะดาวน์โหลดอัตโนมัติ แต่มือถือจะสร้างรูปให้กดค้างได้เลย
+  const element = document.getElementById('stickerTarget');
+  
+  // เคลียร์ผลลัพธ์เก่าก่อนพิมพ์ภาพถัดไป
+  const imgContainer = document.getElementById('resultImageContainer');
+  imgContainer.innerHTML = "<span style='font-size:13px; color:#aaa;'>กำลังประมวลผลฉลาก...</span>";
+
+  html2canvas(element, {
+    backgroundColor: "#ffffff",
+    scale: 3, // ความละเอียดสูง คมชัดเวลาสแกนและพิมพ์ฉลาก
+    logging: false
+  }).then(canvas => {
+    const imageData = canvas.toDataURL('image/jpeg', 1.0);
+    
+    // ตรวจสอบชนิดอุปกรณ์ของผู้ใช้
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      // 📱 สำหรับมือถือ: เจนรูปใส่แทนที่ให้พนักงานกดค้างเซฟได้ตั้งแต่ลืมตาตื่นทันที!
+      imgContainer.innerHTML = `<img src="${imageData}" style="width: 100%; max-width: 270px; border: 1px solid #e0e0e0; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 6px;" />`;
+      // แสดง Popup กล่องข้อความ
+      document.getElementById('barcodeModal').style.display = 'flex';
+    } else {
+      // 💻 สำหรับคอมพิวเตอร์: ทำการสั่งโหลด Auto-Downloader ลงเครื่องคอมให้ทันทีโดยไม่ต้องเปิดหน้าต่างใหม่
+      const link = document.createElement('a');
+      link.download = `label-${productCode}.jpg`;
+      link.href = imageData; 
+      link.click();
+    }
+  }).catch(err => {
+    console.error("Error automatic snapshot creation:", err);
+    imgContainer.innerHTML = "<span style='color:red;'>เกิดข้อผิดพลาดในการโหลดรูปภาพ</span>";
+  });
 }
 
 function closeBarcodeModal() {
@@ -820,55 +832,6 @@ function closeModalOnOutsideClick(event) {
   if (event.target === modalOverlay) {
     closeBarcodeModal();
   }
-}
-
-/* =========================
-   📸 ฟังก์ชันแปลงฉลากเป็นภาพ JPEG สดๆ คมชัดสูงในหน้าเดิม 
-========================= */
-function generateJpegInPlace() {
-  const element = document.getElementById('stickerTarget');
-  element.style.border = 'none'; // เอาเส้นประออกเพื่อให้ภาพคลีนที่สุด
-
-  html2canvas(element, {
-    backgroundColor: "#ffffff",
-    scale: 3, // ขยายความชัด 3 เท่า เพื่อให้หัวพิมพ์ความร้อนสแกนบาร์โค้ดได้ง่าย ไม่แตกเป็นเม็ดพิกเซล
-    logging: false
-  }).then(canvas => {
-    const imageData = canvas.toDataURL('image/jpeg', 1.0);
-    
-    // คืนค่าหน้าจอกลับมา
-    element.style.border = '1px dashed #bbb';
-
-    // ตรวจสอบชนิดอุปกรณ์ของผู้ใช้
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    if (isMobile) {
-      // 📱 สำหรับมือถือ: เปลี่ยนพื้นที่หน้า Popup เดิมให้เป็นภาพถ่ายสำเร็จรูปทันทีพนักงานกดค้างบันทึกได้เลย 100%
-      const wrap = document.getElementById('modalDynamicContent');
-      wrap.innerHTML = `
-        <div class="barcode-modal-title" style="color: #2f5ea8;">✨ รูปภาพพร้อมบันทึก</div>
-        <p style="font-size: 13px; color: #555; margin-bottom: 14px; padding: 0 10px;">
-          แตะนิ้วค้างไว้ที่ตัวฉลากด้านล่าง แล้วเลือก <b>"บันทึกรูปภาพ" (Save Image)</b> เพื่อเซฟเข้า Camera Roll ครับ
-        </p>
-        
-        <div style="margin-bottom: 18px; display: flex; justify-content: center;">
-          <img src="${imageData}" style="width: 100%; max-width: 260px; border: 1px solid #e0e0e0; box-shadow: 0 4px 14px rgba(0,0,0,0.1); border-radius: 6px;" />
-        </div>
-
-        <button class="btn-save-jpeg" style="background-color: #666;" onclick="closeBarcodeModal()">เสร็จสิ้น</button>
-      `;
-    } else {
-      // 💻 สำหรับคอมพิวเตอร์: ให้สั่งดาวน์โหลด Auto-Downloader ลงเครื่องทันทีแบบดั้งเดิม
-      const link = document.createElement('a');
-      link.download = `label-${currentActiveCode}.jpg`;
-      link.href = imageData; 
-      link.click();
-    }
-
-  }).catch(err => {
-    console.error("Error generating image asset:", err);
-    element.style.border = '1px dashed #bbb';
-  });
 }
 
 /* =========================
