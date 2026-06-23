@@ -333,7 +333,7 @@ tbody tr:hover{
 }
 
 /* =========================
-   BARCODE SHORTCUT BUTTON (อัปเดต: ใช้ inline-flex เพื่อคุม SVG ให้อยู่กึ่งกลางพอดี)
+   BARCODE SHORTCUT BUTTON (อัปเดต: ใช้ช่องไฟสเปซแบบกระจายสวยงามล้ำๆ)
 ========================= */
 .btn-barcode-trigger {
   background: none;
@@ -389,11 +389,13 @@ tbody tr:hover{
   justify-content: center;
   margin-bottom: 20px;
 }
+
+/* 🖼️ กล่องเป้าหมายสติกเกอร์ (แบบเดิมแท้ๆ ที่พนักงานเปิดมาแล้วกดค้างเซฟภาพได้เลย) */
 .actual-sticker-target {
   width: 300px;
   height: 200px;
   background: #ffffff;
-  border: 1px dashed #bbb; /* เส้นประแสดงขอบเขตสำหรับสายตา (ตอนบันทึกภาพจะไม่ติดไป) */
+  border: 1px dashed #bbb; /* เส้นประแสดงขอบเขตหน้าจอ */
   padding: 12px 14px;
   box-sizing: border-box;
   display: flex;
@@ -402,6 +404,8 @@ tbody tr:hover{
   text-align: left;
   font-family: Arial, sans-serif;
   color: #000000;
+  user-select: element; 
+  -webkit-user-select: element; /* เปิดให้ iOS ยอมรับการกดค้างเพื่อ Save ตัวบล็อกเนื้อหาข้างใน */
 }
 .sticker-p-name {
   font-size: 14px;
@@ -437,8 +441,8 @@ tbody tr:hover{
   color: #555;
 }
 
-/* ปุ่มบันทึกขนาดใหญ่แบบ Mobile Friendly */
-.btn-save-jpeg {
+/* 🖨️ ปุ่มสั่งพริ้นต์สไตล์โมเดิร์นล้ำๆ สำหรับเครื่องพิมพ์สติกเกอร์ความร้อน */
+.btn-print-hardware {
   background-color: #2f5ea8;
   color: #fff;
   border: none;
@@ -452,7 +456,7 @@ tbody tr:hover{
   box-shadow: 0 4px 12px rgba(47, 94, 168, 0.2);
   transition: background 0.2s;
 }
-.btn-save-jpeg:hover {
+.btn-print-hardware:hover {
   background-color: #214478;
 }
 .btn-cancel-modal {
@@ -462,6 +466,51 @@ tbody tr:hover{
   font-size: 14px;
   cursor: pointer;
   text-decoration: underline;
+}
+
+/* =========================
+   🖨️ CRITICAL FIX: PRINT MEDIA RULES 
+   (ลบล้าง Text และองค์ประกอบเว็บภายนอกออกทั้งหมดตอนสั่ง Print ส่งเฉพาะบาร์โค้ดลงเครื่องพิมพ์ฉลาก)
+========================= */
+@media print {
+  /* ซ่อนโครงสร้างทุกอย่างที่อยู่บนหน้าจอทั้งหมด */
+  body, html, .container, #header-placeholder, .barcode-modal-overlay, .barcode-modal-content, button, .barcode-modal-title {
+    visibility: hidden !important;
+    background: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* ดึงเฉพาะเป้าหมายสติกเกอร์ให้ออกมาพิมพ์ตัวเดียวเดี่ยวๆ */
+  #stickerTarget, #stickerTarget * {
+    visibility: visible !important;
+  }
+  
+  /* ปรับแต่งตำแหน่งและขนาดหน้ากระดาษของเครื่องพิมพ์สติกเกอร์ฉลากด่วน (สัดส่วน 30x20mm พอดีเป๊ะ) */
+  #stickerTarget {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    margin: 0 !important;
+    padding: 1.5mm 2.5mm !important;
+    width: 30mm !important;
+    height: 20mm !important;
+    border: none !important; /* ลบเส้นประ Dashed ออกไม่ให้ติดไปในงานพิมพ์ */
+    box-sizing: border-box !important;
+    background: #fff !important;
+    page-break-inside: avoid;
+  }
+  
+  /* บังคับสัดส่วนขนาดตัวอักษรให้เล็กและคมชัดระดับงานสิ่งพิมพ์ */
+  .sticker-p-name {
+    font-size: 8.5pt !important;
+    line-height: 1.15 !important;
+  }
+  .sticker-barcode-area svg {
+    max-height: 9.5mm !important;
+  }
+  .sticker-footer-row {
+    font-size: 5.5pt !important;
+  }
 }
 
 /* =========================
@@ -486,7 +535,6 @@ tbody tr:hover{
 <script src="/analytics.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 </head>
 
@@ -578,7 +626,7 @@ tbody tr:hover{
       </div>
     </div>
 
-    <button class="btn-save-jpeg" onclick="saveStickerToDevice()">Save to JPEG</button>
+    <button class="btn-print-hardware" onclick="triggerHardwarePrint()">Print Label</button>
     <br>
     <button class="btn-cancel-modal" onclick="closeBarcodeModal()">Cancel</button>
   </div>
@@ -727,7 +775,7 @@ function applySortOnFiltered(){
 }
 
 /* =========================
-   RENDER & TAP-TO-COPY (อัปเดต: บรรจุสัญลักษณ์ปุ่ม SVG บาร์โค้ดสากลตัวใหม่เรียบร้อย)
+   RENDER & TAP-TO-COPY (บรรจุสัญลักษณ์ปุ่มคิวอาร์สแกนช่องไฟสวยงาม)
 ========================= */
 function renderTable(data){
   const tbody = document.getElementById("table-body");
@@ -806,12 +854,8 @@ function copyRowText(rowElement, event) {
 /* =========================
    BARCODE POPUP LOGIC FUNCTIONS
 ========================= */
-let activeProductCodeStr = "";
-
 function openBarcodeModal(productName, productCode, event) {
   if(event) event.stopPropagation();
-
-  activeProductCodeStr = productCode;
   
   document.getElementById('lblProductName').innerText = productName;
   document.getElementById('lblLocationField').innerText = ""; 
@@ -840,51 +884,11 @@ function closeModalOnOutsideClick(event) {
   }
 }
 
-function saveStickerToDevice() {
-  const element = document.getElementById('stickerTarget');
-  
-  // ซ่อนเส้นประชั่วคราวเพื่อให้ภาพเนียนสวย
-  element.style.border = 'none';
-
-  html2canvas(element, {
-    backgroundColor: "#ffffff",
-    scale: 3, // ความคมชัดสูง 3 เท่า เส้นบาร์โค้ดไม่แตก
-    logging: false
-  }).then(canvas => {
-    const imageData = canvas.toDataURL('image/jpeg', 1.0);
-    
-    // คืนค่าเส้นประบนหน้าจอดังเดิม
-    element.style.border = '1px dashed #bbb';
-
-    // ตรวจสอบว่าเป็นอุปกรณ์พกพา (Mobile/Tablet) หรือไม่
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    if (isMobile) {
-      // 📱 สำหรับมือถือ: เปลี่ยนเนื้อหาในกล่อง Popup เดิมให้กลายเป็นรูปภาพสำหรับ "กดค้างเพื่อบันทึก" ทันที
-      const modalContent = document.querySelector('.barcode-modal-content');
-      
-      modalContent.innerHTML = `
-        <div class="barcode-modal-title" style="color: #2f5ea8;">✨ รูปภาพพร้อมบันทึก</div>
-        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">แตะนิ้วค้างไว้ที่รูปด้านล่าง แล้วเลือก <b>"บันทึกรูปภาพ" (Save Image)</b> เพื่อเซฟลงเครื่องได้เลยครับ</p>
-        
-        <div style="margin-bottom: 16px; display: flex; justify-content: center;">
-          <img src="${imageData}" style="width: 100%; max-width: 260px; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 6px;" />
-        </div>
-
-        <button class="btn-save-jpeg" style="background-color: #666;" onclick="closeBarcodeModal(); location.reload();">ปิดหน้าต่างนี้</button>
-      `;
-    } else {
-      // 💻 สำหรับคอมพิวเตอร์: สั่งดาวน์โหลดอัตโนมัติลงเครื่องทันทีเหมือนเดิม
-      const link = document.createElement('a');
-      link.download = `label-${activeProductCodeStr}.jpg`;
-      link.href = imageData; 
-      link.click();
-    }
-
-  }).catch(err => {
-    console.error("Error generating image asset:", err);
-    element.style.border = '1px dashed #bbb';
-  });
+/* =========================
+   🚀 ฟังก์ชันสั่งพิมพ์ออกเครื่องพิมพ์ฮาร์ดแวร์ลาเบลสติกเกอร์ด่วน
+========================= */
+function triggerHardwarePrint() {
+  window.print(); // สั่งพริ้นต์ผ่านไดรเวอร์ระบบปฏิบัติการทันที `@media print` จะเคลียร์สิ่งกีดขวางให้สะอาดกริ๊บ
 }
 
 /* =========================
