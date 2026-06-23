@@ -678,6 +678,7 @@ body {
 
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="barcode-label-engine.js"></script>
 
 </head>
 <body>
@@ -1123,60 +1124,8 @@ window.copyOrderTextToClipboard = function() {
 
 /* ==========================================
    ADDED FUNCTION: BARCODE CORE ENGINE
+   (ย้าย Logic บาร์โค้ดไปทำงานผ่านไฟล์ module barcode-label-engine.js แล้วครับ)
    ========================================== */
-window.openBarcodeGenModal = function(productName, productCode, locationField, event) {
-  if(event) event.stopPropagation();
-  
-  document.getElementById('lblProductName').innerText = productName;
-  document.getElementById('lblLocationField').innerText = locationField || "";
-
-  JsBarcode("#barcodeSvgCanvas", productCode, {
-    format: "CODE128",
-    width: 2.3,   
-    height: 65,   
-    displayValue: true, 
-    fontSize: 20, 
-    fontOptions: "", 
-    margin: 0
-  });
-
-  const element = document.getElementById('stickerTarget');
-  const imgContainer = document.getElementById('resultImageContainer');
-  imgContainer.innerHTML = "<span style='font-size:13px; color:#aaa;'>กำลังประมวลผลฉลาก...</span>";
-
-  html2canvas(element, {
-    backgroundColor: "#ffffff",
-    scale: 3, 
-    logging: false
-  }).then(canvas => {
-    const imageData = canvas.toDataURL('image/jpeg', 1.0);
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    if (isMobile) {
-      imgContainer.innerHTML = `<img src="${imageData}" style="width: 100%; max-width: 270px; border: 1px solid #e0e0e0; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 6px;" />`;
-      document.getElementById('barcodeModal').style.display = 'flex';
-    } else {
-      const link = document.createElement('a');
-      link.download = `label-${productCode}.jpg`;
-      link.href = imageData; 
-      link.click();
-    }
-  }).catch(err => {
-    console.error("Error standard automatic snapshot creation:", err);
-    imgContainer.innerHTML = "<span style='color:red;'>เกิดข้อผิดพลาดในการโหลดรูปภาพ</span>";
-  });
-}
-
-window.closeBarcodeModal = function() {
-  document.getElementById('barcodeModal').style.display = 'none';
-}
-
-window.closeBarcodeModalOnOutsideClick = function(event) {
-  const modalOverlay = document.getElementById('barcodeModal');
-  if (event.target === modalOverlay) {
-    closeBarcodeModal();
-  }
-}
 
 function showError(message) {
   document.getElementById("main-content").innerHTML = `
