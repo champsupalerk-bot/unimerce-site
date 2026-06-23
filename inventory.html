@@ -280,30 +280,6 @@ tbody tr:hover{
   display: none;
 }
 
-/* =========================
-   FLOAT TOP BUTTON
-========================= */
-#toTop{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:#111;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  font-size:18px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.2);
-}
-
-#toTop:hover{
-  transform:translateY(-3px);
-}
-
 .sort-arrow{
   font-size:10px;
   margin-left:6px;
@@ -406,7 +382,7 @@ tbody tr:hover{
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  font-size: 12px; /* 👈 ขยายขนาดแถวล่างขึ้นมาลดช่องว่างตามบรีฟ */
+  font-size: 12px; 
   font-weight: bold;
 }
 .sticker-web-url {
@@ -481,8 +457,7 @@ tbody tr:hover{
       <option value="StockStatus">StockStatus</option>
       <option value="จำนวนต่อลัง">จำนวนต่อลัง</option>
       <option value="INDEX2_BRAND">Brand</option>
-      <option value="GRDate">GRDate</option>
-      <option value="ReorderSTATUS">ReorderSTATUS</option>
+      <option value="Location">Location</option> <option value="ReorderSTATUS">ReorderSTATUS</option>
     </select>
   </div>
 
@@ -547,8 +522,6 @@ tbody tr:hover{
     <button class="btn-cancel-modal" onclick="closeBarcodeModal()">Close</button>
   </div>
 </div>
-
-<div id="toTop">↑</div>
 
 <script src="config.js"></script>
 
@@ -768,50 +741,41 @@ function copyRowText(rowElement, event) {
 }
 
 /* =========================
-   BARCODE POPUP LOGIC FUNCTIONS (เปิดปุ๊บ แปลงภาพปั๊บ เบื้องหลังทันที)
+   BARCODE POPUP LOGIC FUNCTIONS
 ========================= */
 function openBarcodeModal(productName, productCode, event) {
   if(event) event.stopPropagation();
   
-  // 1. นำข้อมูลไปใส่ในกล่องลับ (Hidden Target) เพื่อเตรียมวาดบาร์โค้ด
   document.getElementById('lblProductName').innerText = productName;
   document.getElementById('lblLocationField').innerText = ""; 
 
-  // 2. วาดบาร์โค้ดพร้อมปรับขนาดตัวหนังสือ (Item Code) ให้ใหญ่ขึ้นชัดเจน (fontSize: 20) ไม่ปรับ Bold
   JsBarcode("#barcodeSvgCanvas", productCode, {
     format: "CODE128",
     width: 2.3,   
     height: 65,   
     displayValue: true, 
-    fontSize: 20, /* 👈 ปรับเพิ่มขนาดฟอนต์ตัวเลขให้ใหญ่เต็มที่สายตาผู้ใหญ่ชัดเจน */
-    fontOptions: "", /* 👈 ลบค่าความหนาออกตามบรีฟ */
+    fontSize: 20, 
+    fontOptions: "", 
     margin: 0
   });
 
-  // 3. เรียกใช้งาน html2canvas ทำการ Snap ภาพป้ายแบบเสี้ยววินาที โดยระบบคอมพิวเตอร์จะดาวน์โหลดอัตโนมัติ แต่มือถือจะสร้างรูปให้กดค้างได้เลย
   const element = document.getElementById('stickerTarget');
-  
-  // เคลียร์ผลลัพธ์เก่าก่อนพิมพ์ภาพถัดไป
   const imgContainer = document.getElementById('resultImageContainer');
   imgContainer.innerHTML = "<span style='font-size:13px; color:#aaa;'>กำลังประมวลผลฉลาก...</span>";
 
   html2canvas(element, {
     backgroundColor: "#ffffff",
-    scale: 3, // ความละเอียดสูง คมชัดเวลาสแกนและพิมพ์ฉลาก
+    scale: 3, 
     logging: false
   }).then(canvas => {
     const imageData = canvas.toDataURL('image/jpeg', 1.0);
     
-    // ตรวจสอบชนิดอุปกรณ์ของผู้ใช้
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
     if (isMobile) {
-      // 📱 สำหรับมือถือ: เจนรูปใส่แทนที่ให้พนักงานกดค้างเซฟได้ตั้งแต่ลืมตาตื่นทันที!
       imgContainer.innerHTML = `<img src="${imageData}" style="width: 100%; max-width: 270px; border: 1px solid #e0e0e0; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 6px;" />`;
-      // แสดง Popup กล่องข้อความ
       document.getElementById('barcodeModal').style.display = 'flex';
     } else {
-      // 💻 สำหรับคอมพิวเตอร์: ทำการสั่งโหลด Auto-Downloader ลงเครื่องคอมให้ทันทีโดยไม่ต้องเปิดหน้าต่างใหม่
       const link = document.createElement('a');
       link.download = `label-${productCode}.jpg`;
       link.href = imageData; 
@@ -879,13 +843,6 @@ window.addEventListener("load", () => {
 
   loadTable();
 });
-
-/* =========================
-   TOP BUTTON
-========================= */
-document.getElementById("toTop").onclick = () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
 
 /* =========================
    HAMBURGER MENU
