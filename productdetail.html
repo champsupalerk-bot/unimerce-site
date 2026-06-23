@@ -5,7 +5,7 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico?v=99" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title id="meta-title">UNIMERCE | Product Detail</title>
-<meta id="meta-desc" name="description" content="ดูรายละเอียดสินค้า ข้อมูลทางเทคนิค และสั่งซื้อสินค้าจากบริษัท UNIMERCE" />
+<meta id="meta-desc" name="description" content="ดูรายละเอียดสินค้า ข้อมูลทางเทคนิค และสั่งซื้อผ่านระบบอีเมลของ UNIMERCE GROUP" />
 <meta name="keywords" content="UNIMERCE, เครื่องกรองน้ำ, เครื่องพ่นอโรมา, เครื่องมือวัดคุณภาพน้ำ, Vitev Thailand, รายละเอียดสินค้า, เครื่องกระจายกลิ่น" />
 <meta name="author" content="UNIMERCE GROUP" />
 <meta name="robots" content="index, follow" />
@@ -161,14 +161,14 @@ body {
 
 .meta-table td {
   padding: 8px 0;
-  font-size: 13.5px;
+  font-size: 18px;
   border-bottom: 1px dashed #eee;
   vertical-align: middle;
 }
 
 .meta-table td.lbl {
   color: #777;
-  width: 100px;
+  width: 120px;
 }
 
 .meta-table td.val {
@@ -458,13 +458,13 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 2px 4px;
-  margin-left: 6px;
+  padding: 4px 6px;
+  margin-left: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   vertical-align: middle;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: background 0.1s;
 }
 .btn-barcode-trigger:hover {
@@ -861,7 +861,7 @@ async function loadProductDetail() {
           <td class="val">
             <span>${product.Item_Code || '-'}</span>
             <button class="btn-barcode-trigger" onclick="openBarcodeGenModal('${safeDesc}', '${safeItemCode}', '${safeLocation}', event)" title="Generate Barcode">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2f5ea8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#2f5ea8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
                 <line x1="6" y1="7" x2="6" y2="17" stroke-width="2.5" />
                 <line x1="9.5" y1="7" x2="9.5" y2="17" stroke-width="1" />
                 <line x1="12" y1="7" x2="12" y2="17" stroke-width="2" />
