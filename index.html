@@ -49,15 +49,18 @@ body{
   overflow-x:hidden;
 }
 
-/* subtle background */
+/* [UPDATED SECTION] ปรับปรุงกลไกภาพพื้นหลังให้รองรับ Mobile Responsive & Center Crop */
 .bg{
   position:fixed;
-  width:700px;
-  height:700px;
-  background:radial-gradient(circle, rgba(0,0,0,0.04), transparent 70%);
-  top:-250px;
-  right:-250px;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
   z-index:-1;
+  background-image: url('https://res.cloudinary.com/dzgaej1wo/image/upload/v1782643244/BG001_-_lite_grcb5q.jpg');
+  background-size: cover;        /* ครอปตัดสัดส่วนภาพอัตโนมัติ ไม่บิดเบี้ยว */
+  background-position: center;   /* ล็อกศูนย์กลางจุดโฟกัสของภาพ */
+  background-repeat: no-repeat;  /* ห้ามภาพซ้ำ */
 }
 
 /* =========================
@@ -948,7 +951,7 @@ async function loadRecommendedProducts() {
   } catch(e) {
     console.error(e);
     document.getElementById("recommend-grid").innerHTML =
-      '<div class="loading">Failed to master recommended products.</div>';
+      '<div class=\"loading\">Failed to master recommended products.</div>';
   }
 }
 
