@@ -49,18 +49,19 @@ body{
   overflow-x:hidden;
 }
 
-/* [UPDATED SECTION] ปรับปรุงกลไกภาพพื้นหลังให้รองรับ Mobile Responsive & Center Crop */
+/* [UPDATED SECTION] เพิ่มมิติความลึกด้วยสถาปัตยกรรม Parallax Scrolling และรองรับ Mobile Responsive */
 .bg{
   position:fixed;
-  top:0;
+  top:-10vh;                    /* ดันขอบภาพขึ้นด้านบนเล็กน้อยเพื่อซ่อน Overscan Area */
   left:0;
   width:100%;
-  height:100%;
+  height:120vh;                 /* ขยายความสูงเพิ่ม 20% เพื่อรองรับการเหลื่อมตำแหน่งโดยขอบไม่หลุด */
   z-index:-1;
   background-image: url('https://res.cloudinary.com/dzgaej1wo/image/upload/v1782643244/BG001_-_lite_grcb5q.jpg');
   background-size: cover;        /* ครอปตัดสัดส่วนภาพอัตโนมัติ ไม่บิดเบี้ยว */
   background-position: center;   /* ล็อกศูนย์กลางจุดโฟกัสของภาพ */
   background-repeat: no-repeat;  /* ห้ามภาพซ้ำ */
+  will-change: transform;        /* บังคับทำงานบน GPU Hardware Acceleration เพื่อความลื่นไหลสูงสุด */
 }
 
 /* =========================
@@ -884,7 +885,7 @@ function cleanNumber(val) {
 
 async function loadRecommendedProducts() {
   try {
-    // โยกไปเรียกใช้งานศูนย์กลางสคริปต์ฟังก์ชันดึงข้อมูลจากตาราง products 
+    // โโยกไปเรียกใช้งานศูนย์กลางสคริปต์ฟังก์ชันดึงข้อมูลจากตาราง products 
     const rawProducts = await window.supabaseFetch('products');
 
     // กรองและเรียงลำดับเฉพาะ 4 ชิ้นที่กำหนด
@@ -951,11 +952,24 @@ async function loadRecommendedProducts() {
   } catch(e) {
     console.error(e);
     document.getElementById("recommend-grid").innerHTML =
-      '<div class=\"loading\">Failed to master recommended products.</div>';
+      '<div class="loading">Failed to master recommended products.</div>';
   }
 }
 
 window.addEventListener("load", loadRecommendedProducts);
+
+/* ===================================================
+   [NEW CODE] PARALLAX CONTROLLER (สร้างเอฟเฟกต์มิติความลึกฉากหลัง)
+=================================================== */
+window.addEventListener("scroll", () => {
+  const scrolled = window.scrollY;
+  const bgLayer = document.querySelector(".bg");
+  if (bgLayer) {
+    // ค่าอัตราส่วน 0.12 หมายถึงฉากหลังจะเคลื่อนตัวช้ากว่า Foreground ประมาณ 88%
+    // สามารถเพิ่ม-ลดทอนค่านี้ได้ตามความรู้สึกต้องการลึก-ตื้น (แนะนำช่วง 0.08 - 0.15)
+    bgLayer.style.transform = `translateY(${scrolled * 0.12}px)`;
+  }
+});
 
 </script>
 
