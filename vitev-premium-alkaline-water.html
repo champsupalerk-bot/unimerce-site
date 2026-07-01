@@ -9,7 +9,6 @@
     <meta name="keywords" content="น้ำด่าง, น้ำแร่, น้ำอัลคาไลน์, น้ำแร่อัลคาไลน์, เครื่องกรองน้ำ, เครื่องกรองน้ำRO, น้ำRO, ต้านอนุมูลอิสระ, น้ำดื่ม">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://unimercegroup.com/vitev-premium-alkaline-water">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -41,13 +40,11 @@
         --pure-white: #FFFFFF;
         --transition-smooth: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     }
-
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
     }
-
     body {
         font-family: 'Inter', 'Noto Sans Thai', sans-serif;
         background-color: var(--pure-white);
@@ -57,20 +54,17 @@
         overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
     }
-
     .container {
         width: 100%;
         max-width: 1000px;
         margin: 0 auto;
         padding: 0 20px;
     }
-
     img {
         max-width: 100%;
         height: auto;
         display: block;
     }
-
     .global-header-layout {
         width: 100%;
         position: fixed;
@@ -78,11 +72,9 @@
         left: 0;
         z-index: 1000;
     }
-
     /* ===========================
-       HERO (UNCHANGED — GOOD)
+       HERO
     =========================== */
-
     .full-width-hero {
         position: relative;
         width: 100%;
@@ -93,73 +85,61 @@
         align-items: center;
         justify-content: center;
     }
-
-    .full-width-hero img {
+    .full-width-hero img.hero-banner {
         width: 100%;
         height: 60vh;
         object-fit: cover;
     }
-
     /* ===========================
-       ONLY FIX: OVERLAY UX
+       HERO OVERLAY (logo + tagline)
     =========================== */
-
     .hero-overlay{
         position:absolute;
         inset:0;
-
         display:flex;
         flex-direction:column;
-
         align-items:center;
-
-        /* 🔥 FIX 1: prevent mobile overflow + top bias */
         justify-content:center;
-        transform: translateY(-6vh);
-
         text-align:center;
-
-        /* 🔥 FIX 2: remove vh push that causes mobile overflow */
-        padding-top:0;
-
+        padding:0 20px;
         pointer-events:none;
+        background: linear-gradient(180deg, rgba(21,37,53,0.10) 0%, rgba(21,37,53,0) 45%, rgba(21,37,53,0.40) 100%);
     }
-
     .hero-logo{
-        width: 160px;   /* mobile default (safe) */
-        max-width:38vw;
+        width: 210px;
+        max-width: 40vw;
         height:auto;
-
-        /* 🔥 FIX: scale slightly more stable on mobile */
-        min-width: 60px;
-
-        filter:drop-shadow(0 3px 16px rgba(0,0,0,.32));
+        min-width: 90px;
+        filter: drop-shadow(0 4px 22px rgba(0,0,0,.40));
+        margin-bottom: 22px;
     }
-
+    .hero-tagline-divider{
+        width: 36px;
+        height: 2px;
+        background: rgba(255,255,255,.55);
+        margin-bottom: 18px;
+    }
     .hero-tagline{
-        margin-top:12px;
-
         font-family:'Kanit',sans-serif;
-        font-weight:200;
-
-        /* 🔥 FIX: stop tiny text on mobile + stop overflow */
-        font-size: 13px;
-
-        line-height:1.4;
-
+        font-weight:300;
+        font-size: 15px;
+        line-height:1.7;
         text-align:center;
         color:#fff;
-
-        letter-spacing:.2px;
-
-        text-shadow:0 2px 8px rgba(0,0,0,.45);
-
-        /* 🔥 FIX: prevent edge overflow */
-        padding:0 16px;
-
-        max-width: 90%;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        text-shadow:0 2px 10px rgba(0,0,0,.5);
+        max-width: 480px;
     }
-
+    .hero-tagline em{
+        display:block;
+        margin-top:8px;
+        font-style: italic;
+        font-weight: 200;
+        text-transform:none;
+        letter-spacing: .3px;
+        opacity:.9;
+    }
     /* --- Navigation Bar --- */
     .tool-sticky-nav {
         background-color: var(--pure-white);
@@ -168,14 +148,12 @@
         top: 60px;
         z-index: 999;
     }
-
     .nav-row-wrapper {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 10px;
         padding: 12px 0;
     }
-
     .nav-btn-item {
         display: flex;
         align-items: center;
@@ -190,18 +168,15 @@
         transition: var(--transition-smooth);
         cursor: pointer;
     }
-
     .nav-btn-item:hover {
         background-color: var(--bg-tint);
         border-color: var(--accent-blue);
     }
-
     .nav-btn-item.active {
         background-color: var(--primary-navy);
         color: var(--pure-white);
         border-color: var(--primary-navy);
     }
-
     .nav-btn-dot {
         font-size: 12px;
         font-weight: 700;
@@ -215,12 +190,10 @@
         justify-content: center;
         flex-shrink: 0;
     }
-
     .nav-btn-item.active .nav-btn-dot {
         background-color: var(--accent-blue);
         color: var(--pure-white);
     }
-
     .nav-btn-label {
         font-size: 13px;
         font-weight: 500;
@@ -228,23 +201,19 @@
         text-align: center;
         line-height: 1.2;
     }
-
     .content-section {
         padding: 80px 0;
     }
-
     #section-dead-water { background-color: var(--pure-white); }
     #section-why-vitev { background-color: var(--bg-light); }
     #section-pitcher { background-color: var(--pure-white); }
     #section-mineral-stick { background-color: var(--bg-tint); }
-
     .section-big-header {
         display: flex;
         align-items: center;
         gap: 20px;
         margin-bottom: 44px;
     }
-
     .section-giant-circle {
         width: 64px;
         height: 64px;
@@ -259,7 +228,6 @@
         flex-shrink: 0;
         box-shadow: 0 4px 10px rgba(21, 37, 53, 0.15);
     }
-
     .section-title-text {
         font-size: 26px;
         font-weight: 700;
@@ -267,199 +235,132 @@
         letter-spacing: -0.5px;
         line-height: 1.3;
     }
-
     /* ===========================
        EVERYTHING ELSE UNCHANGED
     =========================== */
-
     .hero-inline-box { border-radius: 16px; overflow: hidden; margin-bottom: 40px; }
     .intro-two-col { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: start; }
     .paragraph-block p { margin-bottom: 20px; color: var(--text-dark); text-align: justify; }
-
     .side-warning-card { background-color: var(--bg-light); border-left: 4px solid var(--accent-blue); padding: 24px; border-radius: 0 12px 12px 0; }
     .side-warning-card h4 { color: var(--primary-navy); font-size: 16px; margin-bottom: 10px; font-weight: 600; }
     .side-warning-card p { font-size: 14.5px; color: var(--text-dark); margin: 0; }
-
     .minerals-3col-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 50px; }
-
     .mineral-classic-card { background-color: var(--pure-white); border: 1px solid var(--border-color); border-radius: 14px; padding: 24px; }
-
     .mineral-card-img { border-radius: 8px; overflow: hidden; margin-bottom: 18px; height: 160px; background-color: var(--bg-light); }
     .mineral-card-img img { width: 100%; height: 100%; object-fit: cover; }
-
     .mineral-classic-card h4 { font-size: 18px; color: var(--primary-navy); margin-bottom: 10px; }
-    .mineral-classic-card p { font-size: 14.5px; color: var(--text-dark); text-align: justify; }
-
+    .mineral-classic-card p { font-size: 14.5px; color: var(--text-dark); text-align: left; }   
     .science-split-row { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; background-color: var(--pure-white); padding: 32px; border-radius: 16px; border: 1px solid var(--border-color); }
-
     .science-split-row h4 { font-size: 20px; color: var(--primary-navy); margin-bottom: 12px; }
     .science-split-row p { font-size: 15px; margin-bottom: 12px; }
-
     .science-graph-img { border-radius: 12px; overflow: hidden; }
-
     .pitcher-3col-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-
     .pitcher-item-card { border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; background-color: var(--pure-white); display: flex; flex-direction: column; }
-
     .pitcher-img-frame { background-color: var(--bg-light); border-radius: 10px; height: 240px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; overflow: hidden; }
-
     .pitcher-img-frame img { max-height: 90%; width: auto; object-fit: contain; }
-
     .pitcher-info-box h4 { font-size: 18px; color: var(--primary-navy); margin-bottom: 6px; }
-
     .pitcher-info-box .badge-label { font-size: 11px; background-color: var(--bg-tint); color: var(--accent-blue); padding: 3px 8px; border-radius: 4px; font-weight: 600; display: inline-block; margin-bottom: 12px; }
-
     .pitcher-brief { font-size: 14.5px; color: var(--text-dark); margin-bottom: 16px; flex-grow: 1; }
-
     .pitcher-specs { list-style: none; border-top: 1px solid var(--border-color); padding-top: 14px; }
-
     .pitcher-specs li { font-size: 13.5px; margin-bottom: 6px; padding-left: 12px; position: relative; }
     .pitcher-specs li::before { content: "•"; color: var(--accent-blue); position: absolute; left: 0; font-weight: bold; }
-
     .stick-split-view { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 40px; margin-bottom: 50px; align-items: center; }
-
     .stick-media-frame { border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; background-color: var(--pure-white); }
-
     .stick-details-box h3 { font-size: 22px; color: var(--primary-navy); margin-bottom: 4px; }
-
     .stick-tagline { font-size: 13.5px; color: var(--accent-blue); font-weight: 600; margin-bottom: 18px; }
-
     .stick-chips-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
-
     .stick-chip-node { background-color: var(--pure-white); padding: 14px; border-radius: 8px; font-size: 13.5px; border: 1px solid var(--border-color); }
-
     .stick-chip-node strong { display: block; color: var(--primary-navy); margin-bottom: 2px; }
-
     .shopee-minimal-link { display: inline-flex; align-items: center; color: var(--primary-navy); text-decoration: none; font-weight: 600; font-size: 15px; border-bottom: 2px solid var(--primary-navy); padding-bottom: 4px; transition: var(--transition-smooth); }
-
     .shopee-minimal-link:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
-
     .flow-guide-block { background-color: var(--pure-white); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; margin-bottom: 40px; }
-
     .flow-guide-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; }
-
     .flow-stack { display: flex; flex-direction: column; gap: 18px; }
-
     .flow-node { display: flex; gap: 16px; }
-
     .flow-node-num { width: 24px; height: 24px; background-color: var(--primary-navy); color: var(--pure-white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0; margin-top: 2px; }
-
     .flow-node-text h5 { font-size: 15px; color: var(--primary-navy); margin-bottom: 2px; }
-
     .flow-node-text p { font-size: 14px; color: var(--text-dark); margin: 0; }
-
     .tech-double-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-
     .tech-mini-card { background-color: var(--pure-white); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; }
-
     .tech-mini-card h4 { font-size: 18px; color: var(--primary-navy); margin-bottom: 14px; }
-
     .tech-mini-card p { font-size: 14.5px; margin-bottom: 16px; }
-
     .tech-card-graphic { border-radius: 8px; overflow: hidden; }
-
     .gate-utility-section { padding: 40px 0; text-align: center; background-color: var(--pure-white); border-top: 1px solid var(--border-color); }
-
     .minimal-arrow-btn { display: inline-flex; align-items: center; color: var(--text-dark); text-decoration: none; font-weight: 500; font-size: 14px; transition: var(--transition-smooth); background: none; border: none; cursor: pointer; }
-
     .minimal-arrow-btn:hover { color: var(--accent-blue); }
-
     .minimal-arrow-btn .arrow-symbol { margin-left: 6px; transition: var(--transition-smooth); }
-
     .minimal-arrow-btn:hover .arrow-symbol { transform: translateX(4px); }
-
     .global-footer-layout { width: 100%; }
-
     #backToTopBtn { position: fixed; bottom: 30px; right: 30px; width: 44px; height: 44px; border-radius: 50%; background-color: var(--primary-navy); color: var(--pure-white); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; visibility: hidden; transition: var(--transition-smooth); z-index: 9999; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-
     #backToTopBtn.show { opacity: 1; visibility: visible; }
-
     #backToTopBtn:hover { background-color: var(--accent-blue); }
-
     #backToTopBtn svg { width: 18px; height: 18px; fill: currentColor; }
-
     @media (max-width: 992px) {
         .intro-two-col, .science-split-row, .pitcher-3col-grid, .stick-split-view, .flow-guide-grid, .tech-double-row {
             grid-template-columns: 1fr;
             gap: 30px;
         }
-
         .minerals-3col-grid {
             grid-template-columns: 1fr;
             gap: 20px;
         }
-
         .content-section {
             padding: 60px 0;
         }
     }
-
     @media (max-width: 768px) {
-
         .full-width-hero {
             margin-top: 50px;
         }
-
         .tool-sticky-nav {
             top: 50px;
         }
-
         .nav-row-wrapper {
             grid-template-columns: repeat(4, 1fr);
             gap: 6px;
             padding: 8px 4px;
         }
-
         .nav-btn-item {
             padding: 8px 4px;
             flex-direction: column;
             gap: 4px;
         }
-
         .nav-btn-dot {
             width: 18px;
             height: 18px;
             font-size: 10px;
         }
-
         .nav-btn-label {
             font-size: 11px;
         }
-
         .section-big-header {
             gap: 14px;
         }
-
         .section-giant-circle {
             width: 48px;
             height: 48px;
             font-size: 22px;
         }
-
         .section-title-text {
             font-size: 20px;
         }
-
-        .hero-overlay{
-            padding-top:0;
-        }
-
         .hero-logo{
-            width:160px;
-            max-width:60vw;
+            width: 150px;
+            max-width: 55vw;
+            margin-bottom: 14px;
         }
-
+        .hero-tagline-divider{
+            width: 28px;
+            margin-bottom: 12px;
+        }
         .hero-tagline{
-            margin-top:10px;
-            font-size:13px;
-            line-height:1.4;
-            padding:0 14px;
+            font-size: 11.5px;
+            letter-spacing: .7px;
+            max-width: 300px;
         }
-
         body {
             font-size: 16px;
         }
-
         .paragraph-block p,
         .side-warning-card p,
         .mineral-classic-card p,
@@ -468,7 +369,6 @@
         .tech-mini-card p {
             font-size: 16px !important;
         }
-
         .side-warning-card h4,
         .mineral-classic-card h4,
         .science-split-row h4,
@@ -477,19 +377,15 @@
         .flow-node-text h5 {
             font-size: 18px !important;
         }
-
         .pitcher-specs li {
             font-size: 15px !important;
         }
-
         .stick-chip-node {
             font-size: 15px !important;
         }
-
         .stick-chip-node strong {
             font-size: 16px !important;
         }
-
         .flow-node-text p {
             font-size: 15px !important;
         }
@@ -498,34 +394,25 @@
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
 <script src="/analytics.js"></script>
-
 </head>
 <body>
-
     <div class="global-header-layout"></div>
-
 <div class="full-width-hero">
-
     <img
         class="hero-banner"
         src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1782814510/vitev002-M_bohcfj.jpg"
         alt="Vitev Banner">
-
-</div>
-
-<div class="hero-overlay">
-
-    <img
-        class="hero-logo"
-        src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1782814880/vitev_logo_white_est2010_clear_j817bg.png"
-        alt="Vitev Logo">
-
-    <p class="hero-tagline">
-        The Only Way To Get Healthy Water<br>
-        "Remineralize Your Water"
-    </p>
-
-</div>
+    <div class="hero-overlay">
+        <img
+            class="hero-logo"
+            src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1782814880/vitev_logo_white_est2010_clear_j817bg.png"
+            alt="Vitev Logo">
+        <div class="hero-tagline-divider"></div>
+        <p class="hero-tagline">
+            The Only Way To Get Healthy Water
+            <em>"Remineralize Your Water"</em>
+        </p>
+    </div>
 </div>
     <nav class="tool-sticky-nav">
         <div class="container">
@@ -549,7 +436,6 @@
             </div>
         </div>
     </nav>
-
     <section id="section-dead-water" class="content-section">
         <div class="container">
             <div class="section-big-header">
@@ -560,7 +446,6 @@
             <div class="hero-inline-box">
                 <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1781000030/glass_of_water_phar6q.jpg" alt="RO water AKA Dead Water">
             </div>
-
             <div class="intro-two-col">
                 <div class="paragraph-block">
                     <p>เครื่องกรองน้ำระบบ Reverse Osmosis (RO) นับเป็นกลไกการบำบัดน้ำดื่มที่ละเอียดและมีประสิทธิภาพสูงอย่างยิ่งในการคัดกรองสิ่งสกปรกและสารปนเปื้อนต่างๆ ออกจากน้ำได้ลึกถึงระดับ 0.0001 ไมครอน เพื่อมอบน้ำดื่มที่สะอาดบริสุทธิ์ให้กับผู้ใช้งาน</p>
@@ -574,14 +459,12 @@
             </div>
         </div>
     </section>
-
     <section id="section-why-vitev" class="content-section">
         <div class="container">
             <div class="section-big-header">
                 <div class="section-giant-circle">2</div>
                 <h2 class="section-title-text">วิทยาศาสตร์สารกรองแร่ธาตุธรรมชาติเกรดพรีเมียม</h2>
             </div>
-
             <div class="minerals-3col-grid">
                 <div class="mineral-classic-card">
                     <div class="mineral-card-img">
@@ -590,15 +473,15 @@
                     <h4>99.99% Pure Magnesium</h4>
                     <p>การนำแร่แมกนีเซียมบริสุทธิ์ในฟอร์มผลึกโลหะธรรมชาติมาประยุกต์ใช้เพื่อทำปฏิกิริยากับน้ำดื่ม ช่วยสร้างระบบกันชนกรด (Acid Buffering Alkalinity) และกระตุ้นการแตกตัวของโมเลกุลไฮโดรเจนที่มีบทบาทสำคัญในการฟื้นฟูระดับเซลล์</p>
                 </div>
-
                 <div class="mineral-classic-card">
                     <div class="mineral-card-img">
                         <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780994505/02_minerals-calcium-01_tn9qxb.webp" alt="Vitev High Grade Calcium">
                     </div>
                     <h4>Premium Bioavailable Calcium</h4>
-                    <p>หลีกเลี่ยงสาร Calcite เกรดอุตสาหกรรมราคาถูกที่แบรนด์ทั่วไปนิยมใช้เพียงเพื่อป้องกันท่อน้ำจากการกัดกร่อน โดย Vitev เลือกใช้แคลเซียมเกรดชีวภาพที่เหมาะสมต่อการบริโภค เพื่อปรับบาลานซ์ค่าน้ำรวม (TDS) และมอบรสสัมผัสที่กลมกล่อม</p>
-                </div>
+                    <p>แคลเซียมคาร์บอเนต(Calcium Carbonate: CaCO₃) หรือ Calcite เป็นแร่ธรรมชาติที่นิยมใช้ในระบบกรองน้ำทั่วไป เพื่อปรับสมดุล pH และเพิ่มค่าความกระด้างของน้ำ รวมถึงช่วยลดการกัดกร่อนของท่อเป็นหลัก
 
+ในขณะที่ Vitev เลือกใช้แร่ธาตุเกรดที่ร่างกายดูดซึมได้ (bioavailable minerals) เช่น แคลเซียมจากคอรัล แมกนีเซียม และแร่ธาตุรองธรรมชาติ เพื่อให้ได้น้ำที่มีความสมดุลและรสสัมผัสที่กลมกล่อมกว่า เหมาะสำหรับการบริโภคโดยตรง</p>
+                </div>
                 <div class="mineral-classic-card">
                     <div class="mineral-card-img">
                         <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780994506/03_minerals-IR-tourmaline_c5r94a.webp" alt="Vitev Core Ceramics">
@@ -607,7 +490,6 @@
                     <p>เม็ดผลึกกลมที่ขึ้นรูปจากการบดหินอัญมณีธรรมชาติซึ่งอุดมไปด้วย ซิลิก้า, โพแทสเซียม, โซเดียม และเหล็ก นำมาผ่านกระบวนการอบความร้อนในเตาเผาอุณหภูมิ 800 องศาเซลเซียส ยาวนานกว่า 10 ชั่วโมง เพื่อสร้างพื้นที่ผิวสัมผัสกระจายประจุไออนอย่างสม่ำเสมอ</p>
                 </div>
             </div>
-
             <div class="science-split-row">
                 <div class="science-info">
                     <h4>การพัฒนาค่าสารต้านอนุมูลอิสระทางกายภาพ</h4>
@@ -620,14 +502,12 @@
             </div>
         </div>
     </section>
-
     <section id="section-pitcher" class="content-section">
         <div class="container">
             <div class="section-big-header">
                 <div class="section-giant-circle">3</div>
                 <h2 class="section-title-text">เหยือกกรองแร่อัลคาไลน์ปรับสมดุลแร่ธาตุ</h2>
             </div>
-
             <div class="pitcher-3col-grid">
                 <div class="pitcher-item-card">
                     <div class="pitcher-img-frame">
@@ -645,7 +525,6 @@
                         <li>เติมแร่ธาตุกลับให้น้ำดื่มพร้อมปรับสมดุลย์ pH8.5+</li>
                     </ul>
                 </div>
-
                 <div class="pitcher-item-card">
                     <div class="pitcher-img-frame">
                         <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780994916/3.5_litre_water_pitcher_udhdrz.jpg" alt="Vitev Family Capacity Pitcher Component">
@@ -662,7 +541,6 @@
                         <li>เติมแร่ธาตุกลับให้น้ำดื่มพร้อมปรับสมดุลย์ pH8.5+</li>
                     </ul>
                 </div>
-
                 <div class="pitcher-item-card">
                     <div class="pitcher-img-frame">
                         <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780995176/water_filter_for_pitcher_vitev_cggojb.jpg" alt="Vitev Multi-Stage Replacement Filters">
@@ -681,14 +559,12 @@
             </div>
         </div>
     </section>
-
     <section id="section-mineral-stick" class="content-section">
         <div class="container">
             <div class="section-big-header">
                 <div class="section-giant-circle">4</div>
                 <h2 class="section-title-text">แท่งน้ำแร่อัลคาไลน์ MI Natural Infuser</h2>
             </div>
-
             <div class="stick-split-view">
                 <div class="stick-media-frame">
                     <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1778665133/10006_ztxbc0.jpg" alt="Vitev MI Natural Mineral Infuser Stick Core View">
@@ -716,7 +592,6 @@
                             โครงสร้างสแตนเลสเกรดอาหาร ปลอดภัย แข็งแรงทนทานยาวนาน
                         </div>
                     </div>
-
                     <div>
                         <a href="https://shope.ee/20RQHQ7aPq?share_channel_code=6" target="_blank" rel="noopener noreferrer" class="shopee-minimal-link">
                             ดูรายละเอียดสเปคและสั่งซื้อบน Shopee
@@ -724,7 +599,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="flow-guide-block">
                 <div class="flow-guide-grid">
                     <div class="flow-stack">
@@ -737,7 +611,6 @@
                                 <p>เตรียมบรรจุน้ำดื่มสะอาดลงในขวดพกพาประมาณครึ่งหนึ่ง จากนั้นหย่อนแท่งแร่พกพา MI ลงไป แล้วจึงเติมน้ำเพิ่มให้เต็มขวดในสัดส่วนปริมาณประสงค์</p>
                             </div>
                         </div>
-
                         <div class="flow-node">
                             <div class="flow-node-num">2</div>
                             <div class="flow-node-text">
@@ -745,7 +618,6 @@
                                 <p>ปิดฝาขวดน้ำให้สนิท ทำการเขย่าหรือหมุนวนขวดน้ำเบาๆ เป็นเวลา 15-30 วินาที เพื่อกระตุ้นประจุผิวสัมผัสแร่ให้ทำปฏิกิริยากับโมเลกุลน้ำอย่างทั่วถึง</p>
                             </div>
                         </div>
-
                         <div class="flow-node">
                             <div class="flow-node-num">3</div>
                             <div class="flow-node-text">
@@ -754,7 +626,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="tech-double-row">
                         <div class="tech-mini-card">
                             <h4>Time-Released Ball</h4>
@@ -769,7 +640,6 @@
             </div>
         </div>
     </section>
-
     <div class="gate-utility-section">
         <div class="container">
             <a href="https://unimercegroup.com" class="minimal-arrow-btn">
@@ -778,20 +648,16 @@
             </a>
         </div>
     </div>
-
     <div class="global-footer-layout"></div>
-
     <button id="backToTopBtn" title="Go to top" onclick="scrollToTop()">
         <svg viewBox="0 0 24 24">
             <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
         </svg>
     </button>
-
     <script>
         // 1. CONFIGURATION: กำหนด path ของไฟล์ Header และ Footer ประจำเว็บของคุณที่นี่
         const HEADER_PATH = 'header.html'; 
         const FOOTER_PATH = 'footer.html';
-
         // 2. FETCH MECHANICS: ฟังก์ชันโหลดชิ้นส่วนเว็บเข้ามาประกอบอัตโนมัติ
         document.addEventListener("DOMContentLoaded", function() {
             // โดดร่มไปดึง Header
@@ -804,19 +670,16 @@
                     document.querySelector(".global-header-layout").innerHTML = data;
                     // ทำการปรับค่าคำนวณตำแหน่งเมนูติดหนึบหลังจาก Header โหลดมาเสร็จสิ้น
                     adjustStickyNavPosition();
-
                     /* ======================================================== */
                     /* แก้ไขปุ่มแฮมเบอร์เกอร์กดไม่ติด (ผูก Event หลังโหลดเสร็จ)   */
                     /* ======================================================== */
                     const menuBtn = document.getElementById("menuBtn");
                     const menuDropdown = document.getElementById("menuDropdown");
-
                     if (menuBtn && menuDropdown) {
                         menuBtn.addEventListener("click", function(e) {
                             e.preventDefault();
                             menuDropdown.classList.toggle("active");
                         });
-
                         // กดปิดเมื่อคลิกพื้นที่อื่นด้านนอกเมนูแบบเดียวกับหน้า index
                         window.addEventListener("click", function(e) {
                             if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
@@ -831,7 +694,6 @@
                     document.querySelector(".global-header-layout").innerHTML = `<div style="padding:20px; background:#152535; color:#fff; font-weight:600; text-align:center;">UNIMERCE GROUP</div>`;
                     adjustStickyNavPosition();
                 });
-
             // โดดร่มไปดึง Footer
             fetch(FOOTER_PATH)
                 .then(response => {
@@ -845,7 +707,6 @@
                     console.error('Error loading the footer:', error);
                 });
         });
-
         // ฟังก์ชันช่วยคำนวณตำแหน่งความสูงของ Header ล่าสุด เพื่อตั้งค่า CSS top และ margin ให้แม่นยำขึ้นแบบไดนามิก
         function adjustStickyNavPosition() {
             const header = document.querySelector('.global-header-layout');
@@ -860,34 +721,28 @@
         }
         
         window.addEventListener('resize', adjustStickyNavPosition);
-
         // 3. SMOOTH SCROLL MECHANICS: ระบบเลื่อนสไลด์หน้าเพจแบบนุ่มนวล
         function scrollAnchor(event, targetId) {
             event.preventDefault();
             const targetSection = document.getElementById(targetId);
             if (!targetSection) return;
-
             // คืนค่า Offset เผื่อไว้กรณี Sticky Nav มีการซ้อนทับกัน
             const headerHeight = document.querySelector('.global-header-layout').offsetHeight || 60;
             const navHeight = document.querySelector('.tool-sticky-nav').offsetHeight || 50;
             const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - (headerHeight + navHeight) + 2;
-
             window.scrollTo({
                 top: targetPosition,
                 behavior: "smooth"
             });
         }
-
         // 4. SCROLL INTERSECTION OBSERVER: อัปเดตสถานะ Active บนแถบเมนู 1 แถว 4 ปุ่ม ตามการมองเห็นจริง
         const sections = document.querySelectorAll(".content-section");
         const navItems = document.querySelectorAll(".nav-btn-item");
-
         const observerOptions = {
             root: null,
             rootMargin: "-180px 0px -60px 0px", // เพิ่มการชดเชยจุดสายตาเนื่องจากพื้นที่ด้านบนเปิดค้างไว้หนาขึ้น
             threshold: 0.2
         };
-
         const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -901,16 +756,12 @@
                 }
             });
         }, observerOptions);
-
         sections.forEach(section => sectionObserver.observe(section));
-
         // 5. BACK TO TOP CONTROL: ระบบการทำงานของปุ่มกดขึ้นบนสุด
         const backToTopBtn = document.getElementById("backToTopBtn");
-
         window.onscroll = function() {
             scrollProgressDetect();
         };
-
         function scrollProgressDetect() {
             if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
                 backToTopBtn.classList.add("show");
@@ -918,7 +769,6 @@
                 backToTopBtn.classList.remove("show");
             }
         }
-
         function scrollToTop() {
             window.scrollTo({
                 top: 0,
