@@ -12,8 +12,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Vitev Premium Alkaline Water | UNIMERCE" />
     <meta property="og:description" content="เปลี่ยนน้ำบริสุทธิ์ระบบ RO ให้เป็นน้ำแร่อัลคาไลน์ระดับพรีเมียม เติมแร่ธาตุและสารต้านอนุมูลอิสระเพื่อสมดุลร่างกาย" />
@@ -29,737 +28,473 @@
     <meta name="twitter:title" content="Vitev Premium Alkaline Water | UNIMERCE" />
     <meta name="twitter:description" content="เปลี่ยนน้ำบริสุทธิ์ระบบ RO ให้เป็นน้ำแร่อัลคาไลน์ระดับพรีเมียม เติมแร่ธาตุและสารต้านอนุมูลอิสระเพื่อสมดุลร่างกาย" />
     <meta name="twitter:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780633652/ULOGO_CLEAR_1060_jkvqqm.png" />
-    <style>
-        /* --- Design Tokens & Global Styles (อิงตามกติกาหน้า Water Quality Tools) --- */
-        :root {
-            --primary-navy: #152535;      /* Midnight Blue หลักของ Vitev */
-            --accent-blue: #2A75A0;       /* Vitev Premium Blue */
-            --bg-light: #F8FAFC;          /* สีพื้นหลังสลับ Section ที่ 1 */
-            --bg-tint: #F0F4F8;           /* สีพื้นหลังสลับ Section ที่ 2 */
-            --text-dark: #2D3748;          /* ขนาดและสีอ่านง่ายเท่าหน้าแชท Gemini */
-            --text-light: #64748B;
-            --border-color: #E2E8F0;
-            --pure-white: #FFFFFF;
-            --transition-smooth: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+<style>
+    /* --- Design Tokens & Global Styles (อิงตามกติกาหน้า Water Quality Tools) --- */
+    :root {
+        --primary-navy: #152535;      /* Midnight Blue หลักของ Vitev */
+        --accent-blue: #2A75A0;       /* Vitev Premium Blue */
+        --bg-light: #F8FAFC;          /* สีพื้นหลังสลับ Section ที่ 1 */
+        --bg-tint: #F0F4F8;           /* สีพื้นหลังสลับ Section ที่ 2 */
+        --text-dark: #2D3748;          /* ขนาดและสีอ่านง่ายเท่าหน้าแชท Gemini */
+        --text-light: #64748B;
+        --border-color: #E2E8F0;
+        --pure-white: #FFFFFF;
+        --transition-smooth: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', 'Noto Sans Thai', sans-serif;
+        background-color: var(--pure-white);
+        color: var(--text-dark);
+        font-size: 16px;
+        line-height: 1.75;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .global-header-layout {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+    }
+
+    /* ===========================
+       HERO (UNCHANGED — GOOD)
+    =========================== */
+
+    .full-width-hero {
+        position: relative;
+        width: 100%;
+        background-color: var(--primary-navy);
+        overflow: hidden;
+        margin-top: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .full-width-hero img {
+        width: 100%;
+        height: 60vh;
+        object-fit: cover;
+    }
+
+    /* ===========================
+       ONLY FIX: OVERLAY UX
+    =========================== */
+
+    .hero-overlay{
+        position:absolute;
+        inset:0;
+
+        display:flex;
+        flex-direction:column;
+
+        align-items:center;
+
+        /* 🔥 FIX 1: prevent mobile overflow + top bias */
+        justify-content:center;
+        transform: translateY(-6vh);
+
+        text-align:center;
+
+        /* 🔥 FIX 2: remove vh push that causes mobile overflow */
+        padding-top:0;
+
+        pointer-events:none;
+    }
+
+    .hero-logo{
+        width: 160px;   /* mobile default (safe) */
+        max-width:38vw;
+        height:auto;
+
+        /* 🔥 FIX: scale slightly more stable on mobile */
+        min-width: 60px;
+
+        filter:drop-shadow(0 3px 16px rgba(0,0,0,.32));
+    }
+
+    .hero-tagline{
+        margin-top:12px;
+
+        font-family:'Kanit',sans-serif;
+        font-weight:200;
+
+        /* 🔥 FIX: stop tiny text on mobile + stop overflow */
+        font-size: 13px;
+
+        line-height:1.4;
+
+        text-align:center;
+        color:#fff;
+
+        letter-spacing:.2px;
+
+        text-shadow:0 2px 8px rgba(0,0,0,.45);
+
+        /* 🔥 FIX: prevent edge overflow */
+        padding:0 16px;
+
+        max-width: 90%;
+    }
+
+    /* --- Navigation Bar --- */
+    .tool-sticky-nav {
+        background-color: var(--pure-white);
+        border-bottom: 1px solid var(--border-color);
+        position: sticky;
+        top: 60px;
+        z-index: 999;
+    }
+
+    .nav-row-wrapper {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        padding: 12px 0;
+    }
+
+    .nav-btn-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 8px;
+        background-color: var(--bg-light);
+        border: 1px solid transparent;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--text-dark);
+        transition: var(--transition-smooth);
+        cursor: pointer;
+    }
+
+    .nav-btn-item:hover {
+        background-color: var(--bg-tint);
+        border-color: var(--accent-blue);
+    }
+
+    .nav-btn-item.active {
+        background-color: var(--primary-navy);
+        color: var(--pure-white);
+        border-color: var(--primary-navy);
+    }
+
+    .nav-btn-dot {
+        font-size: 12px;
+        font-weight: 700;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background-color: var(--pure-white);
+        color: var(--primary-navy);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .nav-btn-item.active .nav-btn-dot {
+        background-color: var(--accent-blue);
+        color: var(--pure-white);
+    }
+
+    .nav-btn-label {
+        font-size: 13px;
+        font-weight: 500;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
+    }
+
+    .content-section {
+        padding: 80px 0;
+    }
+
+    #section-dead-water { background-color: var(--pure-white); }
+    #section-why-vitev { background-color: var(--bg-light); }
+    #section-pitcher { background-color: var(--pure-white); }
+    #section-mineral-stick { background-color: var(--bg-tint); }
+
+    .section-big-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 44px;
+    }
+
+    .section-giant-circle {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background-color: var(--primary-navy);
+        color: var(--pure-white);
+        font-size: 28px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(21, 37, 53, 0.15);
+    }
+
+    .section-title-text {
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--primary-navy);
+        letter-spacing: -0.5px;
+        line-height: 1.3;
+    }
+
+    /* ===========================
+       EVERYTHING ELSE UNCHANGED
+    =========================== */
+
+    .hero-inline-box { border-radius: 16px; overflow: hidden; margin-bottom: 40px; }
+    .intro-two-col { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: start; }
+    .paragraph-block p { margin-bottom: 20px; color: var(--text-dark); text-align: justify; }
+
+    .side-warning-card { background-color: var(--bg-light); border-left: 4px solid var(--accent-blue); padding: 24px; border-radius: 0 12px 12px 0; }
+    .side-warning-card h4 { color: var(--primary-navy); font-size: 16px; margin-bottom: 10px; font-weight: 600; }
+    .side-warning-card p { font-size: 14.5px; color: var(--text-dark); margin: 0; }
+
+    .minerals-3col-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 50px; }
+
+    .mineral-classic-card { background-color: var(--pure-white); border: 1px solid var(--border-color); border-radius: 14px; padding: 24px; }
+
+    .mineral-card-img { border-radius: 8px; overflow: hidden; margin-bottom: 18px; height: 160px; background-color: var(--bg-light); }
+    .mineral-card-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    .mineral-classic-card h4 { font-size: 18px; color: var(--primary-navy); margin-bottom: 10px; }
+    .mineral-classic-card p { font-size: 14.5px; color: var(--text-dark); text-align: justify; }
+
+    .science-split-row { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; background-color: var(--pure-white); padding: 32px; border-radius: 16px; border: 1px solid var(--border-color); }
+
+    .science-split-row h4 { font-size: 20px; color: var(--primary-navy); margin-bottom: 12px; }
+    .science-split-row p { font-size: 15px; margin-bottom: 12px; }
+
+    .science-graph-img { border-radius: 12px; overflow: hidden; }
+
+    .pitcher-3col-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+    .pitcher-item-card { border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; background-color: var(--pure-white); display: flex; flex-direction: column; }
+
+    .pitcher-img-frame { background-color: var(--bg-light); border-radius: 10px; height: 240px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; overflow: hidden; }
+
+    .pitcher-img-frame img { max-height: 90%; width: auto; object-fit: contain; }
+
+    .pitcher-info-box h4 { font-size: 18px; color: var(--primary-navy); margin-bottom: 6px; }
+
+    .pitcher-info-box .badge-label { font-size: 11px; background-color: var(--bg-tint); color: var(--accent-blue); padding: 3px 8px; border-radius: 4px; font-weight: 600; display: inline-block; margin-bottom: 12px; }
+
+    .pitcher-brief { font-size: 14.5px; color: var(--text-dark); margin-bottom: 16px; flex-grow: 1; }
+
+    .pitcher-specs { list-style: none; border-top: 1px solid var(--border-color); padding-top: 14px; }
+
+    .pitcher-specs li { font-size: 13.5px; margin-bottom: 6px; padding-left: 12px; position: relative; }
+    .pitcher-specs li::before { content: "•"; color: var(--accent-blue); position: absolute; left: 0; font-weight: bold; }
+
+    .stick-split-view { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 40px; margin-bottom: 50px; align-items: center; }
+
+    .stick-media-frame { border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; background-color: var(--pure-white); }
+
+    .stick-details-box h3 { font-size: 22px; color: var(--primary-navy); margin-bottom: 4px; }
+
+    .stick-tagline { font-size: 13.5px; color: var(--accent-blue); font-weight: 600; margin-bottom: 18px; }
+
+    .stick-chips-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+
+    .stick-chip-node { background-color: var(--pure-white); padding: 14px; border-radius: 8px; font-size: 13.5px; border: 1px solid var(--border-color); }
+
+    .stick-chip-node strong { display: block; color: var(--primary-navy); margin-bottom: 2px; }
+
+    .shopee-minimal-link { display: inline-flex; align-items: center; color: var(--primary-navy); text-decoration: none; font-weight: 600; font-size: 15px; border-bottom: 2px solid var(--primary-navy); padding-bottom: 4px; transition: var(--transition-smooth); }
+
+    .shopee-minimal-link:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+
+    .flow-guide-block { background-color: var(--pure-white); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; margin-bottom: 40px; }
+
+    .flow-guide-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; }
+
+    .flow-stack { display: flex; flex-direction: column; gap: 18px; }
+
+    .flow-node { display: flex; gap: 16px; }
+
+    .flow-node-num { width: 24px; height: 24px; background-color: var(--primary-navy); color: var(--pure-white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+
+    .flow-node-text h5 { font-size: 15px; color: var(--primary-navy); margin-bottom: 2px; }
+
+    .flow-node-text p { font-size: 14px; color: var(--text-dark); margin: 0; }
+
+    .tech-double-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+    .tech-mini-card { background-color: var(--pure-white); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; }
+
+    .tech-mini-card h4 { font-size: 18px; color: var(--primary-navy); margin-bottom: 14px; }
+
+    .tech-mini-card p { font-size: 14.5px; margin-bottom: 16px; }
+
+    .tech-card-graphic { border-radius: 8px; overflow: hidden; }
+
+    .gate-utility-section { padding: 40px 0; text-align: center; background-color: var(--pure-white); border-top: 1px solid var(--border-color); }
+
+    .minimal-arrow-btn { display: inline-flex; align-items: center; color: var(--text-dark); text-decoration: none; font-weight: 500; font-size: 14px; transition: var(--transition-smooth); background: none; border: none; cursor: pointer; }
+
+    .minimal-arrow-btn:hover { color: var(--accent-blue); }
+
+    .minimal-arrow-btn .arrow-symbol { margin-left: 6px; transition: var(--transition-smooth); }
+
+    .minimal-arrow-btn:hover .arrow-symbol { transform: translateX(4px); }
+
+    .global-footer-layout { width: 100%; }
+
+    #backToTopBtn { position: fixed; bottom: 30px; right: 30px; width: 44px; height: 44px; border-radius: 50%; background-color: var(--primary-navy); color: var(--pure-white); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; visibility: hidden; transition: var(--transition-smooth); z-index: 9999; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+    #backToTopBtn.show { opacity: 1; visibility: visible; }
+
+    #backToTopBtn:hover { background-color: var(--accent-blue); }
+
+    #backToTopBtn svg { width: 18px; height: 18px; fill: currentColor; }
+
+    @media (max-width: 992px) {
+        .intro-two-col, .science-split-row, .pitcher-3col-grid, .stick-split-view, .flow-guide-grid, .tech-double-row {
+            grid-template-columns: 1fr;
+            gap: 30px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .minerals-3col-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
         }
 
-        body {
-            font-family: 'Inter', 'Noto Sans Thai', sans-serif;
-            background-color: var(--pure-white);
-            color: var(--text-dark);
-            font-size: 16px; /* ขนาดฟอนต์อ่านง่ายเท่าหน้าแชท Gemini */
-            line-height: 1.75;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+        .content-section {
+            padding: 60px 0;
         }
+    }
 
-        /* บีบหน้ากว้าง Desktop อยู่ที่ 1000px พอดีสายตาคน */
-        .container {
-            width: 100%;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+    @media (max-width: 768px) {
 
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        /* --- Layout Header Placement (โหลดไฟล์โครงสร้างเดิมของคุณ) --- */
-        /* บังคับให้ Top Bar ดึงมาจาก Layout แสดงผลค้างไว้ตลอดเวลา ไม่หุบ ไม่ซ่อน ทั้ง Mobile และ Desktop */
-        .global-header-layout {
-            width: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-
-        /* ป้องกันไม่ให้ Banner จมลงไปใต้ Top bar ทั้งเวอร์ชัน Mobile และ Desktop ด้วยการใช้ความลึกของกล่องดันสัดส่วน */
         .full-width-hero {
-            width: 100%;
-            background-color: var(--primary-navy);
-            overflow: hidden;
-            margin-top: 60px; /* ความสูงเฉลี่ยสำหรับ Desktop ชดเชยจุดทับซ้อน */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin-top: 50px;
         }
-        
-        .full-width-hero img {
-            width: 1000%;
-            height: 60vh;
-            object-fit: cover;
-        }        
-        /* --- Navigation Bar 1row x 4ปุ่ม (ถอดพิมพ์เขียว Water Quality Tool) --- */
+
         .tool-sticky-nav {
-            background-color: var(--pure-white);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 60px; /* เกาะติดด้านล่างต่อจาก Top Bar ตลอดเวลา */
-            z-index: 999;
+            top: 50px;
         }
 
         .nav-row-wrapper {
-            display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            padding: 12px 0;
+            gap: 6px;
+            padding: 8px 4px;
         }
 
         .nav-btn-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px 8px;
-            background-color: var(--bg-light);
-            border: 1px solid transparent;
-            border-radius: 8px;
-            text-decoration: none;
-            color: var(--text-dark);
-            transition: var(--transition-smooth);
-            cursor: pointer;
-        }
-
-        .nav-btn-item:hover {
-            background-color: var(--bg-tint);
-            border-color: var(--accent-blue);
-        }
-
-        .nav-btn-item.active {
-            background-color: var(--primary-navy);
-            color: var(--pure-white);
-            border-color: var(--primary-navy);
+            padding: 8px 4px;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .nav-btn-dot {
-            font-size: 12px;
-            font-weight: 700;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background-color: var(--pure-white);
-            color: var(--primary-navy);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .nav-btn-item.active .nav-btn-dot {
-            background-color: var(--accent-blue);
-            color: var(--pure-white);
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
         }
 
         .nav-btn-label {
-            font-size: 13px;
-            font-weight: 500;
-            white-space: normal; /* รองรับ Wraptext ในเวอร์ชันโมบาย */
-            text-align: center;
-            line-height: 1.2;
+            font-size: 11px;
         }
 
-        /* --- Section Core Structure (สลับสีพื้นหลังเพื่อแบ่งขอบเขตสายตา) --- */
-        .content-section {
-            padding: 80px 0;
-        }
-        
-        /* สลับสีพื้นหลังตามคำสั่งเพื่อให้รู้ว่าจบส่วนไหน */
-        #section-dead-water { background-color: var(--pure-white); }
-        #section-why-vitev { background-color: var(--bg-light); }
-        #section-pitcher { background-color: var(--pure-white); }
-        #section-mineral-stick { background-color: var(--bg-tint); }
-
-        /* หัวเปิดตัวเลขวงกลมขนาดใหญ่เด่นชัด */
         .section-big-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 44px;
+            gap: 14px;
         }
 
         .section-giant-circle {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background-color: var(--primary-navy);
-            color: var(--pure-white);
-            font-size: 28px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: 0 4px 10px rgba(21, 37, 53, 0.15);
+            width: 48px;
+            height: 48px;
+            font-size: 22px;
         }
 
         .section-title-text {
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--primary-navy);
-            letter-spacing: -0.5px;
-            line-height: 1.3;
-        }
-
-        /* --- Section 1: Intro Layout --- */
-        .hero-inline-box {
-            border-radius: 16px;
-            overflow: hidden;
-            margin-bottom: 40px;
-        }
-
-        .intro-two-col {
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 40px;
-            align-items: start;
-        }
-
-        .paragraph-block p {
-            margin-bottom: 20px;
-            color: var(--text-dark);
-            text-align: justify;
-        }
-
-        .side-warning-card {
-            background-color: var(--bg-light);
-            border-left: 4px solid var(--accent-blue);
-            padding: 24px;
-            border-radius: 0 12px 12px 0;
-        }
-
-        .side-warning-card h4 {
-            color: var(--primary-navy);
-            font-size: 16px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .side-warning-card p {
-            font-size: 14.5px;
-            color: var(--text-dark);
-            margin: 0;
-        }
-
-        /* --- Section 2: Minerals Layout --- */
-        .minerals-3col-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-bottom: 50px;
-        }
-
-        .mineral-classic-card {
-            background-color: var(--pure-white);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 24px;
-        }
-
-        .mineral-card-img {
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 18px;
-            height: 160px;
-            background-color: var(--bg-light);
-        }
-
-        .mineral-card-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .mineral-classic-card h4 {
-            font-size: 18px;
-            color: var(--primary-navy);
-            margin-bottom: 10px;
-        }
-
-        .mineral-classic-card p {
-            font-size: 14.5px;
-            color: var(--text-dark);
-            text-align: justify;
-        }
-
-        .science-split-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
-            background-color: var(--pure-white);
-            padding: 32px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-        }
-
-        .science-split-row h4 {
             font-size: 20px;
-            color: var(--primary-navy);
-            margin-bottom: 12px;
         }
 
-        .science-split-row p {
-            font-size: 15px;
-            margin-bottom: 12px;
+        .hero-overlay{
+            padding-top:0;
         }
 
-        .science-graph-img {
-            border-radius: 12px;
-            overflow: hidden;
+        .hero-logo{
+            width:160px;
+            max-width:60vw;
         }
 
-        /* --- Section 3: Pitcher Showcase --- */
-        .pitcher-3col-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+        .hero-tagline{
+            margin-top:10px;
+            font-size:13px;
+            line-height:1.4;
+            padding:0 14px;
         }
 
-        .pitcher-item-card {
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            background-color: var(--pure-white);
-            display: flex;
-            flex-direction: column;
+        body {
+            font-size: 16px;
         }
 
-        .pitcher-img-frame {
-            background-color: var(--bg-light);
-            border-radius: 10px;
-            height: 240px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-            overflow: hidden;
+        .paragraph-block p,
+        .side-warning-card p,
+        .mineral-classic-card p,
+        .science-split-row p,
+        .pitcher-brief,
+        .tech-mini-card p {
+            font-size: 16px !important;
         }
 
-        .pitcher-img-frame img {
-            max-height: 90%;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .pitcher-info-box h4 {
-            font-size: 18px;
-            color: var(--primary-navy);
-            margin-bottom: 6px;
-        }
-
-        .pitcher-info-box .badge-label {
-            font-size: 11px;
-            background-color: var(--bg-tint);
-            color: var(--accent-blue);
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-
-        .pitcher-brief {
-            font-size: 14.5px;
-            color: var(--text-dark);
-            margin-bottom: 16px;
-            flex-grow: 1;
-        }
-
-        .pitcher-specs {
-            list-style: none;
-            border-top: 1px solid var(--border-color);
-            padding-top: 14px;
+        .side-warning-card h4,
+        .mineral-classic-card h4,
+        .science-split-row h4,
+        .pitcher-info-box h4,
+        .tech-mini-card h4,
+        .flow-node-text h5 {
+            font-size: 18px !important;
         }
 
         .pitcher-specs li {
-            font-size: 13.5px;
-            margin-bottom: 6px;
-            padding-left: 12px;
-            position: relative;
-        }
-
-        .pitcher-specs li::before {
-            content: "•";
-            color: var(--accent-blue);
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-        }
-
-        /* --- Section 4: Infuser Stick --- */
-        .stick-split-view {
-            display: grid;
-            grid-template-columns: 0.9fr 1.1fr;
-            gap: 40px;
-            margin-bottom: 50px;
-            align-items: center;
-        }
-
-        .stick-media-frame {
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 24px;
-            background-color: var(--pure-white);
-        }
-
-        .stick-details-box h3 {
-            font-size: 22px;
-            color: var(--primary-navy);
-            margin-bottom: 4px;
-        }
-
-        .stick-tagline {
-            font-size: 13.5px;
-            color: var(--accent-blue);
-            font-weight: 600;
-            margin-bottom: 18px;
-        }
-
-        .stick-chips-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 24px;
+            font-size: 15px !important;
         }
 
         .stick-chip-node {
-            background-color: var(--pure-white);
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 13.5px;
-            border: 1px solid var(--border-color);
+            font-size: 15px !important;
         }
 
         .stick-chip-node strong {
-            display: block;
-            color: var(--primary-navy);
-            margin-bottom: 2px;
-        }
-
-        /* ดีไซน์ปุ่มสั่งซื้อ Shopee แบบคลีนและพรีเมียม (ไม่ใส่สีส้ม) */
-        .shopee-minimal-link {
-            display: inline-flex;
-            align-items: center;
-            color: var(--primary-navy);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            border-bottom: 2px solid var(--primary-navy);
-            padding-bottom: 4px;
-            transition: var(--transition-smooth);
-        }
-
-        .shopee-minimal-link:hover {
-            color: var(--accent-blue);
-            border-color: var(--accent-blue);
-        }
-
-        /* Drop Swirl Drink Steps */
-        .flow-guide-block {
-            background-color: var(--pure-white);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 40px;
-        }
-
-        .flow-guide-grid {
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 40px;
-            align-items: center;
-        }
-
-        .flow-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .flow-node {
-            display: flex;
-            gap: 16px;
-        }
-
-        .flow-node-num {
-            width: 24px;
-            height: 24px;
-            background-color: var(--primary-navy);
-            color: var(--pure-white);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 13px;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .flow-node-text h5 {
-            font-size: 15px;
-            color: var(--primary-navy);
-            margin-bottom: 2px;
+            font-size: 16px !important;
         }
 
         .flow-node-text p {
-            font-size: 14px;
-            color: var(--text-dark);
-            margin: 0;
+            font-size: 15px !important;
         }
-
-        /* Dual Column Tech Box */
-        .tech-double-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-
-        .tech-mini-card {
-            background-color: var(--pure-white);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 30px;
-        }
-
-        .tech-mini-card h4 {
-            font-size: 18px;
-            color: var(--primary-navy);
-            margin-bottom: 14px;
-        }
-
-        .tech-mini-card p {
-            font-size: 14.5px;
-            margin-bottom: 16px;
-        }
-
-        .tech-card-graphic {
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        /* --- All Products Minimal Arrow Button --- */
-        .gate-utility-section {
-            padding: 40px 0;
-            text-align: center;
-            background-color: var(--pure-white);
-            border-top: 1px solid var(--border-color);
-        }
-
-        .minimal-arrow-btn {
-            display: inline-flex;
-            align-items: center;
-            color: var(--text-dark);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            transition: var(--transition-smooth);
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .minimal-arrow-btn:hover {
-            color: var(--accent-blue);
-        }
-
-        .minimal-arrow-btn .arrow-symbol {
-            margin-left: 6px;
-            transition: var(--transition-smooth);
-        }
-
-        .minimal-arrow-btn:hover .arrow-symbol {
-            transform: translateX(4px);
-        }
-
-        /* --- Footer Placement --- */
-        .global-footer-layout {
-            width: 100%;
-        }
-
-        /* --- Back To Top Mechanics --- */
-        #backToTopBtn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background-color: var(--primary-navy);
-            color: var(--pure-white);
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition-smooth);
-            z-index: 9999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        #backToTopBtn.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        #backToTopBtn:hover {
-            background-color: var(--accent-blue);
-        }
-
-        #backToTopBtn svg {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
-
-        /* --- Responsive Adaptation Layers (Mobile Fit-All Screen) --- */
-        @media (max-width: 992px) {
-            .intro-two-col, .science-split-row, .pitcher-3col-grid, .stick-split-view, .flow-guide-grid, .tech-double-row {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-            .minerals-3col-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            .content-section {
-                padding: 60px 0;
-            }
-        }
-
-
-            @media (max-width: 768px) {
-            /* --- โดเนมเดิมที่มีอยู่แล้ว --- */
-            .full-width-hero {
-                margin-top: 50px; 
-            }
-            .tool-sticky-nav {
-                top: 50px; 
-            }
-            .nav-row-wrapper {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 6px;
-                padding: 8px 4px;
-            }
-            .nav-btn-item {
-                padding: 8px 4px;
-                flex-direction: column;
-                gap: 4px;
-            }
-            .nav-btn-dot {
-                width: 18px;
-                height: 18px;
-                font-size: 10px;
-            }
-            .nav-btn-label {
-                font-size: 11px;
-            }
-            .section-big-header {
-                gap: 14px;
-            }
-            .section-giant-circle {
-                width: 48px;
-                height: 48px;
-                font-size: 22px;
-            }
-            .section-title-text {
-                font-size: 20px;
-            }
-
-            /* ======================================================== */
-            /* เพิ่มโค้ดปรับขนาด Font สำหรับ Mobile ตรงนี้ได้เลยครับ     */
-            /* ======================================================== */
-            
-            /* 1. ปรับขนาดตัวอักษรเนื้อหาทั่วไป (Paragraph) และการ์ดต่างๆ */
-            body {
-                font-size: 17.5px; /* เพิ่มจากเดิม 16px เพื่อให้อ่านง่ายเต็มตาขึ้น */
-            }
-
-            .paragraph-block p, 
-            .side-warning-card p, 
-            .mineral-classic-card p, 
-            .science-split-row p, 
-            .pitcher-brief, 
-            .tech-mini-card p {
-                font-size: 16.5px !important; /* ปรับขนาดเนื้อความให้อ่านง่าย */
-            }
-
-            /* 2. ปรับขนาดหัวข้อของการ์ด/กล่องเนื้อหา */
-            .side-warning-card h4,
-            .mineral-classic-card h4,
-            .science-split-row h4,
-            .pitcher-info-box h4,
-            .tech-mini-card h4,
-            .flow-node-text h5 {
-                font-size: 18px !important; 
-            }
-
-            /* 3. ปรับขนาดรายละเอียดในตาราง Spec และชิปข้อมูล */
-            .pitcher-specs li {
-                font-size: 15px !important;
-            }
-
-            .stick-chip-node {
-                font-size: 15px !important;
-            }
-            
-            .stick-chip-node strong {
-                font-size: 16px !important;
-            }
-
-            .flow-node-text p {
-                font-size: 15px !important;
-            }
-
-        /* จัดการความสูงระยะติดหนึบของชุด Navigation 4 ปุ่มให้สอดรับตาม */
-            .tool-sticky-nav {
-                top: 50px; 
-            }
-            /* ควบคุมให้เมนู 1 แถว 4 ปุ่ม เรียงกระดานพอดีหน้าจอเสมอ */
-            .nav-row-wrapper {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 6px;
-                padding: 8px 4px;
-            }
-            .nav-btn-item {
-                padding: 8px 4px;
-                flex-direction: column;
-                gap: 4px;
-            }
-            .nav-btn-dot {
-                width: 18px;
-                height: 18px;
-                font-size: 10px;
-            }
-            .nav-btn-label {
-                font-size: 11px;
-            }
-            .section-big-header {
-                gap: 14px;
-            }
-            .section-giant-circle {
-                width: 48px;
-                height: 48px;
-                font-size: 22px;
-            }
-            .section-title-text {
-                font-size: 20px;
-            }
-        }
-    </style>
-
+    }
+</style>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
 <script src="/analytics.js"></script>
@@ -769,10 +504,29 @@
 
     <div class="global-header-layout"></div>
 
-    <div class="full-width-hero">
-        <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780996040/vitev_mineral_homepage_banner_02_cttgy1.jpg" alt="Vitev Mineral Premium Water Standard Banner">
-    </div>
+<div class="full-width-hero">
 
+    <img
+        class="hero-banner"
+        src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1782814510/vitev002-M_bohcfj.jpg"
+        alt="Vitev Banner">
+
+</div>
+
+<div class="hero-overlay">
+
+    <img
+        class="hero-logo"
+        src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1782814880/vitev_logo_white_est2010_clear_j817bg.png"
+        alt="Vitev Logo">
+
+    <p class="hero-tagline">
+        The Only Way To Get Healthy Water<br>
+        "Remineralize Your Water"
+    </p>
+
+</div>
+</div>
     <nav class="tool-sticky-nav">
         <div class="container">
             <div class="nav-row-wrapper">
