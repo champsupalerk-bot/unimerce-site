@@ -1,804 +1,465 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th" class="h-full bg-slate-950 text-slate-100">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>UNIMERCE U-ERP | Insights Dashboard</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-<style>
-  :root {
-    --primary: #1e3d6e;
-    --primary-light: rgba(30, 61, 110, 0.08);
-    --success: #28a745;
-    --warning: #f1c40f;
-    --danger: #dc3545;
-    --gray-bg: #f8fafc;
-    --card-bg: #ffffff;
-    --border-color: #e2e8f0;
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-    --medal-gold: #ffd700;
-    --medal-silver: #c0c0c0;
-    --medal-bronze: #cd7f32;
-  }
-
-  * { box-sizing: border-box; }
-  body { 
-    margin: 0; 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; 
-    background: var(--gray-bg); 
-    color: var(--text-main); 
-    padding-bottom: 60px;
-    overflow-x: hidden;
-  }
-  
-  .container { 
-    max-width: 1000px; 
-    margin: 0 auto; 
-    padding: 12px; 
-    width: 100%;
-  }
-
-  .dashboard-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  }
-
-  .card-title-area {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .card-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--primary);
-    margin: 0;
-  }
-
-  .erp-select, .erp-date-input {
-    padding: 6px 10px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-size: 13px;
-    outline: none;
-    background-color: #fff;
-    color: var(--text-main);
-  }
-  .picker-group {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .custom-date-container {
-    display: none;
-    align-items: center;
-    gap: 4px;
-  }
-  .custom-date-container.active {
-    display: inline-flex;
-  }
-
-  .section-divider {
-    font-size: 12px;
-    font-weight: bold;
-    color: var(--text-muted);
-    margin: 12px 0 6px 0;
-    padding-bottom: 4px;
-    border-bottom: 1px dashed var(--border-color);
-    text-transform: uppercase;
-  }
-
-  .kpi-grid { 
-    display: grid; 
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 10px; 
-  }
-  .kpi-card { 
-    background: var(--card-bg); 
-    border: 1px solid var(--border-color); 
-    border-radius: 10px; 
-    padding: 12px; 
-  }
-  .kpi-title { 
-    font-size: 11px; 
-    color: var(--text-muted); 
-    margin-bottom: 4px; 
-    font-weight: 600; 
-  }
-  .kpi-value { 
-    font-size: 15px; 
-    font-weight: 700; 
-    color: var(--primary); 
-  }
-
-  .best-seller-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-  }
-  .best-seller-table th {
-    background: var(--primary-light);
-    color: var(--primary);
-    padding: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    border-bottom: 2px solid var(--border-color);
-    cursor: pointer;
-    user-select: none;
-  }
-  .best-seller-table th:hover { background-color: #cbd5e1; }
-  .best-seller-table td {
-    padding: 10px 8px;
-    font-size: 13px;
-    border-bottom: 1px solid var(--border-color);
-  }
-  .best-seller-table tr:hover { background-color: #f8fafc; cursor: pointer; }
-
-  .rank-badge {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
-    text-align: center;
-    border-radius: 50%;
-    font-weight: bold;
-    font-size: 12px;
-  }
-  .rank-1 { background: var(--medal-gold); color: #000; }
-  .rank-2 { background: var(--medal-silver); color: #000; }
-  .rank-3 { background: var(--medal-bronze); color: #fff; }
-
-  .history-grid-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 12px;
-  }
-  .history-grid-table th {
-    background: #f1f5f9;
-    padding: 6px;
-    border: 1px solid var(--border-color);
-    font-weight: bold;
-  }
-  .history-grid-table td {
-    padding: 6px;
-    border: 1px solid var(--border-color);
-    text-align: right;
-  }
-
-  .donut-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-
-  .modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(15, 23, 42, 0.6);
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    z-index: 2000;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-  }
-  .modal-overlay.active { opacity: 1; pointer-events: auto; }
-  .modal-container {
-    background: #fff;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 20px;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-    transform: translateY(100%);
-    transition: transform 0.2s ease;
-  }
-  .modal-overlay.active .modal-container { transform: translateY(0); }
-
-  @media (min-width: 769px) {
-    .modal-overlay { align-items: center; }
-    .modal-container { border-radius: 14px; max-width: 650px; transform: translateY(20px); }
-  }
-  @media (max-width: 768px) {
-    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-    .donut-grid { grid-template-columns: 1fr; }
-    .card-title-area { flex-direction: column; align-items: flex-start; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPM Dashboard Live Verification</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#10b981',
+                            600: '#059669',
+                            950: '#022c22',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .text-glow-emerald {
+            text-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+        .text-glow-amber {
+            text-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        }
+    </style>
 </head>
+<body class="min-h-screen flex flex-col justify-between">
 
-<body>
-
-<div id="header-layout-placeholder"></div>
-
-<div class="container">
-
-  <div class="dashboard-card">
-    <div class="card-title-area">
-      <h2 class="card-title"><i class="fa-solid fa-wallet"></i> สรุปผลประกอบการทางการเงิน (Financial Dashboard)</h2>
-      <div class="picker-group">
-        <select id="kpiPeriodSelect" class="erp-select" onchange="handleKpiPeriodChange()">
-          <option value="thismonth" selected>เดือนนี้ (This Month)</option>
-          <option value="lastmonth">เดือนที่แล้ว (Last Month)</option>
-          <option value="last3month">ย้อนหลัง 3 เดือน</option>
-          <option value="thisyear">ปีนี้ (This Year)</option>
-          <option value="lastyear">ปีที่แล้ว (Last Year)</option>
-          <option value="custom">กำหนดเอง (Custom)</option>
-        </select>
-        <div id="kpiCustomDate" class="custom-date-container">
-          <input type="date" id="kpiStart" class="erp-date-input" onchange="fetchKpiData()">
-          <span style="font-size:12px; color:var(--text-muted);">ถึง</span>
-          <input type="date" id="kpiEnd" class="erp-date-input" onchange="fetchKpiData()">
+    <!-- Navigation Bar -->
+    <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-emerald-600 to-teal-500 text-white p-2.5 rounded-xl shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-calculator text-lg animate-pulse"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold tracking-tight text-white sm:text-base">GPM Live Testbed</h1>
+                    <p class="text-[10px] text-slate-400">ระบบคำนวณแบบ Real-time ตรวจสอบความถูกต้องรายปี 2026</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <div id="connStatus" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-slate-900 text-slate-400 border border-slate-800">
+                    <span class="h-2 w-2 rounded-full bg-slate-600"></span>
+                    Initializing...
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    
-    <div class="section-divider">ยอดขายรวมดิบตามเลขบิล (Pure SUM Basis - ตรงตาม SQL)</div>
-    <div class="kpi-grid" style="margin-bottom: 14px;">
-      <div class="kpi-card"><div class="kpi-title">ยอดขายรวมทั้งหมด</div><div id="kpiSalesTotal" class="kpi-value">฿0.00</div></div>
-      <div class="kpi-card"><div class="kpi-title">ต้นทุนรวมทั้งหมด</div><div id="kpiCogsTotal" class="kpi-value" style="color:var(--text-muted);">฿0.00</div></div>
-      <div class="kpi-card"><div class="kpi-title">กำไรขั้นต้นรวม (GPM)</div><div id="kpiGpmTotal" class="kpi-value" style="color:var(--success);">฿0.00</div></div>
-      <div class="kpi-card"><div class="kpi-title">จำนวนบิลทั้งหมด</div><div id="kpiBillsCount" class="kpi-value" style="color:var(--warning);">0 บิล</div></div>
-    </div>
+    </header>
 
-    <div class="section-divider">กระแสเงินสดรับจริงเข้ากระเป๋า (Realized Cash Basis)</div>
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-title">ยอดขายรับเงินแล้ว (sales_amt)</div><div id="kpiSalesRealized" class="kpi-value">฿0.00</div></div>
-      <div class="kpi-card"><div class="kpi-title">ต้นทุนจริงที่ชำระ (cogs)</div><div id="kpiCogsRealized" class="kpi-value" style="color:var(--text-muted);">฿0.00</div></div>
-      <div class="kpi-card"><div class="kpi-title">กำไรสุทธิรับจริง (gpm ฟิลด์)</div><div id="kpiGpmRealized" class="kpi-value" style="color:var(--success);">฿0.00</div></div>
-      <div class="kpi-card"><div class="kpi-title">เงินสดรับจริงสุทธิ (netreceived)</div><div id="kpiNetReceivedRealized" class="kpi-value" style="color: #0284c7;">฿0.00</div></div>
-    </div>
-  </div>
-
-  <div class="dashboard-card">
-    <div class="card-title-area">
-      <h2 class="card-title"><i class="fa-solid fa-chart-line"></i> กราฟเส้นเปรียบเทียบผลงานยอดขายรายเดือน</h2>
-      <div class="picker-group">
-        <select id="lineChartMainYearSelect" class="erp-select" onchange="fetchLineChartData()">
-          <option value="2026" selected>เส้นหลัก: ปี 2569 (2026)</option>
-          <option value="2027">เส้นหลัก: ปี 2570 (2027)</option>
-        </select>
-        <select id="lineChartCompYearSelect" class="erp-select" onchange="fetchLineChartData()">
-          <option value="2025" selected>เส้นเปรียบเทียบ: ปี 2568 (2025)</option>
-          <option value="2026">เส้นเปรียบเทียบ: ปี 2569 (2026)</option>
-        </select>
-      </div>
-    </div>
-    <div style="font-size: 12px; font-weight: bold; margin-bottom: 10px; color: var(--primary);" id="lineChartTotalText">
-      โหลดข้อมูลกราฟ...
-    </div>
-    <div style="position: relative; height: 260px; width: 100%;">
-      <canvas id="lineChartOverview"></canvas>
-    </div>
-  </div>
-
-  <div class="dashboard-card">
-    <div class="card-title-area">
-      <h2 class="card-title"><i class="fa-solid fa-trophy"></i> จัดอันดับสินค้าขายดีที่สุด (Top Sellers)</h2>
-      <div class="picker-group">
-        <select id="sellerMetricSelect" class="erp-select" onchange="fetchBestSellers()">
-          <option value="amount" selected>วัดจาก: ยอดเงิน (Sales Amount)</option>
-          <option value="qty">วัดจาก: จำนวนชิ้น (QTY)</option>
-        </select>
-        <select id="sellerPeriodSelect" class="erp-select" onchange="handleSellerPeriodChange()">
-          <option value="thismonth" selected>เดือนนี้</option>
-          <option value="last3month">ย้อนหลัง 3 เดือน</option>
-          <option value="thisyear">ปีนี้</option>
-          <option value="custom">Custom ช่วงเวลา</option>
-        </select>
-        <div id="sellerCustomDate" class="custom-date-container">
-          <input type="date" id="sellerStart" class="erp-date-input" onchange="fetchBestSellers()">
-          <input type="date" id="sellerEnd" class="erp-date-input" onchange="fetchBestSellers()">
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow space-y-8">
+        
+        <!-- Live Connection Notice -->
+        <div id="loadingIndicator" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center gap-3">
+            <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
+                <i class="fa-solid fa-spinner animate-spin text-lg"></i>
+            </div>
+            <div>
+                <h3 class="text-xs font-semibold text-emerald-400">กำลังเชื่อมต่อไปยัง Supabase Direct Database...</h3>
+                <p class="text-[10px] text-slate-400 mt-0.5">ระบบจะดึงโครงสร้าง View และกรองข้อมูลตาม Timezone ประเทศไทยอัตโนมัติ</p>
+            </div>
         </div>
-      </div>
-    </div>
-    <div style="overflow-x: auto;">
-      <table class="best-seller-table" id="topSellersTable">
-        <thead>
-          <tr>
-            <th onclick="sortTable(0)">อันดับ <i class="fa-solid fa-sort"></i></th>
-            <th onclick="sortTable(1)">รหัสสินค้า <i class="fa-solid fa-sort"></i></th>
-            <th onclick="sortTable(2)">ชื่อสินค้า <i class="fa-solid fa-sort"></i></th>
-            <th style="text-align: right;" onclick="sortTable(3)">จำนวนชิ้น <i class="fa-solid fa-sort"></i></th>
-            <th style="text-align: right;" onclick="sortTable(4)">ยอดเงิน <i class="fa-solid fa-sort"></i></th>
-          </tr>
-        </thead>
-        <tbody id="best-seller-rows"></tbody>
-      </table>
-    </div>
-  </div>
 
-  <div class="dashboard-card">
-    <div class="card-title-area">
-      <h2 class="card-title"><i class="fa-solid fa-chart-pie"></i> สัดส่วนเปอร์เซ็นต์โครงสร้างยอดขาย (Contribution Area)</h2>
-      <div class="picker-group">
-        <select id="contribPeriodSelect" class="erp-select" onchange="handleContribPeriodChange()">
-          <option value="thismonth" selected>เดือนนี้</option>
-          <option value="lastmonth">เดือนที่แล้ว</option>
-          <option value="last3month">3 เดือนย้อนหลัง</option>
-          <option value="thisyear">ปีนี้</option>
-          <option value="custom">กำหนดช่วงเวลาเอง</option>
-        </select>
-        <div id="contribCustomDate" class="custom-date-container">
-          <input type="date" id="contribStart" class="erp-date-input" onchange="fetchContributionData()">
-          <input type="date" id="contribEnd" class="erp-date-input" onchange="fetchContributionData()">
+        <div id="errorMessage" class="hidden bg-rose-500/10 border border-rose-500/20 rounded-2xl p-4 flex items-start gap-3">
+            <div class="p-2 bg-rose-500/10 rounded-lg text-rose-400">
+                <i class="fa-solid fa-circle-exclamation text-lg"></i>
+            </div>
+            <div>
+                <h3 class="text-xs font-semibold text-rose-300">เกิดข้อผิดพลาดในการโหลดข้อมูล</h3>
+                <p id="errorText" class="text-[10px] text-slate-400 mt-0.5">คำชี้แจงความเสียหาย</p>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <div class="donut-grid">
-      <div style="text-align:center;">
-        <select id="donut1TypeSelect" class="erp-select" style="margin-bottom:8px; width:90%;" onchange="renderDonut1()">
-          <option value="item" selected>สัดส่วนรายสินค้า (Item)</option>
-          <option value="category">สัดส่วนรายหมวดหมู่ (MainCategory)</option>
-          <option value="channel">สัดส่วนตามช่องทาง (Channel)</option>
-        </select>
-        <div style="position: relative; height: 180px;"><canvas id="donutChart1"></canvas></div>
-      </div>
-      <div style="text-align:center;">
-        <select id="donut2TypeSelect" class="erp-select" style="margin-bottom:8px; width:90%;" onchange="renderDonut2()">
-          <option value="item">สัดส่วนรายสินค้า (Item)</option>
-          <option value="category" selected>สัดส่วนรายหมวดหมู่ (MainCategory)</option>
-          <option value="channel">สัดส่วนตามช่องทาง (Channel)</option>
-        </select>
-        <div style="position: relative; height: 180px;"><canvas id="donutChart2"></canvas></div>
-      </div>
-    </div>
-  </div>
+        <!-- 1. UNREALIZED SECTION -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="p-1 bg-amber-500/10 text-amber-400 rounded-md border border-amber-500/20 text-xs">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                    </span>
+                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Unrealized Performance (ยอดรวมทั้งหมดในระบบปี 2026)</h2>
+                </div>
+                <span class="text-[10px] text-slate-500 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Source: v_gpm_monthly_report</span>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Sales -->
+                <div class="glass-panel p-4 rounded-xl relative overflow-hidden">
+                    <span class="text-[10px] font-medium text-slate-400 uppercase">Sales Amount</span>
+                    <p id="unrealizedSales" class="text-lg font-bold tracking-tight text-white mt-1">-</p>
+                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
+                        <i class="fa-solid fa-coins"></i>
+                    </div>
+                </div>
 
-</div>
+                <!-- COGS -->
+                <div class="glass-panel p-4 rounded-xl relative overflow-hidden">
+                    <span class="text-[10px] font-medium text-slate-400 uppercase">Cost of Goods (COGS)</span>
+                    <p id="unrealizedCogs" class="text-lg font-bold tracking-tight text-white mt-1">-</p>
+                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
+                        <i class="fa-solid fa-tags"></i>
+                    </div>
+                </div>
 
-<div id="productDetailModal" class="modal-overlay" onclick="closeModal()">
-  <div class="modal-container" onclick="event.stopPropagation()">
-    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:8px; margin-bottom:12px;">
-      <div class="card-title" id="modalTitle">ข้อมูลการวิเคราะห์สินค้า</div>
-      <button style="background:none; border:none; font-size:20px; cursor:pointer;" onclick="closeModal()">&times;</button>
-    </div>
-    <div id="modalSummaryHeader"></div>
-    <div id="modalListContent"></div>
-  </div>
-</div>
+                <!-- GPM -->
+                <div class="glass-panel p-4 rounded-xl relative overflow-hidden">
+                    <span class="text-[10px] font-medium text-slate-400 uppercase">Gross Profit (GPM)</span>
+                    <p id="unrealizedGpm" class="text-lg font-bold tracking-tight text-amber-400 text-glow-amber mt-1">-</p>
+                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                </div>
 
-<script>
-const SB_URL = "https://xygdmszernmircmbqwke.supabase.co/rest/v1";
-const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
+                <!-- GPM % -->
+                <div class="glass-panel p-4 rounded-xl relative overflow-hidden">
+                    <span class="text-[10px] font-medium text-slate-400 uppercase">GPM Ratio %</span>
+                    <p id="unrealizedGpmPercent" class="text-xl font-extrabold tracking-tight text-amber-400 text-glow-amber mt-1">-</p>
+                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
+                        <i class="fa-solid fa-percent"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-const currentYear = 2026; 
-const currentMonth = 7; 
+        <!-- 2. REALIZED SECTION -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="p-1 bg-emerald-500/10 text-emerald-400 rounded-md border border-emerald-500/20 text-xs">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </span>
+                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Realized Performance (ยอดเก็บเงินเรียบร้อย ปี 2026)</h2>
+                </div>
+                <span class="text-[10px] text-slate-500 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Source: transactions (Checked-In + Bangkok Timezone)</span>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Sales -->
+                <div class="glass-panel p-4 rounded-xl relative overflow-hidden border-emerald-950">
+                    <span class="text-[10px] font-medium text-slate-400 uppercase">Cleared Sales</span>
+                    <p id="realizedSales" class="text-lg font-bold tracking-tight text-white mt-1">-</p>
+                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                </div>
 
-let chartInstances = {};
-let globalContribData = [];
-let sortDirections = [true, true, true, true, true]; 
+                <!-- COGS -->
+                <div class="glass-panel p-4 rounded-xl relative overflow-hidden border-emerald-950">
+                    <span class="text-[10px] font-medium text-slate-400 uppercase">Cleared COGS</span>
+                    <p id="realizedCogs" class="text-lg font-bold tracking-tight text-white mt-1">-</p>
+                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                </div>
 
-window.addEventListener("load", () => {
-  setTimeout(() => {
-    if(!document.getElementById("header-layout-placeholder").innerHTML) {
-      document.getElementById("header-layout-placeholder").innerHTML = `
-        <div style="background:var(--primary); color:#fff; padding:12px; font-weight:bold; text-align:center; font-size:14px;">
-          UNIMERCE CO., LTD. | CORE U-ERP DASHBOARD
-        </div>`;
-    }
-  }, 300);
+                <!-- GPM -->
+                <div class="glass-panel p-4 rounded-xl relative overflow-hidden border-emerald-950">
+                    <span class="text-[10px] font-medium text-slate-400 uppercase">Cleared Profit</span>
+                    <p id="realizedGpm" class="text-lg font-bold tracking-tight text-emerald-400 text-glow-emerald mt-1">-</p>
+                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                    </div>
+                </div>
 
-  fetchKpiData();
-  fetchLineChartData();
-  fetchBestSellers();
-  fetchContributionData();
-});
+                <!-- GPM % -->
+                <div class="glass-panel p-4 rounded-xl relative overflow-hidden border-emerald-950">
+                    <span class="text-[10px] font-medium text-slate-400 uppercase">Cleared GPM %</span>
+                    <p id="realizedGpmPercent" class="text-xl font-extrabold tracking-tight text-emerald-400 text-glow-emerald mt-1">-</p>
+                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
+                        <i class="fa-solid fa-percent"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-// ฟังก์ชันแปลงรูปแบบเงื่อนไขช่วงเวลาให้กลายเป็นแบบกรองด้วยเลขที่บิล (invoice_no ILIKE VyyMm%) 
-// หรือใช้ช่วงวันในกรณีของ Custom
-function buildInvoicePeriodQuery(periodId, startInputId, endInputId) {
-  const p = document.getElementById(periodId).value;
-  const shortYear = String(currentYear).substring(2, 4); // "26"
-  const padMonth = String(currentMonth).padStart(2, '0'); // "07"
-  
-  if (p === 'thismonth') {
-    return `invoice_no=ilike.V${shortYear}${padMonth}*`;
-  }
-  if (p === 'lastmonth') {
-    let lm = currentMonth - 1; let ly = currentYear;
-    if (lm === 0) { lm = 12; ly--; }
-    const sy = String(ly).substring(2, 4);
-    return `invoice_no=ilike.V${sy}${String(lm).padStart(2, '0')}*`;
-  }
-  if (p === 'last3month') {
-    let m1 = `V${shortYear}${padMonth}`;
-    let lm1 = currentMonth - 1; let ly1 = currentYear; if (lm1 === 0) { lm1 = 12; ly1--; }
-    let m2 = `V${String(ly1).substring(2,4)}${String(lm1).padStart(2,'0')}`;
-    let lm2 = currentMonth - 2; let ly2 = currentYear; 
-    if (lm2 <= 0) { lm2 = 12 + lm2; ly2--; }
-    let m3 = `V${String(ly2).substring(2,4)}${String(lm2).padStart(2,'0')}`;
-    
-    return `invoice_no=or(invoice_no.ilike.${m1}*,invoice_no.ilike.${m2}*,invoice_no.ilike.${m3}*)`;
-  }
-  if (p === 'thisyear') {
-    return `invoice_no=ilike.V${shortYear}*`;
-  }
-  if (p === 'lastyear') {
-    const prevYear = String(currentYear - 1).substring(2, 4);
-    return `invoice_no=ilike.V${prevYear}*`;
-  }
-  if (p === 'custom') {
-    const s = document.getElementById(startInputId).value;
-    const e = document.getElementById(endInputId).value;
-    if (s && e) {
-      return `date=gte.${s}&date=lte.${e}`;
-    }
-  }
-  return '';
-}
+        <!-- 3. LINE CHART SECTION -->
+        <section class="glass-panel p-5 rounded-2xl">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+                <div>
+                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Monthly Sales Trends</h2>
+                    <p class="text-[10px] text-slate-400">เปรียบเทียบยอดขายรายเดือน ปีนี้ (2026) กับ ปีที่แล้ว (2025) อิงตามเวลาประเทศไทย 100%</p>
+                </div>
+                <div class="flex gap-4 text-[10px] font-semibold">
+                    <div class="flex items-center gap-1.5">
+                        <span class="h-2.5 w-2.5 rounded bg-emerald-500"></span>
+                        <span class="text-slate-300">ยอดขายปีนี้ (2026)</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="h-2.5 w-2.5 rounded bg-slate-600"></span>
+                        <span class="text-slate-400">ยอดขายปีก่อน (2025)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="h-72 w-full relative">
+                <canvas id="monthlySalesChart"></canvas>
+            </div>
+        </section>
 
-// ----------------------------------------------------
-// FINANCIAL DATA (ดึงตารางดิบ ปรับปรุงการ SUM แบบไร้เงื่อนไขซ่อน)
-// ----------------------------------------------------
-function handleKpiPeriodChange() {
-  const isCustom = document.getElementById("kpiPeriodSelect").value === 'custom';
-  document.getElementById("kpiCustomDate").classList.toggle("active", isCustom);
-  fetchKpiData();
-}
+    </main>
 
-async function fetchKpiData() {
-  let url = `${SB_URL}/transactions?select=sales_amt,cogs,gpm,netreceived,cashflow,invoice_no`;
-  const filter = buildInvoicePeriodQuery('kpiPeriodSelect', 'kpiStart', 'kpiEnd');
-  if(filter) url += `&${filter}`;
+    <!-- Footer -->
+    <footer class="border-t border-slate-950 bg-slate-950 py-4 text-center">
+        <p class="text-[10px] text-slate-500">© 2026 GPM Dashboard Sandbox. Live Real-Time Integration.</p>
+    </footer>
 
-  try {
-    const res = await fetch(url, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } });
-    if (!res.ok) throw new Error("API Network error");
-    const data = await res.json();
+    <script>
+        // กำหนดรายละเอียดการเชื่อมต่อที่ผู้ใช้ส่งมาโดยตรง
+        const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
+        
+        let supabaseClient = null;
+        let chartInstance = null;
 
-    let pureSales = 0, pureCogs = 0, pureGpm = 0;
-    let cashSales = 0, cashCogs = 0, cashGpm = 0, cashNetReceived = 0;
-    const uniqueInvoices = new Set();
+        // จัดการเรื่อง Timezone ด้วยเบราว์เซอร์เพื่อแปลงเป็นเวลาไทย
+        function getBangkokYearMonth(dateStr) {
+            if (!dateStr) return { year: null, month: null };
+            try {
+                const date = new Date(dateStr);
+                const formatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: 'Asia/Bangkok',
+                    year: 'numeric',
+                    month: 'numeric'
+                });
+                const parts = formatter.formatToParts(date);
+                const year = parseInt(parts.find(p => p.type === 'year').value);
+                const month = parseInt(parts.find(p => p.type === 'month').value);
+                return { year, month };
+            } catch (e) {
+                return { year: null, month: null };
+            }
+        }
 
-    data.forEach(r => {
-      const sa = parseFloat(r.sales_amt) || 0;
-      const co = parseFloat(r.cogs) || 0;
-      const gp = parseFloat(r.gpm) || 0;
-      const nr = parseFloat(r.netreceived) || 0;
+        // จัดฟอร์แมตทางการเงิน
+        function formatMoney(amount) {
+            return '฿' + parseFloat(amount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
 
-      if (r.invoice_no) {
-        uniqueInvoices.add(r.invoice_no);
-      }
+        // เริ่มต้นโหลดเมื่อเพจพร้อมทำงาน
+        window.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
+        });
 
-      // 1. ยอดรวมเพียวๆ ไม่กรองเงื่อนไขสถานะ (ตามคำสั่งคุณ เพื่อให้เท่า SQL)
-      pureSales += sa;
-      pureCogs += co;
-      pureGpm += gp;
+        // ดึงข้อมูลและประมวลผล
+        async function initDashboard() {
+            const statusBadge = document.getElementById('connStatus');
+            const loader = document.getElementById('loadingIndicator');
+            const errorPanel = document.getElementById('errorMessage');
 
-      // 2. สะสมยอด Cash Realized (แสดงแถวล่าง)
-      if (r.cashflow && r.cashflow.trim() !== 'รอชำระเงิน' && r.cashflow.trim() !== 'รอการชำระเงิน') {
-        cashSales += sa;
-        cashCogs += co;
-        cashGpm += gp; 
-        cashNetReceived += nr;
-      }
-    });
+            try {
+                // สร้างการเชื่อมต่อ Supabase
+                supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+                
+                statusBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                statusBadge.innerHTML = `<span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span> Connected`;
 
-    document.getElementById("kpiSalesTotal").innerText = `฿${pureSales.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}`;
-    document.getElementById("kpiCogsTotal").innerText = `฿${pureCogs.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}`;
-    document.getElementById("kpiGpmTotal").innerText = `฿${pureGpm.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}`;
-    document.getElementById("kpiBillsCount").innerText = `${uniqueInvoices.size} บิล`;
+                // 1. ดึงรายงานผ่าน View v_gpm_monthly_report 
+                const { data: viewData, error: viewError } = await supabaseClient
+                    .from('v_gpm_monthly_report')
+                    .select('*');
 
-    document.getElementById("kpiSalesRealized").innerText = `฿${cashSales.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}`;
-    document.getElementById("kpiCogsRealized").innerText = `฿${cashCogs.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}`;
-    document.getElementById("kpiGpmRealized").innerText = `฿${cashGpm.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}`;
-    document.getElementById("kpiNetReceivedRealized").innerText = `฿${cashNetReceived.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}`;
+                if (viewError) throw viewError;
 
-  } catch(err) { console.error(err); }
-}
+                let unrealizedSales = 0;
+                let unrealizedCogs = 0;
+                let unrealizedGpm = 0;
 
-// ----------------------------------------------------
-// COMPARATIVE SHARP LINE GRAPH (ล้างฟิลเตอร์ล็อกสถานะออก)
-// ----------------------------------------------------
-async function fetchLineChartData() {
-  const mYear = document.getElementById("lineChartMainYearSelect").value;
-  const cYear = document.getElementById("lineChartCompYearSelect").value;
+                let chart2026Sales = Array(12).fill(0);
+                let chart2025Sales = Array(12).fill(0);
 
-  // เอาเงื่อนไข &cashflow=not.eq ออกเพื่อให้ดึงยอดดิบตามรูปแบบรหัสบิล
-  let url = `${SB_URL}/transactions?select=sales_amt,date,invoice_no`;
-  
-  try {
-    const res = await fetch(url, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } });
-    const data = await res.json();
+                if (viewData) {
+                    viewData.forEach(row => {
+                        const year = parseInt(row.sales_year);
+                        const month = parseInt(row.sales_month);
+                        const sAmt = parseFloat(row.sales_amt) || 0;
+                        const cAmt = parseFloat(row.cogs) || 0;
+                        const gAmt = parseFloat(row.gpm) || 0;
 
-    let mainData = Array(12).fill(null);
-    let compData = Array(12).fill(null);
-    let totalMain = 0, totalComp = 0;
-    
-    const targetLimitMonth = (parseInt(mYear) === currentYear) ? currentMonth : 12;
+                        if (year === 2026) {
+                            unrealizedSales += sAmt;
+                            unrealizedCogs += cAmt;
+                            unrealizedGpm += gAmt;
 
-    for(let i=0; i<targetLimitMonth; i++) mainData[i] = 0;
-    for(let i=0; i<12; i++) compData[i] = 0;
+                            if (month >= 1 && month <= 12) {
+                                chart2026Sales[month - 1] = sAmt;
+                            }
+                        } else if (year === 2025) {
+                            if (month >= 1 && month <= 12) {
+                                chart2025Sales[month - 1] = sAmt;
+                            }
+                        }
+                    });
+                }
 
-    data.forEach(r => {
-      // ใช้ลอจิกแกะปีเดือนจากรหัสบิลเพื่อให้ทิศทางข้อมูลวิ่งตรงกันแม่นยำที่สุด
-      if(!r.invoice_no || !r.invoice_no.match(/^V\d{4}/)) return;
-      
-      const yr = "20" + r.invoice_no.substring(1, 3); // แกะปี เช่น "26" -> "2026"
-      const mo = parseInt(r.invoice_no.substring(3, 5)) - 1; // แกะเดือน เช่น "07" -> 6 (Index ของ ก.ค.)
-      const amt = parseFloat(r.sales_amt) || 0;
+                const unrealizedGpmPercent = unrealizedSales > 0 ? (unrealizedGpm / unrealizedSales) * 100 : 0;
 
-      if(yr === mYear && mo < targetLimitMonth) {
-        mainData[mo] += amt;
-        totalMain += amt;
-      } else if(yr === cYear) {
-        compData[mo] += amt;
-        totalComp += amt;
-      }
-    });
+                // อัปเดตฝั่ง Unrealized บนหน้าจอ
+                document.getElementById('unrealizedSales').innerText = formatMoney(unrealizedSales);
+                document.getElementById('unrealizedCogs').innerText = formatMoney(unrealizedCogs);
+                document.getElementById('unrealizedGpm').innerText = formatMoney(unrealizedGpm);
+                document.getElementById('unrealizedGpmPercent').innerText = unrealizedGpmPercent.toFixed(2) + '%';
 
-    document.getElementById("lineChartTotalText").innerText = `ยอดรวมปีหลัก (${parseInt(mYear)+543}): ฿${totalMain.toLocaleString(undefined,{minimumFractionDigits:2})} | ยอดรวมปีเปรียบเทียบ (${parseInt(cYear)+543}): ฿${totalComp.toLocaleString(undefined,{minimumFractionDigits:2})}`;
+                // 2. ดึงรายการ Realized จากตาราง transactions ที่ผ่านการตรวจสอบเงินเรียบร้อยแล้ว
+                const { data: txData, error: txError } = await supabaseClient
+                    .from('transactions')
+                    .select('sales_amt, cogs, date, checkcashflowin')
+                    .not('checkcashflowin', 'is', null);
 
-    const ctx = document.getElementById("lineChartOverview").getContext("2d");
-    if(chartInstances['line']) chartInstances['line'].destroy();
+                if (txError) throw txError;
 
-    chartInstances['line'] = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."],
-        datasets: [
-          { label: `ปีหลัก (${parseInt(mYear)+543}) สรุปสะสม: ฿${totalMain.toLocaleString()}`, data: mainData, borderColor: '#1e3d6e', borderWidth: 3, tension: 0.0, fill: false, spanGaps: true },
-          { label: `ปีเทียบ (${parseInt(cYear)+543}) สรุปสะสม: ฿${totalComp.toLocaleString()}`, data: compData, borderColor: '#cbd5e1', borderWidth: 2, tension: 0.0, fill: false, spanGaps: true }
-        ]
-      },
-      options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
-    });
+                let realizedSales = 0;
+                let realizedCogs = 0;
+                let realizedGpm = 0;
 
-  } catch(err) { console.error(err); }
-}
+                if (txData) {
+                    txData.forEach(row => {
+                        const status = String(row.checkcashflowin).trim().toLowerCase();
+                        const isValidStatus = ['เรียบร้อย', 'yes', 'true', 'y'].includes(status);
 
-// ----------------------------------------------------
-// TOP SELLERS DEEP ANALYTICS LAYER
-// ----------------------------------------------------
-function handleSellerPeriodChange() {
-  const isCustom = document.getElementById("sellerPeriodSelect").value === 'custom';
-  document.getElementById("sellerCustomDate").classList.toggle("active", isCustom);
-  fetchBestSellers();
-}
+                        if (isValidStatus) {
+                            const { year } = getBangkokYearMonth(row.date);
+                            if (year === 2026) {
+                                const sAmt = parseFloat(row.sales_amt) || 0;
+                                const cAmt = parseFloat(row.cogs) || 0; // แปลง cogs จาก text เป็นตัวเลข
+                                
+                                realizedSales += sAmt;
+                                realizedCogs += cAmt;
+                                realizedGpm += (sAmt - cAmt);
+                            }
+                        }
+                    });
+                }
 
-let cachedSellersList = [];
+                const realizedGpmPercent = realizedSales > 0 ? (realizedGpm / realizedSales) * 100 : 0;
 
-async function fetchBestSellers() {
-  let url = `${SB_URL}/transactions?select=item_code,item_name,qty,sales_amt,cogs,gpm,invoice_no`;
-  const filter = buildInvoicePeriodQuery('sellerPeriodSelect', 'sellerStart', 'sellerEnd');
-  if(filter) url += `&${filter}`;
+                // อัปเดตฝั่ง Realized บนหน้าจอ
+                document.getElementById('realizedSales').innerText = formatMoney(realizedSales);
+                document.getElementById('realizedCogs').innerText = formatMoney(realizedCogs);
+                document.getElementById('realizedGpm').innerText = formatMoney(realizedGpm);
+                document.getElementById('realizedGpmPercent').innerText = realizedGpmPercent.toFixed(2) + '%';
 
-  try {
-    const res = await fetch(url, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } });
-    const data = await res.json();
+                // 3. วาดกราฟ
+                renderChart(chart2026Sales, chart2025Sales);
 
-    let dict = {};
-    data.forEach(r => {
-      if(!r.item_code) return;
-      if(!dict[r.item_code]) dict[r.item_code] = { code: r.item_code, name: r.item_name || 'ไม่ระบุชื่อสินค้า', qty: 0, amt: 0, cogs: 0, gpm: 0 };
-      dict[r.item_code].qty += parseInt(r.qty) || 0;
-      dict[r.item_code].amt += parseFloat(r.sales_amt) || 0;
-      dict[r.item_code].cogs += parseFloat(r.cogs) || 0;
-      dict[r.item_code].gpm += parseFloat(r.gpm) || 0;
-    });
+                // ปิดกล่องโหลด
+                loader.classList.add('hidden');
 
-    cachedSellersList = Object.values(dict);
-    const metric = document.getElementById("sellerMetricSelect").value;
-    cachedSellersList.sort((a,b) => metric === 'qty' ? b.qty - a.qty : b.amt - a.amt);
+            } catch (err) {
+                console.error("Database connection or parsing error: ", err);
+                loader.classList.add('hidden');
+                errorPanel.classList.remove('hidden');
+                document.getElementById('errorText').innerText = err.message || err;
+                
+                statusBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20";
+                statusBadge.innerHTML = `<span class="h-2 w-2 rounded-full bg-rose-500"></span> Disconnected`;
+            }
+        }
 
-    renderSellersTable();
-  } catch(err) { console.error(err); }
-}
+        // วาดกราฟความเคลื่อนไหวรายเดือน
+        function renderChart(sales2026, sales2025) {
+            const ctx = document.getElementById('monthlySalesChart').getContext('2d');
+            
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
 
-function renderSellersTable() {
-  const tbody = document.getElementById("best-seller-rows");
-  tbody.innerHTML = "";
-
-  cachedSellersList.forEach((item, idx) => {
-    const tr = document.createElement("tr");
-    tr.onclick = () => openProductDetailModal(item);
-    
-    let rankDisplay = `<b>${idx+1}</b>`;
-    if(idx === 0) rankDisplay = `<span class="rank-badge rank-1">1</span>`;
-    if(idx === 1) rankDisplay = `<span class="rank-badge rank-2">2</span>`;
-    if(idx === 2) rankDisplay = `<span class="rank-badge rank-3">3</span>`;
-
-    tr.innerHTML = `
-      <td>${rankDisplay}</td>
-      <td><code>${item.code}</code></td>
-      <td>${item.name}</td>
-      <td style="text-align:right;">${item.qty.toLocaleString()} ชิ้น</td>
-      <td style="text-align:right; font-weight:bold; color:var(--primary);">฿${item.amt.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
-function sortTable(columnIndex) {
-  sortDirections[columnIndex] = !sortDirections[columnIndex];
-  const dir = sortDirections[columnIndex];
-
-  cachedSellersList.sort((a, b) => {
-    if (columnIndex === 0 || columnIndex === 4) return dir ? a.amt - b.amt : b.amt - a.amt;
-    if (columnIndex === 1) return dir ? a.code.localeCompare(b.code) : b.code.localeCompare(a.code);
-    if (columnIndex === 2) return dir ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-    if (columnIndex === 3) return dir ? a.qty - b.qty : b.qty - a.qty;
-  });
-  renderSellersTable();
-}
-
-// ----------------------------------------------------
-// ZOOM MODAL WITH GRID A-D
-// ----------------------------------------------------
-async function openProductDetailModal(item) {
-  document.getElementById("productDetailModal").classList.add("active");
-  document.getElementById("modalTitle").innerText = item.name;
-
-  const gpPercent = item.amt > 0 ? (item.gpm / item.amt) * 100 : 0;
-
-  document.getElementById("modalSummaryHeader").innerHTML = `
-    <div style="background:var(--primary-light); padding:12px; border-radius:8px; margin-bottom:15px;">
-      <div style="font-size:13px; font-weight:bold; color:var(--primary);">สรุปสะสมตามช่วงเวลาแดชบอร์ด</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:6px; font-size:12px;">
-        <div><b>ยอดขายรวม:</b> ฿${item.amt.toLocaleString(undefined,{minimumFractionDigits:2})}</div>
-        <div><b>กำไรรวม:</b> ฿${item.gpm.toLocaleString(undefined,{minimumFractionDigits:4})}</div>
-        <div><b>GP% เฉลี่ย:</b> ${gpPercent.toFixed(2)}%</div>
-      </div>
-    </div>
-    <div style="font-size:13px; font-weight:bold; color:var(--text-main);"><i class="fa-solid fa-clock-rotate-left"></i> ตารางวิเคราะห์ข้อมูลย้อนหลัง 6 เดือนรายคอลัมน์ [Grid A-D]</div>
-  `;
-
-  let past6MonthsData = [];
-  try {
-    let url = `${SB_URL}/transactions?select=sales_amt,qty,gpm,invoice_no&item_code=eq.${item.code}`;
-    const res = await fetch(url, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } });
-    past6MonthsData = await res.json();
-  } catch(e) { console.error(e); }
-
-  let monthlyBuckets = {};
-  for (let i = 5; i >= 0; i--) {
-    let d = new Date(currentYear, currentMonth - 1 - i, 1);
-    let key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    let display = d.toLocaleString('en-US', { month: 'short', year: '2-digit' });
-    monthlyBuckets[key] = { label: display, qty: 0, amt: 0, gpm: 0 };
-  }
-
-  past6MonthsData.forEach(r => {
-    if(!r.invoice_no || !r.invoice_no.match(/^V\d{4}/)) return;
-    let yr = "20" + r.invoice_no.substring(1, 3);
-    let mo = r.invoice_no.substring(3, 5);
-    let k = `${yr}-${mo}`;
-    
-    if(monthlyBuckets[k]) {
-      monthlyBuckets[k].qty += parseInt(r.qty) || 0;
-      monthlyBuckets[k].amt += parseFloat(r.sales_amt) || 0;
-      monthlyBuckets[k].gpm += parseFloat(r.gpm) || 0;
-    }
-  });
-
-  let gridRowsHtml = "";
-  Object.keys(monthlyBuckets).sort().reverse().forEach(k => {
-    let m = monthlyBuckets[k];
-    gridRowsHtml += `
-      <tr>
-        <td style="text-align:left; font-weight:bold;">${m.label}</td>
-        <td>${m.qty.toLocaleString()}</td>
-        <td style="color:var(--primary); font-weight:500;">฿${m.amt.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
-        <td style="color:var(--success); font-weight:500;">฿${m.gpm.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
-      </tr>
-    `;
-  });
-
-  document.getElementById("modalListContent").innerHTML = `
-    <table class="history-grid-table">
-      <thead>
-        <tr>
-          <th style="text-align:left;">[A] yy-mmm</th>
-          <th>[B] Quantity</th>
-          <th>[C] Sales Amount</th>
-          <th>[D] GPM Actual</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${gridRowsHtml}
-      </tbody>
-    </table>
-  `;
-}
-
-function closeModal() { document.getElementById("productDetailModal").classList.remove("active"); }
-
-// ----------------------------------------------------
-// CONTRIBUTION LAYER
-// ----------------------------------------------------
-function handleContribPeriodChange() {
-  const isCustom = document.getElementById("contribPeriodSelect").value === 'custom';
-  document.getElementById("contribCustomDate").classList.toggle("active", isCustom);
-  fetchContributionData();
-}
-
-async function fetchContributionData() {
-  let url = `${SB_URL}/transactions?select=sales_amt,qty,channel,item_name,item_code,invoice_no,products!item_code(MainCategory)`;
-  const filter = buildInvoicePeriodQuery('contribPeriodSelect', 'contribStart', 'contribEnd');
-  if(filter) url += `&${filter}`;
-
-  try {
-    const res = await fetch(url, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } });
-    if (!res.ok) throw new Error("Contribution error");
-    globalContribData = await res.json();
-    
-    renderDonut1();
-    renderDonut2();
-  } catch(err) { console.error("Contribution Fetch Failed:", err); }
-}
-
-function processGroupedData(typeKey) {
-  let dict = {};
-  let totalSales = 0;
-
-  globalContribData.forEach(r => {
-    let key = "ไม่ระบุ";
-    if(typeKey === 'item') key = r.item_name || r.item_code || "สินค้าทั่วไป";
-    else if(typeKey === 'channel') key = r.channel || "หน้าร้าน/ทั่วไป";
-    else if(typeKey === 'category') {
-      key = r.products ? (r.products.MainCategory || "ทั่วไป") : "หมวดหมู่อื่นๆ";
-    }
-
-    const amt = parseFloat(r.sales_amt) || 0;
-    if(amt <= 0) return;
-    
-    totalSales += amt;
-    dict[key] = (dict[key] || 0) + amt;
-  });
-
-  let labels = [], data = [];
-  Object.keys(dict).forEach(k => {
-    const pct = totalSales > 0 ? ((dict[k] / totalSales) * 100).toFixed(1) : 0;
-    labels.push(`${k} (฿${Math.round(dict[k]).toLocaleString()} | ${pct}%)`);
-    data.push(dict[k]);
-  });
-
-  return { labels, data };
-}
-
-function renderDonut1() {
-  const type = document.getElementById("donut1TypeSelect").value;
-  const res = processGroupedData(type);
-  const ctx = document.getElementById("donutChart1").getContext("2d");
-  if(chartInstances['donut1']) chartInstances['donut1'].destroy();
-  
-  chartInstances['donut1'] = new Chart(ctx, {
-    type: 'doughnut',
-    data: { labels: res.labels, datasets: [{ data: res.data, backgroundColor: ['#1e3d6e','#3b82f6','#10b981','#f59e0b','#ef4444','#6366f1'] }] },
-    options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { display: false } } }
-  });
-}
-
-function renderDonut2() {
-  const type = document.getElementById("donut2TypeSelect").value;
-  const res = processGroupedData(type);
-  const ctx = document.getElementById("donutChart2").getContext("2d");
-  if(chartInstances['donut2']) chartInstances['donut2'].destroy();
-  
-  chartInstances['donut2'] = new Chart(ctx, {
-    type: 'doughnut',
-    data: { labels: res.labels, datasets: [{ data: res.data, backgroundColor: ['#10b981','#f59e0b','#ef4444','#1e3d6e','#3b82f6','#8b5cf6'] }] },
-    options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { display: false } } }
-  });
-}
-</script>
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
+                    datasets: [
+                        {
+                            label: 'ปีนี้ (2026)',
+                            data: sales2026,
+                            borderColor: '#10b981', // Emerald
+                            backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#10b981',
+                            pointHoverRadius: 7,
+                            tension: 0.35,
+                            fill: true
+                        },
+                        {
+                            label: 'ปีก่อน (2025)',
+                            data: sales2025,
+                            borderColor: '#475569', // Slate
+                            backgroundColor: 'transparent',
+                            borderWidth: 1.5,
+                            borderDash: [5, 5],
+                            pointBackgroundColor: '#475569',
+                            tension: 0.35,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.03)'
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 9,
+                                    family: 'Inter'
+                                },
+                                callback: function(value) {
+                                    if (value >= 1e6) return '฿' + (value / 1e6).toFixed(1) + 'M';
+                                    if (value >= 1e3) return '฿' + (value / 1e3).toFixed(0) + 'K';
+                                    return '฿' + value;
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 9,
+                                    family: 'Inter'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
