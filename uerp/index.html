@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th" class="h-full bg-slate-950 text-slate-100">
+<html lang="th" class="h-full bg-slate-50 text-slate-800">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,19 +11,22 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#f0fdf4',
-                            500: '#10b981',
-                            600: '#059669',
-                            950: '#022c22',
+                        google: {
+                            blue: '#1a73e8',
+                            blueHover: '#1557b0',
+                            red: '#d93025',
+                            redHover: '#b31b12',
+                            gray: '#5f6368',
+                            lightGray: '#f1f3f4',
+                            border: '#dadce0'
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Inter & Noto Sans Thai -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Chart.js CDN -->
@@ -33,212 +36,209 @@
     
     <style>
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
         }
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        .google-card {
+            background: #ffffff;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
         }
-        .text-glow-emerald {
-            text-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-        }
-        .text-glow-amber {
-            text-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        .google-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='%235f6368' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 20px;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col bg-slate-50">
 
-    <!-- Navigation Bar -->
-    <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <!-- Header -->
+    <header class="bg-white border-b border-google-border sticky top-0 z-50">
+        <div class="max-w-[1000px] mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="bg-gradient-to-tr from-emerald-600 to-teal-500 text-white p-2.5 rounded-xl shadow-lg shadow-emerald-500/20">
-                    <i class="fa-solid fa-calculator text-lg animate-pulse"></i>
+                <div class="bg-google-blue text-white p-2.5 rounded-lg shadow-sm">
+                    <i class="fa-solid fa-chart-line text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="text-sm font-bold tracking-tight text-white sm:text-base">GPM Live Testbed</h1>
-                    <p class="text-[10px] text-slate-400">ระบบคำนวณแบบ Real-time ตรวจสอบความถูกต้องรายปี 2026</p>
+                    <h1 class="text-base font-bold text-slate-900 tracking-tight">GPM Live Testbed</h1>
+                    <p class="text-[11px] text-google-gray">ระบบวิเคราะห์ข้อมูลการเงินสไตล์คลาสสิกปี 2026</p>
                 </div>
             </div>
             
-            <div class="flex items-center gap-2">
-                <div id="connStatus" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-slate-900 text-slate-400 border border-slate-800">
-                    <span class="h-2 w-2 rounded-full bg-slate-600"></span>
+            <div>
+                <div id="connStatus" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-slate-100 text-google-gray border border-google-border">
+                    <span class="h-2 w-2 rounded-full bg-slate-400"></span>
                     Initializing...
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Grid -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow space-y-8">
+    <!-- Main Content Container (Max-width 1000px & Mobile Friendly) -->
+    <main class="max-w-[1000px] mx-auto px-4 py-6 w-full flex-grow space-y-6">
         
-        <!-- Live Connection Notice -->
-        <div id="loadingIndicator" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center gap-3">
-            <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
-                <i class="fa-solid fa-spinner animate-spin text-lg"></i>
+        <!-- Status Indicator -->
+        <div id="loadingIndicator" class="bg-blue-50 border border-blue-200 rounded-lg p-3.5 flex items-center gap-3">
+            <div class="text-google-blue animate-spin">
+                <i class="fa-solid fa-spinner text-lg"></i>
             </div>
             <div>
-                <h3 class="text-xs font-semibold text-emerald-400">กำลังเชื่อมต่อไปยัง Supabase Direct Database...</h3>
-                <p class="text-[10px] text-slate-400 mt-0.5">ระบบจะดึงโครงสร้าง View และกรองข้อมูลตาม Timezone ประเทศไทยอัตโนมัติ</p>
+                <h3 class="text-xs font-semibold text-google-blue">กำลังประมวลผลข้อมูล Real-time...</h3>
+                <p class="text-[11px] text-google-gray mt-0.5">กรองข้อมูลแยกตามเงื่อนไข Timezone ประเทศไทย</p>
             </div>
         </div>
 
-        <div id="errorMessage" class="hidden bg-rose-500/10 border border-rose-500/20 rounded-2xl p-4 flex items-start gap-3">
-            <div class="p-2 bg-rose-500/10 rounded-lg text-rose-400">
+        <div id="errorMessage" class="hidden bg-red-50 border border-red-200 rounded-lg p-3.5 flex items-start gap-3">
+            <div class="text-google-red">
                 <i class="fa-solid fa-circle-exclamation text-lg"></i>
             </div>
             <div>
-                <h3 class="text-xs font-semibold text-rose-300">เกิดข้อผิดพลาดในการโหลดข้อมูล</h3>
-                <p id="errorText" class="text-[10px] text-slate-400 mt-0.5">คำชี้แจงความเสียหาย</p>
+                <h3 class="text-xs font-semibold text-google-red">เกิดข้อผิดพลาดในการเรียกดูข้อมูล</h3>
+                <p id="errorText" class="text-[11px] text-google-gray mt-0.5">รายละเอียดข้อผิดพลาด</p>
             </div>
         </div>
 
-        <!-- 1. UNREALIZED SECTION -->
-        <section class="space-y-4">
-            <div class="flex items-center justify-between">
+        <!-- 1. SUMMARY SECTION (Unrealized & GPM Month 7 Sum) -->
+        <section class="space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
-                    <span class="p-1 bg-amber-500/10 text-amber-400 rounded-md border border-amber-500/20 text-xs">
-                        <i class="fa-solid fa-file-invoice-dollar"></i>
-                    </span>
-                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Unrealized Performance (ยอดรวมทั้งหมดในระบบปี 2026)</h2>
+                    <span class="text-google-blue text-sm"><i class="fa-solid fa-list-check"></i></span>
+                    <h2 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Performance Summary</h2>
                 </div>
-                <span class="text-[10px] text-slate-500 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Source: v_gpm_monthly_report</span>
+                <!-- Period Selector -->
+                <div class="relative w-full sm:w-48">
+                    <select id="periodSelector" onchange="filterSummaryData()" class="google-select w-full bg-white border border-google-border rounded px-3 py-1.5 text-xs text-slate-700 font-medium focus:outline-none focus:border-google-blue cursor-pointer">
+                        <option value="this_month">เดือนนี้</option>
+                        <option value="last_month">เดือนที่แล้ว</option>
+                        <option value="last_3_months">3 เดือนย้อนหลัง</option>
+                        <option value="this_year" selected>ปีนี้ (2026)</option>
+                        <option value="last_year">ปีที่แล้ว (2025)</option>
+                    </select>
+                </div>
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <!-- Sales -->
-                <div class="glass-panel p-4 rounded-xl relative overflow-hidden">
-                    <span class="text-[10px] font-medium text-slate-400 uppercase">Sales Amount</span>
-                    <p id="unrealizedSales" class="text-lg font-bold tracking-tight text-white mt-1">-</p>
-                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
-                        <i class="fa-solid fa-coins"></i>
-                    </div>
+                <div class="google-card p-4 relative bg-white">
+                    <span class="text-[10px] font-bold text-google-gray uppercase tracking-wider">Sales Amount</span>
+                    <p id="sumSales" class="text-xl font-bold text-slate-900 mt-1">฿0.00</p>
+                    <p class="text-[10px] text-google-gray mt-1 border-t pt-1 border-slate-100">ยอดรวมยอดขายในระบบ</p>
                 </div>
 
                 <!-- COGS -->
-                <div class="glass-panel p-4 rounded-xl relative overflow-hidden">
-                    <span class="text-[10px] font-medium text-slate-400 uppercase">Cost of Goods (COGS)</span>
-                    <p id="unrealizedCogs" class="text-lg font-bold tracking-tight text-white mt-1">-</p>
-                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
-                        <i class="fa-solid fa-tags"></i>
-                    </div>
+                <div class="google-card p-4 relative bg-white">
+                    <span class="text-[10px] font-bold text-google-gray uppercase tracking-wider">Cost of Goods (COGS)</span>
+                    <p id="sumCogs" class="text-xl font-bold text-slate-900 mt-1">฿0.00</p>
+                    <p class="text-[10px] text-google-gray mt-1 border-t pt-1 border-slate-100">ต้นทุนสินค้าทั้งหมด</p>
                 </div>
 
-                <!-- GPM -->
-                <div class="glass-panel p-4 rounded-xl relative overflow-hidden">
-                    <span class="text-[10px] font-medium text-slate-400 uppercase">Gross Profit (GPM)</span>
-                    <p id="unrealizedGpm" class="text-lg font-bold tracking-tight text-amber-400 text-glow-amber mt-1">-</p>
-                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
-                        <i class="fa-solid fa-chart-pie"></i>
-                    </div>
+                <!-- GPM (Net Received) -->
+                <div class="google-card p-4 relative bg-white">
+                    <span class="text-[10px] font-bold text-google-gray uppercase tracking-wider">Gross Profit (GPM)</span>
+                    <p id="sumGpm" class="text-xl font-bold text-google-blue mt-1">฿0.00</p>
+                    <p class="text-[10px] text-google-gray mt-1 border-t pt-1 border-slate-100">กำไรขั้นต้นสะสม</p>
                 </div>
 
-                <!-- GPM % -->
-                <div class="glass-panel p-4 rounded-xl relative overflow-hidden">
-                    <span class="text-[10px] font-medium text-slate-400 uppercase">GPM Ratio %</span>
-                    <p id="unrealizedGpmPercent" class="text-xl font-extrabold tracking-tight text-amber-400 text-glow-amber mt-1">-</p>
-                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
-                        <i class="fa-solid fa-percent"></i>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 2. REALIZED SECTION -->
-        <section class="space-y-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="p-1 bg-emerald-500/10 text-emerald-400 rounded-md border border-emerald-500/20 text-xs">
-                        <i class="fa-solid fa-circle-check"></i>
+                <!-- GEM SUM (Realized Month 7) -->
+                <div class="google-card p-4 relative bg-white border-l-4 border-l-google-blue">
+                    <span class="text-[10px] font-bold text-google-blue uppercase tracking-wider flex items-center gap-1">
+                        <i class="fa-solid fa-wallet"></i> GEM SUM (M7)
                     </span>
-                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Realized Performance (ยอดเก็บเงินเรียบร้อย ปี 2026)</h2>
-                </div>
-                <span class="text-[10px] text-slate-500 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Source: transactions (Checked-In + Bangkok Timezone)</span>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <!-- Sales -->
-                <div class="glass-panel p-4 rounded-xl relative overflow-hidden border-emerald-950">
-                    <span class="text-[10px] font-medium text-slate-400 uppercase">Cleared Sales</span>
-                    <p id="realizedSales" class="text-lg font-bold tracking-tight text-white mt-1">-</p>
-                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
-                        <i class="fa-solid fa-wallet"></i>
-                    </div>
-                </div>
-
-                <!-- COGS -->
-                <div class="glass-panel p-4 rounded-xl relative overflow-hidden border-emerald-950">
-                    <span class="text-[10px] font-medium text-slate-400 uppercase">Cleared COGS</span>
-                    <p id="realizedCogs" class="text-lg font-bold tracking-tight text-white mt-1">-</p>
-                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
-                        <i class="fa-solid fa-box-open"></i>
-                    </div>
-                </div>
-
-                <!-- GPM -->
-                <div class="glass-panel p-4 rounded-xl relative overflow-hidden border-emerald-950">
-                    <span class="text-[10px] font-medium text-slate-400 uppercase">Cleared Profit</span>
-                    <p id="realizedGpm" class="text-lg font-bold tracking-tight text-emerald-400 text-glow-emerald mt-1">-</p>
-                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
-                        <i class="fa-solid fa-hand-holding-dollar"></i>
-                    </div>
-                </div>
-
-                <!-- GPM % -->
-                <div class="glass-panel p-4 rounded-xl relative overflow-hidden border-emerald-950">
-                    <span class="text-[10px] font-medium text-slate-400 uppercase">Cleared GPM %</span>
-                    <p id="realizedGpmPercent" class="text-xl font-extrabold tracking-tight text-emerald-400 text-glow-emerald mt-1">-</p>
-                    <div class="absolute right-2 bottom-1 text-slate-800/10 text-4xl pointer-events-none font-bold">
-                        <i class="fa-solid fa-percent"></i>
-                    </div>
+                    <p id="gemSumMonth7" class="text-xl font-bold text-google-blue mt-1">฿0.00</p>
+                    <p class="text-[10px] text-google-gray mt-1 border-t pt-1 border-slate-100">Realized GPM เฉพาะเดือน 7</p>
                 </div>
             </div>
         </section>
 
-        <!-- 3. LINE CHART SECTION -->
-        <section class="glass-panel p-5 rounded-2xl">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <!-- 2. CHARTS ZONE (YTD Comparison Side by Side) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Line Chart: Sales Comparison -->
+            <section class="google-card p-4 bg-white">
+                <div class="mb-2">
+                    <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">YTD Monthly Sales</h3>
+                    <p class="text-[10px] text-google-gray">แนวโน้มยอดขายรายเดือน ปีนี้ (<span class="text-google-blue font-semibold">น้ำเงิน</span>) vs ปีก่อน (<span class="text-google-red font-semibold">แดง</span>)</p>
+                </div>
+                <div class="h-60 w-full relative">
+                    <canvas id="monthlySalesChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Bar Chart: Sales vs COGS Proportion -->
+            <section class="google-card p-4 bg-white">
+                <div class="mb-2">
+                    <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Sales vs COGS Proportion</h3>
+                    <p class="text-[10px] text-google-gray">สัดส่วนยอดขายเทียบกับต้นทุนแต่ละเดือนของปีนี้ (2026)</p>
+                </div>
+                <div class="h-60 w-full relative">
+                    <canvas id="salesCogsBarChart"></canvas>
+                </div>
+            </section>
+        </div>
+
+        <!-- 3. DATA GRID SECTION -->
+        <section class="google-card bg-white overflow-hidden">
+            <div class="p-4 border-b border-google-border bg-slate-50 flex items-center justify-between">
                 <div>
-                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Monthly Sales Trends</h2>
-                    <p class="text-[10px] text-slate-400">เปรียบเทียบยอดขายรายเดือน ปีนี้ (2026) กับ ปีที่แล้ว (2025) อิงตามเวลาประเทศไทย 100%</p>
+                    <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Monthly Breakdown (2026)</h3>
+                    <p class="text-[10px] text-google-gray">ตารางแสดงยอดคำนวณสะสมในเขตเวลาประเทศไทยรายเดือน</p>
                 </div>
-                <div class="flex gap-4 text-[10px] font-semibold">
-                    <div class="flex items-center gap-1.5">
-                        <span class="h-2.5 w-2.5 rounded bg-emerald-500"></span>
-                        <span class="text-slate-300">ยอดขายปีนี้ (2026)</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="h-2.5 w-2.5 rounded bg-slate-600"></span>
-                        <span class="text-slate-400">ยอดขายปีก่อน (2025)</span>
-                    </div>
-                </div>
+                <span class="text-[10px] font-mono text-google-gray bg-white border px-2 py-0.5 rounded">v_gpm_monthly_report</span>
             </div>
             
-            <div class="h-72 w-full relative">
-                <canvas id="monthlySalesChart"></canvas>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 text-google-gray font-bold border-b border-google-border">
+                            <th class="p-3">เดือน</th>
+                            <th class="p-3 text-right">Sales Amount</th>
+                            <th class="p-3 text-right">COGS</th>
+                            <th class="p-3 text-right">GPM (Field)</th>
+                            <th class="p-3 text-right">Calculated Margin</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gridTableBody" class="divide-y divide-slate-100 text-slate-700">
+                        <!-- Dynamic Content Inserted Here -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="bg-slate-50 font-bold border-t-2 border-google-border text-slate-900">
+                            <th class="p-3">รวม YTD (2026)</th>
+                            <td id="totalGridSales" class="p-3 text-right">฿0.00</td>
+                            <td id="totalGridCogs" class="p-3 text-right">฿0.00</td>
+                            <td id="totalGridGpm" class="p-3 text-right text-google-blue">฿0.00</td>
+                            <td id="totalGridMargin" class="p-3 text-right text-google-blue">0.00%</td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </section>
 
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-slate-950 bg-slate-950 py-4 text-center">
-        <p class="text-[10px] text-slate-500">© 2026 GPM Dashboard Sandbox. Live Real-Time Integration.</p>
+    <footer class="border-t border-google-border bg-white py-4 mt-auto text-center">
+        <p class="text-[11px] text-google-gray">© 2026 GPM Dashboard Sandbox. Google Material Design Style.</p>
     </footer>
 
     <script>
-        // กำหนดรายละเอียดการเชื่อมต่อที่ผู้ใช้ส่งมาโดยตรง
+        // Supabase Settings ที่กำหนดไว้เสร็จสรรพ
         const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
         
         let supabaseClient = null;
-        let chartInstance = null;
+        let lineChartInstance = null;
+        let barChartInstance = null;
+        
+        // ตัวแปรเก็บข้อมูลดิบจาก database เพื่อนำไปประมวลผลซ้ำเวลาเปลี่ยน dropdown
+        let rawViewData = [];
+        let rawTxData = [];
 
-        // จัดการเรื่อง Timezone ด้วยเบราว์เซอร์เพื่อแปลงเป็นเวลาไทย
-        function getBangkokYearMonth(dateStr) {
+        const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+
+        // ตรวจจับ timezone แปลงค่าหาวันเดือนปีแบบเวลาไทย
+        function getBangkokDetails(dateStr) {
             if (!dateStr) return { year: null, month: null };
             try {
                 const date = new Date(dateStr);
@@ -248,172 +248,188 @@
                     month: 'numeric'
                 });
                 const parts = formatter.formatToParts(date);
-                const year = parseInt(parts.find(p => p.type === 'year').value);
-                const month = parseInt(parts.find(p => p.type === 'month').value);
-                return { year, month };
+                return {
+                    year: parseInt(parts.find(p => p.type === 'year').value),
+                    month: parseInt(parts.find(p => p.type === 'month').value)
+                };
             } catch (e) {
                 return { year: null, month: null };
             }
         }
 
-        // จัดฟอร์แมตทางการเงิน
         function formatMoney(amount) {
             return '฿' + parseFloat(amount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
-        // เริ่มต้นโหลดเมื่อเพจพร้อมทำงาน
         window.addEventListener('DOMContentLoaded', () => {
             initDashboard();
         });
 
-        // ดึงข้อมูลและประมวลผล
         async function initDashboard() {
             const statusBadge = document.getElementById('connStatus');
             const loader = document.getElementById('loadingIndicator');
             const errorPanel = document.getElementById('errorMessage');
 
             try {
-                // สร้างการเชื่อมต่อ Supabase
                 supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
                 
-                statusBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
-                statusBadge.innerHTML = `<span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span> Connected`;
+                statusBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-blue-50 text-google-blue border border-blue-200";
+                statusBadge.innerHTML = `<span class="h-2 w-2 rounded-full bg-google-blue"></span> Connected`;
 
-                // 1. ดึงรายงานผ่าน View v_gpm_monthly_report 
-                const { data: viewData, error: viewError } = await supabaseClient
-                    .from('v_gpm_monthly_report')
-                    .select('*');
-
+                // 1. Fetch จาก view หลักสำหรับรายงานและกราฟรายเดือน
+                const { data: viewData, error: viewError } = await supabaseClient.from('v_gpm_monthly_report').select('*');
                 if (viewError) throw viewError;
+                rawViewData = viewData || [];
 
-                let unrealizedSales = 0;
-                let unrealizedCogs = 0;
-                let unrealizedGpm = 0;
-
-                let chart2026Sales = Array(12).fill(0);
-                let chart2025Sales = Array(12).fill(0);
-
-                if (viewData) {
-                    viewData.forEach(row => {
-                        const year = parseInt(row.sales_year);
-                        const month = parseInt(row.sales_month);
-                        const sAmt = parseFloat(row.sales_amt) || 0;
-                        const cAmt = parseFloat(row.cogs) || 0;
-                        const gAmt = parseFloat(row.gpm) || 0;
-
-                        if (year === 2026) {
-                            unrealizedSales += sAmt;
-                            unrealizedCogs += cAmt;
-                            unrealizedGpm += gAmt;
-
-                            if (month >= 1 && month <= 12) {
-                                chart2026Sales[month - 1] = sAmt;
-                            }
-                        } else if (year === 2025) {
-                            if (month >= 1 && month <= 12) {
-                                chart2025Sales[month - 1] = sAmt;
-                            }
-                        }
-                    });
-                }
-
-                const unrealizedGpmPercent = unrealizedSales > 0 ? (unrealizedGpm / unrealizedSales) * 100 : 0;
-
-                // อัปเดตฝั่ง Unrealized บนหน้าจอ
-                document.getElementById('unrealizedSales').innerText = formatMoney(unrealizedSales);
-                document.getElementById('unrealizedCogs').innerText = formatMoney(unrealizedCogs);
-                document.getElementById('unrealizedGpm').innerText = formatMoney(unrealizedGpm);
-                document.getElementById('unrealizedGpmPercent').innerText = unrealizedGpmPercent.toFixed(2) + '%';
-
-                // 2. ดึงรายการ Realized จากตาราง transactions ที่ผ่านการตรวจสอบเงินเรียบร้อยแล้ว
+                // 2. Fetch จาก table transactions เพื่อเอามาคำนวณหาค่า Realized ยอดเก็บเงินเดือน 7 (GEM SUM M7)
                 const { data: txData, error: txError } = await supabaseClient
                     .from('transactions')
-                    .select('sales_amt, cogs, date, checkcashflowin')
-                    .not('checkcashflowin', 'is', null);
-
+                    .select('sales_amt, cogs, gpm, date, checkcashflowin');
                 if (txError) throw txError;
+                rawTxData = txData || [];
 
-                let realizedSales = 0;
-                let realizedCogs = 0;
-                let realizedGpm = 0;
+                // คำนวณและอัปเดต Visual Elements ต่างๆ
+                processAndRenderAll();
 
-                if (txData) {
-                    txData.forEach(row => {
-                        const status = String(row.checkcashflowin).trim().toLowerCase();
-                        const isValidStatus = ['เรียบร้อย', 'yes', 'true', 'y'].includes(status);
-
-                        if (isValidStatus) {
-                            const { year } = getBangkokYearMonth(row.date);
-                            if (year === 2026) {
-                                const sAmt = parseFloat(row.sales_amt) || 0;
-                                const cAmt = parseFloat(row.cogs) || 0; // แปลง cogs จาก text เป็นตัวเลข
-                                
-                                realizedSales += sAmt;
-                                realizedCogs += cAmt;
-                                realizedGpm += (sAmt - cAmt);
-                            }
-                        }
-                    });
-                }
-
-                const realizedGpmPercent = realizedSales > 0 ? (realizedGpm / realizedSales) * 100 : 0;
-
-                // อัปเดตฝั่ง Realized บนหน้าจอ
-                document.getElementById('realizedSales').innerText = formatMoney(realizedSales);
-                document.getElementById('realizedCogs').innerText = formatMoney(realizedCogs);
-                document.getElementById('realizedGpm').innerText = formatMoney(realizedGpm);
-                document.getElementById('realizedGpmPercent').innerText = realizedGpmPercent.toFixed(2) + '%';
-
-                // 3. วาดกราฟ
-                renderChart(chart2026Sales, chart2025Sales);
-
-                // ปิดกล่องโหลด
                 loader.classList.add('hidden');
-
             } catch (err) {
-                console.error("Database connection or parsing error: ", err);
+                console.error("Dashboard Error: ", err);
                 loader.classList.add('hidden');
                 errorPanel.classList.remove('hidden');
                 document.getElementById('errorText').innerText = err.message || err;
                 
-                statusBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20";
-                statusBadge.innerHTML = `<span class="h-2 w-2 rounded-full bg-rose-500"></span> Disconnected`;
+                statusBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-red-50 text-google-red border border-red-200";
+                statusBadge.innerHTML = `<span class="h-2 w-2 rounded-full bg-google-red"></span> Disconnected`;
             }
         }
 
-        // วาดกราฟความเคลื่อนไหวรายเดือน
-        function renderChart(sales2026, sales2025) {
-            const ctx = document.getElementById('monthlySalesChart').getContext('2d');
+        function processAndRenderAll() {
+            // ดำเนินการอัปเดตกล่องสรุปตาม Period Selector
+            filterSummaryData();
             
-            if (chartInstance) {
-                chartInstance.destroy();
-            }
+            // เตรียมข้อมูลทำ Line chart รายปี (YTD ชนปี) และ Bar Chart
+            let sales2026 = Array(12).fill(0);
+            let cogs2026 = Array(12).fill(0);
+            let gpm2026 = Array(12).fill(0);
+            let sales2025 = Array(12).fill(0);
 
-            chartInstance = new Chart(ctx, {
+            rawViewData.forEach(row => {
+                const year = parseInt(row.sales_year);
+                const month = parseInt(row.sales_month);
+                const sAmt = parseFloat(row.sales_amt) || 0;
+                const cAmt = parseFloat(row.cogs) || 0;
+                const gAmt = parseFloat(row.gpm) || 0;
+
+                if (year === 2026 && month >= 1 && month <= 12) {
+                    sales2026[month - 1] = sAmt;
+                    cogs2026[month - 1] = cAmt;
+                    gpm2026[month - 1] = gAmt;
+                } else if (year === 2025 && month >= 1 && month <= 12) {
+                    sales2025[month - 1] = sAmt;
+                }
+            });
+
+            // วาดกราฟทั้งสองตัว
+            renderLineChart(sales2026, sales2025);
+            renderBarChart(sales2026, cogs2026);
+            
+            // สร้างข้อมูลตาราง Grid ด้านล่าง
+            renderDataGrid(sales2026, cogs2026, gpm2026);
+        }
+
+        // ตัวคัดกรองข้อมูลสำหรับ Summary Box
+        function filterSummaryData() {
+            const period = document.getElementById('periodSelector').value;
+            
+            // วันและเวลาปัจจุบันฝั่งเมืองไทย (จำลองระบบปี 2026 อิงตามบรีฟตัวแปรหลัก)
+            const currentYear = 2026;
+            const currentMonth = 7; // กรกฎาคม
+
+            let targetSales = 0;
+            let targetCogs = 0;
+            let targetGpm = 0;
+
+            // วนลูปเช็คตามเงื่อนไขที่เลือกใน Dropdown
+            rawViewData.forEach(row => {
+                const year = parseInt(row.sales_year);
+                const month = parseInt(row.sales_month);
+                const sAmt = parseFloat(row.sales_amt) || 0;
+                const cAmt = parseFloat(row.cogs) || 0;
+                const gAmt = parseFloat(row.gpm) || 0;
+
+                let match = false;
+
+                if (period === 'this_month') {
+                    if (year === currentYear && month === currentMonth) match = true;
+                } else if (period === 'last_month') {
+                    if (year === currentYear && month === (currentMonth - 1)) match = true;
+                } else if (period === 'last_3_months') {
+                    if (year === currentYear && month <= currentMonth && month > (currentMonth - 3)) match = true;
+                } else if (period === 'this_year') {
+                    if (year === currentYear) match = true;
+                } else if (period === 'last_year') {
+                    if (year === (currentYear - 1)) match = true;
+                }
+
+                if (match) {
+                    targetSales += sAmt;
+                    targetCogs += cAmt;
+                    targetGpm += gAmt;
+                }
+            });
+
+            // เจาะจงคำนวณหา GEM SUM Month 7 (ยอด Realized GPM สะสมของเดือน 7 ที่ผ่านการตรวจสลิปเช็คเงินเรียบร้อยแล้ว)
+            let gemSumM7 = 0;
+            rawTxData.forEach(row => {
+                const status = String(row.checkcashflowin || '').trim().toLowerCase();
+                const isValidRealized = ['เรียบร้อย', 'yes', 'true', 'y'].includes(status);
+                
+                if (isValidRealized) {
+                    const { year, month } = getBangkokDetails(row.date);
+                    if (year === 2026 && month === 7) {
+                        gemSumM7 += (parseFloat(row.gpm) || 0);
+                    }
+                }
+            });
+
+            // อัปเดตขึ้นสู่หน้า UI
+            document.getElementById('sumSales').innerText = formatMoney(targetSales);
+            document.getElementById('sumCogs').innerText = formatMoney(targetCogs);
+            document.getElementById('sumGpm').innerText = formatMoney(targetGpm);
+            document.getElementById('gemSumMonth7').innerText = formatMoney(gemSumM7);
+        }
+
+        // วาดกราฟเส้น - เปรียบเทียบปีชนปี (Sharp Line ไม่มีความโค้งมน)
+        function renderLineChart(sales2026, sales2025) {
+            const ctx = document.getElementById('monthlySalesChart').getContext('2d');
+            if (lineChartInstance) lineChartInstance.destroy();
+
+            lineChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
+                    labels: monthNames,
                     datasets: [
                         {
                             label: 'ปีนี้ (2026)',
                             data: sales2026,
-                            borderColor: '#10b981', // Emerald
-                            backgroundColor: 'rgba(16, 185, 129, 0.05)',
-                            borderWidth: 3,
-                            pointBackgroundColor: '#10b981',
-                            pointHoverRadius: 7,
-                            tension: 0.35,
-                            fill: true
+                            borderColor: '#1a73e8', // น้ำเงินเข้มสไตล์ Google
+                            backgroundColor: 'transparent',
+                            borderWidth: 2.5,
+                            pointBackgroundColor: '#1a73e8',
+                            pointRadius: 3,
+                            tension: 0, // สั่งให้เส้นคมตรง ไม่มีความโค้ง
+                            fill: false
                         },
                         {
                             label: 'ปีก่อน (2025)',
                             data: sales2025,
-                            borderColor: '#475569', // Slate
+                            borderColor: '#d93025', // แดงเข้มสไตล์ Google
                             backgroundColor: 'transparent',
-                            borderWidth: 1.5,
-                            borderDash: [5, 5],
-                            pointBackgroundColor: '#475569',
-                            tension: 0.35,
+                            borderWidth: 2,
+                            borderDash: [4, 4],
+                            pointBackgroundColor: '#d93025',
+                            pointRadius: 3,
+                            tension: 0, // Sharp line
                             fill: false
                         }
                     ]
@@ -421,44 +437,97 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
                         y: {
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.03)'
-                            },
+                            grid: { color: '#e8eaed' },
                             ticks: {
-                                color: '#64748b',
-                                font: {
-                                    size: 9,
-                                    family: 'Inter'
-                                },
-                                callback: function(value) {
-                                    if (value >= 1e6) return '฿' + (value / 1e6).toFixed(1) + 'M';
-                                    if (value >= 1e3) return '฿' + (value / 1e3).toFixed(0) + 'K';
-                                    return '฿' + value;
-                                }
+                                color: '#5f6368',
+                                font: { size: 10 },
+                                callback: value => '฿' + (value >= 1e6 ? (value/1e6).toFixed(1)+'M' : (value >= 1e3 ? (value/1e3).toFixed(0)+'K' : value))
                             }
                         },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#64748b',
-                                font: {
-                                    size: 9,
-                                    family: 'Inter'
-                                }
-                            }
-                        }
+                        x: { grid: { display: false }, ticks: { color: '#5f6368', font: { size: 10 } } }
                     }
                 }
             });
+        }
+
+        // วาดกราฟแท่ง - เปรียบเทียบ Sales กับ COGS เพื่อเช็คสัดส่วนกำไรปีนี้
+        function renderBarChart(sales, cogs) {
+            const ctx = document.getElementById('salesCogsBarChart').getContext('2d');
+            if (barChartInstance) barChartInstance.destroy();
+
+            barChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: monthNames,
+                    datasets: [
+                        {
+                            label: 'Sales Amount',
+                            data: sales,
+                            backgroundColor: '#1a73e8', // แท่งสีน้ำเงิน
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'COGS (ต้นทุน)',
+                            data: cogs,
+                            backgroundColor: '#bdc1c6', // แท่งสีเทาเข้ม
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            grid: { color: '#e8eaed' },
+                            ticks: {
+                                color: '#5f6368',
+                                font: { size: 10 },
+                                callback: value => '฿' + (value >= 1e6 ? (value/1e6).toFixed(1)+'M' : (value >= 1e3 ? (value/1e3).toFixed(0)+'K' : value))
+                            }
+                        },
+                        x: { grid: { display: false }, ticks: { color: '#5f6368', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // เติมข้อมูลลงตารางรายเดือน Grid สรุปผล
+        function renderDataGrid(sales, cogs, gpm) {
+            const tbody = document.getElementById('gridTableBody');
+            tbody.innerHTML = '';
+
+            let totalSales = 0, totalCogs = 0, totalGpm = 0;
+
+            for(let i=0; i<12; i++) {
+                totalSales += sales[i];
+                totalCogs += cogs[i];
+                totalGpm += gpm[i];
+
+                const marginPercent = sales[i] > 0 ? ((gpm[i] / sales[i]) * 100).toFixed(2) + '%' : '0.00%';
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 border-b border-slate-100';
+                tr.innerHTML = `
+                    <td class="p-3 font-medium text-slate-900">${monthNames[i]}</td>
+                    <td class="p-3 text-right">${formatMoney(sales[i])}</td>
+                    <td class="p-3 text-right text-slate-500">${formatMoney(cogs[i])}</td>
+                    <td class="p-3 text-right font-medium text-slate-900">${formatMoney(gpm[i])}</td>
+                    <td class="p-3 text-right text-google-gray">${marginPercent}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+
+            // คำนวณสรุปช่องท้ายตารางแถวรวม YTD
+            const totalMarginPercent = totalSales > 0 ? ((totalGpm / totalSales) * 100).toFixed(2) + '%' : '0.00%';
+            document.getElementById('totalGridSales').innerText = formatMoney(totalSales);
+            document.getElementById('totalGridCogs').innerText = formatMoney(totalCogs);
+            document.getElementById('totalGridGpm').innerText = formatMoney(totalGpm);
+            document.getElementById('totalGridMargin').innerText = totalMarginPercent;
         }
     </script>
 </body>
