@@ -25,12 +25,14 @@
             }
         }
     </script>
-    <!-- Google Fonts: Inter & Noto Sans Thai -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js Datalabels Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <!-- Supabase JS Client CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
@@ -77,7 +79,7 @@
         </div>
     </header>
 
-    <!-- Main Content Container (Max-width 1000px & Mobile Friendly) -->
+    <!-- Main Content Container -->
     <main class="max-w-[1000px] mx-auto px-4 py-6 w-full flex-grow space-y-6">
         
         <!-- Status Indicator -->
@@ -101,7 +103,7 @@
             </div>
         </div>
 
-        <!-- 1. SUMMARY SECTION (Unrealized & GPM Month 7 Sum) -->
+        <!-- 1. SUMMARY SECTION -->
         <section class="space-y-3">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
@@ -111,10 +113,10 @@
                 <!-- Period Selector -->
                 <div class="relative w-full sm:w-48">
                     <select id="periodSelector" onchange="filterSummaryData()" class="google-select w-full bg-white border border-google-border rounded px-3 py-1.5 text-xs text-slate-700 font-medium focus:outline-none focus:border-google-blue cursor-pointer">
-                        <option value="this_month">เดือนนี้</option>
+                        <option value="this_month" selected>เดือนนี้</option>
                         <option value="last_month">เดือนที่แล้ว</option>
                         <option value="last_3_months">3 เดือนย้อนหลัง</option>
-                        <option value="this_year" selected>ปีนี้ (2026)</option>
+                        <option value="this_year">ปีนี้ (2026)</option>
                         <option value="last_year">ปีที่แล้ว (2025)</option>
                     </select>
                 </div>
@@ -122,38 +124,38 @@
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <!-- Sales -->
-                <div class="google-card p-4 relative bg-white">
+                <div class="google-card p-4 bg-white">
                     <span class="text-[10px] font-bold text-google-gray uppercase tracking-wider">Sales Amount</span>
                     <p id="sumSales" class="text-xl font-bold text-slate-900 mt-1">฿0.00</p>
                     <p class="text-[10px] text-google-gray mt-1 border-t pt-1 border-slate-100">ยอดรวมยอดขายในระบบ</p>
                 </div>
 
                 <!-- COGS -->
-                <div class="google-card p-4 relative bg-white">
+                <div class="google-card p-4 bg-white">
                     <span class="text-[10px] font-bold text-google-gray uppercase tracking-wider">Cost of Goods (COGS)</span>
                     <p id="sumCogs" class="text-xl font-bold text-slate-900 mt-1">฿0.00</p>
                     <p class="text-[10px] text-google-gray mt-1 border-t pt-1 border-slate-100">ต้นทุนสินค้าทั้งหมด</p>
                 </div>
 
-                <!-- GPM (Net Received) -->
-                <div class="google-card p-4 relative bg-white">
+                <!-- GPM (Gross Profit) -->
+                <div class="google-card p-4 bg-white">
                     <span class="text-[10px] font-bold text-google-gray uppercase tracking-wider">Gross Profit (GPM)</span>
                     <p id="sumGpm" class="text-xl font-bold text-google-blue mt-1">฿0.00</p>
-                    <p class="text-[10px] text-google-gray mt-1 border-t pt-1 border-slate-100">กำไรขั้นต้นสะสม</p>
+                    <p class="text-[10px] text-google-gray mt-1 border-t pt-1 border-slate-100">กำไรขั้นต้นสะสมตามช่วงเวลา</p>
                 </div>
 
-                <!-- GEM SUM (Realized Month 7) -->
-                <div class="google-card p-4 relative bg-white border-l-4 border-l-google-blue">
+                <!-- GPM SUM (Current Month) -->
+                <div class="google-card p-4 bg-white border-l-4 border-l-google-blue">
                     <span class="text-[10px] font-bold text-google-blue uppercase tracking-wider flex items-center gap-1">
-                        <i class="fa-solid fa-wallet"></i> GEM SUM (M7)
+                        <i class="fa-solid fa-wallet"></i> GPM SUM (เดือนปัจจุบัน)
                     </span>
-                    <p id="gemSumMonth7" class="text-xl font-bold text-google-blue mt-1">฿0.00</p>
-                    <p class="text-[10px] text-google-gray mt-1 border-t pt-1 border-slate-100">Realized GPM เฉพาะเดือน 7</p>
+                    <p id="gpmSumCurrentMonth" class="text-xl font-bold text-google-blue mt-1">฿0.00</p>
+                    <p id="gpmSumSubtext" class="text-[10px] text-google-gray mt-1 border-t pt-1 border-slate-100">ยอด GPM ของเดือนนี้</p>
                 </div>
             </div>
         </section>
 
-        <!-- 2. CHARTS ZONE (YTD Comparison Side by Side) -->
+        <!-- 2. CHARTS ZONE -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Line Chart: Sales Comparison -->
             <section class="google-card p-4 bg-white">
@@ -180,35 +182,33 @@
 
         <!-- 3. DATA GRID SECTION -->
         <section class="google-card bg-white overflow-hidden">
-            <div class="p-4 border-b border-google-border bg-slate-50 flex items-center justify-between">
-                <div>
-                    <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Monthly Breakdown (2026)</h3>
-                    <p class="text-[10px] text-google-gray">ตารางแสดงยอดคำนวณสะสมในเขตเวลาประเทศไทยรายเดือน</p>
-                </div>
-                <span class="text-[10px] font-mono text-google-gray bg-white border px-2 py-0.5 rounded">v_gpm_monthly_report</span>
+            <div class="p-4 border-b border-google-border bg-slate-50">
+                <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Monthly Breakdown (2026)</h3>
+                <p class="text-[10px] text-google-gray">ตารางแสดงยอดคำนวณสะสมในเขตเวลาประเทศไทยรายเดือน</p>
             </div>
             
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs border-collapse">
+            <!-- Mobile Responsive Wrapper -->
+            <div class="w-full overflow-x-auto select-none">
+                <table class="w-full text-left text-xs border-collapse min-w-[600px] table-fixed">
                     <thead>
                         <tr class="bg-slate-100 text-google-gray font-bold border-b border-google-border">
-                            <th class="p-3">เดือน</th>
-                            <th class="p-3 text-right">Sales Amount</th>
-                            <th class="p-3 text-right">COGS</th>
-                            <th class="p-3 text-right">GPM (Field)</th>
-                            <th class="p-3 text-right">Calculated Margin</th>
+                            <th class="p-3 w-20">เดือน</th>
+                            <th class="p-3 text-right w-1/4">Sales Amount</th>
+                            <th class="p-3 text-right w-1/4">COGS</th>
+                            <th class="p-3 text-right w-1/4">GPM (Field)</th>
+                            <th class="p-3 text-right w-1/4">Calculated Margin</th>
                         </tr>
                     </thead>
                     <tbody id="gridTableBody" class="divide-y divide-slate-100 text-slate-700">
-                        <!-- Dynamic Content Inserted Here -->
+                        <!-- Dynamic Content -->
                     </tbody>
                     <tfoot>
                         <tr class="bg-slate-50 font-bold border-t-2 border-google-border text-slate-900">
-                            <th class="p-3">รวม YTD (2026)</th>
-                            <td id="totalGridSales" class="p-3 text-right">฿0.00</td>
-                            <td id="totalGridCogs" class="p-3 text-right">฿0.00</td>
-                            <td id="totalGridGpm" class="p-3 text-right text-google-blue">฿0.00</td>
-                            <td id="totalGridMargin" class="p-3 text-right text-google-blue">0.00%</td>
+                            <th class="p-3 w-20">รวม YTD</th>
+                            <td id="totalGridSales" class="p-3 text-right w-1/4">฿0.00</td>
+                            <td id="totalGridCogs" class="p-3 text-right w-1/4 text-slate-500">฿0.00</td>
+                            <td id="totalGridGpm" class="p-3 text-right w-1/4 text-google-blue">฿0.00</td>
+                            <td id="totalGridMargin" class="p-3 text-right w-1/4 text-google-blue">0.00%</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -223,7 +223,6 @@
     </footer>
 
     <script>
-        // Supabase Settings ที่กำหนดไว้เสร็จสรรพ
         const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
         
@@ -231,34 +230,22 @@
         let lineChartInstance = null;
         let barChartInstance = null;
         
-        // ตัวแปรเก็บข้อมูลดิบจาก database เพื่อนำไปประมวลผลซ้ำเวลาเปลี่ยน dropdown
         let rawViewData = [];
-        let rawTxData = [];
-
         const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 
-        // ตรวจจับ timezone แปลงค่าหาวันเดือนปีแบบเวลาไทย
-        function getBangkokDetails(dateStr) {
-            if (!dateStr) return { year: null, month: null };
-            try {
-                const date = new Date(dateStr);
-                const formatter = new Intl.DateTimeFormat('en-US', {
-                    timeZone: 'Asia/Bangkok',
-                    year: 'numeric',
-                    month: 'numeric'
-                });
-                const parts = formatter.formatToParts(date);
-                return {
-                    year: parseInt(parts.find(p => p.type === 'year').value),
-                    month: parseInt(parts.find(p => p.type === 'month').value)
-                };
-            } catch (e) {
-                return { year: null, month: null };
-            }
-        }
+        // วันเวลาปัจจุบันตามเวลาประเทศไทยจริง (ระบบรันในบริบทปี 2026)
+        const nowBkk = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+        const currentYear = nowBkk.getFullYear(); 
+        const currentMonth = nowBkk.getMonth() + 1; // 1-12
 
         function formatMoney(amount) {
             return '฿' + parseFloat(amount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function formatShortMoney(value) {
+            if (value >= 1e6) return '฿' + (value / 1e6).toFixed(2) + 'M';
+            if (value >= 1e3) return '฿' + (value / 1e3).toFixed(0) + 'K';
+            return '฿' + value;
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -276,39 +263,24 @@
                 statusBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-blue-50 text-google-blue border border-blue-200";
                 statusBadge.innerHTML = `<span class="h-2 w-2 rounded-full bg-google-blue"></span> Connected`;
 
-                // 1. Fetch จาก view หลักสำหรับรายงานและกราฟรายเดือน
                 const { data: viewData, error: viewError } = await supabaseClient.from('v_gpm_monthly_report').select('*');
                 if (viewError) throw viewError;
                 rawViewData = viewData || [];
 
-                // 2. Fetch จาก table transactions เพื่อเอามาคำนวณหาค่า Realized ยอดเก็บเงินเดือน 7 (GEM SUM M7)
-                const { data: txData, error: txError } = await supabaseClient
-                    .from('transactions')
-                    .select('sales_amt, cogs, gpm, date, checkcashflowin');
-                if (txError) throw txError;
-                rawTxData = txData || [];
-
-                // คำนวณและอัปเดต Visual Elements ต่างๆ
                 processAndRenderAll();
-
                 loader.classList.add('hidden');
             } catch (err) {
                 console.error("Dashboard Error: ", err);
                 loader.classList.add('hidden');
                 errorPanel.classList.remove('hidden');
                 document.getElementById('errorText').innerText = err.message || err;
-                
-                statusBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-red-50 text-google-red border border-red-200";
-                statusBadge.innerHTML = `<span class="h-2 w-2 rounded-full bg-google-red"></span> Disconnected`;
             }
         }
 
         function processAndRenderAll() {
-            // ดำเนินการอัปเดตกล่องสรุปตาม Period Selector
             filterSummaryData();
             
-            // เตรียมข้อมูลทำ Line chart รายปี (YTD ชนปี) และ Bar Chart
-            let sales2026 = Array(12).fill(0);
+            let sales2026 = Array(12).fill(null);
             let cogs2026 = Array(12).fill(0);
             let gpm2026 = Array(12).fill(0);
             let sales2025 = Array(12).fill(0);
@@ -320,36 +292,34 @@
                 const cAmt = parseFloat(row.cogs) || 0;
                 const gAmt = parseFloat(row.gpm) || 0;
 
-                if (year === 2026 && month >= 1 && month <= 12) {
-                    sales2026[month - 1] = sAmt;
+                if (year === currentYear && month >= 1 && month <= 12) {
+                    if (month <= currentMonth) {
+                        sales2026[month - 1] = sAmt;
+                    }
                     cogs2026[month - 1] = cAmt;
                     gpm2026[month - 1] = gAmt;
-                } else if (year === 2025 && month >= 1 && month <= 12) {
+                } else if (year === (currentYear - 1) && month >= 1 && month <= 12) {
                     sales2025[month - 1] = sAmt;
                 }
             });
 
-            // วาดกราฟทั้งสองตัว
-            renderLineChart(sales2026, sales2025);
-            renderBarChart(sales2026, cogs2026);
-            
-            // สร้างข้อมูลตาราง Grid ด้านล่าง
-            renderDataGrid(sales2026, cogs2026, gpm2026);
+            // หาผลรวมทั้งปีแบบสะสม (YTD Total) สำหรับนำไปโชว์ที่ปลายหางเส้นกราฟ
+            let totalSum2026 = sales2026.reduce((acc, val) => acc + (val || 0), 0);
+            let totalSum2025 = sales2025.reduce((acc, val) => acc + (val || 0), 0);
+
+            renderLineChart(sales2026, sales2025, totalSum2026, totalSum2025);
+            renderBarChart(sales2026.map(v => v === null ? 0 : v), cogs2026);
+            renderDataGrid(sales2026.map(v => v === null ? 0 : v), cogs2026, gpm2026);
         }
 
-        // ตัวคัดกรองข้อมูลสำหรับ Summary Box
         function filterSummaryData() {
             const period = document.getElementById('periodSelector').value;
-            
-            // วันและเวลาปัจจุบันฝั่งเมืองไทย (จำลองระบบปี 2026 อิงตามบรีฟตัวแปรหลัก)
-            const currentYear = 2026;
-            const currentMonth = 7; // กรกฎาคม
 
             let targetSales = 0;
             let targetCogs = 0;
             let targetGpm = 0;
+            let gpmSumCurr = 0;
 
-            // วนลูปเช็คตามเงื่อนไขที่เลือกใน Dropdown
             rawViewData.forEach(row => {
                 const year = parseInt(row.sales_year);
                 const month = parseInt(row.sales_month);
@@ -358,13 +328,18 @@
                 const gAmt = parseFloat(row.gpm) || 0;
 
                 let match = false;
-
                 if (period === 'this_month') {
                     if (year === currentYear && month === currentMonth) match = true;
                 } else if (period === 'last_month') {
-                    if (year === currentYear && month === (currentMonth - 1)) match = true;
+                    let lm = currentMonth - 1;
+                    let ly = currentYear;
+                    if (lm === 0) { lm = 12; ly = currentYear - 1; }
+                    if (year === ly && month === lm) match = true;
                 } else if (period === 'last_3_months') {
-                    if (year === currentYear && month <= currentMonth && month > (currentMonth - 3)) match = true;
+                    let d1 = new Date(currentYear, currentMonth - 1, 1);
+                    let d2 = new Date(year, month - 1, 1);
+                    let diff = (d1.getFullYear() - d2.getFullYear()) * 12 + (d1.getMonth() - d2.getMonth());
+                    if (diff >= 0 && diff < 3) match = true;
                 } else if (period === 'this_year') {
                     if (year === currentYear) match = true;
                 } else if (period === 'last_year') {
@@ -378,66 +353,103 @@
                 }
             });
 
-            // เจาะจงคำนวณหา GEM SUM Month 7 (ยอด Realized GPM สะสมของเดือน 7 ที่ผ่านการตรวจสลิปเช็คเงินเรียบร้อยแล้ว)
-            let gemSumM7 = 0;
-            rawTxData.forEach(row => {
-                const status = String(row.checkcashflowin || '').trim().toLowerCase();
-                const isValidRealized = ['เรียบร้อย', 'yes', 'true', 'y'].includes(status);
-                
-                if (isValidRealized) {
-                    const { year, month } = getBangkokDetails(row.date);
-                    if (year === 2026 && month === 7) {
-                        gemSumM7 += (parseFloat(row.gpm) || 0);
-                    }
-                }
-            });
+            // แก้จุดบั๊กยอดกระโดด: หาเฉพาะแถวเดือนปัจจุบันของปีปัจจุบันเดี่ยวๆ 1 แถวตรงๆ จาก Database 
+            const currentMonthRow = rawViewData.find(row => parseInt(row.sales_year) === currentYear && parseInt(row.sales_month) === currentMonth);
+            if (currentMonthRow) {
+                gpmSumCurr = parseFloat(currentMonthRow.gpm) || 0;
+            }
 
-            // อัปเดตขึ้นสู่หน้า UI
             document.getElementById('sumSales').innerText = formatMoney(targetSales);
             document.getElementById('sumCogs').innerText = formatMoney(targetCogs);
             document.getElementById('sumGpm').innerText = formatMoney(targetGpm);
-            document.getElementById('gemSumMonth7').innerText = formatMoney(gemSumM7);
+            
+            // อัปเดตข้อมูลกล่องขวาสุดด้วยข้อมูลที่ถูกต้อง
+            document.getElementById('gpmSumCurrentMonth').innerText = formatMoney(gpmSumCurr);
+            document.getElementById('gpmSumSubtext').innerText = `ยอด GPM ของเดือน ${monthNames[currentMonth - 1]} ${currentYear}`;
         }
 
-        // วาดกราฟเส้น - เปรียบเทียบปีชนปี (Sharp Line ไม่มีความโค้งมน)
-        function renderLineChart(sales2026, sales2025) {
+        function renderLineChart(sales2026, sales2025, totalSum2026, totalSum2025) {
             const ctx = document.getElementById('monthlySalesChart').getContext('2d');
             if (lineChartInstance) lineChartInstance.destroy();
 
+            // ค้นหาจุดเดือนล่าสุดของปีนี้ที่มีข้อมูล เพื่อใช้วาง Data Label 
+            let lastValidIdx2026 = 0;
+            for(let i=11; i>=0; i--) {
+                if(sales2026[i] !== null && sales2026[i] !== undefined) { lastValidIdx2026 = i; break; }
+            }
+            const lastValidIdx2025 = 11;
+
             lineChartInstance = new Chart(ctx, {
                 type: 'line',
+                plugins: [ChartDataLabels],
                 data: {
                     labels: monthNames,
                     datasets: [
                         {
-                            label: 'ปีนี้ (2026)',
+                            label: `ปีนี้ (${currentYear})`,
                             data: sales2026,
-                            borderColor: '#1a73e8', // น้ำเงินเข้มสไตล์ Google
+                            borderColor: '#1a73e8',
                             backgroundColor: 'transparent',
                             borderWidth: 2.5,
                             pointBackgroundColor: '#1a73e8',
-                            pointRadius: 3,
-                            tension: 0, // สั่งให้เส้นคมตรง ไม่มีความโค้ง
-                            fill: false
+                            pointRadius: 4,
+                            tension: 0,
+                            spanGaps: false,
+                            clip: false, // ป้องกันกล่องข้อความโดนขอบกราฟตัดขาดชำรุด
+                            datalabels: {
+                                display: function(context) {
+                                    return context.dataIndex === lastValidIdx2026;
+                                },
+                                align: 'top',
+                                offset: 8, // ขยับช่องไฟไม่ให้ซ้อนทับจุดกลมๆ
+                                font: { weight: 'bold', size: 10 },
+                                color: '#1a73e8',
+                                formatter: () => `ปีนี้ YTD: ${formatShortMoney(totalSum2026)}` // โชว์ยอดสุทธิรวมทั้งปี
+                            }
                         },
                         {
-                            label: 'ปีก่อน (2025)',
+                            label: `ปีก่อน (${currentYear - 1})`,
                             data: sales2025,
-                            borderColor: '#d93025', // แดงเข้มสไตล์ Google
+                            borderColor: '#d93025',
                             backgroundColor: 'transparent',
                             borderWidth: 2,
                             borderDash: [4, 4],
                             pointBackgroundColor: '#d93025',
                             pointRadius: 3,
-                            tension: 0, // Sharp line
-                            fill: false
+                            tension: 0,
+                            clip: false,
+                            datalabels: {
+                                display: function(context) {
+                                    return context.dataIndex === lastValidIdx2025;
+                                },
+                                align: 'bottom',
+                                offset: 8,
+                                font: { weight: 'bold', size: 10 },
+                                color: '#d93025',
+                                formatter: () => `ปีก่อน: ${formatShortMoney(totalSum2025)}` // โชว์ยอดสุทธิรวมทั้งปี
+                            }
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    layout: {
+                        padding: {
+                            right: 75, // เผื่อขอบด้านขวาให้กว้างขึ้น ตัวเลขปลายสายจะได้ไม่ตกขอบหน้าจอ
+                            top: 20
+                        }
+                    },
+                    plugins: { 
+                        legend: { display: false },
+                        datalabels: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            borderRadius: 4,
+                            borderWidth: 1,
+                            borderColor: '#dadce0',
+                            padding: 5
+                        }
+                    },
                     scales: {
                         y: {
                             grid: { color: '#e8eaed' },
@@ -453,7 +465,6 @@
             });
         }
 
-        // วาดกราฟแท่ง - เปรียบเทียบ Sales กับ COGS เพื่อเช็คสัดส่วนกำไรปีนี้
         function renderBarChart(sales, cogs) {
             const ctx = document.getElementById('salesCogsBarChart').getContext('2d');
             if (barChartInstance) barChartInstance.destroy();
@@ -466,13 +477,13 @@
                         {
                             label: 'Sales Amount',
                             data: sales,
-                            backgroundColor: '#1a73e8', // แท่งสีน้ำเงิน
+                            backgroundColor: '#1a73e8',
                             borderRadius: 4
                         },
                         {
-                            label: 'COGS (ต้นทุน)',
+                            label: 'COGS',
                             data: cogs,
-                            backgroundColor: '#bdc1c6', // แท่งสีเทาเข้ม
+                            backgroundColor: '#bdc1c6',
                             borderRadius: 4
                         }
                     ]
@@ -480,7 +491,10 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: { 
+                        legend: { display: false },
+                        datalabels: { display: false }
+                    },
                     scales: {
                         y: {
                             grid: { color: '#e8eaed' },
@@ -496,7 +510,6 @@
             });
         }
 
-        // เติมข้อมูลลงตารางรายเดือน Grid สรุปผล
         function renderDataGrid(sales, cogs, gpm) {
             const tbody = document.getElementById('gridTableBody');
             tbody.innerHTML = '';
@@ -513,16 +526,15 @@
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-50 border-b border-slate-100';
                 tr.innerHTML = `
-                    <td class="p-3 font-medium text-slate-900">${monthNames[i]}</td>
-                    <td class="p-3 text-right">${formatMoney(sales[i])}</td>
-                    <td class="p-3 text-right text-slate-500">${formatMoney(cogs[i])}</td>
-                    <td class="p-3 text-right font-medium text-slate-900">${formatMoney(gpm[i])}</td>
-                    <td class="p-3 text-right text-google-gray">${marginPercent}</td>
+                    <td class="p-3 font-medium text-slate-900 w-20">${monthNames[i]}</td>
+                    <td class="p-3 text-right w-1/4">${formatMoney(sales[i])}</td>
+                    <td class="p-3 text-right w-1/4 text-slate-500">${formatMoney(cogs[i])}</td>
+                    <td class="p-3 text-right w-1/4 font-medium text-slate-900">${formatMoney(gpm[i])}</td>
+                    <td class="p-3 text-right w-1/4 text-google-gray">${marginPercent}</td>
                 `;
                 tbody.appendChild(tr);
             }
 
-            // คำนวณสรุปช่องท้ายตารางแถวรวม YTD
             const totalMarginPercent = totalSales > 0 ? ((totalGpm / totalSales) * 100).toFixed(2) + '%' : '0.00%';
             document.getElementById('totalGridSales').innerText = formatMoney(totalSales);
             document.getElementById('totalGridCogs').innerText = formatMoney(totalCogs);
