@@ -51,33 +51,52 @@
             background-image: url("data:image/svg+xml;utf8,<svg fill='%235f6368' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
             background-repeat: no-repeat;
             background-position: right 8px center;
-            background-size: 20px;
+            background-size: 18px;
+        }
+        
+        /* Chrome Style Tabs */
+        .chrome-tab {
+            position: relative;
+            background: #e2e8f0;
+            color: #64748b;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            transition: all 0.15s ease;
+        }
+        .chrome-tab.active {
+            background: #ffffff;
+            color: #1a73e8;
+            font-weight: 600;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-50">
 
-    <!-- Header -->
-    <header class="bg-white border-b border-google-border sticky top-0 z-50">
-        <div class="max-w-[1000px] mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="bg-google-blue text-white p-2.5 rounded-lg shadow-sm">
-                    <i class="fa-solid fa-chart-line text-lg"></i>
-                </div>
-                <div>
-                    <h1 class="text-base font-bold text-slate-900 tracking-tight">GPM Live Testbed</h1>
-                    <p class="text-[11px] text-google-gray">ระบบวิเคราะห์ข้อมูลการเงินสไตล์คลาสสิกปี 2026</p>
-                </div>
-            </div>
-            
-            <div>
-                <div id="connStatus" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-slate-100 text-google-gray border border-google-border">
-                    <span class="h-2 w-2 rounded-full bg-slate-400"></span>
-                    Initializing...
-                </div>
-            </div>
+    <!-- External Header Placeholder (จะถูกโหลดเข้ามาร่วมกับ uerpheader.html / layoutuerp.js) -->
+    <div id="uerp-header-container"></div>
+
+    <!-- Chrome-Style Navigation Tabs -->
+    <div class="bg-slate-200 pt-2 px-4 border-b border-google-border">
+        <div class="max-w-[1000px] mx-auto flex items-end gap-1 overflow-x-auto no-scrollbar text-xs">
+            <a href="dashboard.html" class="chrome-tab active px-4 py-2 flex items-center gap-2 border-t border-x border-slate-300">
+                <i class="fa-solid fa-chart-line text-google-blue"></i>
+                <span>GPM Dashboard</span>
+            </a>
+            <a href="sales.html" class="chrome-tab px-4 py-2 flex items-center gap-2 border-t border-x border-transparent hover:bg-slate-300/60">
+                <i class="fa-solid fa-receipt"></i>
+                <span>Sales Orders</span>
+            </a>
+            <a href="cogs.html" class="chrome-tab px-4 py-2 flex items-center gap-2 border-t border-x border-transparent hover:bg-slate-300/60">
+                <i class="fa-solid fa-boxes-stacked"></i>
+                <span>COGS & Inventory</span>
+            </a>
+            <a href="reports.html" class="chrome-tab px-4 py-2 flex items-center gap-2 border-t border-x border-transparent hover:bg-slate-300/60">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                <span>Financial Reports</span>
+            </a>
         </div>
-    </header>
+    </div>
 
     <!-- Main Content Container -->
     <main class="max-w-[1000px] mx-auto px-4 py-6 w-full flex-grow space-y-6">
@@ -105,14 +124,14 @@
 
         <!-- 1. SUMMARY SECTION -->
         <section class="space-y-3">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
                     <span class="text-google-blue text-sm"><i class="fa-solid fa-list-check"></i></span>
                     <h2 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Performance Summary</h2>
                 </div>
-                <!-- Period Selector -->
-                <div class="relative w-full sm:w-48">
-                    <select id="periodSelector" onchange="filterSummaryData()" class="google-select w-full bg-white border border-google-border rounded px-3 py-1.5 text-xs text-slate-700 font-medium focus:outline-none focus:border-google-blue cursor-pointer">
+                <!-- Period Selector (ปรับให้มีขนาดกะทัดรัดพอดีตัวใน Mobile) -->
+                <div class="relative inline-flex">
+                    <select id="periodSelector" onchange="filterSummaryData()" class="google-select bg-white border border-google-border rounded pl-2.5 pr-7 py-1 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue cursor-pointer shadow-sm">
                         <option value="this_month" selected>เดือนนี้</option>
                         <option value="last_month">เดือนที่แล้ว</option>
                         <option value="last_3_months">3 เดือนย้อนหลัง</option>
@@ -180,35 +199,65 @@
             </section>
         </div>
 
-        <!-- 3. DATA GRID SECTION -->
+        <!-- 3. DATA GRID SECTION (ปรับปรุงตามคำสั่ง) -->
         <section class="google-card bg-white overflow-hidden">
-            <div class="p-4 border-b border-google-border bg-slate-50">
-                <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Monthly Breakdown (2026)</h3>
-                <p class="text-[10px] text-google-gray">ตารางแสดงยอดคำนวณสะสมในเขตเวลาประเทศไทยรายเดือน</p>
+            <div class="p-3.5 border-b border-google-border bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                    <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Monthly Breakdown</h3>
+                    <p class="text-[10px] text-google-gray">ตารางแสดงยอดคำนวณสะสมในเขตเวลาประเทศไทยรายเดือน</p>
+                </div>
+                
+                <!-- Dynamic Year Selector -->
+                <div class="flex items-center gap-2">
+                    <label for="gridYearSelector" class="text-[11px] font-semibold text-slate-600">เลือกปี:</label>
+                    <select id="gridYearSelector" onchange="changeGridYear()" class="google-select bg-white border border-google-border rounded pl-2.5 pr-7 py-1 text-xs font-bold text-google-blue focus:outline-none focus:border-google-blue cursor-pointer shadow-sm">
+                        <!-- Auto Population via JS -->
+                    </select>
+                </div>
             </div>
             
-            <!-- Mobile Responsive Wrapper -->
+            <!-- Table Container -->
             <div class="w-full overflow-x-auto select-none">
-                <table class="w-full text-left text-xs border-collapse min-w-[600px] table-fixed">
+                <table class="w-full text-left text-xs border-collapse">
                     <thead>
-                        <tr class="bg-slate-100 text-google-gray font-bold border-b border-google-border">
-                            <th class="p-3 w-20">เดือน</th>
-                            <th class="p-3 text-right w-1/4">Sales Amount</th>
-                            <th class="p-3 text-right w-1/4">COGS</th>
-                            <th class="p-3 text-right w-1/4">GPM (Field)</th>
-                            <th class="p-3 text-right w-1/4">Calculated Margin</th>
+                        <tr class="bg-slate-100 text-google-gray font-bold border-b border-google-border cursor-pointer select-none">
+                            <!-- เดือน -->
+                            <th onclick="sortTable('month')" class="p-2.5 w-16 md:w-20 hover:bg-slate-200 transition-colors">
+                                <div class="flex items-center gap-1">เดือน <span id="sortIcon_month" class="text-[10px] text-slate-400">▲</span></div>
+                            </th>
+                            <!-- Sales Amount -->
+                            <th onclick="sortTable('sales')" class="p-2.5 text-right w-24 md:w-auto hover:bg-slate-200 transition-colors">
+                                <div class="flex items-center justify-end gap-1">Sales <span id="sortIcon_sales" class="text-[10px] text-slate-400"></span></div>
+                            </th>
+                            <!-- Net Received (Desktop Only) -->
+                            <th onclick="sortTable('net')" class="hidden md:table-cell p-2.5 text-right hover:bg-slate-200 transition-colors">
+                                <div class="flex items-center justify-end gap-1">Net Received <span id="sortIcon_net" class="text-[10px] text-slate-400"></span></div>
+                            </th>
+                            <!-- COGS (Desktop Only) -->
+                            <th onclick="sortTable('cogs')" class="hidden md:table-cell p-2.5 text-right hover:bg-slate-200 transition-colors">
+                                <div class="flex items-center justify-end gap-1">COGS <span id="sortIcon_cogs" class="text-[10px] text-slate-400"></span></div>
+                            </th>
+                            <!-- GPM/Profit -->
+                            <th onclick="sortTable('gpm')" class="p-2.5 text-right w-24 md:w-auto hover:bg-slate-200 transition-colors">
+                                <div class="flex items-center justify-end gap-1">กำไร <span id="sortIcon_gpm" class="text-[10px] text-slate-400"></span></div>
+                            </th>
+                            <!-- Margin % -->
+                            <th onclick="sortTable('margin')" class="p-2.5 text-right w-16 md:w-auto hover:bg-slate-200 transition-colors">
+                                <div class="flex items-center justify-end gap-1">กำไร% <span id="sortIcon_margin" class="text-[10px] text-slate-400"></span></div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody id="gridTableBody" class="divide-y divide-slate-100 text-slate-700">
-                        <!-- Dynamic Content -->
+                        <!-- Dynamic Grid Content -->
                     </tbody>
                     <tfoot>
                         <tr class="bg-slate-50 font-bold border-t-2 border-google-border text-slate-900">
-                            <th class="p-3 w-20">รวม YTD</th>
-                            <td id="totalGridSales" class="p-3 text-right w-1/4">฿0.00</td>
-                            <td id="totalGridCogs" class="p-3 text-right w-1/4 text-slate-500">฿0.00</td>
-                            <td id="totalGridGpm" class="p-3 text-right w-1/4 text-google-blue">฿0.00</td>
-                            <td id="totalGridMargin" class="p-3 text-right w-1/4 text-google-blue">0.00%</td>
+                            <th class="p-2.5">รวม</th>
+                            <td id="totalGridSales" class="p-2.5 text-right">0</td>
+                            <td id="totalGridNet" class="hidden md:table-cell p-2.5 text-right text-slate-700">฿0.00</td>
+                            <td id="totalGridCogs" class="hidden md:table-cell p-2.5 text-right text-slate-500">฿0.00</td>
+                            <td id="totalGridGpm" class="p-2.5 text-right text-google-blue">0</td>
+                            <td id="totalGridMargin" class="p-2.5 text-right text-google-blue">0.00%</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -219,8 +268,24 @@
 
     <!-- Footer -->
     <footer class="border-t border-google-border bg-white py-4 mt-auto text-center">
-        <p class="text-[11px] text-google-gray">© 2026 GPM Dashboard Sandbox. Google Material Design Style.</p>
+        <p class="text-[11px] text-google-gray">© 2026 GPM Dashboard Sandbox. Layout & UERP Header System Ready.</p>
     </footer>
+
+    <!-- Script External Header Load Tracker -->
+    <script>
+        // ฟังก์ชันเตรียมไว้สำหรับผูก uerpheader.html และ layoutuerp.js
+        async function loadUerpHeader() {
+            try {
+                const res = await fetch('uerpheader.html');
+                if(res.ok) {
+                    document.getElementById('uerp-header-container').innerHTML = await res.text();
+                }
+            } catch(e) {
+                // เงียบไว้ถ้ายังไม่ได้สร้างไฟล์ uerpheader.html
+            }
+        }
+        loadUerpHeader();
+    </script>
 
     <script>
         const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
@@ -233,13 +298,24 @@
         let rawViewData = [];
         const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 
-        // วันเวลาปัจจุบันตามเวลาประเทศไทยจริง (ระบบรันในบริบทปี 2026)
         const nowBkk = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
         const currentYear = nowBkk.getFullYear(); 
-        const currentMonth = nowBkk.getMonth() + 1; // 1-12
+        const currentMonth = nowBkk.getMonth() + 1;
 
+        // Variables สำหรับ Data Grid
+        let selectedGridYear = currentYear;
+        let currentSortColumn = 'month';
+        let currentSortAsc = true;
+        let gridDisplayData = [];
+
+        // ฟอร์แมตเงินหลัก (มีทศนิยมสำหรับ Desktop)
         function formatMoney(amount) {
             return '฿' + parseFloat(amount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // ฟอร์แมตเงินสำหรับ Mobile (#,# ตัดทศนิยมเพื่อประหยัดพื้นที่)
+        function formatMobileMoney(amount) {
+            return Math.round(parseFloat(amount || 0)).toLocaleString('th-TH');
         }
 
         function formatShortMoney(value) {
@@ -253,19 +329,18 @@
         });
 
         async function initDashboard() {
-            const statusBadge = document.getElementById('connStatus');
             const loader = document.getElementById('loadingIndicator');
             const errorPanel = document.getElementById('errorMessage');
 
             try {
                 supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-                
-                statusBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-blue-50 text-google-blue border border-blue-200";
-                statusBadge.innerHTML = `<span class="h-2 w-2 rounded-full bg-google-blue"></span> Connected`;
 
                 const { data: viewData, error: viewError } = await supabaseClient.from('v_gpm_monthly_report').select('*');
                 if (viewError) throw viewError;
                 rawViewData = viewData || [];
+
+                // สกัดหาปีทั้งหมดที่มีอยู่ใน DB เพื่อเติม Dropdown อัตโนมัติ (Dynamic Year Detection)
+                setupYearSelector();
 
                 processAndRenderAll();
                 loader.classList.add('hidden');
@@ -277,7 +352,36 @@
             }
         }
 
-function processAndRenderAll() {
+        function setupYearSelector() {
+            const yearSelect = document.getElementById('gridYearSelector');
+            let years = new Set();
+            
+            // ใส่ปีปัจจุบันเป็นค่าพื้นฐาน
+            years.add(currentYear);
+            
+            rawViewData.forEach(row => {
+                if (row.sales_year) years.add(parseInt(row.sales_year));
+            });
+
+            // เรียงปีจากมากไปน้อย
+            const sortedYears = Array.from(years).sort((a, b) => b - a);
+
+            yearSelect.innerHTML = '';
+            sortedYears.forEach(y => {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.innerText = `ปี ${y}`;
+                if (y === selectedGridYear) opt.selected = true;
+                yearSelect.appendChild(opt);
+            });
+        }
+
+        function changeGridYear() {
+            selectedGridYear = parseInt(document.getElementById('gridYearSelector').value);
+            buildAndRenderGrid();
+        }
+
+        function processAndRenderAll() {
             filterSummaryData();
             
             let sales2026 = Array(12).fill(null);
@@ -307,9 +411,11 @@ function processAndRenderAll() {
 
             renderLineChart(sales2026, sales2025, totalSum2026, totalSum2025);
             renderBarChart(sales2026.map(v => v === null ? 0 : v), cogs2026);
-            renderDataGrid(sales2026.map(v => v === null ? 0 : v), cogs2026, gpm2026);
+            
+            buildAndRenderGrid();
         }
-function filterSummaryData() {
+
+        function filterSummaryData() {
             const period = document.getElementById('periodSelector').value;
 
             let targetSales = 0;
@@ -324,7 +430,6 @@ function filterSummaryData() {
                 const cAmt = parseFloat(row.cogs) || 0;
                 const gAmt = parseFloat(row.gpm) || 0;
 
-                // รวมยอด GPM เดือนปัจจุบันทุกแถวที่มีใน Database
                 if (year === currentYear && month === currentMonth) {
                     gpmSumCurr += gAmt;
                 }
@@ -367,7 +472,6 @@ function filterSummaryData() {
             const ctx = document.getElementById('monthlySalesChart').getContext('2d');
             if (lineChartInstance) lineChartInstance.destroy();
 
-            // ค้นหาจุดเดือนล่าสุดของปีนี้ที่มีข้อมูล เพื่อใช้วาง Data Label 
             let lastValidIdx2026 = 0;
             for(let i=11; i>=0; i--) {
                 if(sales2026[i] !== null && sales2026[i] !== undefined) { lastValidIdx2026 = i; break; }
@@ -390,16 +494,16 @@ function filterSummaryData() {
                             pointRadius: 4,
                             tension: 0,
                             spanGaps: false,
-                            clip: false, // ป้องกันกล่องข้อความโดนขอบกราฟตัดขาดชำรุด
+                            clip: false,
                             datalabels: {
                                 display: function(context) {
                                     return context.dataIndex === lastValidIdx2026;
                                 },
                                 align: 'top',
-                                offset: 8, // ขยับช่องไฟไม่ให้ซ้อนทับจุดกลมๆ
+                                offset: 8,
                                 font: { weight: 'bold', size: 10 },
                                 color: '#1a73e8',
-                                formatter: () => `ปีนี้ YTD: ${formatShortMoney(totalSum2026)}` // โชว์ยอดสุทธิรวมทั้งปี
+                                formatter: () => `ปีนี้ YTD: ${formatShortMoney(totalSum2026)}`
                             }
                         },
                         {
@@ -421,7 +525,7 @@ function filterSummaryData() {
                                 offset: 8,
                                 font: { weight: 'bold', size: 10 },
                                 color: '#d93025',
-                                formatter: () => `ปีก่อน: ${formatShortMoney(totalSum2025)}` // โชว์ยอดสุทธิรวมทั้งปี
+                                formatter: () => `ปีก่อน: ${formatShortMoney(totalSum2025)}`
                             }
                         }
                     ]
@@ -429,12 +533,7 @@ function filterSummaryData() {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    layout: {
-                        padding: {
-                            right: 75, // เผื่อขอบด้านขวาให้กว้างขึ้น ตัวเลขปลายสายจะได้ไม่ตกขอบหน้าจอ
-                            top: 20
-                        }
-                    },
+                    layout: { padding: { right: 75, top: 20 } },
                     plugins: { 
                         legend: { display: false },
                         datalabels: {
@@ -469,27 +568,14 @@ function filterSummaryData() {
                 data: {
                     labels: monthNames,
                     datasets: [
-                        {
-                            label: 'Sales Amount',
-                            data: sales,
-                            backgroundColor: '#1a73e8',
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'COGS',
-                            data: cogs,
-                            backgroundColor: '#bdc1c6',
-                            borderRadius: 4
-                        }
+                        { label: 'Sales Amount', data: sales, backgroundColor: '#1a73e8', borderRadius: 4 },
+                        { label: 'COGS', data: cogs, backgroundColor: '#bdc1c6', borderRadius: 4 }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { 
-                        legend: { display: false },
-                        datalabels: { display: false }
-                    },
+                    plugins: { legend: { display: false }, datalabels: { display: false } },
                     scales: {
                         y: {
                             grid: { color: '#e8eaed' },
@@ -505,35 +591,146 @@ function filterSummaryData() {
             });
         }
 
-        function renderDataGrid(sales, cogs, gpm) {
+        /* --- DATA GRID LOGIC (NEW & ENHANCED) --- */
+
+        function buildAndRenderGrid() {
+            gridDisplayData = [];
+            
+            // สร้างข้อมูล 12 เดือนของปีที่เลือก
+            for (let m = 1; m <= 12; m++) {
+                gridDisplayData.push({
+                    monthIdx: m,
+                    monthName: monthNames[m - 1],
+                    sales: 0,
+                    netReceived: 0,
+                    cogs: 0,
+                    gpm: 0,
+                    margin: 0
+                });
+            }
+
+            // เติมข้อมูลจาก rawViewData ตามปีที่เลือก
+            rawViewData.forEach(row => {
+                const year = parseInt(row.sales_year);
+                const month = parseInt(row.sales_month);
+                if (year === selectedGridYear && month >= 1 && month <= 12) {
+                    const idx = month - 1;
+                    const sAmt = parseFloat(row.sales_amt) || 0;
+                    const cAmt = parseFloat(row.cogs) || 0;
+                    const gAmt = parseFloat(row.gpm) || 0;
+                    const nAmt = parseFloat(row.net_received || row.net_amt || (sAmt * 0.97)) || 0; // รองรับ field netReceived
+
+                    gridDisplayData[idx].sales += sAmt;
+                    gridDisplayData[idx].cogs += cAmt;
+                    gridDisplayData[idx].gpm += gAmt;
+                    gridDisplayData[idx].netReceived += nAmt;
+                }
+            });
+
+            // คำนวณ Margin %
+            gridDisplayData.forEach(item => {
+                item.margin = item.sales > 0 ? (item.gpm / item.sales) * 100 : 0;
+            });
+
+            sortAndDrawTable();
+        }
+
+        function sortTable(column) {
+            if (currentSortColumn === column) {
+                currentSortAsc = !currentSortAsc;
+            } else {
+                currentSortColumn = column;
+                currentSortAsc = true;
+            }
+            sortAndDrawTable();
+        }
+
+        function sortAndDrawTable() {
+            // อัปเดตไอคอนหัวตาราง
+            ['month', 'sales', 'net', 'cogs', 'gpm', 'margin'].forEach(col => {
+                const el = document.getElementById(`sortIcon_${col}`);
+                if (el) {
+                    if (col === currentSortColumn) {
+                        el.innerText = currentSortAsc ? '▲' : '▼';
+                        el.className = "text-[10px] text-google-blue font-bold";
+                    } else {
+                        el.innerText = '';
+                    }
+                }
+            });
+
+            // เรียงลำดับข้อมูล
+            gridDisplayData.sort((a, b) => {
+                let valA, valB;
+                if (currentSortColumn === 'month') { valA = a.monthIdx; valB = b.monthIdx; }
+                else if (currentSortColumn === 'sales') { valA = a.sales; valB = b.sales; }
+                else if (currentSortColumn === 'net') { valA = a.netReceived; valB = b.netReceived; }
+                else if (currentSortColumn === 'cogs') { valA = a.cogs; valB = b.cogs; }
+                else if (currentSortColumn === 'gpm') { valA = a.gpm; valB = b.gpm; }
+                else if (currentSortColumn === 'margin') { valA = a.margin; valB = b.margin; }
+
+                if (valA < valB) return currentSortAsc ? -1 : 1;
+                if (valA > valB) return currentSortAsc ? 1 : -1;
+                return 0;
+            });
+
+            renderGridRows();
+        }
+
+        function renderGridRows() {
             const tbody = document.getElementById('gridTableBody');
             tbody.innerHTML = '';
 
-            let totalSales = 0, totalCogs = 0, totalGpm = 0;
+            let totalSales = 0, totalNet = 0, totalCogs = 0, totalGpm = 0;
 
-            for(let i=0; i<12; i++) {
-                totalSales += sales[i];
-                totalCogs += cogs[i];
-                totalGpm += gpm[i];
-
-                const marginPercent = sales[i] > 0 ? ((gpm[i] / sales[i]) * 100).toFixed(2) + '%' : '0.00%';
+            gridDisplayData.forEach(item => {
+                totalSales += item.sales;
+                totalNet += item.netReceived;
+                totalCogs += item.cogs;
+                totalGpm += item.gpm;
 
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 border-b border-slate-100';
+                tr.className = 'hover:bg-slate-50 border-b border-slate-100 transition-colors';
                 tr.innerHTML = `
-                    <td class="p-3 font-medium text-slate-900 w-20">${monthNames[i]}</td>
-                    <td class="p-3 text-right w-1/4">${formatMoney(sales[i])}</td>
-                    <td class="p-3 text-right w-1/4 text-slate-500">${formatMoney(cogs[i])}</td>
-                    <td class="p-3 text-right w-1/4 font-medium text-slate-900">${formatMoney(gpm[i])}</td>
-                    <td class="p-3 text-right w-1/4 text-google-gray">${marginPercent}</td>
+                    <td class="p-2.5 font-semibold text-slate-900">${item.monthName}</td>
+                    
+                    <!-- Sales Amount -->
+                    <td class="p-2.5 text-right font-medium">
+                        <span class="md:hidden">${formatMobileMoney(item.sales)}</span>
+                        <span class="hidden md:inline">${formatMoney(item.sales)}</span>
+                    </td>
+                    
+                    <!-- Net Received (Desktop Only) -->
+                    <td class="hidden md:table-cell p-2.5 text-right text-slate-700">${formatMoney(item.netReceived)}</td>
+                    
+                    <!-- COGS (Desktop Only) -->
+                    <td class="hidden md:table-cell p-2.5 text-right text-slate-500">${formatMoney(item.cogs)}</td>
+                    
+                    <!-- GPM / Profit -->
+                    <td class="p-2.5 text-right font-semibold text-slate-900">
+                        <span class="md:hidden">${formatMobileMoney(item.gpm)}</span>
+                        <span class="hidden md:inline">${formatMoney(item.gpm)}</span>
+                    </td>
+                    
+                    <!-- Margin % -->
+                    <td class="p-2.5 text-right font-medium text-google-blue">${item.margin.toFixed(2)}%</td>
                 `;
                 tbody.appendChild(tr);
-            }
+            });
 
             const totalMarginPercent = totalSales > 0 ? ((totalGpm / totalSales) * 100).toFixed(2) + '%' : '0.00%';
-            document.getElementById('totalGridSales').innerText = formatMoney(totalSales);
+            
+            // Footer Totals Display
+            document.getElementById('totalGridSales').innerHTML = `
+                <span class="md:hidden">${formatMobileMoney(totalSales)}</span>
+                <span class="hidden md:inline">${formatMoney(totalSales)}</span>
+            `;
+            document.getElementById('totalGridNet').innerText = formatMoney(totalNet);
             document.getElementById('totalGridCogs').innerText = formatMoney(totalCogs);
-            document.getElementById('totalGridGpm').innerText = formatMoney(totalGpm);
+            document.getElementById('totalGridGpm').innerHTML = `
+                <span class="md:hidden">${formatMobileMoney(totalGpm)}</span>
+                <span class="hidden md:inline">${formatMoney(totalGpm)}</span>
+            `;
             document.getElementById('totalGridMargin').innerText = totalMarginPercent;
         }
     </script>
