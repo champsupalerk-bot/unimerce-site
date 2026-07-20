@@ -277,7 +277,7 @@
             }
         }
 
-        function processAndRenderAll() {
+function processAndRenderAll() {
             filterSummaryData();
             
             let sales2026 = Array(12).fill(null);
@@ -293,17 +293,15 @@
                 const gAmt = parseFloat(row.gpm) || 0;
 
                 if (year === currentYear && month >= 1 && month <= 12) {
-                    if (month <= currentMonth) {
-                        sales2026[month - 1] = sAmt;
-                    }
-                    cogs2026[month - 1] = cAmt;
-                    gpm2026[month - 1] = gAmt;
+                    if (sales2026[month - 1] === null) sales2026[month - 1] = 0;
+                    sales2026[month - 1] += sAmt;
+                    cogs2026[month - 1] += cAmt;
+                    gpm2026[month - 1] += gAmt;
                 } else if (year === (currentYear - 1) && month >= 1 && month <= 12) {
-                    sales2025[month - 1] = sAmt;
+                    sales2025[month - 1] += sAmt;
                 }
             });
 
-            // หาผลรวมทั้งปีแบบสะสม (YTD Total) สำหรับนำไปโชว์ที่ปลายหางเส้นกราฟ
             let totalSum2026 = sales2026.reduce((acc, val) => acc + (val || 0), 0);
             let totalSum2025 = sales2025.reduce((acc, val) => acc + (val || 0), 0);
 
@@ -311,8 +309,7 @@
             renderBarChart(sales2026.map(v => v === null ? 0 : v), cogs2026);
             renderDataGrid(sales2026.map(v => v === null ? 0 : v), cogs2026, gpm2026);
         }
-
-        function filterSummaryData() {
+function filterSummaryData() {
             const period = document.getElementById('periodSelector').value;
 
             let targetSales = 0;
@@ -326,6 +323,11 @@
                 const sAmt = parseFloat(row.sales_amt) || 0;
                 const cAmt = parseFloat(row.cogs) || 0;
                 const gAmt = parseFloat(row.gpm) || 0;
+
+                // รวมยอด GPM เดือนปัจจุบันทุกแถวที่มีใน Database
+                if (year === currentYear && month === currentMonth) {
+                    gpmSumCurr += gAmt;
+                }
 
                 let match = false;
                 if (period === 'this_month') {
@@ -353,17 +355,10 @@
                 }
             });
 
-            // แก้จุดบั๊กยอดกระโดด: หาเฉพาะแถวเดือนปัจจุบันของปีปัจจุบันเดี่ยวๆ 1 แถวตรงๆ จาก Database 
-            const currentMonthRow = rawViewData.find(row => parseInt(row.sales_year) === currentYear && parseInt(row.sales_month) === currentMonth);
-            if (currentMonthRow) {
-                gpmSumCurr = parseFloat(currentMonthRow.gpm) || 0;
-            }
-
             document.getElementById('sumSales').innerText = formatMoney(targetSales);
             document.getElementById('sumCogs').innerText = formatMoney(targetCogs);
             document.getElementById('sumGpm').innerText = formatMoney(targetGpm);
             
-            // อัปเดตข้อมูลกล่องขวาสุดด้วยข้อมูลที่ถูกต้อง
             document.getElementById('gpmSumCurrentMonth').innerText = formatMoney(gpmSumCurr);
             document.getElementById('gpmSumSubtext').innerText = `ยอด GPM ของเดือน ${monthNames[currentMonth - 1]} ${currentYear}`;
         }
