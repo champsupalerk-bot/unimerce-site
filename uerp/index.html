@@ -251,12 +251,13 @@
         <p class="text-[11px] text-google-gray">© 2026 GPM Dashboard Sandbox. Layout & UERP Header System Ready.</p>
     </footer>
 
-<!-- Script External Header Load Tracker -->
+<!-- ===== START HEAD001 ===== -->
+    <!-- Script External Header Load Tracker -->
     <script>
         // ระบบ Dynamic Component Loading สำหรับ U-ERP Header และ Layout Behavior
         async function loadUerpHeader() {
-            const headerPath = './uerpheader.html';
-            const scriptPath = './layoutuerp.js';
+            const headerPath = '/uerpheader.html';
+            const scriptPath = '/layoutuerp.js';
             const container = document.getElementById('uerp-header-container');
 
             if (!container) {
@@ -306,6 +307,8 @@
         // เริ่มต้นการโหลด Component
         loadUerpHeader();
     </script>
+    <!-- ===== END HEAD001 ===== -->
+
     <script>
         const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
