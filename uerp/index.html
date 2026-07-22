@@ -250,19 +250,15 @@
     <footer class="border-t border-google-border bg-white py-4 mt-auto text-center">
         <p class="text-[11px] text-google-gray">© 2026 GPM Dashboard Sandbox. Layout & UERP Header System Ready.</p>
     </footer>
-
 <!-- ===== START HEAD001 ===== -->
     <!-- Script External Header Load Tracker -->
     <script>
         // ระบบ Dynamic Component Loading สำหรับ U-ERP Header และ Layout Behavior
         async function loadUerpHeader() {
-            // ค้นหา Base URL ปัจจุบันของหน้าเว็บอัตโนมัติ (รองรับทั้ง localhost และ production sub-folder)
-            const baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-
-            const headerPath = baseUrl + 'uerpheader.html';
-            const scriptPath = baseUrl + 'layoutuerp.js';
+            // ใช้ Pure Relative Path เพื่อให้เบราว์เซอร์อิงจากโฟลเดอร์ปัจจุบันที่ไฟล์ index.html ตัวนี้อยู่จริง
+            const headerPath = 'uerpheader.html';
+            const scriptPath = 'layoutuerp.js';
             
-            // ดึง Element container (จุดนี้ของเดิมหายไป)
             const container = document.getElementById('uerp-header-container');
 
             if (!container) {
@@ -312,8 +308,9 @@
         // เริ่มต้นการโหลด Component
         loadUerpHeader();
     </script>
-<!-- ===== END HEAD001 ===== -->     
-    <script>
+<!-- ===== END HEAD001 ===== -->
+
+<script>
         const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
         
