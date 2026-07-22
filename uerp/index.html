@@ -256,8 +256,13 @@
     <script>
         // ระบบ Dynamic Component Loading สำหรับ U-ERP Header และ Layout Behavior
         async function loadUerpHeader() {
-            const headerPath = '/uerpheader.html';
-            const scriptPath = '/layoutuerp.js';
+            // ค้นหา Base URL ปัจจุบันของหน้าเว็บอัตโนมัติ (รองรับทั้ง localhost และ production sub-folder)
+            const baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+
+            const headerPath = baseUrl + 'uerpheader.html';
+            const scriptPath = baseUrl + 'layoutuerp.js';
+            
+            // ดึง Element container (จุดนี้ของเดิมหายไป)
             const container = document.getElementById('uerp-header-container');
 
             if (!container) {
@@ -307,8 +312,7 @@
         // เริ่มต้นการโหลด Component
         loadUerpHeader();
     </script>
-    <!-- ===== END HEAD001 ===== -->
-
+<!-- ===== END HEAD001 ===== -->     
     <script>
         const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
