@@ -1,339 +1,122 @@
 <!-- =========================
  UNIMERCE UERP Shared Header
- Version 2.0
+ Version 2.5 - Fixed Unified System Icon
  Analytics Architecture
 ========================= -->
 
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    @media (min-width: 768px) {
+        .chrome-tab-active {
+            background-color: #ffffff !important;
+            border-color: #dadce0 #dadce0 transparent !important;
+            color: #1a73e8 !important;
+            border-radius: 6px 6px 0 0;
+            margin-bottom: -1px;
+            font-weight: 600;
+        }
+    }
+</style>
 
 <!-- =========================
- Top Header
+ Top Header (เมนูหลักด้านบน)
 ========================= -->
-
 <header class="bg-white border-b border-google-border shadow-sm">
-
     <div class="max-w-[1000px] mx-auto px-4 h-16 flex items-center justify-between">
 
-
-        <!-- Logo / System -->
+        <!-- Logo / System Name -->
         <div class="flex items-center gap-3">
-
-            <div class="
-                w-10 h-10 
-                rounded-xl 
-                bg-google-blue 
-                text-white 
-                flex items-center justify-center
-                shadow-sm
-            ">
+            <div class="w-10 h-10 rounded-xl bg-google-blue text-white flex items-center justify-center shadow-sm">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
-
-
             <div>
-
-                <div class="
-                    text-sm 
-                    font-bold 
-                    text-slate-800
-                    tracking-tight
-                ">
+                <div class="text-sm font-bold text-slate-800 tracking-tight">
                     UNIMERCE UERP
                 </div>
-
-
-                <div class="
-                    text-[11px]
-                    text-google-gray
-                ">
+                <div class="text-[11px] text-google-gray">
                     Business Intelligence Platform
                 </div>
-
             </div>
-
         </div>
 
+        <!-- Action Menu (มุมบนขวา - เหมือนกันหมดทั้ง Desktop และ Mobile) -->
+        <div class="flex items-center gap-4 text-google-gray">
+            
+            <!-- ปุ่ม System (เฟือง) อยู่ตรงนี้ถาวร ไม่แยกเวอร์ชันแล้ว -->
+            <a href="system.html" 
+               data-page="system"
+               class="hover:text-google-blue transition text-base flex items-center justify-center p-1" 
+               title="System Settings">
+                <i class="fa-solid fa-gear"></i>
+            </a>
 
-
-        <!-- Future User Menu -->
-
-        <div class="
-            flex 
-            items-center 
-            gap-5
-            text-google-gray
-        ">
-
-
-            <button 
-                class="
-                    hover:text-google-blue 
-                    transition
-                    text-base
-                "
-                title="Notification"
-            >
+            <button class="hover:text-google-blue transition text-base flex items-center justify-center p-1" title="Notification">
                 <i class="fa-regular fa-bell"></i>
             </button>
 
-
-
-            <button
-                class="
-                    hover:text-google-blue 
-                    transition
-                    text-base
-                "
-                title="User"
-            >
+            <button class="hover:text-google-blue transition text-base flex items-center justify-center p-1" title="User">
                 <i class="fa-regular fa-circle-user"></i>
             </button>
-
-
+            
         </div>
-
-
     </div>
-
 </header>
 
-
-
-
-
 <!-- =========================
- Chrome Style Main Navigation
+ Main Navigation (5 เมนูหลักด้านล่าง)
 ========================= -->
-
-
-<div class="
-    bg-slate-100
-    pt-2
-    px-4
-    border-b
-    border-google-border
-">
-
-
-<div class="
-    max-w-[1000px]
-    mx-auto
-    flex
-    items-end
-    gap-1
-    overflow-x-auto
-    no-scrollbar
-    text-xs
-">
-
-
-
-<!-- =========================
- Overview
-========================= -->
-
-<a href="index.html"
-   data-page="overview"
-   class="
-    chrome-tab
-    px-5
-    py-2.5
-    flex
-    items-center
-    gap-2
-    whitespace-nowrap
-    border-t
-    border-x
-    border-transparent
-">
-
-    <i class="fa-solid fa-chart-line"></i>
-
-    <span>
-        Overview
-    </span>
-
-</a>
-
-
-
-
-
-<!-- =========================
- Sales Intelligence
-========================= -->
-
-<a href="sales.html"
-   data-page="sales"
-   class="
-    chrome-tab
-    px-5
-    py-2.5
-    flex
-    items-center
-    gap-2
-    whitespace-nowrap
-    border-t
-    border-x
-    border-transparent
-">
-
-
-    <i class="fa-solid fa-arrow-trend-up"></i>
-
-
-    <span>
-        Sales
-    </span>
-
-
-</a>
-
-
-
-
-
-<!-- =========================
- Product Intelligence
-========================= -->
-
-<a href="product.html"
-   data-page="product"
-   class="
-    chrome-tab
-    px-5
-    py-2.5
-    flex
-    items-center
-    gap-2
-    whitespace-nowrap
-    border-t
-    border-x
-    border-transparent
-">
-
-
-    <i class="fa-solid fa-box-open"></i>
-
-
-    <span>
-        Product
-    </span>
-
-
-</a>
-
-
-
-
-
-<!-- =========================
- Customer Intelligence
-========================= -->
-
-
-<a href="customer.html"
-   data-page="customer"
-   class="
-    chrome-tab
-    px-5
-    py-2.5
-    flex
-    items-center
-    gap-2
-    whitespace-nowrap
-    border-t
-    border-x
-    border-transparent
-">
-
-
-    <i class="fa-solid fa-users"></i>
-
-
-    <span>
-        Customer
-    </span>
-
-
-</a>
-
-
-
-
-
-
-<!-- =========================
- Finance
-========================= -->
-
-
-<a href="finance.html"
-   data-page="finance"
-   class="
-    chrome-tab
-    px-5
-    py-2.5
-    flex
-    items-center
-    gap-2
-    whitespace-nowrap
-    border-t
-    border-x
-    border-transparent
-">
-
-
-    <i class="fa-solid fa-coins"></i>
-
-
-    <span>
-        Finance
-    </span>
-
-
-</a>
-
-
-
-
-
-
-
-<!-- =========================
- System
-========================= -->
-
-
-<a href="system.html"
-   data-page="system"
-   class="
-    chrome-tab
-    px-5
-    py-2.5
-    flex
-    items-center
-    gap-2
-    whitespace-nowrap
-    border-t
-    border-x
-    border-transparent
-">
-
-
-    <i class="fa-solid fa-gear"></i>
-
-
-    <span>
-        System
-    </span>
-
-
-</a>
-
-
-
-
-</div>
-
-
+<div class="bg-slate-100 border-b border-google-border md:pt-2 md:px-4">
+    <div class="max-w-[1000px] mx-auto">
+        
+        <!-- แถบ 5 ลิงก์หลัก: Mobile เป็น 5 คอลัมน์ (ไอคอนบน ข้อความล่าง) / Desktop เป็นแถบแท็บแนวนอน -->
+        <nav class="grid grid-cols-5 md:flex md:items-end md:gap-1 overflow-x-auto no-scrollbar text-center md:text-left">
+            
+            <!-- 1. Overview -->
+            <a href="index.html"
+               data-page="overview"
+               class="chrome-tab px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
+                <i class="fa-solid fa-chart-line text-sm md:text-xs"></i>
+                <span class="block md:inline tracking-tight">Overview</span>
+            </a>
+
+            <!-- 2. Sales -->
+            <a href="sales.html"
+               data-page="sales"
+               class="chrome-tab px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
+                <i class="fa-solid fa-arrow-trend-up text-sm md:text-xs"></i>
+                <span class="block md:inline tracking-tight">Sales</span>
+            </a>
+
+            <!-- 3. Product -->
+            <a href="product.html"
+               data-page="product"
+               class="chrome-tab px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
+                <i class="fa-solid fa-box-open text-sm md:text-xs"></i>
+                <span class="block md:inline tracking-tight">Product</span>
+            </a>
+
+            <!-- 4. Customer -->
+            <a href="customer.html"
+               data-page="customer"
+               class="chrome-tab px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
+                <i class="fa-solid fa-users text-sm md:text-xs"></i>
+                <span class="block md:inline tracking-tight">Customer</span>
+            </a>
+
+            <!-- 5. Finance -->
+            <a href="finance.html"
+               data-page="finance"
+               class="chrome-tab px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
+                <i class="fa-solid fa-coins text-sm md:text-xs"></i>
+                <span class="block md:inline tracking-tight">Finance</span>
+            </a>
+
+        </nav>
+    </div>
 </div>
