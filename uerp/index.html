@@ -70,50 +70,14 @@
             background-size: 18px;
         }
         
-        /* Chrome Style Tabs */
-        .chrome-tab {
-            position: relative;
-            background: #e2e8f0;
-            color: #64748b;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            transition: all 0.15s ease;
-        }
-        .chrome-tab.active {
-            background: #ffffff;
-            color: #1a73e8;
-            font-weight: 600;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
-        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-50">
 
     <!-- External Header Placeholder (จะถูกโหลดเข้ามาร่วมกับ uerpheader.html / layoutuerp.js) -->
-    <div id="uerp-header-container"></div>
+    <div id="uerp-header-container" class="mb-2"></div>
 
-    <!-- Chrome-Style Navigation Tabs -->
-    <div class="bg-slate-200 pt-2 px-4 border-b border-google-border">
-        <div class="max-w-[1000px] mx-auto flex items-end gap-1 overflow-x-auto no-scrollbar text-xs">
-            <a href="dashboard.html" class="chrome-tab active px-4 py-2 flex items-center gap-2 border-t border-x border-slate-300">
-                <i class="fa-solid fa-chart-line text-google-blue"></i>
-                <span>GPM Dashboard</span>
-            </a>
-            <a href="sales.html" class="chrome-tab px-4 py-2 flex items-center gap-2 border-t border-x border-transparent hover:bg-slate-300/60">
-                <i class="fa-solid fa-receipt"></i>
-                <span>Sales Orders</span>
-            </a>
-            <a href="cogs.html" class="chrome-tab px-4 py-2 flex items-center gap-2 border-t border-x border-transparent hover:bg-slate-300/60">
-                <i class="fa-solid fa-boxes-stacked"></i>
-                <span>COGS & Inventory</span>
-            </a>
-            <a href="reports.html" class="chrome-tab px-4 py-2 flex items-center gap-2 border-t border-x border-transparent hover:bg-slate-300/60">
-                <i class="fa-solid fa-file-invoice-dollar"></i>
-                <span>Financial Reports</span>
-            </a>
-        </div>
-    </div>
-
+    
     <!-- Main Content Container -->
     <main class="max-w-[1000px] mx-auto px-4 py-6 w-full flex-grow space-y-6">
         
