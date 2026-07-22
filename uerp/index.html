@@ -251,58 +251,61 @@
         <p class="text-[11px] text-google-gray">© 2026 GPM Dashboard Sandbox. Layout & UERP Header System Ready.</p>
     </footer>
 
-    <!-- Script External Header Load Tracker -->
+<!-- Script External Header Load Tracker -->
     <script>
-        // ฟังก์ชันเตรียมไว้สำหรับผูก uerpheader.html และ layoutuerp.js
-            async function loadUerpHeader() {
+        // ระบบ Dynamic Component Loading สำหรับ U-ERP Header และ Layout Behavior
+        async function loadUerpHeader() {
+            const headerPath = './uerpheader.html';
+            const scriptPath = './layoutuerp.js';
+            const container = document.getElementById('uerp-header-container');
 
-        try {
-
-            const url = './uerpheader.html';
-
-            console.log("Loading header:", url);
-
-            const res = await fetch(url);
-
-
-            console.log(
-                "Header status:",
-                res.status
-            );
-
-
-            if(!res.ok){
-                throw new Error(
-                    "Header not found: " + res.status
-                );
+            if (!container) {
+                console.error("Error: Element #uerp-header-container not found in DOM.");
+                return;
             }
 
+            try {
+                console.log(`Loading header: ${headerPath}`);
+                
+                const res = await fetch(headerPath);
+                console.log(`Header status: ${res.status}`);
 
-            const html = await res.text();
+                if (!res.ok) {
+                    throw new Error(`Header not found: ${res.status}`);
+                }
 
+                const html = await res.text();
+                container.innerHTML = html;
+                console.log("UERP Header Loaded");
 
-            document
-            .getElementById('uerp-header-container')
-            .innerHTML = html;
+                // ดำเนินการ dynamically load layoutuerp.js หลังจากแทรก HTML สำเร็จ
+                const script = document.createElement('script');
+                script.src = scriptPath;
+                script.type = 'text/javascript';
 
+                script.onload = () => {
+                    console.log("layoutuerp.js loaded");
+                    if (typeof initUerpLayout === 'function') {
+                        initUerpLayout();
+                    } else {
+                        console.error("Error: initUerpLayout() is not defined in layoutuerp.js");
+                    }
+                };
 
-        } catch(e) {
+                script.onerror = () => {
+                    console.error(`Error: Failed to load script from path: ${scriptPath}`);
+                };
 
-            console.error(
-                "UERP HEADER ERROR:",
-                e
-            );
+                document.body.appendChild(script);
 
+            } catch (e) {
+                console.error(`UERP HEADER ERROR:`, e);
+            }
         }
 
-    }
-
-
-    loadUerpHeader();
-
-
+        // เริ่มต้นการโหลด Component
+        loadUerpHeader();
     </script>
-
     <script>
         const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
