@@ -861,7 +861,26 @@ img{
 @media(max-width:900px){
   .hero{
     min-height:auto;
-    padding:120px 0 80px; 
+    padding:100px 0 70px; /* 🟢 [ปรับเพิ่ม] ลดจาก 120px เหลือ 100px เพื่อดัน Breadcrumb ขึ้นบนอีกนิด */
+  }
+
+  /* 🟢 [เพิ่มใหม่] ปรับขนาดและระยะ Breadcrumb บนมือถือ */
+  .breadcrumb {
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+
+  /* 🟢 [เพิ่มใหม่] ขยายขนาดคำว่า Aroma Systems บนมือถือให้ใหญ่ โดดเด่นขึ้น */
+  .hero-title-text {
+    font-size: 38px !important;  /* ปรับขึ้นเป็น 38px (จากเดิมที่โดนบีบเหลือ 25px) */
+    font-weight: 400 !important;
+    line-height: 1.15;
+  }
+
+  /* 🟢 [เพิ่มใหม่] จัดระยะห่างระหว่าง Logo กับ คำว่า Aroma Systems ให้กระชับสวยงาม */
+  .hero-title {
+    gap: 10px !important;
+    margin-bottom: 20px !important;
   }
 
   /* 🎯 [จุดแก้ไขมัดรวมที่เดียว] อัปสเกลเนื้อหาคำอธิบาย/บทความทั้งหมดบนมือถือเป็น 17px โดยหัวข้อใหญ่คงเดิม */
@@ -983,6 +1002,7 @@ img{
     top: 90%;
   }
 }
+
 </style>
 
 <!-- Google Analytics -->
