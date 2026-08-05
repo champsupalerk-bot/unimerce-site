@@ -1,9 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>UNIMERCE | Products</title>
+<title>UNIMERCE | ALL Products สินค้าทั้งหมด</title>
+<meta name="description" content="UNIMERCE คัดสรรนวัตกรรมยกระดับคุณภาพชีวิต อุปกรณ์มาตรฐาน วัดผลได้จริง จำหน่ายเหยือกกรองน้ำ Vitev, เครื่องวัดค่าต่างๆ Smart Sensor & GVDA, เครื่องพ่นอโรม่า COUS AROMA" />
+<meta name="keywords" content="UNIMERCE, อุปกรณ์กรองน้ำ, Vitev, เครื่องวัดค่าน้ำ, เครื่องมือวัดค่า, Smart Sensor, GVDA, เครื่องพ่นอโรม่า, COUS AROMA, เครื่องวัดความหวาน, เครื่องวัดอุณหภูมิ, เครื่องวัดเสียง, เครื่องวัดแสง" />
+<meta name="robots" content="index, follow" />
+<meta name="author" content="UNIMERCE" />
+
+<!-- Canonical URL -->
+<link rel="canonical" href="https://unimercegroup.com/products.html" />
+
+<!-- =========================
+   OPEN GRAPH / FACEBOOK / LINE
+========================= -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://unimercegroup.com/products.html" />
+<meta property="og:title" content="UNIMERCE | คัดสรรนวัตกรรมเพื่อยกระดับคุณภาพชีวิต" />
+<meta property="og:description" content="ศูนย์รวมอุปกรณ์มาตรฐาน วัดผลได้จริง เหยือกกรองน้ำอัลคาไลน์ เครื่องมือวัดค่าความละเอียดสูง Smart Sensor/GVDA และระบบกระจายกลิ่นหอม COUS AROMA" />
+<meta property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1785899103/warehouse001_ywloos.png" />
+<meta property="og:image:secure_url" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1785899103/warehouse001_ywloos.png" />
+<meta property="og:site_name" content="UNIMERCE" />
+<meta property="og:locale" content="th_TH" />
+
+<!-- =========================
+   TWITTER CARD
+========================= -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="UNIMERCE | คัดสรรนวัตกรรมเพื่อยกระดับคุณภาพชีวิต" />
+<meta name="twitter:description" content="ศูนย์รวมอุปกรณ์มาตรฐาน วัดผลได้จริง เหยือกกรองน้ำอัลคาไลน์ เครื่องมือวัดค่าความละเอียดสูง และระบบกระจายกลิ่นหอม" />
+<meta name="twitter:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1785899103/warehouse001_ywloos.png" />
 
 <style>
 /* =========================
@@ -698,7 +725,7 @@ function processAndRender() {
     return;
   }
 
-  const productCards = paginatedProducts.map(p => {
+const productCards = paginatedProducts.map(p => {
     const img = (p.image_link01 || "").trim();
     const sku = p.Item_Code || '-';
     const category = p.MainCategory || '-';
@@ -708,7 +735,10 @@ function processAndRender() {
       onhand = cleanNumber(onhand).toLocaleString();
     }
 
-    // มีการผูกเหตุการณ์ onclick ให้เปิดหน้าต่างรายละเอียดสินค้าแบบระบุ parameter โค้ดสินค้า
+    // จัด Format ราคาให้มี Comma (ใส่เครื่องหมายจุลภาคหลักพัน)
+    const listPriceFormatted = (p.ListPrice && p.ListPrice !== '-') ? cleanNumber(p.ListPrice).toLocaleString() : '';
+    const promoPriceFormatted = (p.PromotionPrice && p.PromotionPrice !== '-') ? cleanNumber(p.PromotionPrice).toLocaleString() : '-';
+
     return `
       <div class="card" onclick="window.location.href='/productdetail.html?code=${encodeURIComponent(sku.trim())}'">
         <img 
@@ -732,10 +762,10 @@ function processAndRender() {
           <div class="bottom-row">
             <div class="price-box">
               <div class="price-old">
-                ${p.ListPrice ? '฿' + p.ListPrice : ''}
+                ${listPriceFormatted ? '฿' + listPriceFormatted : ''}
               </div>
               <div class="price-new">
-                ${p.PromotionPrice ? '฿' + p.PromotionPrice : '-'}
+                ${promoPriceFormatted !== '-' ? '฿' + promoPriceFormatted : '-'}
               </div>
             </div>
             <div class="stock-box">
@@ -751,7 +781,6 @@ function processAndRender() {
       </div>
     `;
   }).join('');
-
   /* =========================
         FINAL RENDER
   ========================= */
