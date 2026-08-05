@@ -872,7 +872,7 @@ fetch("footer.html")
 /* =========================
    FETCH & RENDER RECOMMENDED PRODUCTS
 ========================= */
-const targetCodes = ["10001", "10002", "10003", "10006"];
+const targetCodes = ["10002", "10006", "10019", "10056"];
 
 function cleanNumber(val) {
   if (val === null || val === undefined) return 0;
@@ -900,7 +900,7 @@ async function loadRecommendedProducts() {
       return;
     }
 
-    const htmlCards = recommendedProducts.map(p => {
+const htmlCards = recommendedProducts.map(p => {
       const img = (p.image_link01 || "").trim();
       const sku = p.Item_Code || '-';
       const category = p.MainCategory || '-';
@@ -909,6 +909,14 @@ async function loadRecommendedProducts() {
       if(onhand !== "-") {
         onhand = cleanNumber(onhand).toLocaleString();
       }
+
+      // --- [จุดที่แก้] แปลงราคาให้มี Comma ---
+      const listPriceNum = cleanNumber(p.ListPrice);
+      const promoPriceNum = cleanNumber(p.PromotionPrice);
+
+      const oldPriceText = listPriceNum > 0 ? '฿' + listPriceNum.toLocaleString() : '';
+      const newPriceText = promoPriceNum > 0 ? '฿' + promoPriceNum.toLocaleString() : '-';
+      // ------------------------------------
 
       return `
         <a href="productdetail.html?code=${sku}" class="card-link">
@@ -930,10 +938,10 @@ async function loadRecommendedProducts() {
               <div class="bottom-row">
                 <div class="price-box">
                   <div class="price-old">
-                    ${p.ListPrice ? '฿' + p.ListPrice : ''}
+                    ${oldPriceText}
                   </div>
                   <div class="price-new">
-                    ${p.PromotionPrice ? '฿' + p.PromotionPrice : '-'}
+                    ${newPriceText}
                   </div>
                 </div>
                 <div class="stock-box">
