@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UERP - Product Category Contribution</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'google-blue': '#1a73e8',
+                        'google-gray': '#5f6368',
+                        'google-border': '#dadce0',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS SDK (v2) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Global Header/Layout Script -->
+    <script src="js/layoutuerp.js"></script>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 font-sans">
+
+    <!-- Header Placeholder -->
+    <div id="headerContainer"></div>
+
+    <!-- Container จำกัดความกว้างไม่เกิน 1000px -->
+    <main class="max-w-[1000px] mx-auto p-3 sm:p-6">
+        
+        <!-- Controls Header Panel -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-3 sm:p-4 mb-4 space-y-3">
+            
+            <!-- Row 1: Period Picker, Metric Dropdown & Refresh Button -->
+            <div class="flex items-center justify-between gap-2">
+                
+                <!-- Dropdown เลือกสลับ Metric -->
+                <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                    <label class="text-[10px] sm:text-xs font-semibold text-slate-500 whitespace-nowrap">มุมมอง:</label>
+                    <select id="metricSelector" class="bg-slate-50 border border-slate-200 text-slate-800 text-[10px] sm:text-xs font-bold rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 block w-full p-2 cursor-pointer transition truncate">
+                        <option value="sales_amt" selected>ยอดขายรวม (Sales Amt - ฿)</option>
+                        <option value="qty">จำนวนชิ้น (QTY)</option>
+                    </select>
+                </div>
+
+                <!-- Period Picker & Refresh Button -->
+                <div class="flex items-center gap-1.5 flex-1 min-w-0 justify-end">
+                    <label class="text-[10px] sm:text-xs font-semibold text-slate-500 whitespace-nowrap">ช่วงเวลา:</label>
+                    <select id="periodSelector" class="bg-slate-50 border border-slate-200 text-slate-800 text-[10px] sm:text-xs font-bold rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 block w-full sm:w-auto p-2 cursor-pointer transition truncate">
+                        <option value="this_month" selected>เดือนนี้</option>
+                        <option value="last_month">เดือนที่แล้ว</option>
+                        <option value="last_3_months">3 เดือนที่แล้ว</option>
+                        <option value="this_year">ปีนี้</option>
+                        <option value="last_year">ปีที่แล้ว</option>
+                    </select>
+                    <!-- ปุ่ม Manual Refresh -->
+                    <button onclick="forceRefreshData()" title="รีเฟรชข้อมูลจากเซิร์ฟเวอร์" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs px-2.5 py-2 rounded-lg transition flex items-center justify-center shrink-0">
+                        <i id="refreshIcon" class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Row 2: Search Bar & Mini Logger Status -->
+            <div class="flex flex-col sm:flex-row gap-2 items-center justify-between">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </div>
+                    <input type="text" id="searchInput" placeholder="ค้นหา หมวดหมู่หลัก (Main Category)..." 
+                        class="bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 block w-full pl-8 p-2.5 transition placeholder:text-slate-400">
+                </div>
+                <!-- Mini Logger Display -->
+                <div id="miniLogger" class="text-[11px] text-slate-400 italic whitespace-nowrap w-full sm:w-auto text-left sm:text-right px-1">
+                    พร้อมใช้งาน (View)
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Status Panel -->
+        <div id="statusIndicator" class="hidden p-3 bg-blue-50/80 rounded-xl border border-blue-100 flex items-center gap-3 mb-4 backdrop-blur-sm">
+            <i class="fa-solid fa-circle-notch animate-spin text-blue-600"></i>
+            <span id="statusText" class="text-xs font-medium text-blue-700">กำลังดึงข้อมูล...</span>
+        </div>
+
+        <!-- Donut Chart Box (ส่วนที่เพิ่มใหม่ด้านบน) -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 mb-4">
+            <h3 class="text-xs font-bold text-slate-700 mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-blue-600"></i> สัดส่วน ยอดขายตามหมวดหมู่หลัก (% Contribution)
+            </h3>
+            <div class="relative h-[260px] sm:h-[300px] w-full flex justify-center items-center">
+                <canvas id="categoryDonutChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Report Table Box -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+            
+            <!-- Summary Bar -->
+            <div class="bg-slate-900 text-white p-3 px-4 flex justify-between items-center text-xs font-semibold tracking-wide">
+                <span id="summaryTitle">สรุปสัดส่วนตามหมวดหมู่</span>
+                <span id="summaryTotal" class="text-amber-400 font-bold bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">รวมทั้งสิ้น: 0</span>
+            </div>
+
+            <!-- Fixed Height Inner Scroll Container -->
+            <div class="max-h-[60vh] sm:max-h-[65vh] overflow-y-auto overflow-x-auto relative divide-y divide-slate-100">
+                <table class="w-full text-left text-xs text-slate-600 border-collapse">
+                    <thead id="tableHeader" class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200 cursor-pointer select-none sticky top-0 z-10 shadow-sm">
+                        <!-- Dynamic Header -->
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-slate-100 bg-white">
+                        <!-- Dynamic Data Rows -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        // Supabase API Credentials
+        const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // State Management
+        let rawViewData = [];
+        let processedData = [];
+        let currentSortColumn = 'sales_amt'; 
+        let currentSortOrder = 'DESC';        
+        let donutChartInstance = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHeader();
+            initApp();
+        });
+
+        async function loadHeader() {
+            try {
+                const res = await fetch('uerpheader.html');
+                if (!res.ok) throw new Error('Header load failed');
+                const html = await res.text();
+                
+                const headerContainer = document.getElementById('headerContainer');
+                headerContainer.innerHTML = html;
+
+                const productTab = headerContainer.querySelector('[data-page="product"]');
+                if (productTab) {
+                    productTab.classList.add('chrome-tab-active');
+                }
+
+                if (typeof window.initUerpLayout === 'function') {
+                    window.__uerpLayoutInitialized = false;
+                    window.initUerpLayout();
+                }
+            } catch (err) {
+                console.warn('Cannot load header dynamically:', err);
+            }
+        }
+
+        function initApp() {
+            document.getElementById('periodSelector').addEventListener('change', () => loadSalesData(false));
+            document.getElementById('metricSelector').addEventListener('change', renderReport);
+            document.getElementById('searchInput').addEventListener('input', renderReport);
+            window.addEventListener('resize', renderReport);
+
+            loadSalesData(false);
+        }
+
+        function updateLog(msg) {
+            const logger = document.getElementById('miniLogger');
+            if (logger) logger.innerText = msg;
+        }
+
+        function forceRefreshData() {
+            const period = document.getElementById('periodSelector').value;
+            localStorage.removeItem(`uerp_cat_cache_${period}`);
+            localStorage.removeItem(`uerp_cat_time_${period}`);
+            loadSalesData(true);
+        }
+
+        // ดึงข้อมูลจาก View (เร็วมากเพราะถูกรวมกลุ่มจาก DB แล้ว)
+        async function loadSalesData(isManualRefresh = false) {
+            const period = document.getElementById('periodSelector').value;
+            const cacheKey = `uerp_cat_cache_${period}`;
+            const timeKey = `uerp_cat_time_${period}`;
+            
+            const cachedData = localStorage.getItem(cacheKey);
+            const cachedTime = localStorage.getItem(timeKey);
+            const nowTime = new Date().getTime();
+            const oneDayMs = 24 * 60 * 60 * 1000;
+
+            if (!isManualRefresh && cachedData && cachedTime && (nowTime - Number(cachedTime) < oneDayMs)) {
+                rawViewData = JSON.parse(cachedData);
+                updateLog(`โหลดจาก Cache สำเร็จ (${rawViewData.length.toLocaleString()} แถว View)`);
+                renderReport();
+                return;
+            }
+
+            const statusIndicator = document.getElementById('statusIndicator');
+            statusIndicator.classList.remove('hidden');
+            statusIndicator.className = "p-3 bg-blue-50/80 rounded-xl border border-blue-100 flex items-center gap-3 mb-4 backdrop-blur-sm";
+            statusIndicator.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin text-blue-600"></i><span id="statusText" class="text-xs font-medium text-blue-700">กำลังดึงข้อมูล View จากเซิร์ฟเวอร์...</span>`;
+
+            try {
+                const dateRange = calculateDateRange(period);
+                updateLog(`ดึงข้อมูลจาก view_category_sales...`);
+
+                const { data, error } = await supabaseClient
+                    .from('view_category_sales')
+                    .select('maincategory, qty, sales_amt, date')
+                    .gte('date', dateRange.start)
+                    .lte('date', dateRange.end);
+
+                if (error) throw error;
+
+                rawViewData = data || [];
+
+                localStorage.setItem(cacheKey, JSON.stringify(rawViewData));
+                localStorage.setItem(timeKey, nowTime.toString());
+
+                statusIndicator.classList.add('hidden');
+                updateLog(`ดึงข้อมูล View สำเร็จ: ${rawViewData.length.toLocaleString()} แถว`);
+
+                renderReport();
+
+            } catch (err) {
+                console.error("Error loading view data:", err);
+                statusIndicator.className = "p-3 bg-red-50/80 rounded-xl border border-red-100 flex items-center gap-2 mb-4 text-red-700 text-xs font-medium";
+                statusIndicator.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500"></i> เกิดข้อผิดพลาด: ${err.message}`;
+                updateLog(`เกิดข้อผิดพลาดในการโหลด View`);
+            }
+        }
+
+        // รวมยอดตาม maincategory
+        function aggregateData() {
+            const itemMap = {};
+
+            rawViewData.forEach(item => {
+                const catName = item.maincategory || 'ไม่ระบุหมวดหมู่';
+
+                if (!itemMap[catName]) {
+                    itemMap[catName] = {
+                        maincategory: catName,
+                        qty: 0,
+                        sales_amt: 0
+                    };
+                }
+
+                itemMap[catName].qty += Number(item.qty || 0);
+                itemMap[catName].sales_amt += Number(item.sales_amt || 0);
+            });
+
+            processedData = Object.values(itemMap);
+        }
+
+        function renderReport() {
+            aggregateData();
+
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const metric = document.getElementById('metricSelector').value;
+            const isMobile = window.innerWidth < 768;
+
+            let filteredData = processedData;
+            if (searchTerm) {
+                filteredData = processedData.filter(item => 
+                    item.maincategory.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // คำนวณ Grand Total ประจำเงื่อนไขปัจจุบัน
+            const overallSales = filteredData.reduce((sum, item) => sum + item.sales_amt, 0);
+            const overallQty = filteredData.reduce((sum, item) => sum + item.qty, 0);
+            const activeTotal = metric === 'qty' ? overallQty : overallSales;
+
+            // คำนวณ % Contribution
+            filteredData.forEach(item => {
+                const val = metric === 'qty' ? item.qty : item.sales_amt;
+                item.contribution = activeTotal > 0 ? (val / activeTotal) * 100 : 0;
+            });
+
+            // Sort Data
+            filteredData.sort((a, b) => {
+                let valA = a[currentSortColumn];
+                let valB = b[currentSortColumn];
+
+                if (typeof valA === 'string') {
+                    return currentSortOrder === 'ASC' 
+                        ? valA.localeCompare(valB, 'th') 
+                        : valB.localeCompare(valA, 'th');
+                } else {
+                    return currentSortOrder === 'ASC' ? valA - valB : valB - valA;
+                }
+            });
+
+            renderDonutChart(filteredData, metric);
+            renderHeader(isMobile, metric);
+            renderBody(filteredData, isMobile, metric, overallSales, overallQty);
+        }
+
+        function renderDonutChart(data, metric) {
+            const ctx = document.getElementById('categoryDonutChart').getContext('2d');
+
+            const labels = data.map(i => i.maincategory);
+            const values = data.map(i => i.contribution.toFixed(2));
+
+            if (donutChartInstance) {
+                donutChartInstance.destroy();
+            }
+
+            donutChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            '#1a73e8', '#34a853', '#fbbc04', '#ea4335', '#a142f4',
+                            '#24c1e0', '#f43f5e', '#8b5cf6', '#06b6d4', '#64748b'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: window.innerWidth < 640 ? 'bottom' : 'right',
+                            labels: {
+                                boxWidth: 12,
+                                font: { size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.parsed}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderHeader(isMobile, metric) {
+            const header = document.getElementById('tableHeader');
+            const metricLabel = metric === 'qty' ? 'จำนวน (ชิ้น)' : 'ยอดขาย (บาท)';
+
+            if (isMobile) {
+                header.innerHTML = `
+                    <tr>
+                        <th onclick="sortTable('maincategory')" class="p-3 bg-slate-50 w-1/2">หมวดหมู่หลัก ${getSortIcon('maincategory')}</th>
+                        <th onclick="sortTable('${metric}')" class="p-3 bg-slate-50 w-1/4 text-right">${metricLabel} ${getSortIcon(metric)}</th>
+                        <th onclick="sortTable('contribution')" class="p-3 bg-slate-50 w-1/4 text-right">% Contribution ${getSortIcon('contribution')}</th>
+                    </tr>
+                `;
+            } else {
+                header.innerHTML = `
+                    <tr>
+                        <th onclick="sortTable('maincategory')" class="p-3 bg-slate-50 w-4/12">หมวดหมู่หลัก (Main Category) ${getSortIcon('maincategory')}</th>
+                        <th onclick="sortTable('qty')" class="p-3 bg-slate-50 w-2/12 text-right">จำนวน (ชิ้น) ${getSortIcon('qty')}</th>
+                        <th onclick="sortTable('sales_amt')" class="p-3 bg-slate-50 w-3/12 text-right">ยอดขายรวม (บาท) ${getSortIcon('sales_amt')}</th>
+                        <th onclick="sortTable('contribution')" class="p-3 bg-slate-50 w-3/12 text-right">% Contribution ${getSortIcon('contribution')}</th>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderBody(data, isMobile, metric, overallSales, overallQty) {
+            const body = document.getElementById('tableBody');
+            const summaryTitle = document.getElementById('summaryTitle');
+            const summaryTotal = document.getElementById('summaryTotal');
+
+            if (data.length === 0) {
+                body.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-400">ไม่พบข้อมูลตรงตามเงื่อนไข</td></tr>`;
+                summaryTotal.innerText = `รวมทั้งสิ้น: 0`;
+                return;
+            }
+
+            let html = '';
+            data.forEach(item => {
+                const percentStr = `${item.contribution.toFixed(2)}%`;
+
+                if (isMobile) {
+                    const displayVal = metric === 'qty' 
+                        ? `${item.qty.toLocaleString()} ชิ้น`
+                        : `฿${item.sales_amt.toLocaleString('th-TH', {minimumFractionDigits: 0})}`;
+
+                    html += `
+                        <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100">
+                            <td class="p-3 font-semibold text-slate-800 break-words">${escapeHtml(item.maincategory)}</td>
+                            <td class="p-3 text-right font-medium text-slate-700 whitespace-nowrap">${displayVal}</td>
+                            <td class="p-3 text-right font-bold text-blue-600 whitespace-nowrap">${percentStr}</td>
+                        </tr>
+                    `;
+                } else {
+                    html += `
+                        <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100">
+                            <td class="p-3 font-semibold text-slate-800">${escapeHtml(item.maincategory)}</td>
+                            <td class="p-3 text-right font-semibold text-slate-700">${item.qty.toLocaleString()}</td>
+                            <td class="p-3 text-right font-semibold text-slate-700">฿${item.sales_amt.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
+                            <td class="p-3 text-right font-bold text-blue-600">${percentStr}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            body.innerHTML = html;
+
+            summaryTitle.innerText = `จำนวนหมวดหมู่หลักทั้งหมด: ${data.length} หมวดหมู่`;
+            summaryTotal.innerText = metric === 'qty' 
+                ? `ยอดรวม: ${overallQty.toLocaleString()} ชิ้น (100%)`
+                : `ยอดขายรวม: ฿${overallSales.toLocaleString('th-TH', {minimumFractionDigits: 2})} (100%)`;
+        }
+
+        function sortTable(column) {
+            if (currentSortColumn === column) {
+                currentSortOrder = currentSortOrder === 'DESC' ? 'ASC' : 'DESC';
+            } else {
+                currentSortColumn = column;
+                currentSortOrder = 'DESC';
+            }
+            renderReport();
+        }
+
+        function getSortIcon(column) {
+            if (currentSortColumn !== column) return '<i class="fa-solid fa-sort text-slate-300 ml-1"></i>';
+            return currentSortOrder === 'DESC' 
+                ? '<i class="fa-solid fa-sort-down text-blue-600 ml-1"></i>' 
+                : '<i class="fa-solid fa-sort-up text-blue-600 ml-1"></i>';
+        }
+
+        function calculateDateRange(period) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+
+            let start, end;
+
+            switch (period) {
+                case 'this_month':
+                    start = new Date(year, month, 1, 0, 0, 0, 0);
+                    end = new Date(year, month + 1, 0, 23, 59, 59, 999);
+                    break;
+
+                case 'last_month':
+                    start = new Date(year, month - 1, 1, 0, 0, 0, 0);
+                    end = new Date(year, month, 0, 23, 59, 59, 999);
+                    break;
+
+                case 'last_3_months':
+                    start = new Date(year, month - 2, 1, 0, 0, 0, 0);
+                    end = new Date(year, month + 1, 0, 23, 59, 59, 999);
+                    break;
+
+                case 'this_year':
+                    start = new Date(year, 0, 1, 0, 0, 0, 0);
+                    end = new Date(year, 11, 31, 23, 59, 59, 999);
+                    break;
+
+                case 'last_year':
+                    start = new Date(year - 1, 0, 1, 0, 0, 0, 0);
+                    end = new Date(year - 1, 11, 31, 23, 59, 59, 999);
+                    break;
+            }
+
+            return {
+                start: start.toISOString(),
+                end: end.toISOString()
+            };
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.innerText = text || '';
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
