@@ -27,7 +27,7 @@
     <!-- Supabase JS SDK (v2) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Global Header/Layout Script -->
-    <script src="/js/layoutuerp.js"></script>
+    <script src="js/layoutuerp.js"></script>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 font-sans">
 
@@ -138,7 +138,7 @@
         async function loadHeader() {
             try {
                 // ปรับพาธของไฟล์ uerpheader.html ตามโครงสร้างไดเรกทอรีจริง
-                const res = await fetch('/uerpheader.html'); 
+                const res = await fetch('uerpheader.html');
                 if (!res.ok) throw new Error('Header load failed');
                 const html = await res.text();
                 
