@@ -26,7 +26,7 @@
     <!-- Supabase JS SDK (v2) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- Chart.js + Chart.js DataLabels Plugin (สำหรับโชว์ข้อความ % บน Chart) -->
+    <!-- Chart.js + Chart.js DataLabels Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     
@@ -47,13 +47,13 @@
             <!-- Row 1: Period Picker, Metric Dropdown & Refresh Button -->
             <div class="flex items-center justify-between gap-2">
                 
-                <!-- Dropdown เลือกสลับ Metric (เพิ่ม GPM, COGS, Net Received) -->
+                <!-- Dropdown เลือกสลับ Metric -->
                 <div class="flex items-center gap-1.5 flex-1 min-w-0">
                     <label class="text-[10px] sm:text-xs font-semibold text-slate-500 whitespace-nowrap">มุมมอง:</label>
                     <select id="metricSelector" class="bg-slate-50 border border-slate-200 text-slate-800 text-[10px] sm:text-xs font-bold rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 block w-full p-2 cursor-pointer transition truncate">
                         <option value="sales_amt" selected>ยอดขายรวม (Sales Amt - ฿)</option>
                         <option value="qty">จำนวนชิ้น (QTY)</option>
-                        <option value="gpm">กำไรขั้นต้น (GPM - ฿)</option>
+                        <option value="gpm">กำไรขั้นต้นสุทธิ (GPM - ฿)</option>
                         <option value="cogs">ต้นทุนสินค้า (COGS - ฿)</option>
                         <option value="net_received">รายรับสุทธิ (Net Received - ฿)</option>
                     </select>
@@ -99,7 +99,7 @@
             <span id="statusText" class="text-xs font-medium text-blue-700">กำลังดึงข้อมูล...</span>
         </div>
 
-        <!-- Donut Chart Box (ดีไซน์ผอมบาง ทันสมัย + ข้อความตรงกลาง) -->
+        <!-- Donut Chart Box -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 mb-4">
             <h3 class="text-xs font-bold text-slate-700 mb-2 flex items-center gap-2">
                 <i class="fa-solid fa-chart-pie text-blue-600"></i> สัดส่วนสถิติตามหมวดหมู่หลัก (% Contribution)
@@ -237,7 +237,7 @@
 
             try {
                 const dateRange = calculateDateRange(period);
-                updateLog(`ดึงข้อมูลจาก view_category_sales...`);
+                updateLog(`ดึงข้อมูลจาก view_category_sales (${dateRange.start.slice(0,10)} ถึง ${dateRange.end.slice(0,10)})...`);
 
                 const { data, error } = await supabaseClient
                     .from('view_category_sales')
@@ -265,7 +265,7 @@
             }
         }
 
-        // Aggregate Group By maincategory พร้อมคำนวณ GPM
+        // Aggregate Group By maincategory
         function aggregateData() {
             const itemMap = {};
 
@@ -284,17 +284,17 @@
                     };
                 }
 
-                const sales = Number(item.sales_amt || 0);
                 const cogs = Number(item.cogs || 0);
+                const netRec = Number(item.net_received || 0);
 
                 itemMap[catName].qty += Number(item.qty || 0);
-                itemMap[catName].sales_amt += sales;
+                itemMap[catName].sales_amt += Number(item.sales_amt || 0);
                 itemMap[catName].cogs += cogs;
-                itemMap[catName].net_received += Number(item.net_received || 0);
-                itemMap[catName].gpm += (sales - cogs);
+                itemMap[catName].net_received += netRec;
+                itemMap[catName].gpm += (netRec - cogs); // GPM จริง = Net Received - COGS
             });
 
-            // คำนวณ GPM Percent (%)
+            // คำนวณ % GPM (เทียบกับ ยอดขายรวม)
             Object.values(itemMap).forEach(item => {
                 item.gpm_pct = item.sales_amt > 0 ? (item.gpm / item.sales_amt) * 100 : 0;
             });
@@ -316,21 +316,22 @@
                 );
             }
 
-            // คำนวณ Sum รวมของทุก Column สำหรับ Footer Grid
+            // คำนวณ Sum รวมทุก Column
             const totals = filteredData.reduce((acc, item) => {
                 acc.qty += item.qty;
                 acc.sales_amt += item.sales_amt;
                 acc.cogs += item.cogs;
                 acc.net_received += item.net_received;
-                acc.gpm += item.gpm;
+                acc.gpm += item.gpm; // Sum GPM จริง
                 return acc;
             }, { qty: 0, sales_amt: 0, cogs: 0, net_received: 0, gpm: 0 });
 
+            // % GPM รวมทั้งหมด คิดจาก ยอดขายรวม
             totals.gpm_pct = totals.sales_amt > 0 ? (totals.gpm / totals.sales_amt) * 100 : 0;
 
             const activeTotal = totals[metric] || 0;
 
-            // คำนวณ % Contribution
+            // คำนวณ % Contribution สำหรับแสดงบน Pie Chart
             filteredData.forEach(item => {
                 const val = item[metric] || 0;
                 item.contribution = activeTotal > 0 ? (val / activeTotal) * 100 : 0;
@@ -355,7 +356,6 @@
             renderBodyAndFooter(filteredData, isMobile, metric, totals);
         }
 
-        // ฟอร์แมตตัวเลขสั้นสำหรับใส่ตรงกลาง Donut Chart (เช่น 2.5M, 500K)
         function formatCompactNumber(number, isQty = false) {
             if (isQty) return number.toLocaleString();
             if (number >= 1e6) return '฿' + (number / 1e6).toFixed(2) + 'M';
@@ -366,7 +366,6 @@
         function renderDonutChart(data, metric, activeTotal) {
             const ctx = document.getElementById('categoryDonutChart').getContext('2d');
 
-            // อัปเดตข้อความตรงกลางวง Donut
             const metricLabels = {
                 sales_amt: 'ยอดขายรวม',
                 qty: 'จำนวนชิ้นรวม',
@@ -378,7 +377,8 @@
             document.getElementById('centerTotalValue').innerText = formatCompactNumber(activeTotal, metric === 'qty');
 
             const labels = data.map(i => i.maincategory);
-            const values = data.map(i => i.contribution);
+            // แปลงค่าให้ปลอดภัย ไม่ติดลบ เพื่อให้ Chart.js วาด Pie Chart สัดส่วน GPM ได้สมบูรณ์
+            const values = data.map(i => Math.max(0, i.contribution));
 
             if (donutChartInstance) {
                 donutChartInstance.destroy();
@@ -402,29 +402,38 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: '75%', // เพิ่มความบาง ทันสมัย สไตล์โมเดิร์น
+                    cutout: '68%',
                     plugins: {
-                        legend: { display: false }, // ซ่อน Legend ข้างๆ เพื่อใช้ DataLabels ตรงๆ
+                        legend: { display: false },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return ` ${context.label}: ${context.parsed.toFixed(2)}%`;
+                                    const item = data[context.dataIndex];
+                                    const val = item ? (item[metric] || 0) : 0;
+                                    const con = item ? item.contribution : 0;
+                                    const valStr = metric === 'qty' 
+                                        ? `${val.toLocaleString()} ชิ้น` 
+                                        : `฿${val.toLocaleString('th-TH', {minimumFractionDigits: 0})}`;
+                                    return ` ${context.label}: ${valStr} (${con.toFixed(1)}%)`;
                                 }
                             }
                         },
-                        // ปลั๊กอินแสดงชื่อ Main Category + % บนวง Donut
+                        // ตัวหนังสือดำธรรมดา ไม่มี Stroke หรือตกแต่งซับซ้อน
                         datalabels: {
-                            color: '#1e293b',
+                            color: '#000000',            // สีดำธรรมดา สบายตา
                             font: { weight: 'bold', size: 10 },
+                            textStrokeWidth: 0,          // เอา Stroke ออกทั้งหมด
                             formatter: (value, ctx) => {
-                                if (value < 4) return ''; // ชิ้นเล็กกว่า 4% ไม่แสดงป้องกันข้อความทับกัน
+                                const item = data[ctx.dataIndex];
+                                const con = item ? item.contribution : 0;
+                                if (con <= 0 || value < 3) return ''; // ซ่อนหากสัดส่วนน้อยกว่า 3% หรือไม่มีกำไร
                                 const categoryName = ctx.chart.data.labels[ctx.dataIndex];
-                                return `${categoryName}\n${value.toFixed(1)}%`;
+                                return `${categoryName}\n${con.toFixed(1)}%`;
                             },
                             textAlign: 'center',
                             anchor: 'center',
-                            align: 'end',
-                            offset: 2
+                            align: 'center',
+                            offset: 0
                         }
                     }
                 }
@@ -499,7 +508,7 @@
 
             body.innerHTML = html;
 
-            // Render Footer สรุปยอดรวมด้านล่างสุดของตาราง (GRID SUM FOOTER)
+            // Render Footer สรุปยอดรวมด้านล่างสุด
             if (isMobile) {
                 footer.innerHTML = `
                     <tr class="bg-slate-100 text-slate-900 border-t-2 border-slate-300">
@@ -551,38 +560,43 @@
             const year = now.getFullYear();
             const month = now.getMonth();
 
-            let start, end;
+            let startDateStr, endDateStr;
+
+            const pad = (n) => n.toString().padStart(2, '0');
 
             switch (period) {
                 case 'this_month':
-                    start = new Date(year, month, 1, 0, 0, 0, 0);
-                    end = new Date(year, month + 1, 0, 23, 59, 59, 999);
+                    startDateStr = `${year}-${pad(month + 1)}-01T00:00:00`;
+                    endDateStr = `${year}-${pad(month + 1)}-${pad(new Date(year, month + 1, 0).getDate())}T23:59:59`;
                     break;
 
                 case 'last_month':
-                    start = new Date(year, month - 1, 1, 0, 0, 0, 0);
-                    end = new Date(year, month, 0, 23, 59, 59, 999);
+                    const lastM = month === 0 ? 11 : month - 1;
+                    const lastMY = month === 0 ? year - 1 : year;
+                    startDateStr = `${lastMY}-${pad(lastM + 1)}-01T00:00:00`;
+                    endDateStr = `${lastMY}-${pad(lastM + 1)}-${pad(new Date(lastMY, lastM + 1, 0).getDate())}T23:59:59`;
                     break;
 
                 case 'last_3_months':
-                    start = new Date(year, month - 2, 1, 0, 0, 0, 0);
-                    end = new Date(year, month + 1, 0, 23, 59, 59, 999);
+                    const m3 = new Date(year, month - 2, 1);
+                    startDateStr = `${m3.getFullYear()}-${pad(m3.getMonth() + 1)}-01T00:00:00`;
+                    endDateStr = `${year}-${pad(month + 1)}-${pad(new Date(year, month + 1, 0).getDate())}T23:59:59`;
                     break;
 
                 case 'this_year':
-                    start = new Date(year, 0, 1, 0, 0, 0, 0);
-                    end = new Date(year, 11, 31, 23, 59, 59, 999);
+                    startDateStr = `${year}-01-01T00:00:00`;
+                    endDateStr = `${year}-12-31T23:59:59`;
                     break;
 
                 case 'last_year':
-                    start = new Date(year - 1, 0, 1, 0, 0, 0, 0);
-                    end = new Date(year - 1, 11, 31, 23, 59, 59, 999);
+                    startDateStr = `${year - 1}-01-01T00:00:00`;
+                    endDateStr = `${year - 1}-12-31T23:59:59`;
                     break;
             }
 
             return {
-                start: start.toISOString(),
-                end: end.toISOString()
+                start: startDateStr,
+                end: endDateStr
             };
         }
 
