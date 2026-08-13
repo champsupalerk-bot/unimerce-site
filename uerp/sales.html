@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UERP - Sales Report</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS SDK (v2) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Global Header/Layout Script -->
+    <script src="/js/layoutuerp.js"></script>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 font-sans">
+
+    <!-- Container จำกัดความกว้างไม่เกิน 1000px -->
+    <main class="max-w-[1000px] mx-auto p-4 md:p-6">
+        
+        <!-- Controls Header Panel -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-5 space-y-4">
+            
+            <!-- Row 1: Period Picker & Metric Dropdown -->
+            <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+                
+                <!-- Dropdown เลือกสลับ Metric (Qty / Sales Amt) -->
+                <div class="flex items-center gap-2">
+                    <label class="text-xs font-semibold text-slate-500 whitespace-nowrap">มุมมอง:</label>
+                    <select id="metricSelector" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs font-bold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full sm:w-auto p-2.5 cursor-pointer">
+                        <option value="qty" selected>จำนวนชิ้น (QTY)</option>
+                        <option value="sales_amt">ยอดขายรวม (Sales Amt - ฿)</option>
+                    </select>
+                </div>
+
+                <!-- Period Picker -->
+                <div class="flex items-center gap-2">
+                    <label class="text-xs font-semibold text-slate-500 whitespace-nowrap">ช่วงเวลา:</label>
+                    <select id="periodSelector" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs font-bold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full sm:w-auto p-2.5 cursor-pointer">
+                        <option value="this_month" selected>เดือนนี้</option>
+                        <option value="last_month">เดือนที่แล้ว</option>
+                        <option value="last_3_months">3 เดือนที่แล้ว</option>
+                        <option value="this_year">ปีนี้</option>
+                        <option value="last_year">ปีที่แล้ว</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row 2: Search Bar -->
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                </div>
+                <input type="text" id="searchInput" placeholder="ค้นหา รหัสสินค้า (Item Code) หรือ ชื่อสินค้า (Item Name)..." 
+                    class="bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 p-2.5">
+            </div>
+
+        </div>
+
+        <!-- Status Panel -->
+        <div id="statusIndicator" class="p-4 bg-blue-50 rounded-xl border border-blue-100 flex items-center gap-3 mb-4">
+            <i class="fa-solid fa-circle-notch animate-spin text-blue-600"></i>
+            <span id="statusText" class="text-xs font-medium text-blue-700">กำลังดึงข้อมูลยอดขาย...</span>
+        </div>
+
+        <!-- Report Table Box -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            
+            <!-- Summary Bar -->
+            <div class="bg-slate-900 text-white p-3.5 px-4 flex justify-between items-center text-xs font-semibold">
+                <span id="summaryTitle">สรุปยอดขาย</span>
+                <span id="summaryTotal" class="text-amber-400 font-bold">รวมทั้งสิ้น: 0</span>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-slate-600">
+                    <thead id="tableHeader" class="bg-slate-100 text-slate-700 font-bold uppercase border-b border-slate-200 cursor-pointer select-none">
+                        <!-- Dynamic Header -->
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-slate-100">
+                        <!-- Dynamic Data Rows -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        // Supabase API Credentials
+        const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // State Management
+        let rawTransactionsData = [];
+        let processedData = [];
+        let currentSortColumn = 'metric_val'; // Default Sort
+        let currentSortOrder = 'DESC';        // Default Z-A
+        let isMonthlyViewMode = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+        });
+
+        function initApp() {
+            document.getElementById('periodSelector').addEventListener('change', loadSalesData);
+            document.getElementById('metricSelector').addEventListener('change', renderReport);
+            document.getElementById('searchInput').addEventListener('input', renderReport);
+            window.addEventListener('resize', handleResponsiveLayout);
+
+            loadSalesData();
+        }
+
+        // ดึงข้อมูลจาก Supabase ตาม Period
+        async function loadSalesData() {
+            const statusIndicator = document.getElementById('statusIndicator');
+            const period = document.getElementById('periodSelector').value;
+            
+            statusIndicator.classList.remove('hidden');
+            statusIndicator.className = "p-4 bg-blue-50 rounded-xl border border-blue-100 flex items-center gap-3 mb-4";
+            statusIndicator.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin text-blue-600"></i><span class="text-xs font-medium text-blue-700">กำลังประมวลผลข้อมูล...</span>`;
+
+            try {
+                const dateRange = calculateDateRange(period);
+                
+                // ตรวจสอบเงื่อนไขการเปิด 12 เดือนวิวบน Desktop
+                const isDesktop = window.innerWidth >= 768;
+                isMonthlyViewMode = isDesktop && (period === 'this_year' || period === 'last_year');
+
+                const { data, error } = await supabaseClient
+                    .from('transactions')
+                    .select('item_code, item_name, qty, sales_amt, date')
+                    .gte('date', dateRange.start)
+                    .lte('date', dateRange.end);
+
+                if (error) throw error;
+
+                rawTransactionsData = data || [];
+                statusIndicator.classList.add('hidden');
+                
+                // สั่งประมวลผลข้อมูล
+                aggregateData();
+                renderReport();
+
+            } catch (err) {
+                console.error("Error loading sales data:", err);
+                statusIndicator.className = "p-4 bg-red-50 rounded-xl border border-red-100 flex items-center gap-2 mb-4 text-red-700 text-xs font-medium";
+                statusIndicator.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500"></i> เกิดข้อผิดพลาด: ${err.message}`;
+            }
+        }
+
+        // รวมยอดข้อมูล (Group By สินค้า หรือ 12 เดือน)
+        function aggregateData() {
+            const metric = document.getElementById('metricSelector').value;
+
+            if (isMonthlyViewMode) {
+                // View 12 เดือนสำหรับ Desktop (เมื่อเลือกปีนี้ / ปีที่แล้ว)
+                const monthlyMap = Array.from({ length: 12 }, (_, i) => ({
+                    month_index: i,
+                    month_name: new Date(2026, i, 1).toLocaleString('th-TH', { month: 'short' }),
+                    metric_val: 0,
+                    qty: 0,
+                    sales_amt: 0
+                }));
+
+                rawTransactionsData.forEach(item => {
+                    const d = new Date(item.date);
+                    const m = d.getMonth();
+                    if (m >= 0 && m < 12) {
+                        monthlyMap[m].qty += Number(item.qty || 0);
+                        monthlyMap[m].sales_amt += Number(item.sales_amt || 0);
+                        monthlyMap[m].metric_val += Number(item[metric] || 0);
+                    }
+                });
+
+                processedData = monthlyMap;
+            } else {
+                // View รวมปกติ (1 สินค้า = 1 Row)
+                const itemMap = {};
+
+                rawTransactionsData.forEach(item => {
+                    const code = item.item_code || 'UNSPECIFIED';
+                    const name = item.item_name || 'ไม่ระบุชื่อสินค้า';
+                    const key = `${code}___${name}`;
+
+                    if (!itemMap[key]) {
+                        itemMap[key] = {
+                            item_code: code,
+                            item_name: name,
+                            qty: 0,
+                            sales_amt: 0,
+                            metric_val: 0
+                        };
+                    }
+
+                    const qty = Number(item.qty || 0);
+                    const sales = Number(item.sales_amt || 0);
+
+                    itemMap[key].qty += qty;
+                    itemMap[key].sales_amt += sales;
+                    itemMap[key].metric_val += (metric === 'qty') ? qty : sales;
+                });
+
+                processedData = Object.values(itemMap);
+            }
+        }
+
+        // เรนเดอร์ส่วนตารางและหัวตาราง
+        function renderReport() {
+            aggregateData(); // Refresh metrics
+
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const metric = document.getElementById('metricSelector').value;
+            const isMobile = window.innerWidth < 768;
+
+            // 1. Filter คำค้นหา
+            let filteredData = processedData;
+            if (searchTerm && !isMonthlyViewMode) {
+                filteredData = processedData.filter(item => 
+                    item.item_code.toLowerCase().includes(searchTerm) || 
+                    item.item_name.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // 2. Sort ข้อมูล Z-A / A-Z
+            filteredData.sort((a, b) => {
+                let valA = a[currentSortColumn];
+                let valB = b[currentSortColumn];
+
+                if (typeof valA === 'string') {
+                    return currentSortOrder === 'ASC' 
+                        ? valA.localeCompare(valB, 'th') 
+                        : valB.localeCompare(valA, 'th');
+                } else {
+                    return currentSortOrder === 'ASC' ? valA - valB : valB - valA;
+                }
+            });
+
+            // 3. Render Header
+            renderHeader(isMobile, metric);
+
+            // 4. Render Body & Summary
+            renderBody(filteredData, isMobile, metric);
+        }
+
+        function renderHeader(isMobile, metric) {
+            const header = document.getElementById('tableHeader');
+            const metricLabel = metric === 'qty' ? 'จำนวน (ชิ้น)' : 'ยอดขาย (บาท)';
+
+            if (isMonthlyViewMode) {
+                header.innerHTML = `
+                    <tr>
+                        <th onclick="sortTable('month_index')" class="p-3">เดือน ${getSortIcon('month_index')}</th>
+                        <th onclick="sortTable('qty')" class="p-3 text-right">จำนวนรวม (ชิ้น) ${getSortIcon('qty')}</th>
+                        <th onclick="sortTable('sales_amt')" class="p-3 text-right">ยอดขายรวม (บาท) ${getSortIcon('sales_amt')}</th>
+                    </tr>
+                `;
+            } else if (isMobile) {
+                header.innerHTML = `
+                    <tr>
+                        <th onclick="sortTable('item_code')" class="p-3 w-1/4">รหัส ${getSortIcon('item_code')}</th>
+                        <th onclick="sortTable('item_name')" class="p-3 w-1/2">ชื่อสินค้า ${getSortIcon('item_name')}</th>
+                        <th onclick="sortTable('metric_val')" class="p-3 w-1/4 text-right">${metricLabel} ${getSortIcon('metric_val')}</th>
+                    </tr>
+                `;
+            } else {
+                header.innerHTML = `
+                    <tr>
+                        <th onclick="sortTable('item_code')" class="p-3 w-2/12">รหัสสินค้า ${getSortIcon('item_code')}</th>
+                        <th onclick="sortTable('item_name')" class="p-3 w-5/12">ชื่อสินค้า ${getSortIcon('item_name')}</th>
+                        <th onclick="sortTable('qty')" class="p-3 w-2/12 text-right">จำนวน (ชิ้น) ${getSortIcon('qty')}</th>
+                        <th onclick="sortTable('sales_amt')" class="p-3 w-3/12 text-right">ยอดขายรวม (บาท) ${getSortIcon('sales_amt')}</th>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderBody(data, isMobile, metric) {
+            const body = document.getElementById('tableBody');
+            const summaryTitle = document.getElementById('summaryTitle');
+            const summaryTotal = document.getElementById('summaryTotal');
+
+            if (data.length === 0) {
+                body.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400">ไม่พบข้อมูลตรงตามเงื่อนไข</td></tr>`;
+                summaryTotal.innerText = `รวมทั้งสิ้น: 0`;
+                return;
+            }
+
+            let totalQtySum = 0;
+            let totalSalesSum = 0;
+
+            let html = '';
+            data.forEach(item => {
+                totalQtySum += item.qty || 0;
+                totalSalesSum += item.sales_amt || 0;
+
+                if (isMonthlyViewMode) {
+                    html += `
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="p-3 font-bold text-slate-800">${item.month_name}</td>
+                            <td class="p-3 text-right font-semibold">${item.qty.toLocaleString()}</td>
+                            <td class="p-3 text-right font-bold text-blue-600">฿${item.sales_amt.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
+                        </tr>
+                    `;
+                } else if (isMobile) {
+                    const displayVal = metric === 'qty' 
+                        ? `${item.qty.toLocaleString()} ชิ้น`
+                        : `฿${item.sales_amt.toLocaleString('th-TH', {minimumFractionDigits: 0})}`;
+
+                    html += `
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="p-3 font-mono text-[11px] text-slate-500">${escapeHtml(item.item_code)}</td>
+                            <td class="p-3 font-medium text-slate-800 break-words">${escapeHtml(item.item_name)}</td>
+                            <td class="p-3 text-right font-bold text-blue-600 whitespace-nowrap">${displayVal}</td>
+                        </tr>
+                    `;
+                } else {
+                    html += `
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="p-3 font-mono text-slate-500">${escapeHtml(item.item_code)}</td>
+                            <td class="p-3 font-semibold text-slate-800">${escapeHtml(item.item_name)}</td>
+                            <td class="p-3 text-right font-semibold text-slate-700">${item.qty.toLocaleString()}</td>
+                            <td class="p-3 text-right font-bold text-blue-600">฿${item.sales_amt.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            body.innerHTML = html;
+
+            // แสดงยอดรวม
+            summaryTitle.innerText = isMonthlyViewMode 
+                ? `สรุปรายเดือน (${data.length} เดือน)`
+                : `จำนวนรายการสินค้าทั้งหมด: ${data.length} รายการ`;
+
+            summaryTotal.innerText = metric === 'qty' 
+                ? `ยอดรวม: ${totalQtySum.toLocaleString()} ชิ้น`
+                : `ยอดขายรวม: ฿${totalSalesSum.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
+        }
+
+        // จัดการคลิกเปลี่ยน Sort Column (Default Z-A)
+        function sortTable(column) {
+            if (currentSortColumn === column) {
+                currentSortOrder = currentSortOrder === 'DESC' ? 'ASC' : 'DESC';
+            } else {
+                currentSortColumn = column;
+                currentSortOrder = 'DESC'; // Default เป็น Z-A เสมอ
+            }
+            renderReport();
+        }
+
+        function getSortIcon(column) {
+            if (currentSortColumn !== column) return '<i class="fa-solid fa-sort text-slate-300 ml-1"></i>';
+            return currentSortOrder === 'DESC' 
+                ? '<i class="fa-solid fa-sort-down text-blue-600 ml-1"></i>' 
+                : '<i class="fa-solid fa-sort-up text-blue-600 ml-1"></i>';
+        }
+
+        function handleResponsiveLayout() {
+            const isDesktop = window.innerWidth >= 768;
+            const period = document.getElementById('periodSelector').value;
+            const newMonthlyViewMode = isDesktop && (period === 'this_year' || period === 'last_year');
+
+            if (newMonthlyViewMode !== isMonthlyViewMode) {
+                isMonthlyViewMode = newMonthlyViewMode;
+                renderReport();
+            } else {
+                renderReport();
+            }
+        }
+
+        // คำนวณขอบเขตวันที่ (ISO String)
+        function calculateDateRange(period) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+
+            let start, end;
+
+            switch (period) {
+                case 'this_month':
+                    start = new Date(year, month, 1, 0, 0, 0, 0);
+                    end = new Date(year, month + 1, 0, 23, 59, 59, 999);
+                    break;
+
+                case 'last_month':
+                    start = new Date(year, month - 1, 1, 0, 0, 0, 0);
+                    end = new Date(year, month, 0, 23, 59, 59, 999);
+                    break;
+
+                case 'last_3_months':
+                    start = new Date(year, month - 2, 1, 0, 0, 0, 0);
+                    end = new Date(year, month + 1, 0, 23, 59, 59, 999);
+                    break;
+
+                case 'this_year':
+                    start = new Date(year, 0, 1, 0, 0, 0, 0);
+                    end = new Date(year, 11, 31, 23, 59, 59, 999);
+                    break;
+
+                case 'last_year':
+                    start = new Date(year - 1, 0, 1, 0, 0, 0, 0);
+                    end = new Date(year - 1, 11, 31, 23, 59, 59, 999);
+                    break;
+            }
+
+            return {
+                start: start.toISOString(),
+                end: end.toISOString()
+            };
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.innerText = text || '';
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
