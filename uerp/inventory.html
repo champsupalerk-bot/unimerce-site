@@ -23,70 +23,79 @@
 <meta property="og:image:width" content="600" />
 <meta property="og:image:height" content="600" />
 
+<!-- ========================================================= -->
+<!-- [FIXED] ดึง CSS หลักของ UERP Layout + FontAwesome มาแล้ว -->
+<!-- ========================================================= -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link rel="stylesheet" href="/uerp/layoutuerp.css" />
+<!-- หากระบบคุณใช้ไฟล์ CSS ส่วนกลางอื่นเพิ่มเติม สามารถปลดคอมเมนต์บรรทัดล่างนี้ได้ -->
+<!-- <link rel="stylesheet" href="/uerp/style.css" /> -->
+
 <style>
 
 /* =========================
-   BASE
+   BASE & OVERRIDES
 ========================= */
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#fafafa;
-  color:#111;
-  padding-top:50px; 
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #fafafa;
+  color: #111;
+  /* ปรับ padding-top เพื่อไม่ให้ชนกับ Header ของ UERP */
+  padding-top: 0px; 
 }
 
 /* =========================
    LAYOUT
 ========================= */
-.container{
-  max-width:800px;
-  margin:0 auto;
-  padding:20px;
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 /* =========================
    BREADCRUMB ROW
 ========================= */
-.breadcrumb-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.breadcrumb-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 10px; 
-  margin-bottom:12px;
+  margin-bottom: 12px;
 }
 
-.breadcrumb{
-  font-size:11px; 
-  color:#777;
-  letter-spacing:1px;
+.breadcrumb {
+  font-size: 11px; 
+  color: #777;
+  letter-spacing: 1px;
 }
 
-.breadcrumb a{
+.breadcrumb a {
   color: #777;
   text-decoration: none;
   font-weight: bold;
 }
 
-.breadcrumb a:hover{
+.breadcrumb a:hover {
   text-decoration: underline;
   color: #2f5ea8;
 }
 
 /* Checkbox วงกลม */
-.hide-zero-wrap, .category-label{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  font-size:12px;
-  color:#777;
-  white-space:nowrap;
-  cursor:pointer;
-  user-select:none;
+.hide-zero-wrap, .category-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #777;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
 }
 
 .hide-zero-wrap input[type="checkbox"],
-.category-label input[type="checkbox"]{
+.category-label input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
   width: 14px;
@@ -119,9 +128,9 @@ body{
 }
 
 .hide-zero-wrap input[type="checkbox"]:checked,
-.category-label input[type="checkbox"]:checked{
-  background:#2f5ea8;
-  border-color:#2f5ea8;
+.category-label input[type="checkbox"]:checked {
+  background: #2f5ea8;
+  border-color: #2f5ea8;
 }
 
 .hide-zero-wrap input[type="checkbox"]:checked::before,
@@ -151,18 +160,18 @@ body{
 /* =========================
    FILTER BAR & DROPDOWN
 ========================= */
-.filterbar{
+.filterbar {
   margin-bottom: 10px;
 }
 
-.filterbar input{
-  width:100%;
-  padding:10px 12px;
-  border:1px solid #ddd;
-  border-radius:8px;
-  font-size:16px;
-  outline:none;
-  box-sizing:border-box;
+.filterbar input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
   transition: all 0.2s ease;
 }
 
@@ -247,66 +256,66 @@ body{
 /* =========================
    TABLE WRAP
 ========================= */
-.table-wrap{
-  width:100%;
-  overflow-x:hidden;
-  overflow-y:auto;
-  border:1px solid #eee;
-  border-radius:12px;
-  background:#fff;
-  max-height:75vh;
+.table-wrap {
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #fff;
+  max-height: 75vh;
 }
 
-table{
-  width:100%;
-  border-collapse:collapse;
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-thead th{
-  position:sticky;
-  top:0;
-  background:#2f5ea8;
-  color:#fff;
-  z-index:50;
-  text-align:left;
-  font-size:12px;
-  padding:12px 10px;
-  letter-spacing:1px;
-  cursor:pointer;
-  user-select:none;
-  white-space:nowrap;
+thead th {
+  position: sticky;
+  top: 0;
+  background: #2f5ea8;
+  color: #fff;
+  z-index: 50;
+  text-align: left;
+  font-size: 12px;
+  padding: 12px 10px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
 }
 
-thead th:hover{
-  background:#244a86;
+thead th:hover {
+  background: #244a86;
 }
 
-tbody td{
-  font-size:13px;
-  padding:10px;
-  border-bottom:1px solid #f0f0f0;
+tbody td {
+  font-size: 13px;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-tbody tr:hover{
-  background:#f7f7f7;
+tbody tr:hover {
+  background: #f7f7f7;
   cursor: pointer;
 }
 
-.col-code{
-  width:90px;
-  white-space:nowrap;
+.col-code {
+  width: 90px;
+  white-space: nowrap;
 }
 
-.col-desc{
-  width:auto;
-  word-break:break-word;
-  white-space:normal;
+.col-desc {
+  width: auto;
+  word-break: break-word;
+  white-space: normal;
 }
 
-.col-stock{
-  width:50px;
-  text-align:right;
-  white-space:nowrap;
+.col-stock {
+  width: 50px;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .order-alert {
@@ -328,10 +337,10 @@ tbody tr:hover{
   display: none;
 }
 
-.sort-arrow{
-  font-size:10px;
-  margin-left:6px;
-  opacity:0.9;
+.sort-arrow {
+  font-size: 10px;
+  margin-left: 6px;
+  opacity: 0.9;
 }
 
 /* =========================
@@ -463,7 +472,7 @@ tbody tr:hover{
     color:#fff;
   }
   body {
-    padding-top: 40px; 
+    padding-top: 0px; 
   }
 }
 
