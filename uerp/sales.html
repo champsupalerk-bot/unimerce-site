@@ -48,7 +48,7 @@
                     <label class="text-[10px] sm:text-xs font-semibold text-slate-500 whitespace-nowrap">มุมมอง:</label>
                     <select id="metricSelector" class="bg-slate-50 border border-slate-200 text-slate-800 text-[10px] sm:text-xs font-bold rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 block w-full p-2 cursor-pointer transition truncate">
                         <option value="qty" selected>จำนวนชิ้น (QTY)</option>
-                        <option value="sales_amt">ยอดขายรวม (Sales Amt - ฿)</option>
+                        <option value="customer_net_payment_amt">ยอดขายรวม (Sales Amt - ฿)</option>
                     </select>
                 </div>
 
@@ -226,7 +226,7 @@
 
                     const { data, error } = await supabaseClient
                         .from('transactions')
-                        .select('item_code, item_name, qty, sales_amt, date')
+                        .select('item_code, item_name, qty, customer_net_payment_amt, date')
                         .gte('date', dateRange.start)
                         .lte('date', dateRange.end)
                         .range(from, to);
@@ -282,16 +282,16 @@
                         item_code: code,
                         item_name: name,
                         qty: 0,
-                        sales_amt: 0,
+                        customer_net_payment_amt: 0,
                         metric_val: 0
                     };
                 }
 
                 const qty = Number(item.qty || 0);
-                const sales = Number(item.sales_amt || 0);
+                const sales = Number(item.customer_net_payment_amt || 0);
 
                 itemMap[key].qty += qty;
-                itemMap[key].sales_amt += sales;
+                itemMap[key].customer_net_payment_amt += sales;
                 itemMap[key].metric_val += (metric === 'qty') ? qty : sales;
             });
 
@@ -349,7 +349,7 @@
                         <th onclick="sortTable('item_code')" class="p-3 bg-slate-50 w-2/12">รหัสสินค้า ${getSortIcon('item_code')}</th>
                         <th onclick="sortTable('item_name')" class="p-3 bg-slate-50 w-5/12">ชื่อสินค้า ${getSortIcon('item_name')}</th>
                         <th onclick="sortTable('qty')" class="p-3 bg-slate-50 w-2/12 text-right">จำนวน (ชิ้น) ${getSortIcon('qty')}</th>
-                        <th onclick="sortTable('sales_amt')" class="p-3 bg-slate-50 w-3/12 text-right">ยอดขายรวม (บาท) ${getSortIcon('sales_amt')}</th>
+                        <th onclick="sortTable('customer_net_payment_amt')" class="p-3 bg-slate-50 w-3/12 text-right">ยอดขายรวม (บาท) ${getSortIcon('customer_net_payment_amt')}</th>
                     </tr>
                 `;
             }
@@ -372,12 +372,12 @@
             let html = '';
             data.forEach(item => {
                 totalQtySum += item.qty || 0;
-                totalSalesSum += item.sales_amt || 0;
+                totalSalesSum += item.customer_net_payment_amt || 0;
 
                 if (isMobile) {
                     const displayVal = metric === 'qty' 
                         ? `${item.qty.toLocaleString()} ชิ้น`
-                        : `฿${item.sales_amt.toLocaleString('th-TH', {minimumFractionDigits: 0})}`;
+                        : `฿${item.customer_net_payment_amt.toLocaleString('th-TH', {minimumFractionDigits: 0})}`;
 
                     html += `
                         <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100">
@@ -392,7 +392,7 @@
                             <td class="p-3 font-mono text-slate-500">${escapeHtml(item.item_code)}</td>
                             <td class="p-3 font-semibold text-slate-800">${escapeHtml(item.item_name)}</td>
                             <td class="p-3 text-right font-semibold text-slate-700">${item.qty.toLocaleString()}</td>
-                            <td class="p-3 text-right font-bold text-blue-600">฿${item.sales_amt.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
+                            <td class="p-3 text-right font-bold text-blue-600">฿${item.customer_net_payment_amt.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
                         </tr>
                     `;
                 }
