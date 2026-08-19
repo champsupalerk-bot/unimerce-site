@@ -57,24 +57,22 @@ html, body {
   overflow: hidden; /* ล็อกไม่ให้หน้าต่างใหญ่ Scroll */
 }
 
-/* ล็อกความกว้างของ Header ให้เท่ากับ 1000px และจัดกึ่งกลาง */
+/* Header ให้ปล่อย Fullwidth อิสระ */
 #headerContainer {
-  max-width: 1000px !important;
-  margin: 0 auto !important;
-  width: 100% !important;
+  width: 100%;
   flex-shrink: 0;
 }
 
 /* =========================
-   LAYOUT (บังคับล็อก 1000px ด้วย !important ป้องกันโดน override)
+   PAGE DETAIL WRAPPER (ล็อกเฉพาะเนื้อหาด้านล่างที่ 1000px)
 ========================= */
-.container {
+.page-detail-wrapper {
   max-width: 1000px !important;
   width: 100% !important;
   margin-left: auto !important;
   margin-right: auto !important;
-  padding: 4px 16px 12px 16px; /* ลด padding ด้านบนลงเหลือ 4px */
-  height: calc(100vh - 60px); /* หักความสูงประมาณของ Header ออกเพื่อให้พอดีหน้าจอ */
+  padding: 4px 16px 12px 16px;
+  height: calc(100vh - 60px); /* หักความสูงของ Header ออกเพื่อให้พอดีหน้าจอ */
   height: calc(100dvh - 60px);
   display: flex;
   flex-direction: column;
@@ -88,8 +86,8 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 2px; /* ดันชิดขอบบนของ Container */
-  margin-bottom: 8px; /* ลดระยะห่างด้านล่าง */
+  margin-top: 2px;
+  margin-bottom: 8px;
   flex-shrink: 0;
 }
 
@@ -289,8 +287,8 @@ html, body {
 ========================= */
 .table-wrap {
   width: 100%;
-  flex: 1; /* ขยายความสูงเต็มพื้นที่ที่เหลือใน container */
-  min-height: 0; /* รองรับ flexbox scroll บน iOS */
+  flex: 1;
+  min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
   border: 1px solid #eee;
@@ -497,7 +495,7 @@ tbody tr:hover {
    MOBILE ADJUSTMENTS
 ========================= */
 @media(max-width:768px){
-  .container {
+  .page-detail-wrapper {
     padding: 2px 8px 8px 8px;
     height: 100vh;
     height: 100dvh;
@@ -534,11 +532,13 @@ tbody tr:hover {
 
 <body>
 
+<!-- Header แยกอยู่นอก Detail Wrapper ปล่อยให้แสดงผล Fullwidth ตามปกติ -->
 <div id="headerContainer"></div>
 
 <div id="toast" class="toast-notice">Copied to clipboard</div>
 
-<div class="container">
+<!-- เนื้อหา Detail ทั้งหมดถูกหุ้มด้วย .page-detail-wrapper ที่ล็อกความกว้างไว้ที่ 1000px -->
+<div class="page-detail-wrapper">
 
   <div class="breadcrumb-row">
     <div class="breadcrumb"><a href="/">HOME</a> / INVENTORY</div>
