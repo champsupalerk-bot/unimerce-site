@@ -444,49 +444,60 @@ tbody tr:hover {
   height: 200px !important;
   background: #ffffff !important;
   box-sizing: border-box !important;
+  padding: 12px 14px !important;
+  margin: 0 auto !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: space-between !important; /* จัดกระจายองค์ประกอบให้เต็มความสูง */
-  text-align: left !important;
-  font-family: Arial, sans-serif !important;
-  color: #000000 !important;
-  padding: 16px 16px !important;            /* เพิ่ม Padding ด้านข้าง/ล่าง เพื่อความสมดุล */
-  margin: 0 auto !important;
+  justify-content: space-between !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
 }
+
 .sticker-p-name {
-  font-size: 14px !important;
+  font-size: 13px !important;
   font-weight: bold !important;
-  line-height: 1.3 !important;
+  line-height: 1.35 !important;
   margin: 0 !important;
+  height: 36px !important;            /* เพิ่มความสูงเพื่อรองรับชื่อสินค้า 2 บรรทัดแบบไม่โดนตัด */
   display: -webkit-box !important;
   -webkit-line-clamp: 2 !important; 
   -webkit-box-orient: vertical !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   text-align: left !important;
+  color: #000000 !important;
 }
+
 .sticker-barcode-area {
-  text-align: center !important;
-  margin: auto 0 !important;               /* ดึงให้อยู่กึ่งกลางความสูงป้าย */
-  width: 100% !important; 
+  flex: 1 !important;
   display: flex !important;
-  justify-content: center !important;      /* บังคับจัดกึ่งกลางแนวนอน */
+  justify-content: center !important;
   align-items: center !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  overflow: hidden !important;
 }
+
 .sticker-barcode-area svg {
-  width: 85% !important;                  /* ปรับความกว้างให้ยืดกว้างขึ้น ไม่เบี้ยวซ้าย */
-  height: auto !important;                /* ให้ปรับความสูงตามสัดส่วน */
-  max-height: 80px !important;            /* เพิ่มความสูง Barcode เพื่อลดที่ว่าง */
+  width: auto !important;
+  max-width: 85% !important;          /* ป้องกันบาร์โค้ดยืดชนขอบ */
+  height: auto !important;            /* ให้ปรับสัดส่วนอัตโนมัติ */
+  max-height: 80px !important;         /* ล็อกความสูงเพื่อไม่ให้บาร์โค้ดใหญ่ยักษ์ */
   display: block !important;
   margin: 0 auto !important;
 }
+
 .sticker-footer-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  font-size: 12px; 
-  font-weight: bold;
+  height: 16px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  font-size: 11px !important; 
+  font-weight: bold !important;
+  width: 100% !important;
+  color: #000000 !important;
 }
+
 .sticker-web-url {
   color: #111;
 }
