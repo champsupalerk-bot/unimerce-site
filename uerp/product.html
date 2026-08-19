@@ -51,7 +51,7 @@
                 <div class="flex items-center gap-1.5 flex-1 min-w-0">
                     <label class="text-[10px] sm:text-xs font-semibold text-slate-500 whitespace-nowrap">มุมมอง:</label>
                     <select id="metricSelector" class="bg-slate-50 border border-slate-200 text-slate-800 text-[10px] sm:text-xs font-bold rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 block w-full p-2 cursor-pointer transition truncate">
-                        <option value="sales_amt" selected>ยอดขายรวม (Sales Amt - ฿)</option>
+                        <option value="customer_net_payment_amt" selected>ยอดขายรวม (Sales Amt - ฿)</option>
                         <option value="qty">จำนวนชิ้น (QTY)</option>
                         <option value="gpm">กำไรขั้นต้นสุทธิ (GPM - ฿)</option>
                         <option value="cogs">ต้นทุนสินค้า (COGS - ฿)</option>
@@ -156,7 +156,7 @@
         // State Management
         let rawViewData = [];
         let processedData = [];
-        let currentSortColumn = 'sales_amt'; 
+        let currentSortColumn = 'customer_net_payment_amt'; 
         let currentSortOrder = 'DESC';        
         let donutChartInstance = null;
 
@@ -241,7 +241,7 @@
 
                 const { data, error } = await supabaseClient
                     .from('view_category_sales')
-                    .select('maincategory, qty, sales_amt, cogs, net_received, date')
+                    .select('maincategory, qty, customer_net_payment_amt, cogs, net_received, date')
                     .gte('date', dateRange.start)
                     .lte('date', dateRange.end);
 
@@ -276,7 +276,7 @@
                     itemMap[catName] = {
                         maincategory: catName,
                         qty: 0,
-                        sales_amt: 0,
+                        customer_net_payment_amt: 0,
                         cogs: 0,
                         net_received: 0,
                         gpm: 0,
@@ -288,7 +288,7 @@
                 const netRec = Number(item.net_received || 0);
 
                 itemMap[catName].qty += Number(item.qty || 0);
-                itemMap[catName].sales_amt += Number(item.sales_amt || 0);
+                itemMap[catName].customer_net_payment_amt += Number(item.customer_net_payment_amt || 0);
                 itemMap[catName].cogs += cogs;
                 itemMap[catName].net_received += netRec;
                 itemMap[catName].gpm += (netRec - cogs); // GPM จริง = Net Received - COGS
@@ -296,7 +296,7 @@
 
             // คำนวณ % GPM (เทียบกับ ยอดขายรวม)
             Object.values(itemMap).forEach(item => {
-                item.gpm_pct = item.sales_amt > 0 ? (item.gpm / item.sales_amt) * 100 : 0;
+                item.gpm_pct = item.customer_net_payment_amt > 0 ? (item.gpm / item.customer_net_payment_amt) * 100 : 0;
             });
 
             processedData = Object.values(itemMap);
@@ -319,15 +319,15 @@
             // คำนวณ Sum รวมทุก Column
             const totals = filteredData.reduce((acc, item) => {
                 acc.qty += item.qty;
-                acc.sales_amt += item.sales_amt;
+                acc.customer_net_payment_amt += item.customer_net_payment_amt;
                 acc.cogs += item.cogs;
                 acc.net_received += item.net_received;
                 acc.gpm += item.gpm; // Sum GPM จริง
                 return acc;
-            }, { qty: 0, sales_amt: 0, cogs: 0, net_received: 0, gpm: 0 });
+            }, { qty: 0, customer_net_payment_amt: 0, cogs: 0, net_received: 0, gpm: 0 });
 
             // % GPM รวมทั้งหมด คิดจาก ยอดขายรวม
-            totals.gpm_pct = totals.sales_amt > 0 ? (totals.gpm / totals.sales_amt) * 100 : 0;
+            totals.gpm_pct = totals.customer_net_payment_amt > 0 ? (totals.gpm / totals.customer_net_payment_amt) * 100 : 0;
 
             const activeTotal = totals[metric] || 0;
 
@@ -367,7 +367,7 @@
             const ctx = document.getElementById('categoryDonutChart').getContext('2d');
 
             const metricLabels = {
-                sales_amt: 'ยอดขายรวม',
+                customer_net_payment_amt: 'ยอดขายรวม',
                 qty: 'จำนวนชิ้นรวม',
                 gpm: 'กำไรขั้นต้นรวม',
                 cogs: 'ต้นทุนรวม',
@@ -447,7 +447,7 @@
                 header.innerHTML = `
                     <tr>
                         <th onclick="sortTable('maincategory')" class="p-2.5 bg-slate-50">หมวดหมู่ ${getSortIcon('maincategory')}</th>
-                        <th onclick="sortTable('sales_amt')" class="p-2.5 bg-slate-50 text-right">ยอดขาย ${getSortIcon('sales_amt')}</th>
+                        <th onclick="sortTable('customer_net_payment_amt')" class="p-2.5 bg-slate-50 text-right">ยอดขาย ${getSortIcon('customer_net_payment_amt')}</th>
                         <th onclick="sortTable('gpm')" class="p-2.5 bg-slate-50 text-right">GPM (฿) ${getSortIcon('gpm')}</th>
                         <th onclick="sortTable('gpm_pct')" class="p-2.5 bg-slate-50 text-right">%GPM ${getSortIcon('gpm_pct')}</th>
                     </tr>
@@ -457,7 +457,7 @@
                     <tr>
                         <th onclick="sortTable('maincategory')" class="p-3 bg-slate-50">หมวดหมู่หลัก (Main Category) ${getSortIcon('maincategory')}</th>
                         <th onclick="sortTable('qty')" class="p-3 bg-slate-50 text-right">QTY ${getSortIcon('qty')}</th>
-                        <th onclick="sortTable('sales_amt')" class="p-3 bg-slate-50 text-right">ยอดขาย (฿) ${getSortIcon('sales_amt')}</th>
+                        <th onclick="sortTable('customer_net_payment_amt')" class="p-3 bg-slate-50 text-right">ยอดขาย (฿) ${getSortIcon('customer_net_payment_amt')}</th>
                         <th onclick="sortTable('cogs')" class="p-3 bg-slate-50 text-right">COGS (฿) ${getSortIcon('cogs')}</th>
                         <th onclick="sortTable('net_received')" class="p-3 bg-slate-50 text-right">Net Rec. (฿) ${getSortIcon('net_received')}</th>
                         <th onclick="sortTable('gpm')" class="p-3 bg-slate-50 text-right">GPM (฿) ${getSortIcon('gpm')}</th>
@@ -486,7 +486,7 @@
                     html += `
                         <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100 text-[11px]">
                             <td class="p-2.5 font-semibold text-slate-800 break-words">${escapeHtml(item.maincategory)}</td>
-                            <td class="p-2.5 text-right font-medium text-slate-700">฿${item.sales_amt.toLocaleString('th-TH', {maximumFractionDigits: 0})}</td>
+                            <td class="p-2.5 text-right font-medium text-slate-700">฿${item.customer_net_payment_amt.toLocaleString('th-TH', {maximumFractionDigits: 0})}</td>
                             <td class="p-2.5 text-right font-semibold text-emerald-600">฿${item.gpm.toLocaleString('th-TH', {maximumFractionDigits: 0})}</td>
                             <td class="p-2.5 text-right font-bold text-blue-600">${item.gpm_pct.toFixed(1)}%</td>
                         </tr>
@@ -496,7 +496,7 @@
                         <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100">
                             <td class="p-3 font-semibold text-slate-800">${escapeHtml(item.maincategory)}</td>
                             <td class="p-3 text-right font-semibold text-slate-700">${item.qty.toLocaleString()}</td>
-                            <td class="p-3 text-right font-semibold text-slate-700">฿${item.sales_amt.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
+                            <td class="p-3 text-right font-semibold text-slate-700">฿${item.customer_net_payment_amt.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
                             <td class="p-3 text-right font-medium text-slate-500">฿${item.cogs.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
                             <td class="p-3 text-right font-medium text-slate-700">฿${item.net_received.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
                             <td class="p-3 text-right font-bold text-emerald-600">฿${item.gpm.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
@@ -513,7 +513,7 @@
                 footer.innerHTML = `
                     <tr class="bg-slate-100 text-slate-900 border-t-2 border-slate-300">
                         <td class="p-2.5 font-black uppercase">รวมทั้งหมด</td>
-                        <td class="p-2.5 text-right font-black">฿${totals.sales_amt.toLocaleString('th-TH', {maximumFractionDigits: 0})}</td>
+                        <td class="p-2.5 text-right font-black">฿${totals.customer_net_payment_amt.toLocaleString('th-TH', {maximumFractionDigits: 0})}</td>
                         <td class="p-2.5 text-right font-black text-emerald-700">฿${totals.gpm.toLocaleString('th-TH', {maximumFractionDigits: 0})}</td>
                         <td class="p-2.5 text-right font-black text-blue-700">${totals.gpm_pct.toFixed(1)}%</td>
                     </tr>
@@ -523,7 +523,7 @@
                     <tr class="bg-slate-100 text-slate-900 border-t-2 border-slate-300">
                         <td class="p-3 font-black uppercase">รวมทั้งหมด (${data.length} หมวดหมู่)</td>
                         <td class="p-3 text-right font-black">${totals.qty.toLocaleString()}</td>
-                        <td class="p-3 text-right font-black">฿${totals.sales_amt.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
+                        <td class="p-3 text-right font-black">฿${totals.customer_net_payment_amt.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
                         <td class="p-3 text-right font-black text-slate-600">฿${totals.cogs.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
                         <td class="p-3 text-right font-black">฿${totals.net_received.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
                         <td class="p-3 text-right font-black text-emerald-700">฿${totals.gpm.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
@@ -535,7 +535,7 @@
             summaryTitle.innerText = `จำนวนหมวดหมู่หลักทั้งหมด: ${data.length} หมวดหมู่`;
             summaryTotal.innerText = metric === 'qty' 
                 ? `รวมจำนวน: ${totals.qty.toLocaleString()} ชิ้น`
-                : `ยอดขายรวม: ฿${totals.sales_amt.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
+                : `ยอดขายรวม: ฿${totals.customer_net_payment_amt.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
         }
 
         function sortTable(column) {
