@@ -176,7 +176,7 @@ body{
   display: flex;
   align-items: center;
   gap: 10px;
-  justify-content: space-between; /* ปรับเป็น space-between เพื่อดันปุ่มไปซ้าย ซีเล็คไปขวา */
+  justify-content: space-between;
 }
 
 .btn-picklist {
@@ -475,7 +475,6 @@ tbody tr:hover{
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-<!-- โหลด config.js เพื่อกำหนดค่า Supabase ก่อนนำไปใช้งาน -->
 <script src="/uerp/config.js"></script>
 <script src="/uerp/barcode-label-engine.js"></script>
 <script src="/uerp/layoutuerp.js"></script>
@@ -590,7 +589,7 @@ tbody tr:hover{
 <script>
 
 /* =========================
-   LOAD HEADER (ดึงจาก uerpheader.html และจัดการผ่าน Layout Engine)
+   LOAD HEADER (ดึง HTML และส่งต่อให้ layoutuerp.js ทำงาน)
 ========================= */
 fetch("/uerp/uerpheader.html")
   .then(res => {
@@ -601,9 +600,10 @@ fetch("/uerp/uerpheader.html")
     const placeholder = document.getElementById("header-placeholder");
     if (placeholder) {
       placeholder.innerHTML = data;
-      // เรียกฟังก์ชันจาก layoutuerp.js เพื่อจับคู่อย่างสมบูรณ์ถ้ามี
-      if (typeof initUerpLayout === "function") {
-        initUerpLayout();
+      // ปลดล็อค Flag เพื่อบังคับให้ Layout Engine ทำงานซ้ำหลังยัด Header สำเร็จ
+      if (typeof window.initUerpLayout === "function") {
+        window.__uerpLayoutInitialized = false;
+        window.initUerpLayout();
       }
     }
   })
@@ -862,20 +862,6 @@ window.addEventListener("load", () => {
 
   loadTable();
 });
-
-/* =========================
-   HAMBURGER MENU
-========================= */
-setTimeout(() => {
-  const menuBtn = document.getElementById("menuBtn");
-  const menuDropdown = document.getElementById("menuDropdown");
-
-  if(menuBtn && menuDropdown){
-    menuBtn.addEventListener("click", () => {
-      menuDropdown.classList.toggle("active");
-    });
-  }
-}, 100);
 
 </script>
 </body>
