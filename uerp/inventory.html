@@ -109,7 +109,7 @@ html, body {
 }
 
 /* Checkbox วงกลม */
-.hide-zero-wrap, .category-label {
+.hide-zero-wrap {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -120,12 +120,23 @@ html, body {
   user-select: none;
 }
 
+.category-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px; /* คืนขนาดฟอนต์ของ Category เท่าเดิม */
+  color: #333;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+
 .hide-zero-wrap input[type="checkbox"],
 .category-label input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
   border: 1px solid #ddd;
   border-radius: 50%; 
   outline: none;
@@ -170,18 +181,13 @@ html, body {
 .category-filter-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
   margin-bottom: 8px;
   background: #fff;
   padding: 8px 12px;
   border: 1px solid #eee;
   border-radius: 8px;
   flex-shrink: 0;
-}
-
-.category-label {
-  font-size: 12px;
-  color: #333;
 }
 
 /* =========================
@@ -309,7 +315,7 @@ thead th {
   color: #fff;
   z-index: 50;
   text-align: left;
-  font-size: 12px;
+  font-size: 13px;
   padding: 10px 8px;
   letter-spacing: 1px;
   cursor: pointer;
@@ -322,8 +328,8 @@ thead th:hover {
 }
 
 tbody td {
-  font-size: 13px;
-  padding: 8px 10px;
+  font-size: 15px; /* คืนขนาดฟอนต์ของข้อมูลในตารางเท่าเดิม */
+  padding: 10px 10px;
   border-bottom: 1px solid #f0f0f0;
 }
 
@@ -333,7 +339,7 @@ tbody tr:hover {
 }
 
 .col-code {
-  width: 90px;
+  width: 100px;
   white-space: nowrap;
 }
 
@@ -344,7 +350,7 @@ tbody tr:hover {
 }
 
 .col-stock {
-  width: 50px;
+  width: 60px;
   text-align: right;
   white-space: nowrap;
 }
@@ -501,11 +507,14 @@ tbody tr:hover {
     height: 100dvh;
   }
   .category-filter-bar {
-    gap: 6px;
+    gap: 8px;
     padding: 6px 8px;
   }
   .category-label {
-    font-size: 11px;
+    font-size: 13px;
+  }
+  tbody td {
+    font-size: 14px;
   }
   .table-wrap{
     overflow-x:hidden;
