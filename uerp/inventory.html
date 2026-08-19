@@ -23,8 +23,10 @@
 <meta property="og:image:width" content="600" />
 <meta property="og:image:height" content="600" />
 
-<!-- FontAwesome & Tailwind -->
+<!-- FontAwesome สำหรับไอคอน -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<!-- Tailwind CSS & Config สำหรับ Google Color Scheme -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -40,6 +42,7 @@
 </script>
 
 <style>
+
 /* =========================
    BASE & OVERRIDES
 ========================= */
@@ -51,21 +54,25 @@ html, body {
   color: #111;
   height: 100vh;
   height: 100dvh;
-  overflow: hidden;
+  overflow: hidden; /* ล็อกไม่ให้หน้าต่างใหญ่ Scroll */
 }
 
+/* Header ให้ปล่อย Fullwidth อิสระ */
 #headerContainer {
   width: 100%;
   flex-shrink: 0;
 }
 
+/* =========================
+   PAGE DETAIL WRAPPER (ล็อกเฉพาะเนื้อหาด้านล่างที่ 1000px)
+========================= */
 .page-detail-wrapper {
   max-width: 1000px !important;
   width: 100% !important;
   margin-left: auto !important;
   margin-right: auto !important;
   padding: 4px 16px 12px 16px;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 60px); /* หักความสูงของ Header ออกเพื่อให้พอดีหน้าจอ */
   height: calc(100dvh - 60px);
   display: flex;
   flex-direction: column;
@@ -73,7 +80,7 @@ html, body {
 }
 
 /* =========================
-   BREADCRUMB & CHECKBOXES
+   BREADCRUMB ROW
 ========================= */
 .breadcrumb-row {
   display: flex;
@@ -101,7 +108,8 @@ html, body {
   color: #2f5ea8;
 }
 
-.hide-zero-wrap, .category-label {
+/* Checkbox วงกลม */
+.hide-zero-wrap {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -113,8 +121,14 @@ html, body {
 }
 
 .category-label {
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px; /* คืนขนาดฟอนต์ของ Category เท่าเดิม */
   color: #333;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
 }
 
 .hide-zero-wrap input[type="checkbox"],
@@ -162,7 +176,7 @@ html, body {
 }
 
 /* =========================
-   FILTERS & CONTROLS
+   CATEGORY FILTER BAR
 ========================= */
 .category-filter-bar {
   display: flex;
@@ -176,6 +190,9 @@ html, body {
   flex-shrink: 0;
 }
 
+/* =========================
+   FILTER BAR & DROPDOWN
+========================= */
 .filterbar {
   margin-bottom: 8px;
   flex-shrink: 0;
@@ -272,7 +289,7 @@ html, body {
 }
 
 /* =========================
-   TABLE STYLING
+   TABLE WRAP (ยืดขยายเต็มพื้นที่ที่เหลือ)
 ========================= */
 .table-wrap {
   width: 100%;
@@ -311,7 +328,7 @@ thead th:hover {
 }
 
 tbody td {
-  font-size: 15px;
+  font-size: 15px; /* คืนขนาดฟอนต์ของข้อมูลในตารางเท่าเดิม */
   padding: 10px 10px;
   border-bottom: 1px solid #f0f0f0;
 }
@@ -364,7 +381,7 @@ tbody tr:hover {
 }
 
 /* =========================
-   BARCODE BUTTON & STICKER
+   BARCODE SHORTCUT BUTTON (SVG)
 ========================= */
 .btn-barcode-trigger {
   background: none;
@@ -379,11 +396,13 @@ tbody tr:hover {
   border-radius: 4px;
   transition: background 0.1s;
 }
-
 .btn-barcode-trigger:hover {
   background: #e8e8e8;
 }
 
+/* =========================
+   MOBILE FRIENDLY POPUP MODAL STYLES
+========================= */
 .barcode-modal-overlay {
   display: none;
   position: fixed;
@@ -395,7 +414,6 @@ tbody tr:hover {
   padding: 16px;
   box-sizing: border-box;
 }
-
 .barcode-modal-content {
   background: #fff;
   padding: 20px;
@@ -406,7 +424,6 @@ tbody tr:hover {
   text-align: center;
   box-sizing: border-box;
 }
-
 .barcode-modal-title {
   margin: 0 0 12px 0;
   font-size: 16px;
@@ -414,73 +431,60 @@ tbody tr:hover {
   color: #2f5ea8;
 }
 
+/* ซ่อนกล่องแปลงภาพดิบ */
 #hiddenStickerWrapper {
   position: absolute;
   left: -9999px;
   top: -9999px;
 }
 
+/* อัตราส่วนกล่องจำลองป้ายขนาด 30x20mm */
 .actual-sticker-target {
-  width: 300px !important;
-  height: 200px !important;
-  background: #ffffff !important;
-  box-sizing: border-box !important;
-  padding: 12px 14px !important;
-  margin: 0 auto !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  align-items: stretch !important;
-  overflow: hidden !important;
+  width: 300px;
+  height: 200px;
+  background: #ffffff;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  font-family: Arial, sans-serif;
+  color: #000000;
+  padding: 12px 14px;
 }
-
 .sticker-p-name {
-  font-size: 13px !important;
-  font-weight: bold !important;
-  line-height: 1.35 !important;
-  margin: 0 !important;
-  height: 36px !important;
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important; 
-  -webkit-box-orient: vertical !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  text-align: left !important;
-  color: #000000 !important;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1.25;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
 .sticker-barcode-area {
-  flex: 1 !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  margin: 0 auto !important;
-  overflow: hidden !important;
+  text-align: center;
+  margin: auto 0;
+  width: 100%; 
 }
-
 .sticker-barcode-area svg {
-  width: auto !important;
-  max-width: 85% !important;
-  height: auto !important;
-  max-height: 80px !important;
-  display: block !important;
-  margin: 0 auto !important;
+  width: 100%; 
+  max-height: 85px; 
 }
-
 .sticker-footer-row {
-  height: 16px !important;
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: flex-end !important;
-  font-size: 11px !important; 
-  font-weight: bold !important;
-  width: 100% !important;
-  color: #000000 !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 12px; 
+  font-weight: bold;
 }
-
-.sticker-web-url { color: #111; }
-.sticker-location-field { color: #555; }
+.sticker-web-url {
+  color: #111;
+}
+.sticker-location-field {
+  color: #555;
+}
 
 .btn-cancel-modal {
   background: none;
@@ -494,7 +498,7 @@ tbody tr:hover {
 }
 
 /* =========================
-   MOBILE RESPONSIVE
+   MOBILE ADJUSTMENTS
 ========================= */
 @media(max-width:768px){
   .page-detail-wrapper {
@@ -506,29 +510,43 @@ tbody tr:hover {
     gap: 8px;
     padding: 6px 8px;
   }
-  .category-label { font-size: 13px; }
-  tbody td { font-size: 14px; }
-  .table-wrap { overflow-x: hidden; }
-  thead th.col-stock { background:#2f5ea8; color:#fff; }
+  .category-label {
+    font-size: 13px;
+  }
+  tbody td {
+    font-size: 14px;
+  }
+  .table-wrap{
+    overflow-x:hidden;
+  }
+  thead th.col-stock{
+    background:#2f5ea8;
+    color:#fff;
+  }
 }
+
 </style>
 
-<!-- External Libraries -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
 <script src="/analytics.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 <script src="/uerp/config.js"></script>
 <script src="/uerp/barcode-label-engine.js"></script>
 <script src="/uerp/layoutuerp.js"></script>
+
 </head>
 
 <body>
 
+<!-- Header แยกอยู่นอก Detail Wrapper ปล่อยให้แสดงผล Fullwidth ตามปกติ -->
 <div id="headerContainer"></div>
 
 <div id="toast" class="toast-notice">Copied to clipboard</div>
 
+<!-- เนื้อหา Detail ทั้งหมดถูกหุ้มด้วย .page-detail-wrapper ที่ล็อกความกว้างไว้ที่ 1000px -->
 <div class="page-detail-wrapper">
 
   <div class="breadcrumb-row">
@@ -543,12 +561,15 @@ tbody tr:hover {
     <input id="searchBox" type="text" placeholder="Search Item Code / Description..." />
   </div>
 
+  <!-- DROPDOWN & ACTION BAR -->
   <div class="dropdown-bar-wrap">
+    <!-- ปุ่มฝั่งซ้าย: Picklist Realtime -->
     <a href="/uerp/picklist" class="btn-picklist" title="Picklist Realtime">
       <i class="fa-solid fa-list-check"></i>
       <span>Picklist Realtime</span>
     </a>
 
+    <!-- Dropdown ฝั่งขวา -->
     <div class="dropdown-controls">
       <span class="dropdown-label">มุมมอง:</span>
       <select id="column3Select" class="google-select">
@@ -617,25 +638,29 @@ tbody tr:hover {
 <div id="barcodeModal" class="barcode-modal-overlay" onclick="closeModalOnOutsideClick(event)">
   <div class="barcode-modal-content">
     <div class="barcode-modal-title">แตะค้างที่ป้ายเพื่อบันทึกJpeg</div>
-    <div style="margin: 15px 0 20px 0; display: flex; justify-content: center;" id="resultImageContainer"></div>
+    
+    <div style="margin: 15px 0 20px 0; display: flex; justify-content: center;" id="resultImageContainer">
+    </div>
+
     <button class="btn-cancel-modal" onclick="closeBarcodeModal()">Close</button>
   </div>
 </div>
 
 <script>
+
 /* =========================
-   ASYNCHRONOUS HEADER LOAD
+   LOAD HEADER (ดึง HTML และส่งต่อให้ layoutuerp.js ทำงาน)
 ========================= */
-fetch('/uerpheader.html')
+fetch('uerpheader.html')
   .then(res => {
-    if (!res.ok) return fetch('header.html');
-    return res;
+    if (!res.ok) throw new Error("Header not found");
+    return res.text();
   })
-  .then(res => res.text())
   .then(data => {
     const placeholder = document.getElementById("headerContainer");
     if (placeholder) {
       placeholder.innerHTML = data;
+      // เรียกใช้ตัวจัด Layout จาก layoutuerp.js
       if (typeof window.initUerpLayout === "function") {
         window.__uerpLayoutInitialized = false;
         window.initUerpLayout();
@@ -644,9 +669,6 @@ fetch('/uerpheader.html')
   })
   .catch(err => console.error("Error loading header:", err));
 
-/* =========================
-   DEFENSIVE DATA STATE & PARSING
-========================= */
 let rawData      = [];
 let filteredData = [];
 let viewData     = [];
@@ -656,7 +678,6 @@ let sortState = {
   dir: "asc"
 };
 
-/* Safe Numeric Sanitization (Handles null, undefined, strings with commas, dashes, empty values) */
 function cleanNumber(val) {
   if (val === null || val === undefined) return 0;
   if (typeof val === 'number') return val;
@@ -667,7 +688,7 @@ function cleanNumber(val) {
 }
 
 /* =========================
-   SAFE SUPABASE DATA FETCH
+   LOAD DATA
 ========================= */
 async function loadTable(){
   try {
@@ -679,22 +700,21 @@ async function loadTable(){
   } catch(e) {
     console.error("Supabase Connection Error:", e);
     document.getElementById("table-body").innerHTML =
-      '<tr><td colspan="3" style="text-align:center; padding:20px; color:#e53e3e;">Failed to load secure assets.</td></tr>';
+      '<tr><td colspan="3" style="text-align:center; padding:20px;">Failed to load secure assets.</td></tr>';
   }
 }
 
 /* =========================
-   NULL-SAFE FILTERING
+   APPLY ALL
 ========================= */
 function applyAll(){
-  const searchInput = document.getElementById("searchBox");
-  const q = searchInput ? searchInput.value.toLowerCase().trim() : "";
-  const hideZero = document.getElementById("hideZero") ? document.getElementById("hideZero").checked : false;
-  const currentCol3 = document.getElementById("column3Select") ? document.getElementById("column3Select").value : "OnHand";
+  const q         = document.getElementById("searchBox").value.toLowerCase().trim();
+  const hideZero = document.getElementById("hideZero").checked;
+  const currentCol3 = document.getElementById("column3Select").value;
 
   const checkedCategories = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value);
 
-  let result = rawData || [];
+  let result = rawData;
 
   if (checkedCategories.length > 0) {
     result = result.filter(i => {
@@ -719,7 +739,8 @@ function applyAll(){
       if(vStr === "" || vStr === "-") return false;
       
       const n = cleanNumber(rawVal);
-      return n !== 0;
+      if(n === 0) return false;
+      return true;
     });
   }
 
@@ -734,7 +755,7 @@ function applyAll(){
 }
 
 /* =========================
-   ROBUST SORTING
+   SORT
 ========================= */
 function sortTable(key){
   if(sortState.key === key){
@@ -779,14 +800,11 @@ function applySortOnFiltered(){
 }
 
 /* =========================
-   SAFE TABLE RENDERING
+   RENDER TABLE
 ========================= */
 function renderTable(data){
   const tbody = document.getElementById("table-body");
-  const selectElem = document.getElementById("column3Select");
-  const currentCol3 = selectElem ? selectElem.value : "OnHand";
-
-  if(!tbody) return;
+  const currentCol3 = document.getElementById("column3Select").value;
 
   if(!data || data.length === 0){
     tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#aaa;padding:20px;">No results found.</td></tr>';
@@ -806,7 +824,6 @@ function renderTable(data){
        cellValue = num.toLocaleString();
     }
 
-    /* Escape Quotes to prevent JavaScript execution breaks */
     const safeItemCode = String(p.Item_Code || "-").replace(/'/g, "\\'").replace(/"/g, "&quot;");
     const safeDesc = String(p.Description || "-").replace(/'/g, "\\'").replace(/"/g, "&quot;");
     const safeLocation = String(p.Location || "").replace(/'/g, "\\'").replace(/"/g, "&quot;");
@@ -837,10 +854,9 @@ function renderTable(data){
 }
 
 /* =========================
-   SAFE COPY FUNCTION (DOM CLONING)
+   COPY FUNCTION
 ========================= */
 function copyRowText(rowElement, event) {
-  // Prevent event collision with inner action buttons
   if (event.target.closest('.btn-barcode-trigger') || event.target.closest('.btn-download-trigger')) {
     return;
   }
@@ -854,28 +870,22 @@ function copyRowText(rowElement, event) {
      text += tempTd.innerText.trim() + (i === tds.length - 1 ? "" : " ");
   }
   
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(() => {
-       const toast = document.getElementById("toast");
-       if(toast){
-         toast.style.display = "block";
-         setTimeout(() => { toast.style.display = "none"; }, 1500);
-       }
-    });
-  }
+  navigator.clipboard.writeText(text).then(() => {
+     const toast = document.getElementById("toast");
+     toast.style.display = "block";
+     setTimeout(() => { toast.style.display = "none"; }, 1500);
+  });
 }
 
 /* =========================
-   UI HELPERS
+   ARROWS UPDATE & DYNAMIC SELECT HEADER TEXT
 ========================= */
 function updateArrows(active, dir){
+  const currentCol3 = document.getElementById("column3Select").value;
   const selectElement = document.getElementById("column3Select");
-  if(!selectElement) return;
-  const currentCol3 = selectElement.value;
   const selectedText = selectElement.options[selectElement.selectedIndex].text;
   
-  const col3Header = document.getElementById("col3HeaderName");
-  if(col3Header) col3Header.textContent = selectedText === "OnHand" ? "OH" : selectedText;
+  document.getElementById("col3HeaderName").textContent = selectedText === "OnHand" ? "OH" : selectedText;
 
   ["Item_Code", "Description"].forEach(k => {
     const el = document.getElementById("arrow-" + k);
@@ -887,41 +897,31 @@ function updateArrows(active, dir){
 }
 
 /* =========================
-   INITIALIZATION
+   INIT EVENTS
 ========================= */
 window.addEventListener("load", () => {
-  const searchBox = document.getElementById("searchBox");
-  if(searchBox) searchBox.addEventListener("input", applyAll);
 
-  const hideZero = document.getElementById("hideZero");
-  if(hideZero) hideZero.addEventListener("change", applyAll);
+  document.getElementById("searchBox").addEventListener("input", () => {
+    applyAll();
+  });
 
-  const col3Select = document.getElementById("column3Select");
-  if(col3Select) {
-    col3Select.addEventListener("change", (e) => {
-      sortState.key = e.target.value;
-      applyAll();
-    });
-  }
+  document.getElementById("hideZero").addEventListener("change", () => {
+    applyAll();
+  });
+
+  document.getElementById("column3Select").addEventListener("change", (e) => {
+    sortState.key = e.target.value;
+    applyAll();
+  });
 
   document.querySelectorAll('.cat-checkbox').forEach(cb => {
-    cb.addEventListener("change", applyAll);
+    cb.addEventListener("change", () => {
+      applyAll();
+    });
   });
 
   loadTable();
 });
-
-/* Safe Hamburger Bindings Guard */
-setTimeout(() => {
-  const menuBtn = document.getElementById("menuBtn");
-  const menuDropdown = document.getElementById("menuDropdown");
-
-  if(menuBtn && menuDropdown){
-    menuBtn.addEventListener("click", () => {
-      menuDropdown.classList.toggle("active");
-    });
-  }
-}, 150);
 
 </script>
 </body>
