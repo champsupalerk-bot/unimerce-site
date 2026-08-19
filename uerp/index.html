@@ -425,7 +425,7 @@
             rawViewData.forEach(row => {
                 const year = parseInt(row.sales_year);
                 const month = parseInt(row.sales_month);
-                const sAmt = parseFloat(row.customer_net_payment_amt) || 0;
+                const sAmt = parseFloat(row.sales_amt) || 0;
                 const cAmt = parseFloat(row.cogs) || 0;
                 const gAmt = parseFloat(row.gpm) || 0;
 
@@ -459,7 +459,7 @@
             rawViewData.forEach(row => {
                 const year = parseInt(row.sales_year);
                 const month = parseInt(row.sales_month);
-                const sAmt = parseFloat(row.customer_net_payment_amt) || 0;
+                const sAmt = parseFloat(row.sales_amt) || 0;
                 const cAmt = parseFloat(row.cogs) || 0;
                 const gAmt = parseFloat(row.gpm) || 0;
 
@@ -648,7 +648,7 @@
                 const month = parseInt(row.sales_month);
                 if (year === selectedGridYear && month >= 1 && month <= 12) {
                     const idx = month - 1;
-                    const sAmt = parseFloat(row.customer_net_payment_amt) || 0;
+                    const sAmt = parseFloat(row.sales_amt) || 0;
                     const cAmt = parseFloat(row.cogs) || 0;
                     const gAmt = parseFloat(row.gpm) || 0;
                     const nAmt = parseFloat(row.net_received || row.net_amt || (sAmt * 0.97)) || 0; // รองรับ field netReceived
