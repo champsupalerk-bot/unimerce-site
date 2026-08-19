@@ -8,7 +8,8 @@
 <meta name="description" content="UNIMERCE Inventory Management System - OnHand Stock Tracking Overview" />
 <meta name="keywords" content="unimerce, inventory, onhand, uerp, stock, management" />
 <meta name="author" content="UNIMERCE" />
-<meta name="robots" content="noindex, nofollow" /> <meta property="og:type" content="website" />
+<meta name="robots" content="noindex, nofollow" /> 
+<meta property="og:type" content="website" />
 <meta property="og:title" content="UNIMERCE | Inventory OnHand" />
 <meta property="og:description" content="ระบบจัดการสต็อกสินค้าสำหรับพนักงานภายในบริษัท UNIMERCE และพาร์ทเนอร์ธุรกิจที่เกี่ยวข้อง" />
 <meta property="og:site_name" content="UNIMERCE U-ERP" />
@@ -25,7 +26,7 @@
 <style>
 
 /* =========================
-   BASE (กลับมาใช้ Font และการตั้งค่าเดิมทั้งหมด)
+   BASE
 ========================= */
 body{
   margin:0;
@@ -175,7 +176,36 @@ body{
   display: flex;
   align-items: center;
   gap: 10px;
-  justify-content: flex-end;
+  justify-content: space-between; /* ปรับเป็น space-between เพื่อดันปุ่มไปซ้าย ซีเล็คไปขวา */
+}
+
+.btn-picklist {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #2f5ea8;
+  color: #ffffff;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.btn-picklist:hover {
+  background-color: #244a86;
+}
+
+.btn-picklist:active {
+  transform: scale(0.98);
+}
+
+.dropdown-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .dropdown-label {
@@ -355,7 +385,7 @@ tbody tr:hover{
   color: #2f5ea8;
 }
 
-/* ซ่อนกล่องแปลงภาพดิบ ไม่ให้พนักงานเห็นรอยต่อตอนสลับร่าง */
+/* ซ่อนกล่องแปลงภาพดิบ */
 #hiddenStickerWrapper {
   position: absolute;
   left: -9999px;
@@ -444,8 +474,11 @@ tbody tr:hover{
 
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="barcode-label-engine.js"></script>
-<script src="layoutuerp.js"></script>
+
+<!-- โหลด config.js เพื่อกำหนดค่า Supabase ก่อนนำไปใช้งาน -->
+<script src="/uerp/config.js"></script>
+<script src="/uerp/barcode-label-engine.js"></script>
+<script src="/uerp/layoutuerp.js"></script>
 
 </head>
 
@@ -469,17 +502,27 @@ tbody tr:hover{
     <input id="searchBox" type="text" placeholder="Search Item Code / Description..." />
   </div>
 
+  <!-- DROPDOWN & ACTION BAR -->
   <div class="dropdown-bar-wrap">
-    <span class="dropdown-label">มุมมอง:</span>
-    <select id="column3Select" class="google-select">
-      <option value="OnHand">OnHand</option>
-      <option value="PromotionPrice">ราคา</option>
-      <option value="StockStatus">StockStatus</option>
-      <option value="จำนวนต่อลัง">จำนวนต่อลัง</option>
-      <option value="INDEX2_BRAND">Brand</option>
-      <option value="Location">Location</option> 
-      <option value="ReorderSTATUS">ReorderSTATUS</option>
-    </select>
+    <!-- ปุ่มฝั่งซ้าย: Picklist Realtime -->
+    <a href="/uerp/picklist" class="btn-picklist" title="Picklist Realtime">
+      <i class="fa-solid fa-list-check"></i>
+      <span>Picklist Realtime</span>
+    </a>
+
+    <!-- Dropdown ฝั่งขวา -->
+    <div class="dropdown-controls">
+      <span class="dropdown-label">มุมมอง:</span>
+      <select id="column3Select" class="google-select">
+        <option value="OnHand">OnHand</option>
+        <option value="PromotionPrice">ราคา</option>
+        <option value="StockStatus">StockStatus</option>
+        <option value="จำนวนต่อลัง">จำนวนต่อลัง</option>
+        <option value="INDEX2_BRAND">Brand</option>
+        <option value="Location">Location</option> 
+        <option value="ReorderSTATUS">ReorderSTATUS</option>
+      </select>
+    </div>
   </div>
 
   <div class="category-filter-bar">
@@ -538,24 +581,33 @@ tbody tr:hover{
     <div class="barcode-modal-title">แตะค้างที่ป้ายเพื่อบันทึกJpeg</div>
     
     <div style="margin: 15px 0 20px 0; display: flex; justify-content: center;" id="resultImageContainer">
-       </div>
+    </div>
 
     <button class="btn-cancel-modal" onclick="closeBarcodeModal()">Close</button>
   </div>
 </div>
 
-<script src="config.js"></script>
-
 <script>
 
 /* =========================
-   LOAD HEADER
+   LOAD HEADER (ดึงจาก uerpheader.html และจัดการผ่าน Layout Engine)
 ========================= */
-fetch("uerpheader.html")
-  .then(res => res.text())
+fetch("/uerp/uerpheader.html")
+  .then(res => {
+    if (!res.ok) throw new Error("Header not found");
+    return res.text();
+  })
   .then(data => {
-    document.getElementById("header-placeholder").innerHTML = data;
-  });
+    const placeholder = document.getElementById("header-placeholder");
+    if (placeholder) {
+      placeholder.innerHTML = data;
+      // เรียกฟังก์ชันจาก layoutuerp.js เพื่อจับคู่อย่างสมบูรณ์ถ้ามี
+      if (typeof initUerpLayout === "function") {
+        initUerpLayout();
+      }
+    }
+  })
+  .catch(err => console.error("Error loading header:", err));
 
 let rawData      = [];
 let filteredData = [];
@@ -580,6 +632,9 @@ function cleanNumber(val) {
 ========================= */
 async function loadTable(){
   try {
+    if (typeof window.supabaseFetch !== 'function') {
+      throw new Error("window.supabaseFetch is not defined. Check config.js path.");
+    }
     rawData = await window.supabaseFetch('products');
     applyAll();
   } catch(e) {
@@ -709,7 +764,6 @@ function renderTable(data){
        cellValue = num.toLocaleString();
     }
 
-    // เคลียร์อักขระพิเศษเพื่อไม่ให้ String หลุดสคริปต์
     const safeItemCode = String(p.Item_Code || "-").replace(/'/g, "\\'").replace(/"/g, "&quot;");
     const safeDesc = String(p.Description || "-").replace(/'/g, "\\'").replace(/"/g, "&quot;");
     const safeLocation = String(p.Location || "").replace(/'/g, "\\'").replace(/"/g, "&quot;");
@@ -743,7 +797,6 @@ function renderTable(data){
    COPY FUNCTION
 ========================= */
 function copyRowText(rowElement, event) {
-  // ดักจับเพิ่มเติมว่าหากคลิกโดนปุ่มบาร์โค้ด หรือปุ่มดาวน์โหลดรูปภาพ ไม่ต้องทำงาน
   if (event.target.closest('.btn-barcode-trigger') || event.target.closest('.btn-download-trigger')) {
     return;
   }
@@ -763,8 +816,6 @@ function copyRowText(rowElement, event) {
      setTimeout(() => { toast.style.display = "none"; }, 1500);
   });
 }
-
-/* ฟังก์ชันควบคุมป็อปอัพบาร์โค้ดเดิมถูกตัดออกเนื่องจากย้ายไปจัดการในไฟล์ barcode-label-engine.js ทั้งหมดแล้ว */
 
 /* =========================
    ARROWS UPDATE & DYNAMIC SELECT HEADER TEXT
