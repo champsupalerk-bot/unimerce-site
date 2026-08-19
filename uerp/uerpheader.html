@@ -1,6 +1,6 @@
 <!-- =========================
  UNIMERCE UERP Shared Header
- Version 2.5 - Fixed Unified System Icon
+ Version 2.6 - Added Inventory Link on Logo
  Analytics Architecture
 ========================= -->
 
@@ -30,11 +30,14 @@
 <header class="bg-white border-b border-google-border shadow-sm">
     <div class="max-w-[1000px] mx-auto px-4 h-16 flex items-center justify-between">
 
-        <!-- Logo / System Name -->
+        <!-- Logo / System Name (กดที่รูป Logo สีน้ำเงินเพื่อไป Inventory) -->
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-google-blue text-white flex items-center justify-center shadow-sm">
-                <i class="fa-solid fa-layer-group"></i>
-            </div>
+            <a href="/uerp/inventory" 
+               data-page="inventory"
+               class="w-10 h-10 rounded-xl bg-google-blue text-white flex items-center justify-center shadow-sm hover:opacity-90 transition-opacity"
+               title="Inventory Management">
+                <i class="fa-solid fa-boxes-stacked"></i>
+            </a>
             <div>
                 <div class="text-sm font-bold text-slate-800 tracking-tight">
                     UNIMERCE UERP
@@ -45,10 +48,9 @@
             </div>
         </div>
 
-        <!-- Action Menu (มุมบนขวา - เหมือนกันหมดทั้ง Desktop และ Mobile) -->
+        <!-- Action Menu (มุมบนขวา) -->
         <div class="flex items-center gap-4 text-google-gray">
             
-            <!-- ปุ่ม System (เฟือง) อยู่ตรงนี้ถาวร ไม่แยกเวอร์ชันแล้ว -->
             <a href="/uerp/system" 
                data-page="system"
                class="hover:text-google-blue transition text-base flex items-center justify-center p-1" 
@@ -74,7 +76,6 @@
 <div class="bg-slate-100 border-b border-google-border md:pt-2 md:px-4">
     <div class="max-w-[1000px] mx-auto">
         
-        <!-- แถบ 5 ลิงก์หลัก: Mobile เป็น 5 คอลัมน์ (ไอคอนบน ข้อความล่าง) / Desktop เป็นแถบแท็บแนวนอน -->
         <nav class="grid grid-cols-5 md:flex md:items-end md:gap-1 overflow-x-auto no-scrollbar text-center md:text-left">
             
             <!-- 1. Overview -->
@@ -90,7 +91,7 @@
                data-page="sales"
                class="chrome-tab px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
                 <i class="fa-solid fa-arrow-trend-up text-sm md:text-xs"></i>
-                <span class="block md:inline tracking-tight">Sales</span>
+                <span class="block md:inline tracking-tight">SalesItem</span>
             </a>
 
             <!-- 3. Product -->
@@ -98,7 +99,7 @@
                data-page="product"
                class="chrome-tab px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
                 <i class="fa-solid fa-box-open text-sm md:text-xs"></i>
-                <span class="block md:inline tracking-tight">Product</span>
+                <span class="block md:inline tracking-tight">Category</span>
             </a>
 
             <!-- 4. Customer -->
