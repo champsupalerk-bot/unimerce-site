@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UNIMERCE | Inventory OnHand</title>
+
+<meta name="description" content="UNIMERCE Inventory Management System - OnHand Stock Tracking Overview" />
+<meta name="keywords" content="unimerce, inventory, onhand, uerp, stock, management" />
+<meta name="author" content="UNIMERCE" />
+<meta name="robots" content="noindex, nofollow" /> <meta property="og:type" content="website" />
+<meta property="og:title" content="UNIMERCE | Inventory OnHand" />
+<meta property="og:description" content="ระบบจัดการสต็อกสินค้าสำหรับพนักงานภายในบริษัท UNIMERCE และพาร์ทเนอร์ธุรกิจที่เกี่ยวข้อง" />
+<meta property="og:site_name" content="UNIMERCE U-ERP" />
+
+<meta property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1782201292/uerp_facebook_ogtag_1200630_pfphkq.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/jpeg" />
+
+<meta property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1782201292/600tag_hqlqsm.jpg" />
+<meta property="og:image:width" content="600" />
+<meta property="og:image:height" content="600" />
+
+<style>
+
+/* =========================
+   BASE (กลับมาใช้ Font และการตั้งค่าเดิมทั้งหมด)
+========================= */
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#fafafa;
+  color:#111;
+  padding-top:50px; 
+}
+
+/* =========================
+   LAYOUT
+========================= */
+.container{
+  max-width:800px;
+  margin:0 auto;
+  padding:20px;
+}
+
+/* =========================
+   BREADCRUMB ROW
+========================= */
+.breadcrumb-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top: 10px; 
+  margin-bottom:12px;
+}
+
+.breadcrumb{
+  font-size:11px; 
+  color:#777;
+  letter-spacing:1px;
+}
+
+.breadcrumb a{
+  color: #777;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.breadcrumb a:hover{
+  text-decoration: underline;
+  color: #2f5ea8;
+}
+
+/* Checkbox วงกลม */
+.hide-zero-wrap, .category-label{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  color:#777;
+  white-space:nowrap;
+  cursor:pointer;
+  user-select:none;
+}
+
+.hide-zero-wrap input[type="checkbox"],
+.category-label input[type="checkbox"]{
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #ddd;
+  border-radius: 50%; 
+  outline: none;
+  background: #fff;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  transition: all 0.2s ease; 
+}
+
+.hide-zero-wrap input[type="checkbox"]::before,
+.category-label input[type="checkbox"]::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: 0.1s transform ease-in-out;
+  background-color: #fff;
+}
+
+.hide-zero-wrap:hover input[type="checkbox"],
+.category-label:hover input[type="checkbox"] {
+  border-color: #2f5ea8;
+  box-shadow: 0 0 0 4px rgba(47, 94, 168, 0.15);
+}
+
+.hide-zero-wrap input[type="checkbox"]:checked,
+.category-label input[type="checkbox"]:checked{
+  background:#2f5ea8;
+  border-color:#2f5ea8;
+}
+
+.hide-zero-wrap input[type="checkbox"]:checked::before,
+.category-label input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+/* =========================
+   CATEGORY FILTER BAR
+========================= */
+.category-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+  background: #fff;
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.category-label {
+  font-size: 13px;
+  color: #333;
+}
+
+/* =========================
+   FILTER BAR & DROPDOWN
+========================= */
+.filterbar{
+  margin-bottom: 10px;
+}
+
+.filterbar input{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  font-size:16px;
+  outline:none;
+  box-sizing:border-box;
+  transition: all 0.2s ease;
+}
+
+.filterbar input:focus {
+  border-color: #2f5ea8;
+  box-shadow: 0 0 0 3px rgba(47, 94, 168, 0.15);
+}
+
+.dropdown-bar-wrap {
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.dropdown-label {
+  font-size: 12px;
+  color: #888;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.google-select {
+  padding: 8px 36px 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.google-select:hover {
+  border-color: #bbb;
+  background-color: #fbfbfb;
+}
+
+.google-select:focus {
+  border-color: #2f5ea8;
+  box-shadow: 0 0 0 3px rgba(47, 94, 168, 0.12), 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* =========================
+   TABLE WRAP
+========================= */
+.table-wrap{
+  width:100%;
+  overflow-x:hidden;
+  overflow-y:auto;
+  border:1px solid #eee;
+  border-radius:12px;
+  background:#fff;
+  max-height:75vh;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+thead th{
+  position:sticky;
+  top:0;
+  background:#2f5ea8;
+  color:#fff;
+  z-index:50;
+  text-align:left;
+  font-size:12px;
+  padding:12px 10px;
+  letter-spacing:1px;
+  cursor:pointer;
+  user-select:none;
+  white-space:nowrap;
+}
+
+thead th:hover{
+  background:#244a86;
+}
+
+tbody td{
+  font-size:13px;
+  padding:10px;
+  border-bottom:1px solid #f0f0f0;
+}
+
+tbody tr:hover{
+  background:#f7f7f7;
+  cursor: pointer;
+}
+
+.col-code{
+  width:90px;
+  white-space:nowrap;
+}
+
+.col-desc{
+  width:auto;
+  word-break:break-word;
+  white-space:normal;
+}
+
+.col-stock{
+  width:50px;
+  text-align:right;
+  white-space:nowrap;
+}
+
+.order-alert {
+  color: #ff3b30 !important;
+  font-weight: bold;
+}
+
+.toast-notice {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  z-index: 9999;
+  display: none;
+}
+
+.sort-arrow{
+  font-size:10px;
+  margin-left:6px;
+  opacity:0.9;
+}
+
+/* =========================
+   BARCODE SHORTCUT BUTTON (SVG)
+========================= */
+.btn-barcode-trigger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  border-radius: 4px;
+  transition: background 0.1s;
+}
+.btn-barcode-trigger:hover {
+  background: #e8e8e8;
+}
+
+/* =========================
+   MOBILE FRIENDLY POPUP MODAL STYLES
+========================= */
+.barcode-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+.barcode-modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  text-align: center;
+  box-sizing: border-box;
+}
+.barcode-modal-title {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #2f5ea8;
+}
+
+/* ซ่อนกล่องแปลงภาพดิบ ไม่ให้พนักงานเห็นรอยต่อตอนสลับร่าง */
+#hiddenStickerWrapper {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+}
+
+/* อัตราส่วนกล่องจำลองป้ายขนาด 30x20mm */
+.actual-sticker-target {
+  width: 300px;
+  height: 200px;
+  background: #ffffff;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  font-family: Arial, sans-serif;
+  color: #000000;
+  padding: 12px 14px;
+}
+.sticker-p-name {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1.25;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sticker-barcode-area {
+  text-align: center;
+  margin: auto 0;
+  width: 100%; 
+}
+.sticker-barcode-area svg {
+  width: 100%; 
+  max-height: 85px; 
+}
+.sticker-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 12px; 
+  font-weight: bold;
+}
+.sticker-web-url {
+  color: #111;
+}
+.sticker-location-field {
+  color: #555;
+}
+
+.btn-cancel-modal {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 5px;
+  padding: 10px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media(max-width:768px){
+  .table-wrap{
+    overflow-x:hidden;
+  }
+  thead th.col-stock{
+    background:#2f5ea8;
+    color:#fff;
+  }
+  body {
+    padding-top: 40px; 
+  }
+}
+
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
+<script src="/analytics.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="barcode-label-engine.js"></script>
+<script src="layoutuerp.js"></script>
+
+</head>
+
+<body>
+
+<div id="header-placeholder"></div>
+
+<div id="toast" class="toast-notice">Copied to clipboard</div>
+
+<div class="container">
+
+  <div class="breadcrumb-row">
+    <div class="breadcrumb"><a href="/">HOME</a> / INVENTORY</div>
+    <label class="hide-zero-wrap">
+      <input type="checkbox" id="hideZero" checked />
+      Hide 0 / –
+    </label>
+  </div>
+
+  <div class="filterbar">
+    <input id="searchBox" type="text" placeholder="Search Item Code / Description..." />
+  </div>
+
+  <div class="dropdown-bar-wrap">
+    <span class="dropdown-label">มุมมอง:</span>
+    <select id="column3Select" class="google-select">
+      <option value="OnHand">OnHand</option>
+      <option value="PromotionPrice">ราคา</option>
+      <option value="StockStatus">StockStatus</option>
+      <option value="จำนวนต่อลัง">จำนวนต่อลัง</option>
+      <option value="INDEX2_BRAND">Brand</option>
+      <option value="Location">Location</option> 
+      <option value="ReorderSTATUS">ReorderSTATUS</option>
+    </select>
+  </div>
+
+  <div class="category-filter-bar">
+    <label class="category-label">
+      <input type="checkbox" class="cat-checkbox" value="WaterPurification" /> กรองน้ำ
+    </label>
+    <label class="category-label">
+      <input type="checkbox" class="cat-checkbox" value="WaterQualityTools" /> วัดค่าน้ำ
+    </label>
+    <label class="category-label">
+      <input type="checkbox" class="cat-checkbox" value="MeasurementTools" /> วัดค่าทั่วไป
+    </label>
+    <label class="category-label">
+      <input type="checkbox" class="cat-checkbox" value="AromaSystems" /> อโรม่า
+    </label>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th onclick="sortTable('Item_Code')">
+            Item Code <span class="sort-arrow" id="arrow-Item_Code">↕</span>
+          </th>
+          <th onclick="sortTable('Description')">
+            Description <span class="sort-arrow" id="arrow-Description">↕</span>
+          </th>
+          <th onclick="sortTable(document.getElementById('column3Select').value)" class="col-stock">
+            <span id="col3HeaderName">OH</span> <span class="sort-arrow" id="arrow-Col3">↕</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <tr><td colspan="3">กำลังโหลดข้อมูล...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div id="hiddenStickerWrapper">
+  <div id="stickerTarget" class="actual-sticker-target">
+    <div id="lblProductName" class="sticker-p-name"></div>
+    <div class="sticker-barcode-area">
+      <svg id="barcodeSvgCanvas"></svg>
+    </div>
+    <div class="sticker-footer-row">
+      <span class="sticker-web-url">www.unimercegroup.com</span>
+      <span id="lblLocationField" class="sticker-location-field"></span>
+    </div>
+  </div>
+</div>
+
+<div id="barcodeModal" class="barcode-modal-overlay" onclick="closeModalOnOutsideClick(event)">
+  <div class="barcode-modal-content">
+    <div class="barcode-modal-title">แตะค้างที่ป้ายเพื่อบันทึกJpeg</div>
+    
+    <div style="margin: 15px 0 20px 0; display: flex; justify-content: center;" id="resultImageContainer">
+       </div>
+
+    <button class="btn-cancel-modal" onclick="closeBarcodeModal()">Close</button>
+  </div>
+</div>
+
+<script src="config.js"></script>
+
+<script>
+
+/* =========================
+   LOAD HEADER
+========================= */
+fetch("uerpheader.html")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("header-placeholder").innerHTML = data;
+  });
+
+let rawData      = [];
+let filteredData = [];
+let viewData     = [];
+
+let sortState = {
+  key: null,
+  dir: "asc"
+};
+
+function cleanNumber(val) {
+  if (val === null || val === undefined) return 0;
+  if (typeof val === 'number') return val;
+  let str = String(val).replace(/,/g, '').trim();
+  if (str === "" || str === "-") return 0;
+  let parsed = parseFloat(str);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
+/* =========================
+   LOAD DATA
+========================= */
+async function loadTable(){
+  try {
+    rawData = await window.supabaseFetch('products');
+    applyAll();
+  } catch(e) {
+    console.error("Supabase Connection Error:", e);
+    document.getElementById("table-body").innerHTML =
+      '<tr><td colspan="3" style="text-align:center; padding:20px;">Failed to load secure assets.</td></tr>';
+  }
+}
+
+/* =========================
+   APPLY ALL
+========================= */
+function applyAll(){
+  const q         = document.getElementById("searchBox").value.toLowerCase().trim();
+  const hideZero = document.getElementById("hideZero").checked;
+  const currentCol3 = document.getElementById("column3Select").value;
+
+  const checkedCategories = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value);
+
+  let result = rawData;
+
+  if (checkedCategories.length > 0) {
+    result = result.filter(i => {
+      const cat = String(i.MainCategory || "").trim();
+      return checkedCategories.includes(cat);
+    });
+  }
+
+  if(q){
+    result = result.filter(i =>
+      String(i.Item_Code   || "").toLowerCase().includes(q) ||
+      String(i.Description || "").toLowerCase().includes(q) ||
+      String(i[currentCol3]  || "").toLowerCase().includes(q)
+    );
+  }
+
+  if(hideZero){
+    result = result.filter(i => {
+      const rawVal = i.OnHand;
+      if(rawVal === undefined || rawVal === null) return false;
+      const vStr = String(rawVal).trim();
+      if(vStr === "" || vStr === "-") return false;
+      
+      const n = cleanNumber(rawVal);
+      if(n === 0) return false;
+      return true;
+    });
+  }
+
+  filteredData = result;
+
+  if(sortState.key){
+    applySortOnFiltered();
+  } else {
+    viewData = filteredData;
+    renderTable(viewData);
+  }
+}
+
+/* =========================
+   SORT
+========================= */
+function sortTable(key){
+  if(sortState.key === key){
+    sortState.dir = sortState.dir === "asc" ? "desc" : "asc";
+  } else {
+    sortState.key = key;
+    sortState.dir = "asc";
+  }
+  applySortOnFiltered();
+}
+
+function applySortOnFiltered(){
+  const key = sortState.key;
+  const dir = sortState.dir;
+
+  viewData = [...filteredData].sort((a, b) => {
+    let v1 = a[key] ?? "";
+    let v2 = b[key] ?? "";
+
+    if(key === 'OnHand' || key === 'ListPrice' || key === 'PromotionPrice' || key === 'ราคาต่อลัง' || key === 'จำนวนต่อลัง') {
+       let n1 = cleanNumber(v1);
+       let n2 = cleanNumber(v2);
+       return dir === "asc" ? n1 - n2 : n2 - n1;
+    }
+
+    const n1 = parseFloat(v1);
+    const n2 = parseFloat(v2);
+    if(!isNaN(n1) && !isNaN(n2)){
+      return dir === "asc" ? n1 - n2 : n2 - n1;
+    }
+
+    v1 = String(v1).toLowerCase();
+    v2 = String(v2).toLowerCase();
+
+    if(v1 < v2) return dir === "asc" ? -1 : 1;
+    if(v1 > v2) return dir === "asc" ?  1 : -1;
+    return 0;
+  });
+
+  updateArrows(key, dir);
+  renderTable(viewData);
+}
+
+/* =========================
+   RENDER TABLE
+========================= */
+function renderTable(data){
+  const tbody = document.getElementById("table-body");
+  const currentCol3 = document.getElementById("column3Select").value;
+
+  if(!data || data.length === 0){
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#aaa;padding:20px;">No results found.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = data.map(p => {
+    let cellValue = p[currentCol3] !== undefined && p[currentCol3] !== null ? p[currentCol3] : "-";
+    let cellClass = "col-stock";
+    
+    if(currentCol3 === "ReorderSTATUS" && String(cellValue).trim() === "ORDER!") {
+      cellClass += " order-alert";
+    }
+
+    if((currentCol3 === "OnHand" || currentCol3 === "PromotionPrice" || currentCol3 === "จำนวนต่อลัง") && cellValue !== "-") {
+       let num = cleanNumber(cellValue);
+       cellValue = num.toLocaleString();
+    }
+
+    // เคลียร์อักขระพิเศษเพื่อไม่ให้ String หลุดสคริปต์
+    const safeItemCode = String(p.Item_Code || "-").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    const safeDesc = String(p.Description || "-").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    const safeLocation = String(p.Location || "").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+    return `
+      <tr onclick="copyRowText(this, event)">
+        <td class="col-code">
+          <span>${p.Item_Code || "-"}</span>
+          <button class="btn-barcode-trigger" onclick="openBarcodeGenModal('${safeDesc}', '${safeItemCode}', '${safeLocation}', event)" title="Generate Barcode">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
+              <line x1="6" y1="7" x2="6" y2="17" stroke-width="2.5" />
+              <line x1="9.5" y1="7" x2="9.5" y2="17" stroke-width="1" />
+              <line x1="12" y1="7" x2="12" y2="17" stroke-width="2" />
+              <line x1="14.5" y1="7" x2="14.5" y2="17" stroke-width="1" />
+              <line x1="18" y1="7" x2="18" y2="17" stroke-width="3" />
+              <path d="M 2,7 V 2 H 7" stroke-width="1.5" />
+              <path d="M 17,2 H 22 V 7" stroke-width="1.5" />
+              <path d="M 2,17 V 22 H 7" stroke-width="1.5" />
+              <path d="M 17,22 H 22 V 17" stroke-width="1.5" />
+            </svg>
+          </button>
+        </td>
+        <td class="col-desc">${p.Description || "-"}</td>
+        <td class="${cellClass}">${cellValue}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+/* =========================
+   COPY FUNCTION
+========================= */
+function copyRowText(rowElement, event) {
+  // ดักจับเพิ่มเติมว่าหากคลิกโดนปุ่มบาร์โค้ด หรือปุ่มดาวน์โหลดรูปภาพ ไม่ต้องทำงาน
+  if (event.target.closest('.btn-barcode-trigger') || event.target.closest('.btn-download-trigger')) {
+    return;
+  }
+
+  const tds = rowElement.getElementsByTagName("td");
+  let text = "";
+  for(let i = 0; i < tds.length; i++) {
+     let tempTd = tds[i].cloneNode(true);
+     const btn = tempTd.querySelector('.btn-barcode-trigger');
+     if(btn) btn.remove();
+     text += tempTd.innerText.trim() + (i === tds.length - 1 ? "" : " ");
+  }
+  
+  navigator.clipboard.writeText(text).then(() => {
+     const toast = document.getElementById("toast");
+     toast.style.display = "block";
+     setTimeout(() => { toast.style.display = "none"; }, 1500);
+  });
+}
+
+/* ฟังก์ชันควบคุมป็อปอัพบาร์โค้ดเดิมถูกตัดออกเนื่องจากย้ายไปจัดการในไฟล์ barcode-label-engine.js ทั้งหมดแล้ว */
+
+/* =========================
+   ARROWS UPDATE & DYNAMIC SELECT HEADER TEXT
+========================= */
+function updateArrows(active, dir){
+  const currentCol3 = document.getElementById("column3Select").value;
+  const selectElement = document.getElementById("column3Select");
+  const selectedText = selectElement.options[selectElement.selectedIndex].text;
+  
+  document.getElementById("col3HeaderName").textContent = selectedText === "OnHand" ? "OH" : selectedText;
+
+  ["Item_Code", "Description"].forEach(k => {
+    const el = document.getElementById("arrow-" + k);
+    if(el) el.textContent = k === active ? (dir === "asc" ? "↑" : "↓") : "↕";
+  });
+
+  const el3 = document.getElementById("arrow-Col3");
+  if(el3) el3.textContent = currentCol3 === active ? (dir === "asc" ? "↑" : "↓") : "↕";
+}
+
+/* =========================
+   INIT EVENTS
+========================= */
+window.addEventListener("load", () => {
+
+  document.getElementById("searchBox").addEventListener("input", () => {
+    applyAll();
+  });
+
+  document.getElementById("hideZero").addEventListener("change", () => {
+    applyAll();
+  });
+
+  document.getElementById("column3Select").addEventListener("change", (e) => {
+    sortState.key = e.target.value;
+    applyAll();
+  });
+
+  document.querySelectorAll('.cat-checkbox').forEach(cb => {
+    cb.addEventListener("change", () => {
+      applyAll();
+    });
+  });
+
+  loadTable();
+});
+
+/* =========================
+   HAMBURGER MENU
+========================= */
+setTimeout(() => {
+  const menuBtn = document.getElementById("menuBtn");
+  const menuDropdown = document.getElementById("menuDropdown");
+
+  if(menuBtn && menuDropdown){
+    menuBtn.addEventListener("click", () => {
+      menuDropdown.classList.toggle("active");
+    });
+  }
+}, 100);
+
+</script>
+</body>
+</html>
