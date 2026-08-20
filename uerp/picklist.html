@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UERP - Picklist</title>
-
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -20,56 +19,42 @@
             }
         }
     </script>
-
     <!-- FontAwesome -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <!-- UERP Layout -->
     <script src="js/layoutuerp.js"></script>
 </head>
-
 <body class="bg-slate-100 min-h-screen text-slate-800 font-sans">
-
 <!-- Global Header -->
 <div id="headerContainer"></div>
-
 <main class="max-w-[1000px] mx-auto p-3 sm:p-6">
-
     <!-- =========================================================
          HEADER / CONTROL PANEL
     ========================================================== -->
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-3 sm:p-4 mb-4">
-
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-
             <!-- Title -->
             <div class="flex items-center gap-2">
                 <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                     <i class="fa-solid fa-box-open"></i>
                 </div>
-
                 <div>
                     <h1 class="text-sm sm:text-base font-bold text-slate-800">
                         Picklist
                     </h1>
-
                     <p class="text-[10px] sm:text-xs text-slate-400">
                         รายการสินค้าสำหรับคลังจัดเตรียม
                     </p>
                 </div>
             </div>
-
             <!-- Date -->
             <div class="flex items-center gap-2">
-
                 <label class="text-[10px] sm:text-xs font-semibold text-slate-500 whitespace-nowrap">
                     วันที่ Pick
                 </label>
-
                 <input
                     type="date"
                     id="pickDate"
@@ -78,7 +63,6 @@
                            focus:ring-2 focus:ring-blue-500/20
                            focus:border-blue-500 outline-none"
                 >
-
                 <button
                     onclick="loadPicklist()"
                     title="รีเฟรช"
@@ -88,18 +72,13 @@
                 >
                     <i id="refreshIcon" class="fa-solid fa-rotate"></i>
                 </button>
-
             </div>
-
         </div>
-
         <!-- Search -->
         <div class="mt-3 relative">
-
             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
                 <i class="fa-solid fa-magnifying-glass text-xs"></i>
             </div>
-
             <input
                 type="text"
                 id="searchInput"
@@ -111,74 +90,56 @@
                        pl-8 p-2.5 transition
                        placeholder:text-slate-400"
             >
-
         </div>
-
     </div>
-
-
     <!-- =========================================================
          SUMMARY
     ========================================================== -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
-
         <div class="bg-white border border-slate-200 rounded-xl p-3">
             <div class="text-[10px] text-slate-400">
                 SKU ทั้งหมด
             </div>
-
             <div id="summarySku"
                  class="text-lg font-bold text-slate-800">
                 0
             </div>
         </div>
-
         <div class="bg-white border border-slate-200 rounded-xl p-3">
             <div class="text-[10px] text-slate-400">
                 จำนวนชิ้น
             </div>
-
             <div id="summaryQty"
                  class="text-lg font-bold text-blue-600">
                 0
             </div>
         </div>
-
         <div class="bg-white border border-amber-200 bg-amber-50 rounded-xl p-3">
             <div class="text-[10px] text-amber-600">
                 Waiting
             </div>
-
             <div id="summaryWaiting"
                  class="text-lg font-bold text-amber-600">
                 0
             </div>
         </div>
-
         <div class="bg-white border border-emerald-200 bg-emerald-50 rounded-xl p-3">
             <div class="text-[10px] text-emerald-600">
                 Picked
             </div>
-
             <div id="summaryPicked"
                  class="text-lg font-bold text-emerald-600">
                 0
             </div>
         </div>
-
     </div>
-
-
     <!-- =========================================================
          ACTION BAR
     ========================================================== -->
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-3 mb-4">
-
         <div class="flex flex-col sm:flex-row gap-2 justify-between">
-
             <!-- Left -->
             <div class="flex flex-wrap gap-2">
-
                 <button
                     onclick="createPicklistFromTransactions()"
                     class="bg-blue-600 hover:bg-blue-700
@@ -189,7 +150,6 @@
                     <i class="fa-solid fa-plus"></i>
                     สร้าง Picklist จาก Transactions
                 </button>
-
                 <button
                     onclick="openAddModal()"
                     class="bg-white hover:bg-slate-50
@@ -201,12 +161,16 @@
                     <i class="fa-solid fa-magnifying-glass"></i>
                     เพิ่มรายการ
                 </button>
-
+                <button
+                    onclick="openManualUploadModal()"
+                    class="bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-200 transition flex items-center gap-2"
+                >
+                    <i class="fa-solid fa-paste"></i>
+                    วาง TSV / Upload
+                </button>
             </div>
-
             <!-- Right -->
             <div class="flex items-center gap-2">
-
                 <button
                     onclick="selectAllWaiting()"
                     class="text-xs font-semibold text-blue-600
@@ -215,7 +179,6 @@
                     <i class="fa-solid fa-check-double mr-1"></i>
                     เลือก Waiting ทั้งหมด
                 </button>
-
                 <button
                     onclick="clearSelection()"
                     class="text-xs font-semibold text-slate-500
@@ -223,14 +186,9 @@
                 >
                     ยกเลิก
                 </button>
-
             </div>
-
         </div>
-
     </div>
-
-
     <!-- =========================================================
          STATUS
     ========================================================== -->
@@ -238,39 +196,29 @@
          class="hidden p-3 bg-blue-50/80 rounded-xl
                 border border-blue-100
                 items-center gap-3 mb-4">
-
         <i class="fa-solid fa-circle-notch animate-spin text-blue-600"></i>
-
         <span id="statusText"
               class="text-xs font-medium text-blue-700">
             กำลังดำเนินการ...
         </span>
-
     </div>
-
-
     <!-- =========================================================
          TABLE
     ========================================================== -->
     <div class="bg-white rounded-2xl shadow-sm
                 border border-slate-200/80 overflow-hidden">
-
         <!-- Table Header -->
         <div class="bg-slate-900 text-white p-3 px-4
                     flex flex-col sm:flex-row
                     sm:justify-between sm:items-center gap-2">
-
             <div class="text-xs font-semibold tracking-wide">
-                รายการสินค้า
+                สรุปรายการสินค้า (รวมทุก Order)
             </div>
-
             <div class="flex items-center gap-2">
-
                 <span id="selectedCount"
                       class="text-[11px] text-slate-300">
                     เลือกแล้ว 0 รายการ
                 </span>
-
                 <button
                     id="submitButton"
                     onclick="submitPicked()"
@@ -286,23 +234,15 @@
                     <i class="fa-solid fa-check mr-1"></i>
                     ยืนยัน Pick
                 </button>
-
             </div>
-
         </div>
-
-
         <!-- Scroll -->
         <div class="max-h-[65vh] overflow-y-auto overflow-x-auto">
-
             <table class="w-full text-left text-xs text-slate-600">
-
                 <thead class="bg-slate-50 text-slate-700
                               font-bold border-b border-slate-200
                               sticky top-0 z-10">
-
                     <tr>
-
                         <th class="p-3 w-12 text-center">
                             <input
                                 type="checkbox"
@@ -311,41 +251,28 @@
                                 class="w-4 h-4 accent-blue-600 cursor-pointer"
                             >
                         </th>
-
                         <th class="p-3 w-3/12">
                             Code
                         </th>
-
                         <th class="p-3 w-5/12">
                             Name
                         </th>
-
                         <th class="p-3 w-2/12 text-right">
-                            Qty
+                            Total Qty
                         </th>
-
                         <th class="p-3 w-2/12 text-center">
                             Status
                         </th>
-
                     </tr>
-
                 </thead>
-
                 <tbody
                     id="tableBody"
                     class="divide-y divide-slate-100"
                 ></tbody>
-
             </table>
-
         </div>
-
     </div>
-
 </main>
-
-
 <!-- =========================================================
      ADD ITEM MODAL
 ========================================================== -->
@@ -355,49 +282,36 @@
            bg-black/40 backdrop-blur-sm
            items-center justify-center p-4"
 >
-
     <div class="bg-white w-full max-w-[700px]
                 rounded-2xl shadow-xl overflow-hidden">
-
         <div class="p-4 border-b border-slate-200
                     flex justify-between items-center">
-
             <div>
                 <h2 class="text-sm font-bold text-slate-800">
                     เพิ่มรายการเข้า Picklist
                 </h2>
-
                 <p class="text-[10px] text-slate-400 mt-0.5">
-                    ค้นหาจาก Order / Invoice Item / รหัสสินค้า
+                    ค้นหาจาก Invoice No., SO / Order No. หรือ Tracking No. แล้วเลือกได้หลายรายการ
                 </p>
             </div>
-
             <button
                 onclick="closeAddModal()"
                 class="text-slate-400 hover:text-slate-700"
             >
                 <i class="fa-solid fa-xmark"></i>
             </button>
-
         </div>
-
-
         <div class="p-4">
-
             <div class="relative">
-
                 <div class="absolute inset-y-0 left-0
                             flex items-center pl-3
                             pointer-events-none text-slate-400">
-
                     <i class="fa-solid fa-magnifying-glass text-xs"></i>
-
                 </div>
-
                 <input
                     id="addSearchInput"
                     type="text"
-                    placeholder="ค้นหา order_no / invoice_item_id / item_code..."
+                    placeholder="ค้นหา invoice_no / order_no / tracking_number..."
                     class="w-full bg-slate-50
                            border border-slate-200
                            rounded-lg text-xs
@@ -406,10 +320,7 @@
                            focus:ring-blue-500/20
                            focus:border-blue-500 outline-none"
                 >
-
             </div>
-
-
             <div
                 id="addSearchResults"
                 class="mt-3 max-h-[45vh]
@@ -417,58 +328,74 @@
                        border border-slate-100
                        rounded-xl"
             >
-
                 <div class="p-8 text-center text-slate-400 text-xs">
                     พิมพ์คำค้นหาเพื่อค้นหารายการ
                 </div>
-
             </div>
-
+            <div class="mt-3 pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <label class="inline-flex items-center gap-2 text-[11px] text-slate-600 cursor-pointer">
+                    <input id="addSelectAll" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                    เลือกผลการค้นหาที่ยังไม่อยู่ใน Picklist ทั้งหมด
+                </label>
+                <div class="flex items-center justify-between sm:justify-end gap-3">
+                    <span id="addSelectedCount" class="text-[11px] text-slate-500">เลือก 0 รายการ</span>
+                    <button id="addSelectedButton" type="button" disabled class="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
+                        <i class="fa-solid fa-plus mr-1"></i>
+                        เพิ่มเข้า Picklist
+                    </button>
+                </div>
+            </div>
         </div>
-
     </div>
-
 </div>
-
-
+<!-- MANUAL TSV UPLOAD MODAL -->
+<div id="manualUploadModal" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-white w-full max-w-[700px] rounded-2xl shadow-xl overflow-hidden">
+        <div class="p-4 border-b border-slate-200 flex justify-between items-center">
+            <div>
+                <h2 class="text-sm font-bold text-slate-800">Upload Picklist แบบ Manual</h2>
+                <p class="text-[10px] text-slate-400 mt-0.5">วาง TSV โดยต้องมีหัวคอลัมน์ <code>invoice_item_id</code> เพื่อยืนยันกับ transactions</p>
+            </div>
+            <button onclick="closeManualUploadModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="p-4 space-y-3">
+            <textarea id="manualTsvInput" rows="9" placeholder="invoice_item_id&#9;หมายเหตุ (ถ้ามี)&#10;abc-001&#9;...&#10;abc-002&#9;..." class="w-full resize-y rounded-lg border border-slate-200 bg-slate-50 p-3 font-mono text-xs outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"></textarea>
+            <p class="text-[10px] text-slate-500"><kbd class="rounded border border-slate-200 bg-slate-50 px-1 py-0.5">Ctrl</kbd> + <kbd class="rounded border border-slate-200 bg-slate-50 px-1 py-0.5">Shift</kbd> + <kbd class="rounded border border-slate-200 bg-slate-50 px-1 py-0.5">V</kbd> เพื่อวางข้อความ TSV ได้</p>
+            <div id="manualUploadMessage" class="hidden rounded-lg px-3 py-2 text-xs"></div>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeManualUploadModal()" class="px-3 py-2 text-xs font-semibold text-slate-600">ยกเลิก</button>
+                <button id="manualUploadButton" type="button" class="rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700"><i class="fa-solid fa-upload mr-1"></i>Upload Picklist</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- =========================================================
      JAVASCRIPT
 ========================================================== -->
 <script>
-
         const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-
-
 // =========================================================
 // STATE
 // =========================================================
-
 let picklistRows = [];
 let aggregatedRows = [];
 let selectedIds = new Set();
-
+let addSelectedTransactionIds = new Set();
+let addSearchRows = [];
+let addExistingTransactionIds = new Set();
+let addSearchRequestId = 0;
 let currentPickDate = null;
-
-
 // =========================================================
 // INIT
 // =========================================================
-
 document.addEventListener('DOMContentLoaded', () => {
-
     loadHeader();
-
     initApp();
-
 });
-
-
 function initApp() {
-
     const today = new Date();
-
     const localDate =
         new Date(
             today.getTime() -
@@ -476,120 +403,84 @@ function initApp() {
         )
         .toISOString()
         .split('T')[0];
-
     document.getElementById('pickDate').value =
         localDate;
-
     currentPickDate = localDate;
-
     document
         .getElementById('pickDate')
         .addEventListener('change', () => {
-
             currentPickDate =
                 document.getElementById('pickDate').value;
-
             selectedIds.clear();
-
             loadPicklist();
-
         });
-
-
     document
         .getElementById('searchInput')
         .addEventListener('input', renderTable);
-
-
     document
         .getElementById('addSearchInput')
         .addEventListener(
             'input',
             debounce(searchTransactions, 350)
         );
-
-
+    document
+        .getElementById('addSelectAll')
+        .addEventListener('change', toggleAllSearchResults);
+    document
+        .getElementById('addSelectedButton')
+        .addEventListener('click', addSelectedTransactionsToPicklist);
+    document
+        .getElementById('manualUploadButton')
+        .addEventListener('click', uploadManualPicklist);
     loadPicklist();
-
 }
-
-
 // =========================================================
 // HEADER
 // =========================================================
-
 async function loadHeader() {
-
     try {
-
         const res =
             await fetch('uerpheader.html');
-
         if (!res.ok)
             throw new Error('Header load failed');
-
         const html =
             await res.text();
-
         const container =
             document.getElementById('headerContainer');
-
         container.innerHTML = html;
-
-
         const pickTab =
             container.querySelector(
                 '[data-page="picklist"]'
             );
-
         if (pickTab) {
-
             pickTab.classList.add(
                 'chrome-tab-active'
             );
-
         }
-
-
         if (
             typeof window.initUerpLayout ===
             'function'
         ) {
-
             window.__uerpLayoutInitialized =
                 false;
-
             window.initUerpLayout();
-
         }
-
     } catch (err) {
-
         console.warn(
             'Cannot load header dynamically:',
             err
         );
-
     }
-
 }
-
-
 // =========================================================
 // LOAD PICKLIST
 // =========================================================
-
 async function loadPicklist() {
-
     setLoading(true, 'กำลังโหลด Picklist...');
-
     try {
-
         const { data, error } =
             await supabaseClient
-
                 .from('picklist')
-
                 .select(`
                     invoice_item_id,
                     pick_date,
@@ -597,168 +488,104 @@ async function loadPicklist() {
                     created_at,
                     updated_at
                 `)
-
                 .eq(
                     'pick_date',
                     currentPickDate
                 )
-
                 .order(
                     'created_at',
                     { ascending: true }
                 );
-
-
         if (error)
             throw error;
-
-
         if (!data || data.length === 0) {
-
             picklistRows = [];
-
             aggregatedRows = [];
-
             renderTable();
-
             updateSummary();
-
             setLoading(false);
-
             updateLog(
                 'ยังไม่มี Picklist สำหรับวันนี้'
             );
-
             return;
-
         }
-
-
         const ids =
             data.map(
                 x => x.invoice_item_id
             );
-
-
         /*
          * ดึง transaction ที่เกี่ยวข้อง
          */
         const { data: transactions, error: txError } =
             await supabaseClient
-
                 .from('transactions')
-
                 .select(`
                     invoice_item_id,
                     item_code,
                     item_name,
                     qty
                 `)
-
                 .in(
                     'invoice_item_id',
                     ids
                 );
-
-
         if (txError)
             throw txError;
-
-
         const txMap = {};
-
         (transactions || []).forEach(row => {
-
             txMap[row.invoice_item_id] =
                 row;
-
         });
-
-
         picklistRows =
             data.map(row => ({
-
                 ...row,
-
                 item_code:
                     txMap[row.invoice_item_id]
                         ?.item_code || '',
-
                 item_name:
                     txMap[row.invoice_item_id]
                         ?.item_name || '',
-
                 qty:
                     Number(
                         txMap[row.invoice_item_id]
                             ?.qty || 0
                     )
-
             }));
-
-
         aggregatePicklist();
-
         renderTable();
-
         updateSummary();
-
         setLoading(false);
-
         updateLog(
             `โหลด ${picklistRows.length.toLocaleString()} รายการ`
         );
-
-
     } catch (err) {
-
         console.error(err);
-
         showError(
             `โหลด Picklist ไม่สำเร็จ: ${err.message}`
         );
-
         setLoading(false);
-
     }
-
 }
-
-
 // =========================================================
 // CREATE PICKLIST FROM TRANSACTIONS
 // =========================================================
-
 async function createPicklistFromTransactions() {
-
     if (!currentPickDate) {
-
         alert('กรุณาเลือกวันที่');
-
         return;
-
     }
-
-
     if (
         !confirm(
             `ต้องการสร้าง Picklist สำหรับวันที่ ${formatThaiDate(currentPickDate)} หรือไม่?`
         )
     ) {
-
         return;
-
     }
-
-
     setLoading(
         true,
         'กำลังตรวจสอบ Transactions...'
     );
-
-
     try {
-
         /*
          * ดึง transactions ตาม Created Date
          *
@@ -766,30 +593,19 @@ async function createPicklistFromTransactions() {
          * ใช้ >= วันเริ่มต้น
          * และ < วันถัดไป
          */
-
         const start =
             `${currentPickDate}T00:00:00+07:00`;
-
         const nextDate =
             getNextDate(currentPickDate);
-
         const end =
             `${nextDate}T00:00:00+07:00`;
-
-
         let allTransactions = [];
-
         let from = 0;
-
         const pageSize = 1000;
-
         while (true) {
-
             const { data, error } =
                 await supabaseClient
-
                     .from('transactions')
-
                     .select(`
                         invoice_item_id,
                         item_code,
@@ -800,461 +616,276 @@ async function createPicklistFromTransactions() {
                         tracking_number,
                         order_no
                     `)
-
                     .gte('date', start)
-
                     .lt('date', end)
-
                     /*
                      * เบื้องต้นใช้ pending
                      */
                     .eq('status', 'pending')
-
                     .range(
                         from,
                         from + pageSize - 1
                     );
-
-
             if (error)
                 throw error;
-
-
             if (!data || data.length === 0)
                 break;
-
-
             allTransactions =
                 allTransactions.concat(data);
-
-
             if (data.length < pageSize)
                 break;
-
-
             from += pageSize;
-
         }
-
-
         if (allTransactions.length === 0) {
-
             setLoading(false);
-
             alert(
                 'ไม่พบ Transactions ที่เข้าเงื่อนไขสำหรับวันนี้'
             );
-
             return;
-
         }
-
-
         /*
          * เอาเฉพาะ invoice_item_id ที่ไม่ซ้ำ
          */
-
         const uniqueMap = new Map();
-
-
         allTransactions.forEach(row => {
-
             if (
                 row.invoice_item_id &&
                 !uniqueMap.has(row.invoice_item_id)
             ) {
-
                 uniqueMap.set(
                     row.invoice_item_id,
                     row
                 );
-
             }
-
         });
-
-
         const uniqueRows =
             Array.from(uniqueMap.values());
-
-
         /*
          * ตรวจรายการที่มีอยู่แล้วใน picklist
          */
-
         const ids =
             uniqueRows.map(
                 x => x.invoice_item_id
             );
-
-
         let existingIds = new Set();
-
-
         for (
             let i = 0;
             i < ids.length;
             i += 1000
         ) {
-
             const chunk =
                 ids.slice(i, i + 1000);
-
-
             const { data: existing, error } =
                 await supabaseClient
-
                     .from('picklist')
-
                     .select('invoice_item_id')
-
                     .in(
                         'invoice_item_id',
                         chunk
                     );
-
-
             if (error)
                 throw error;
-
-
             (existing || []).forEach(row => {
-
                 existingIds.add(
                     row.invoice_item_id
                 );
-
             });
-
         }
-
-
         /*
          * สร้างเฉพาะรายการใหม่
          */
-
         const newRows =
             uniqueRows
-
                 .filter(
                     row =>
                         !existingIds.has(
                             row.invoice_item_id
                         )
                 )
-
                 .map(row => ({
-
                     invoice_item_id:
                         row.invoice_item_id,
-
                     pick_date:
                         currentPickDate,
-
                     pick_status:
                         'waiting'
-
                 }));
-
-
         if (newRows.length === 0) {
-
             setLoading(false);
-
             alert(
                 'ไม่มีรายการใหม่ รายการทั้งหมดถูกเพิ่มเข้า Picklist แล้ว'
             );
-
             await loadPicklist();
-
             return;
-
         }
-
-
         /*
          * Insert แบบ batch
          */
-
         const { error: insertError } =
             await supabaseClient
-
                 .from('picklist')
-
                 .insert(newRows);
-
-
         if (insertError)
             throw insertError;
-
-
         setLoading(
             true,
             `เพิ่ม ${newRows.length.toLocaleString()} รายการ...`
         );
-
-
         await loadPicklist();
-
-
         alert(
             `สร้าง Picklist สำเร็จ\nเพิ่ม ${newRows.length.toLocaleString()} รายการ`
         );
-
-
     } catch (err) {
-
         console.error(err);
-
         setLoading(false);
-
         showError(
             `สร้าง Picklist ไม่สำเร็จ: ${err.message}`
         );
-
     }
-
 }
-
-
 // =========================================================
 // AGGREGATE
 // =========================================================
-
 function aggregatePicklist() {
-
     const map = {};
-
-
     picklistRows.forEach(row => {
-
         const code =
             row.item_code || 'UNSPECIFIED';
-
         const name =
             row.item_name || 'ไม่ระบุชื่อสินค้า';
-
         const key =
             `${code}___${name}`;
-
-
         if (!map[key]) {
-
             map[key] = {
-
                 key,
-
                 item_code:
                     code,
-
                 item_name:
                     name,
-
                 qty:
                     0,
-
                 waitingQty:
                     0,
-
                 pickedQty:
                     0,
-
                 rows: []
-
             };
-
         }
-
-
         const qty =
             Number(row.qty || 0);
-
-
         map[key].qty += qty;
-
-
         if (
             row.pick_status ===
             'waiting'
         ) {
-
             map[key].waitingQty += qty;
-
         } else {
-
             map[key].pickedQty += qty;
-
         }
-
-
         map[key].rows.push(row);
-
     });
-
-
     aggregatedRows =
         Object.values(map);
-
 }
-
-
 // =========================================================
 // RENDER
 // =========================================================
-
 function renderTable() {
-
     aggregatePicklist();
-
-
     const body =
         document.getElementById('tableBody');
-
-
     const searchTerm =
         document
             .getElementById('searchInput')
             .value
             .toLowerCase()
             .trim();
-
-
     let rows =
         aggregatedRows;
-
-
     if (searchTerm) {
-
         rows =
             rows.filter(row =>
-
                 row.item_code
                     .toLowerCase()
                     .includes(searchTerm)
-
                 ||
-
                 row.item_name
                     .toLowerCase()
                     .includes(searchTerm)
-
             );
-
     }
-
-
     if (rows.length === 0) {
-
         body.innerHTML = `
-
             <tr>
-
                 <td colspan="5"
                     class="p-10 text-center text-slate-400">
-
                     <i class="fa-solid fa-box-open text-2xl mb-2"></i>
-
                     <div>
                         ยังไม่มีรายการ Pick
                     </div>
-
                 </td>
-
             </tr>
-
         `;
-
         updateSelectedCount();
-
         return;
-
     }
-
-
     let html = '';
-
-
     rows.forEach(row => {
-
         /*
          * ถ้า SKU มีทั้ง waiting และ picked
          * ให้ checkbox เลือกเฉพาะ waiting
          */
-
         const waitingRows =
             row.rows.filter(
                 r =>
                     r.pick_status === 'waiting'
             );
-
-
         const waitingIds =
             waitingRows.map(
                 r =>
                     r.invoice_item_id
             );
-
-
         const selectedWaiting =
             waitingIds.filter(
                 id =>
                     selectedIds.has(id)
             );
-
-
         const allWaitingSelected =
             waitingIds.length > 0 &&
             selectedWaiting.length ===
             waitingIds.length;
-
-
         const statusHtml =
             row.waitingQty > 0
-
                 ? `
                     <span class="inline-flex items-center gap-1
                                  bg-amber-50 text-amber-700
                                  border border-amber-200
                                  px-2 py-1 rounded-full
                                  text-[10px] font-bold">
-
                         <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-
                         WAITING
-
                     </span>
                   `
-
                 : `
                     <span class="inline-flex items-center gap-1
                                  bg-emerald-50 text-emerald-700
                                  border border-emerald-200
                                  px-2 py-1 rounded-full
                                  text-[10px] font-bold">
-
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-
                         PICKED
-
                     </span>
                   `;
-
-
         html += `
-
             <tr class="
                 hover:bg-slate-50
                 transition-colors
                 border-b border-slate-100
             ">
-
                 <td class="p-3 text-center">
-
                     ${
                         waitingIds.length > 0
-
                         ? `
-
                             <input
                                 type="checkbox"
                                 class="sku-checkbox
@@ -1265,859 +896,671 @@ function renderTable() {
                                 ${allWaitingSelected ? 'checked' : ''}
                                 onchange="toggleSkuSelection(this)"
                             >
-
                           `
-
                         : `
-
                             <span class="text-emerald-500">
                                 <i class="fa-solid fa-check"></i>
                             </span>
-
                           `
                     }
-
                 </td>
-
-
                 <td class="p-3 font-mono
                            text-[11px] text-slate-500">
-
                     ${escapeHtml(row.item_code)}
-
                 </td>
-
-
                 <td class="p-3 font-semibold
                            text-slate-800">
-
                     ${escapeHtml(row.item_name)}
-
                 </td>
-
-
                 <td class="p-3 text-right
                            font-bold text-slate-700">
-
                     ${row.qty.toLocaleString()}
-
                 </td>
-
-
                 <td class="p-3 text-center">
-
                     ${statusHtml}
-
                 </td>
-
             </tr>
-
         `;
-
     });
-
-
     body.innerHTML = html;
-
-
     updateSelectedCount();
-
 }
-
-
 // =========================================================
 // CHECKBOX
 // =========================================================
-
 function toggleSkuSelection(checkbox) {
-
     const ids =
         JSON.parse(
             checkbox.dataset.ids
         );
-
-
     ids.forEach(id => {
-
         if (checkbox.checked) {
-
             selectedIds.add(id);
-
         } else {
-
             selectedIds.delete(id);
-
         }
-
     });
-
-
     updateSelectedCount();
-
 }
-
-
 function toggleMasterCheckbox(checkbox) {
-
     if (checkbox.checked) {
-
         selectAllWaiting();
-
     } else {
-
         clearSelection();
-
     }
-
 }
-
-
 function selectAllWaiting() {
-
     picklistRows.forEach(row => {
-
         if (
             row.pick_status ===
             'waiting'
         ) {
-
             selectedIds.add(
                 row.invoice_item_id
             );
-
         }
-
     });
-
-
     renderTable();
-
 }
-
-
 function clearSelection() {
-
     selectedIds.clear();
-
     renderTable();
-
 }
-
-
 // =========================================================
 // SUBMIT PICK
 // =========================================================
-
 async function submitPicked() {
-
     const ids =
         Array.from(selectedIds);
-
-
     if (ids.length === 0) {
-
         alert(
             'กรุณาเลือกรายการที่ต้องการ Pick'
         );
-
         return;
-
     }
-
-
     const confirmed =
         confirm(
             `ยืนยัน Pick จำนวน ${ids.length.toLocaleString()} รายการหรือไม่?`
         );
-
-
     if (!confirmed)
         return;
-
-
     setLoading(
         true,
         `กำลังบันทึก ${ids.length.toLocaleString()} รายการ...`
     );
-
-
     try {
-
         /*
          * Batch Update
          */
-
         const { error } =
             await supabaseClient
-
                 .from('picklist')
-
                 .update({
-
                     pick_status:
                         'picked',
-
                     updated_at:
                         new Date().toISOString()
-
                 })
-
                 .in(
                     'invoice_item_id',
                     ids
                 )
-
                 .eq(
                     'pick_status',
                     'waiting'
                 );
-
-
         if (error)
             throw error;
-
-
         selectedIds.clear();
-
-
         await loadPicklist();
-
-
         alert(
             `Pick สำเร็จ ${ids.length.toLocaleString()} รายการ`
         );
-
-
     } catch (err) {
-
         console.error(err);
-
         setLoading(false);
-
         showError(
             `บันทึก Pick ไม่สำเร็จ: ${err.message}`
         );
-
     }
-
 }
-
-
+// =========================================================
+// MANUAL TSV UPLOAD
+// =========================================================
+function openManualUploadModal() {
+    document.getElementById('manualUploadModal').classList.remove('hidden');
+    document.getElementById('manualUploadModal').classList.add('flex');
+    document.getElementById('manualTsvInput').value = '';
+    hideManualUploadMessage();
+    setTimeout(() => document.getElementById('manualTsvInput').focus(), 100);
+}
+function closeManualUploadModal() {
+    document.getElementById('manualUploadModal').classList.add('hidden');
+    document.getElementById('manualUploadModal').classList.remove('flex');
+}
+function showManualUploadMessage(message, isError = false) {
+    const element = document.getElementById('manualUploadMessage');
+    element.textContent = message;
+    element.className = `rounded-lg px-3 py-2 text-xs ${isError ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-700'}`;
+}
+function hideManualUploadMessage() {
+    document.getElementById('manualUploadMessage').classList.add('hidden');
+}
+function parseManualTsv(text) {
+    const lines = text.split(/\r?\n/).filter(line => line.trim());
+    if (lines.length < 2)
+        throw new Error('กรุณาวางหัวคอลัมน์และอย่างน้อย 1 รายการ');
+    const headers = lines.shift().split('\t').map(header => header.trim().toLowerCase());
+    const idIndex = headers.indexOf('invoice_item_id');
+    if (idIndex < 0)
+        throw new Error('ไม่พบหัวคอลัมน์ invoice_item_id');
+    const ids = [...new Set(lines
+        .map(line => (line.split('\t')[idIndex] || '').trim())
+        .filter(Boolean))];
+    if (!ids.length)
+        throw new Error('ไม่พบ invoice_item_id ที่ใช้งานได้');
+    return ids;
+}
+async function getTransactionsByInvoiceItemIds(invoiceItemIds) {
+    const found = new Set();
+    for (let index = 0; index < invoiceItemIds.length; index += 500) {
+        const { data, error } = await supabaseClient
+            .from('transactions')
+            .select('invoice_item_id')
+            .in('invoice_item_id', invoiceItemIds.slice(index, index + 500));
+        if (error)
+            throw error;
+        (data || []).forEach(row => found.add(row.invoice_item_id));
+    }
+    return found;
+}
+async function uploadManualPicklist() {
+    const button = document.getElementById('manualUploadButton');
+    try {
+        const pastedIds = parseManualTsv(document.getElementById('manualTsvInput').value);
+        button.disabled = true;
+        button.classList.add('opacity-60', 'cursor-not-allowed');
+        showManualUploadMessage(`กำลังตรวจสอบ ${pastedIds.length.toLocaleString()} รายการกับ transactions...`);
+        const transactionIds = await getTransactionsByInvoiceItemIds(pastedIds);
+        const validIds = pastedIds.filter(id => transactionIds.has(id));
+        const invalidCount = pastedIds.length - validIds.length;
+        if (!validIds.length)
+            throw new Error('ไม่พบ invoice_item_id ที่ตรงกับ transactions');
+        closeManualUploadModal();
+        await addSelectedTransactionsToPicklist(validIds);
+        if (invalidCount)
+            alert(`ข้าม ${invalidCount.toLocaleString()} รายการ เพราะไม่พบใน transactions`);
+    } catch (err) {
+        console.error(err);
+        showManualUploadMessage(err.message || 'Upload Picklist ไม่สำเร็จ', true);
+    } finally {
+        button.disabled = false;
+        button.classList.remove('opacity-60', 'cursor-not-allowed');
+    }
+}
 // =========================================================
 // ADD ITEM MODAL
 // =========================================================
-
 function openAddModal() {
-
     const modal =
         document.getElementById('addModal');
-
-
     modal.classList.remove('hidden');
-
     modal.classList.add('flex');
-
-
+    addSelectedTransactionIds.clear();
+    addSearchRows = [];
+    addExistingTransactionIds = new Set();
+    updateAddSelectionUi();
     document.getElementById(
         'addSearchInput'
     ).value = '';
-
-
     document.getElementById(
         'addSearchResults'
     ).innerHTML = `
-
         <div class="p-8 text-center
                     text-slate-400 text-xs">
-
             พิมพ์คำค้นหาเพื่อค้นหารายการ
-
         </div>
-
     `;
-
-
     setTimeout(() => {
-
         document
             .getElementById(
                 'addSearchInput'
             )
             .focus();
-
     }, 100);
-
 }
-
-
 function closeAddModal() {
-
     const modal =
         document.getElementById('addModal');
-
-
     modal.classList.add('hidden');
-
     modal.classList.remove('flex');
-
+    addSelectedTransactionIds.clear();
+    addSearchRows = [];
+    addExistingTransactionIds = new Set();
 }
-
-
 // =========================================================
 // SEARCH TRANSACTIONS
 // =========================================================
-
 async function searchTransactions() {
-
+    const requestId = ++addSearchRequestId;
     const input =
         document.getElementById(
             'addSearchInput'
         );
-
-
     const term =
         input.value.trim();
-
-
     const container =
         document.getElementById(
             'addSearchResults'
         );
-
-
     if (term.length < 2) {
-
         container.innerHTML = `
-
             <div class="p-8 text-center
                         text-slate-400 text-xs">
-
                 พิมพ์อย่างน้อย 2 ตัวอักษร
-
             </div>
-
         `;
-
         return;
-
     }
-
-
     container.innerHTML = `
-
         <div class="p-8 text-center
                     text-slate-400 text-xs">
-
             <i class="fa-solid fa-circle-notch animate-spin mr-1"></i>
-
             กำลังค้นหา...
-
         </div>
-
     `;
-
-
     try {
-
         /*
          * ค้นหา 3 field
          */
-
         const { data, error } =
             await supabaseClient
-
                 .from('transactions')
-
                 .select(`
                     invoice_item_id,
+                    invoice_no,
                     order_no,
+                    tracking_number,
                     item_code,
                     item_name,
                     qty,
-                    date,
-                    status
+                    date
                 `)
-
                 .or(
-                    `invoice_item_id.ilike.%${escapeQuery(term)}%,
+                    `invoice_no.ilike.%${escapeQuery(term)}%,
                      order_no.ilike.%${escapeQuery(term)}%,
-                     item_code.ilike.%${escapeQuery(term)}%`
+                     tracking_number.ilike.%${escapeQuery(term)}%`
                 )
-
                 .order(
                     'date',
                     { ascending: false }
                 )
-
                 .limit(50);
-
-
         if (error)
             throw error;
-
-
+        if (requestId !== addSearchRequestId)
+            return;
         if (!data || data.length === 0) {
-
             container.innerHTML = `
-
                 <div class="p-8 text-center
                             text-slate-400 text-xs">
-
                     ไม่พบรายการ
-
                 </div>
-
             `;
-
             return;
-
         }
-
-
-        renderSearchResults(data);
-
-
+        addSearchRows = data;
+        const existingIds = await getExistingPicklistIds(
+            data.map(row => row.invoice_item_id)
+        );
+        if (requestId !== addSearchRequestId)
+            return;
+        addExistingTransactionIds = existingIds;
+        renderSearchResults(data, existingIds);
     } catch (err) {
-
         console.error(err);
-
         container.innerHTML = `
-
             <div class="p-6 text-center
                         text-red-500 text-xs">
-
                 ค้นหาไม่สำเร็จ:
                 ${escapeHtml(err.message)}
-
             </div>
-
         `;
-
     }
-
 }
-
-
 // =========================================================
 // RENDER SEARCH RESULT
 // =========================================================
-
-function renderSearchResults(data) {
-
+function renderSearchResults(data, existingIds = new Set()) {
     const container =
         document.getElementById(
             'addSearchResults'
         );
-
-
     let html = '';
-
-
     data.forEach(row => {
-
+        const exists = existingIds.has(row.invoice_item_id);
+        const checked = addSelectedTransactionIds.has(row.invoice_item_id);
         html += `
-
-            <div class="
+            <label class="
                 p-3 border-b border-slate-100
-                hover:bg-slate-50
+                ${exists ? 'bg-slate-50 opacity-70' : 'hover:bg-slate-50 cursor-pointer'}
                 flex items-center
-                justify-between gap-3
+                gap-3
             ">
-
+                <input type="checkbox"
+                    class="shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                    value="${escapeHtml(row.invoice_item_id)}"
+                    ${checked ? 'checked' : ''}
+                    ${exists ? 'disabled' : ''}
+                    onchange="toggleSearchTransactionSelection(this.value, this.checked)">
                 <div class="min-w-0">
-
                     <div class="flex items-center gap-2">
-
                         <span class="
                             font-mono
                             text-[10px]
                             text-slate-500
                         ">
-                            ${escapeHtml(row.item_code)}
+                            ${escapeHtml(row.invoice_no || '-')}
                         </span>
-
                         <span class="
                             text-[10px]
                             text-slate-400
                         ">
-                            ${escapeHtml(row.order_no || '-')}
+                            SO: ${escapeHtml(row.order_no || '-')}
                         </span>
-
                     </div>
-
-
                     <div class="
                         text-xs font-semibold
                         text-slate-800
                         truncate
                     ">
-
                         ${escapeHtml(row.item_name)}
-
                     </div>
-
-
+                    <div class="text-[10px] text-slate-400 mt-0.5 font-mono">
+                        Tracking: ${escapeHtml(row.tracking_number || '-')} · Item: ${escapeHtml(row.item_code || '-')} · ID: ${escapeHtml(row.invoice_item_id)}
+                    </div>
                     <div class="
                         text-[10px]
                         text-slate-400
                         mt-0.5
                     ">
-
                         Qty ${Number(row.qty || 0).toLocaleString()}
                         · ${formatDateTime(row.date)}
-
                     </div>
-
                 </div>
-
-
-                <button
-                    onclick="addTransactionToPicklist('${escapeJs(row.invoice_item_id)}')"
-                    class="
-                        shrink-0
-                        bg-blue-50
-                        hover:bg-blue-100
-                        text-blue-600
-                        border border-blue-100
-                        px-3 py-1.5
-                        rounded-lg
-                        text-[10px]
-                        font-bold
-                    "
-                >
-
-                    <i class="fa-solid fa-plus mr-1"></i>
-                    เพิ่ม
-
-                </button>
-
-            </div>
-
+                <span class="shrink-0 text-[10px] font-semibold ${exists ? 'text-slate-400' : 'text-blue-600'}">
+                    ${exists ? 'อยู่ใน Picklist แล้ว' : 'เลือก'}
+                </span>
+            </label>
         `;
-
     });
-
-
     container.innerHTML = html;
-
+    updateAddSelectionUi(existingIds);
 }
-
-
 // =========================================================
-// ADD SINGLE TRANSACTION
+// ADD SELECTED TRANSACTIONS
 // =========================================================
-
-async function addTransactionToPicklist(
-    invoiceItemId
-) {
-
-    try {
-
-        setLoading(
-            true,
-            'กำลังเพิ่มรายการ...'
-        );
-
-
-        const { error } =
-            await supabaseClient
-
-                .from('picklist')
-
-                .insert({
-
-                    invoice_item_id:
-                        invoiceItemId,
-
-                    pick_date:
-                        currentPickDate,
-
-                    pick_status:
-                        'waiting'
-
-                });
-
-
-        if (error) {
-
-            /*
-             * duplicate PK
-             */
-
-            if (
-                error.code === '23505'
-            ) {
-
-                alert(
-                    'รายการนี้มีอยู่ใน Picklist แล้ว'
-                );
-
-            } else {
-
-                throw error;
-
-            }
-
-        } else {
-
-            alert(
-                'เพิ่มรายการเข้า Picklist แล้ว'
-            );
-
-        }
-
-
-        await loadPicklist();
-
-
-        setLoading(false);
-
-
-    } catch (err) {
-
-        console.error(err);
-
-        setLoading(false);
-
-        showError(
-            `เพิ่มรายการไม่สำเร็จ: ${err.message}`
-        );
-
+function toggleSearchTransactionSelection(invoiceItemId, isSelected) {
+    if (isSelected)
+        addSelectedTransactionIds.add(invoiceItemId);
+    else
+        addSelectedTransactionIds.delete(invoiceItemId);
+    updateAddSelectionUi();
+}
+function toggleAllSearchResults(event) {
+    document
+        .querySelectorAll('#addSearchResults input[type="checkbox"]:not(:disabled)')
+        .forEach(checkbox => {
+            checkbox.checked = event.target.checked;
+            if (event.target.checked)
+                addSelectedTransactionIds.add(checkbox.value);
+            else
+                addSelectedTransactionIds.delete(checkbox.value);
+        });
+    updateAddSelectionUi();
+}
+function updateAddSelectionUi(existingIds = addExistingTransactionIds) {
+    const selectable = addSearchRows.filter(
+        row => !existingIds.has(row.invoice_item_id)
+    );
+    const selectedCount = addSelectedTransactionIds.size;
+    document.getElementById('addSelectedCount').textContent =
+        `เลือก ${selectedCount.toLocaleString()} รายการ`;
+    document.getElementById('addSelectedButton').disabled = selectedCount === 0;
+    const selectAll = document.getElementById('addSelectAll');
+    selectAll.checked =
+        selectable.length > 0 &&
+        selectable.every(row => addSelectedTransactionIds.has(row.invoice_item_id));
+    selectAll.indeterminate =
+        selectedCount > 0 && !selectAll.checked;
+}
+async function getExistingPicklistIds(invoiceItemIds) {
+    const ids = [...new Set(invoiceItemIds.filter(Boolean))];
+    const existingIds = new Set();
+    for (let index = 0; index < ids.length; index += 500) {
+        const { data, error } = await supabaseClient
+            .from('picklist')
+            .select('invoice_item_id')
+            .in('invoice_item_id', ids.slice(index, index + 500));
+        if (error)
+            throw error;
+        (data || []).forEach(row => existingIds.add(row.invoice_item_id));
     }
-
+    return existingIds;
 }
-
-
+async function addSelectedTransactionsToPicklist(invoiceItemIds = null) {
+    const selected = invoiceItemIds || [...addSelectedTransactionIds];
+    if (selected.length === 0)
+        return;
+    try {
+        setLoading(true, `กำลังเพิ่ม ${selected.length.toLocaleString()} รายการ...`);
+        const existingIds = await getExistingPicklistIds(selected);
+        const newIds = selected.filter(id => !existingIds.has(id));
+        let addedCount = 0;
+        let duplicateCount = selected.length - newIds.length;
+        const today = getLocalDateString();
+        const timestamp = new Date().toISOString();
+        const newRows = newIds.map(invoiceItemId => ({
+            invoice_item_id: invoiceItemId,
+            pick_date: today,
+            pick_status: 'waiting',
+            created_at: timestamp,
+            updated_at: timestamp
+        }));
+        for (let index = 0; index < newRows.length; index += 500) {
+            const batch = newRows.slice(index, index + 500);
+            const { error } = await supabaseClient
+                .from('picklist')
+                .insert(batch);
+            if (!error) {
+                addedCount += batch.length;
+                continue;
+            }
+            /* A concurrent insert can cause a batch conflict. Retry individually so
+               non-duplicate selections still succeed. */
+            if (error.code !== '23505')
+                throw error;
+            for (const row of batch) {
+                const { error: singleError } = await supabaseClient
+                    .from('picklist')
+                    .insert(row);
+                if (!singleError)
+                    addedCount++;
+                else if (singleError.code === '23505')
+                    duplicateCount++;
+                else
+                    throw singleError;
+            }
+        }
+        addSelectedTransactionIds.clear();
+        closeAddModal();
+        if (currentPickDate !== today) {
+            currentPickDate = today;
+            document.getElementById('pickDate').value = today;
+        }
+        await loadPicklist();
+        alert(
+            `เพิ่มเข้า Picklist ${addedCount.toLocaleString()} รายการ` +
+            (duplicateCount ? `\nข้ามรายการที่มีอยู่แล้ว ${duplicateCount.toLocaleString()} รายการ` : '')
+        );
+    } catch (err) {
+        console.error(err);
+        setLoading(false);
+        showError(`เพิ่มเข้า Picklist ไม่สำเร็จ: ${err.message}`);
+    }
+}
 // =========================================================
 // SUMMARY
 // =========================================================
-
 function updateSummary() {
-
     let skuCount =
         aggregatedRows.length;
-
     let totalQty = 0;
-
     let waitingQty = 0;
-
     let pickedQty = 0;
-
-
     aggregatedRows.forEach(row => {
-
         totalQty += row.qty;
-
         waitingQty +=
             row.waitingQty;
-
         pickedQty +=
             row.pickedQty;
-
     });
-
-
     document.getElementById(
         'summarySku'
     ).innerText =
         skuCount.toLocaleString();
-
-
     document.getElementById(
         'summaryQty'
     ).innerText =
         totalQty.toLocaleString();
-
-
     document.getElementById(
         'summaryWaiting'
     ).innerText =
         waitingQty.toLocaleString();
-
-
     document.getElementById(
         'summaryPicked'
     ).innerText =
         pickedQty.toLocaleString();
-
 }
-
-
 // =========================================================
 // SELECT COUNT
 // =========================================================
-
 function updateSelectedCount() {
-
     const count =
         selectedIds.size;
-
-
     document.getElementById(
         'selectedCount'
     ).innerText =
         `เลือกแล้ว ${count.toLocaleString()} รายการ`;
-
-
     const button =
         document.getElementById(
             'submitButton'
         );
-
-
     button.disabled =
         count === 0;
-
-
     const master =
         document.getElementById(
             'masterCheckbox'
         );
-
-
     if (master) {
-
         const waitingCount =
             picklistRows.filter(
                 row =>
                     row.pick_status ===
                     'waiting'
             ).length;
-
-
         master.checked =
             waitingCount > 0 &&
             count === waitingCount;
-
     }
-
 }
-
-
 // =========================================================
 // LOADING
 // =========================================================
-
 function setLoading(
     loading,
     message = 'กำลังดำเนินการ...'
 ) {
-
     const indicator =
         document.getElementById(
             'statusIndicator'
         );
-
-
     const refreshIcon =
         document.getElementById(
             'refreshIcon'
         );
-
-
     const statusText =
         document.getElementById(
             'statusText'
         );
-
-
     if (loading) {
-
         indicator.classList.remove(
             'hidden'
         );
-
         indicator.classList.add(
             'flex'
         );
-
         statusText.innerText =
             message;
-
-
         refreshIcon.classList.add(
             'fa-spin'
         );
-
     } else {
-
         indicator.classList.add(
             'hidden'
         );
-
         indicator.classList.remove(
             'flex'
         );
-
         refreshIcon.classList.remove(
             'fa-spin'
         );
-
     }
-
 }
-
-
 // =========================================================
 // LOGGER
 // =========================================================
-
 function updateLog(message) {
-
     console.log(
         `[Picklist] ${message}`
     );
-
 }
-
-
 // =========================================================
 // ERROR
 // =========================================================
-
 function showError(message) {
-
     alert(message);
-
 }
-
-
 // =========================================================
 // DATE
 // =========================================================
-
 function getNextDate(dateString) {
-
     const d =
         new Date(
             `${dateString}T00:00:00`
         );
-
-
     d.setDate(
         d.getDate() + 1
     );
-
-
     return d
         .toISOString()
         .split('T')[0];
-
 }
-
-
+function getLocalDateString() {
+    const now = new Date();
+    return new Date(
+        now.getTime() - now.getTimezoneOffset() * 60000
+    )
+        .toISOString()
+        .split('T')[0];
+}
 function formatThaiDate(dateString) {
-
     if (!dateString)
         return '-';
-
-
     const d =
         new Date(
             `${dateString}T00:00:00`
         );
-
-
     return d.toLocaleDateString(
         'th-TH',
         {
@@ -2126,20 +1569,12 @@ function formatThaiDate(dateString) {
             year: 'numeric'
         }
     );
-
 }
-
-
 function formatDateTime(value) {
-
     if (!value)
         return '-';
-
-
     const d =
         new Date(value);
-
-
     return d.toLocaleString(
         'th-TH',
         {
@@ -2149,66 +1584,42 @@ function formatDateTime(value) {
             minute: '2-digit'
         }
     );
-
 }
-
-
 // =========================================================
 // UTILITIES
 // =========================================================
-
 function escapeHtml(text) {
-
     const div =
         document.createElement('div');
-
     div.innerText =
         text || '';
-
     return div.innerHTML;
-
 }
-
-
 function escapeJs(text) {
-
     return String(text || '')
         .replace(/\\/g, '\\\\')
         .replace(/'/g, "\\'")
         .replace(/"/g, '\\"')
         .replace(/\n/g, '\\n')
         .replace(/\r/g, '\\r');
-
 }
-
-
 function escapeQuery(text) {
-
     return String(text || '')
         .replace(/[%_,]/g, '\\$&');
-
 }
-
-
 function debounce(
     fn,
     delay
 ) {
-
     let timer;
-
     return function () {
-
         clearTimeout(timer);
-
         timer =
             setTimeout(
                 () => fn.apply(this, arguments),
                 delay
             );
-
     };
-
 }
 </script>
 </body>
