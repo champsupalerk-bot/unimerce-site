@@ -80,7 +80,7 @@ html, body {
 }
 
 /* =========================
-   BREADCRUMB ROW
+   BREADCRUMB ROW & RIGHT CONTROL GROUP
 ========================= */
 .breadcrumb-row {
   display: flex;
@@ -108,23 +108,50 @@ html, body {
   color: #2f5ea8;
 }
 
-/* Checkbox วงกลม */
-.hide-zero-wrap {
+.top-right-options {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #777;
+  gap: 10px;
+}
+
+/* Checkbox วงกลม & Toggle Buttons */
+.hide-zero-wrap, .show-pk-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #666;
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
+  font-weight: 600;
+}
+
+.btn-help-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: #444;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  margin-left: 2px;
+}
+.btn-help-icon:hover {
+  background: #2f5ea8;
+  color: #fff;
 }
 
 .category-label {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px; /* คืนขนาดฟอนต์ของ Category เท่าเดิม */
+  font-size: 14px;
   color: #333;
   white-space: nowrap;
   cursor: pointer;
@@ -132,11 +159,12 @@ html, body {
 }
 
 .hide-zero-wrap input[type="checkbox"],
+.show-pk-wrap input[type="checkbox"],
 .category-label input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   border: 1px solid #ddd;
   border-radius: 50%; 
   outline: none;
@@ -148,10 +176,11 @@ html, body {
 }
 
 .hide-zero-wrap input[type="checkbox"]::before,
+.show-pk-wrap input[type="checkbox"]::before,
 .category-label input[type="checkbox"]::before {
   content: "";
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   transform: scale(0);
   transition: 0.1s transform ease-in-out;
@@ -159,18 +188,21 @@ html, body {
 }
 
 .hide-zero-wrap:hover input[type="checkbox"],
+.show-pk-wrap:hover input[type="checkbox"],
 .category-label:hover input[type="checkbox"] {
   border-color: #2f5ea8;
-  box-shadow: 0 0 0 4px rgba(47, 94, 168, 0.15);
+  box-shadow: 0 0 0 3px rgba(47, 94, 168, 0.15);
 }
 
 .hide-zero-wrap input[type="checkbox"]:checked,
+.show-pk-wrap input[type="checkbox"]:checked,
 .category-label input[type="checkbox"]:checked {
   background: #2f5ea8;
   border-color: #2f5ea8;
 }
 
 .hide-zero-wrap input[type="checkbox"]:checked::before,
+.show-pk-wrap input[type="checkbox"]:checked::before,
 .category-label input[type="checkbox"]:checked::before {
   transform: scale(1);
 }
@@ -369,7 +401,7 @@ thead th:hover {
 }
 
 tbody td {
-  font-size: 13px; /* คืนขนาดฟอนต์ของข้อมูลในตารางเท่าเดิม */
+  font-size: 13px;
   padding: 8px 8px;
   border-bottom: 1px solid #f0f0f0;
 }
@@ -377,6 +409,15 @@ tbody td {
 tbody tr:hover {
   background: #f7f7f7;
   cursor: pointer;
+}
+
+/* ROW SELECTION HIGHLIGHT */
+tbody tr.row-selected {
+  background-color: #e8f0fe !important;
+}
+
+tbody tr.row-selected td {
+  border-bottom-color: #d2e3fc;
 }
 
 .col-code {
@@ -406,7 +447,7 @@ tbody tr:hover {
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   color: #fff;
   padding: 8px 16px;
   border-radius: 20px;
@@ -444,7 +485,7 @@ tbody tr:hover {
 /* =========================
    MOBILE FRIENDLY POPUP MODAL STYLES
 ========================= */
-.barcode-modal-overlay {
+.barcode-modal-overlay, .help-modal-overlay {
   display: none;
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -455,7 +496,7 @@ tbody tr:hover {
   padding: 16px;
   box-sizing: border-box;
 }
-.barcode-modal-content {
+.barcode-modal-content, .help-modal-content {
   background: #fff;
   padding: 20px;
   border-radius: 14px;
@@ -465,7 +506,7 @@ tbody tr:hover {
   text-align: center;
   box-sizing: border-box;
 }
-.barcode-modal-title {
+.barcode-modal-title, .help-modal-title {
   margin: 0 0 12px 0;
   font-size: 16px;
   font-weight: bold;
@@ -480,7 +521,7 @@ tbody tr:hover {
 }
 
 /* =========================================================
-   STICKER EXACT OVERRIDE (ปรับแก้ไขขนาดฟอนต์ของชื่อสินค้าไม่ให้ตกขอบ)
+   STICKER EXACT OVERRIDE
 ========================================================= */
 .actual-sticker-target {
   width: 300px !important;
@@ -616,10 +657,17 @@ tbody tr:hover {
 
   <div class="breadcrumb-row">
     <div class="breadcrumb"><a href="/">HOME</a> / INVENTORY</div>
-    <label class="hide-zero-wrap">
-      <input type="checkbox" id="hideZero" checked />
-      Hide 0 / –
-    </label>
+    <div class="top-right-options">
+      <label class="hide-zero-wrap">
+        <input type="checkbox" id="hideZero" checked />
+        Hide 0 / –
+      </label>
+      <label class="show-pk-wrap" title="กรองแสดงเฉพาะรายการที่ติ๊กเลือกไว้">
+        <input type="checkbox" id="showOnlySelected" />
+        Show PK (<span id="selectedCount">0</span>)
+      </label>
+      <button class="btn-help-icon" onclick="openHelpModal()" title="คู่มือฟังก์ชันการเลือก">?</button>
+    </div>
   </div>
 
   <div class="filterbar">
@@ -673,7 +721,7 @@ tbody tr:hover {
     </label>
   </div>
 
-  <div class="table-wrap">
+  <div class="table-wrap" id="tableWrapContainer">
     <table>
       <thead>
         <tr>
@@ -720,6 +768,19 @@ tbody tr:hover {
   </div>
 </div>
 
+<!-- HELP MODAL POPUP -->
+<div id="helpModal" class="help-modal-overlay" onclick="if(event.target===this) closeHelpModal()">
+  <div class="help-modal-content">
+    <div class="help-modal-title">💡 วิธีการใช้งานระบบเลือกรายการ</div>
+    <div style="font-size: 13px; color: #444; text-align: left; line-height: 1.6; margin-bottom: 15px;">
+      <p><b>1. คลิกเลือกรายการ:</b> คลิกแถวเพื่อไฮไลต์ + คัดลอกข้อมูลลง Clipboard ทันที</p>
+      <p><b>2. Show PK:</b> ติ๊กเพื่อกรองดูเฉพาะรายการที่เลือกไว้</p>
+      <p><b>3. Clear All (ล้างค่าทั้งหมด):</b> <u>ดับเบิ้ลคลิก (Double-Click)</u> บนตาราง เพื่อยกเลิกการเลือกทั้งหมด</p>
+    </div>
+    <button class="btn-cancel-modal" onclick="closeHelpModal()">เข้าใจแล้ว</button>
+  </div>
+</div>
+
 <script>
 
 /* =========================
@@ -745,6 +806,7 @@ fetch('uerpheader.html')
 let rawData      = [];
 let filteredData = [];
 let viewData     = [];
+let selectedItemCodes = new Set(); // เก็บ Item_Code ที่ถูกคลิกเลือก
 
 let sortState = {
   key: null,
@@ -765,12 +827,24 @@ function cleanNumber(val) {
   return isNaN(parsed) ? 0 : parsed;
 }
 
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function highlightText(text, query) {
+  if (!text) return "-";
+  if (!query) return text;
+  const safeQuery = escapeRegExp(query);
+  const regex = new RegExp(`(${safeQuery})`, 'gi');
+  return text.replace(regex, '<mark class="bg-yellow-200 text-black rounded-sm px-0.5 font-medium">$1</mark>');
+}
+
 /* =========================
    LOAD DATA (WITH 24H CACHE & 1000-ROW BATCH PAGINATION)
 ========================= */
 const CACHE_KEY = "uerp_products_cache_data";
 const CACHE_TIME_KEY = "uerp_products_cache_timestamp";
-const ONE_DAY_MS = 3 * 60 * 60 * 1000; // 24 ชั่วโมง
+const ONE_DAY_MS = 24 * 60 * 60 * 1000; // 24 ชั่วโมง
 
 async function fetchAllFromSupabaseInBatches() {
   const BATCH_SIZE = 1000;
@@ -836,7 +910,6 @@ async function loadTable(forceRefresh = false) {
     console.error("Supabase Connection Error:", e);
     updateLog("Fetch Failed!");
     
-    // Fallback หากเกิด Error และมี Cache ล่าสุด
     const cachedData = localStorage.getItem(CACHE_KEY);
     if (cachedData) {
       rawData = JSON.parse(cachedData);
@@ -861,9 +934,10 @@ function forceRefreshData() {
    APPLY ALL
 ========================= */
 function applyAll(){
-  const q         = document.getElementById("searchBox").value.toLowerCase().trim();
-  const hideZero = document.getElementById("hideZero").checked;
-  const currentCol3 = document.getElementById("column3Select").value;
+  const q              = document.getElementById("searchBox").value.toLowerCase().trim();
+  const hideZero       = document.getElementById("hideZero").checked;
+  const showOnlySelected = document.getElementById("showOnlySelected").checked;
+  const currentCol3    = document.getElementById("column3Select").value;
 
   const checkedCategories = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value);
 
@@ -895,6 +969,11 @@ function applyAll(){
       if(n === 0) return false;
       return true;
     });
+  }
+
+  // ตัวกรอง Show PK (แสดงเฉพาะรายการที่ติ๊กเลือกไว้)
+  if(showOnlySelected){
+    result = result.filter(i => selectedItemCodes.has(String(i.Item_Code || "")));
   }
 
   filteredData = result;
@@ -958,6 +1037,7 @@ function applySortOnFiltered(){
 function renderTable(data){
   const tbody = document.getElementById("table-body");
   const currentCol3 = document.getElementById("column3Select").value;
+  const q = document.getElementById("searchBox").value.trim();
 
   if(!data || data.length === 0){
     tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#aaa;padding:20px;">No results found.</td></tr>';
@@ -977,14 +1057,24 @@ function renderTable(data){
        cellValue = num.toLocaleString();
     }
 
-    const safeItemCode = String(p.Item_Code || "-").replace(/'/g, "\\'").replace(/"/g, "&quot;");
-    const safeDesc = String(p.Description || "-").replace(/'/g, "\\'").replace(/"/g, "&quot;");
-    const safeLocation = String(p.Location || "").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    const itemCode = String(p.Item_Code || "-");
+    const desc = String(p.Description || "-");
+    const location = String(p.Location || "");
+
+    const safeItemCode = itemCode.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    const safeDesc = desc.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    const safeLocation = location.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+    const highlightedCode = highlightText(itemCode, q);
+    const highlightedDesc = highlightText(desc, q);
+
+    const isSelected = selectedItemCodes.has(itemCode);
+    const rowClass = isSelected ? "row-selected" : "";
 
     return `
-      <tr onclick="copyRowText(this, event)">
+      <tr class="${rowClass}" onclick="toggleRowSelection(this, '${safeItemCode}', event)">
         <td class="col-code">
-          <span>${p.Item_Code || "-"}</span>
+          <span>${highlightedCode}</span>
           <button class="btn-barcode-trigger" onclick="openBarcodeGenModal('${safeDesc}', '${safeItemCode}', '${safeLocation}', event)" title="Generate Barcode">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
               <line x1="6" y1="7" x2="6" y2="17" stroke-width="2.5" />
@@ -999,7 +1089,7 @@ function renderTable(data){
             </svg>
           </button>
         </td>
-        <td class="col-desc">${p.Description || "-"}</td>
+        <td class="col-desc">${highlightedDesc}</td>
         <td class="${cellClass}">${cellValue}</td>
       </tr>
     `;
@@ -1007,13 +1097,29 @@ function renderTable(data){
 }
 
 /* =========================
-   COPY FUNCTION
+   ROW SELECTION & COPY
 ========================= */
-function copyRowText(rowElement, event) {
-  if (event.target.closest('.btn-barcode-trigger') || event.target.closest('.btn-download-trigger')) {
-    return;
+function toggleRowSelection(rowElement, itemCode, event) {
+  if (event.target.closest('.btn-barcode-trigger')) return;
+
+  if (selectedItemCodes.has(itemCode)) {
+    selectedItemCodes.delete(itemCode);
+    rowElement.classList.remove('row-selected');
+  } else {
+    selectedItemCodes.add(itemCode);
+    rowElement.classList.add('row-selected');
+    copyRowText(rowElement);
   }
 
+  document.getElementById('selectedCount').textContent = selectedItemCodes.size;
+
+  // หากเปิดการกรอง Show PK ไว้และถอดเลือกออก ให้ re-apply เพื่อซ่อนแถวทันที
+  if (document.getElementById('showOnlySelected').checked) {
+    applyAll();
+  }
+}
+
+function copyRowText(rowElement) {
   const tds = rowElement.getElementsByTagName("td");
   let text = "";
   for(let i = 0; i < tds.length; i++) {
@@ -1024,10 +1130,32 @@ function copyRowText(rowElement, event) {
   }
   
   navigator.clipboard.writeText(text).then(() => {
-     const toast = document.getElementById("toast");
-     toast.style.display = "block";
-     setTimeout(() => { toast.style.display = "none"; }, 1500);
+     showToast("Copied to clipboard");
   });
+}
+
+function showToast(msg) {
+  const toast = document.getElementById("toast");
+  toast.textContent = msg;
+  toast.style.display = "block";
+  setTimeout(() => { toast.style.display = "none"; }, 1500);
+}
+
+/* DOUBLE CLICK TO CLEAR ALL */
+function clearAllSelections() {
+  if (selectedItemCodes.size === 0) return;
+  selectedItemCodes.clear();
+  document.getElementById('selectedCount').textContent = "0";
+  showToast("Cleared All Selections");
+  applyAll();
+}
+
+/* HELP MODAL */
+function openHelpModal() {
+  document.getElementById('helpModal').style.display = 'flex';
+}
+function closeHelpModal() {
+  document.getElementById('helpModal').style.display = 'none';
 }
 
 /* =========================
@@ -1062,6 +1190,10 @@ window.addEventListener("load", () => {
     applyAll();
   });
 
+  document.getElementById("showOnlySelected").addEventListener("change", () => {
+    applyAll();
+  });
+
   document.getElementById("column3Select").addEventListener("change", (e) => {
     sortState.key = e.target.value;
     applyAll();
@@ -1071,6 +1203,11 @@ window.addEventListener("load", () => {
     cb.addEventListener("change", () => {
       applyAll();
     });
+  });
+
+  // Event ดับเบิ้ลคลิกบนพื้นที่ตารางเพื่อ Clear All Selected
+  document.getElementById("tableWrapContainer").addEventListener("dblclick", () => {
+    clearAllSelections();
   });
 
   loadTable();
