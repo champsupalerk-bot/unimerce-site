@@ -3,6 +3,7 @@
  * File: layoutuerp.js
  *
  * Responsibility:
+ * - Authentication Guard (Immediate redirect if unauthenticated)
  * - Header behavior
  * - Navigation state
  * - Mobile menu
@@ -12,6 +13,39 @@
  * Loaded after uerpheader.html injection
  */
 
+// ====================================================
+// 🔐 UERP Authentication Guard (ทำงานทันทีเมื่อโหลดไฟล์)
+// ====================================================
+(function checkUerpAuth() {
+    const AUTH_KEY = "uerp_auth_token";
+    const AUTH_TIME_KEY = "uerp_auth_timestamp";
+    const EXPIRE_MS = 7 * 24 * 60 * 60 * 1000; // จำไว้ 7 วัน (ปรับระยะเวลาได้ตามต้องการ)
+
+    const currentPath = window.location.pathname.toLowerCase();
+    const isLoginPage = currentPath.includes('/uerp/login');
+
+    const token = localStorage.getItem(AUTH_KEY);
+    const loginTime = localStorage.getItem(AUTH_TIME_KEY);
+    const now = Date.now();
+
+    const isAuthenticated = token && loginTime && (now - parseInt(loginTime, 10) < EXPIRE_MS);
+
+    // ถ้าไม่มี Token หรือ Token หมดอายุ และไม่ได้อยู่ที่หน้า Login
+    if (!isAuthenticated && !isLoginPage) {
+        // บล็อกไม่ให้หน้าเว็บแอบแสดงผล/ดึงข้อมูลก่อนโดนดีด
+        document.documentElement.style.display = 'none';
+
+        // บันทึก URL ปัจจุบันไว้ เพื่อส่งกลับมาหน้านี้หลัง Login สำเร็จ
+        localStorage.setItem("uerp_redirect_target", window.location.href);
+
+        // เด้งส่งผู้ใช้ไปหน้า Login ทันที
+        window.location.replace("/uerp/login");
+    }
+})();
+
+// ====================================================
+// 🚀 UERP Layout Engine Core
+// ====================================================
 (function(){
     "use strict";
 
@@ -31,7 +65,7 @@
         initUerpLayout();
     }
 
-    //เปิดเผยฟังก์ชันออกไปที่ Global Scope (window) เพื่อให้สคริปต์ภายนอกสามารถเรียกใช้โดยตรงได้
+    // เปิดเผยฟังก์ชันออกไปที่ Global Scope (window) เพื่อให้สคริปต์ภายนอกสามารถเรียกใช้โดยตรงได้
     window.initUerpLayout = initUerpLayout;
 
     function initUerpLayout(){
