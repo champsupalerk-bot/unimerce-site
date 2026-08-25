@@ -58,20 +58,21 @@
             btnSubmit.innerText = "กำลังตรวจสอบ...";
 
             try {
-                // ส่งค่าที่ผู้ใช้พิมพ์ ไปถาม Supabase ว่ามีรหัสนี้ในตาราง uerp_passwords ไหม
+                // ยิงไปตรวจรหัสผ่านกับ Supabase
                 const data = await window.supabaseFetch(`/uerp_passwords?pass_key=eq.${encodeURIComponent(passInput)}`);
 
                 if (data && data.length > 0) {
-                    // ถ้าพบข้อมูล แสดงว่ารหัสผ่านถูกต้อง -> ออก Token
+                    // รหัสผ่านถูกต้อง -> สร้าง Session Token
                     localStorage.setItem("uerp_auth_token", "AUTHENTICATED_SESSION_OK");
                     localStorage.setItem("uerp_auth_timestamp", Date.now().toString());
 
+                    // ดึง URL ที่ผู้ใช้เคยพยายามจะเข้าไว้ (ถ้าไม่มีส่งไปหน้า inventory)
                     const redirectTarget = localStorage.getItem("uerp_redirect_target") || "/uerp/inventory";
                     localStorage.removeItem("uerp_redirect_target");
 
                     window.location.replace(redirectTarget);
                 } else {
-                    // ไม่พบข้อมูล -> รหัสผ่านผิด
+                    // รหัสผ่านผิด
                     errorMsg.classList.remove("hidden");
                     document.getElementById("passwordInput").select();
                 }
