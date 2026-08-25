@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - UNIMERCE UERP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+        <!-- Logo Header -->
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm">
+                <i class="fa-solid fa-layer-group text-lg"></i>
+            </div>
+            <div>
+                <div class="text-base font-bold text-slate-800 tracking-tight">UNIMERCE UERP</div>
+                <div class="text-xs text-slate-500">Business Intelligence Platform</div>
+            </div>
+        </div>
+
+        <h1 class="text-xl font-bold text-slate-800 mb-1">เข้าสู่ระบบ</h1>
+        <p class="text-sm text-slate-500 mb-6">กรอกรหัสผ่านเพื่อเข้าใช้งานระบบภายใน</p>
+
+        <!-- Login Form -->
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">PASSWORD</label>
+                <div class="relative">
+                    <input type="password" id="passwordInput" required autofocus
+                           class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition"
+                           placeholder="กรอกรหัสผ่านเข้าใช้งาน">
+                </div>
+            </div>
+
+            <!-- ข้อความแสดง Error -->
+            <div id="errorMsg" class="hidden text-xs text-red-500 font-medium flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</span>
+            </div>
+
+            <button type="submit" 
+                    class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium text-sm rounded-xl transition shadow-sm">
+                เข้าสู่ระบบ
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // 🔑 ตั้งค่ารหัสผ่านสำหรับเข้าใช้งานระบบตรงนี้
+        const SYSTEM_PASSWORD = "YOUR_PASSWORD_HERE"; // <-- เปลี่ยนรหัสผ่านที่นี่
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const inputPass = document.getElementById("passwordInput").value;
+            const errorMsg = document.getElementById("errorMsg");
+
+            if (inputPass === SYSTEM_PASSWORD) {
+                // บันทึก Token และเวลาที่ Login สำเร็จ
+                localStorage.setItem("uerp_auth_token", "AUTHENTICATED_SESSION_OK");
+                localStorage.setItem("uerp_auth_timestamp", Date.now().toString());
+
+                // ดึง URL ที่ผู้ใช้เคยจะเข้า หากไม่มีให้ไปหน้า /uerp/inventory
+                const redirectTarget = localStorage.getItem("uerp_redirect_target") || "/uerp/inventory";
+                localStorage.removeItem("uerp_redirect_target");
+
+                // พาไปยังหน้าปลายทาง
+                window.location.replace(redirectTarget);
+            } else {
+                errorMsg.classList.remove("hidden");
+                document.getElementById("passwordInput").select();
+            }
+        }
+    </script>
+</body>
+</html>
