@@ -770,7 +770,7 @@ function cleanNumber(val) {
 ========================= */
 const CACHE_KEY = "uerp_products_cache_data";
 const CACHE_TIME_KEY = "uerp_products_cache_timestamp";
-const ONE_DAY_MS = 24 * 60 * 60 * 1000; // 24 ชั่วโมง
+const ONE_DAY_MS = 3 * 60 * 60 * 1000; // 24 ชั่วโมง
 
 async function fetchAllFromSupabaseInBatches() {
   const BATCH_SIZE = 1000;
