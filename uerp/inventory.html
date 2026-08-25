@@ -226,7 +226,7 @@ html, body {
 .btn-picklist {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background-color: #2f5ea8;
   color: #ffffff;
   padding: 6px 10px;
@@ -244,6 +244,47 @@ html, body {
 
 .btn-picklist:active {
   transform: scale(0.98);
+}
+
+/* EXECUTION LOG & REFRESH BUTTON */
+.action-left-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.execution-log {
+  font-size: 10px;
+  color: #666;
+  background: #f0f0f0;
+  padding: 4px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid #e0e0e0;
+}
+
+.btn-refresh-cache {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid #ddd;
+  color: #555;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.2s ease;
+}
+
+.btn-refresh-cache:hover {
+  background: #f0f0f0;
+  color: #2f5ea8;
+  border-color: #2f5ea8;
 }
 
 .dropdown-controls {
@@ -587,15 +628,21 @@ tbody tr:hover {
 
   <!-- DROPDOWN & ACTION BAR -->
   <div class="dropdown-bar-wrap">
-    <!-- ปุ่มฝั่งซ้าย: Picklist Realtime -->
-    <a href="/uerp/picklist" class="btn-picklist" title="Picklist Realtime">
-      <i class="fa-solid fa-list-check"></i>
-      <span>Picklist Realtime</span>
-    </a>
+    <!-- ฝั่งซ้าย: ปุ่ม PK, Execution Log และ ปุ่ม Refresh -->
+    <div class="action-left-group">
+      <a href="/uerp/picklist" class="btn-picklist" title="Picklist Realtime">
+        <i class="fa-solid fa-list-check"></i>
+        <span>PK</span>
+      </a>
+      <span id="execLog" class="execution-log" title="Data Status">Init...</span>
+      <button id="btnRefresh" class="btn-refresh-cache" onclick="forceRefreshData()" title="Force Refresh Cache (1000/batch)">
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
+    </div>
 
     <!-- Dropdown ฝั่งขวา -->
     <div class="dropdown-controls">
-      <span class="dropdown-label">มุมมอง:</span>
+      <span class="dropdown-label">view:</span>
       <select id="column3Select" class="google-select">
         <option value="OnHand">OnHand</option>
         <option value="PriceC">PriceC</option>
@@ -704,6 +751,11 @@ let sortState = {
   dir: "asc"
 };
 
+function updateLog(msg) {
+  const el = document.getElementById("execLog");
+  if (el) el.textContent = msg;
+}
+
 function cleanNumber(val) {
   if (val === null || val === undefined) return 0;
   if (typeof val === 'number') return val;
@@ -714,20 +766,95 @@ function cleanNumber(val) {
 }
 
 /* =========================
-   LOAD DATA
+   LOAD DATA (WITH 24H CACHE & 1000-ROW BATCH PAGINATION)
 ========================= */
-async function loadTable(){
+const CACHE_KEY = "uerp_products_cache_data";
+const CACHE_TIME_KEY = "uerp_products_cache_timestamp";
+const ONE_DAY_MS = 24 * 60 * 60 * 1000; // 24 ชั่วโมง
+
+async function fetchAllFromSupabaseInBatches() {
+  const BATCH_SIZE = 1000;
+  let offset = 0;
+  let allRows = [];
+  let fetchMore = true;
+  let batchIndex = 1;
+
+  while (fetchMore) {
+    updateLog(`Fetching ${batchIndex}...`);
+    const pageData = await window.supabaseFetch('products', {
+      limit: BATCH_SIZE,
+      offset: offset
+    });
+
+    if (Array.isArray(pageData) && pageData.length > 0) {
+      allRows = allRows.concat(pageData);
+      if (pageData.length < BATCH_SIZE) {
+        fetchMore = false;
+      } else {
+        offset += BATCH_SIZE;
+        batchIndex++;
+      }
+    } else {
+      fetchMore = false;
+    }
+  }
+
+  return allRows;
+}
+
+async function loadTable(forceRefresh = false) {
   try {
     if (typeof window.supabaseFetch !== 'function') {
       throw new Error("window.supabaseFetch is not defined. Check config.js path.");
     }
-    rawData = await window.supabaseFetch('products');
+
+    const now = Date.now();
+    const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+    const cachedData = localStorage.getItem(CACHE_KEY);
+
+    let isCacheValid = cachedTime && cachedData && (now - parseInt(cachedTime, 10) < ONE_DAY_MS);
+
+    if (!forceRefresh && isCacheValid) {
+      rawData = JSON.parse(cachedData);
+      updateLog(`${rawData.length.toLocaleString()} rows (Cache)`);
+    } else {
+      updateLog("Connecting...");
+      rawData = await fetchAllFromSupabaseInBatches();
+
+      if (rawData.length > 0) {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(rawData));
+        localStorage.setItem(CACHE_TIME_KEY, now.toString());
+        updateLog(`${rawData.length.toLocaleString()} rows (Live)`);
+      } else if (cachedData) {
+        rawData = JSON.parse(cachedData);
+        updateLog(`${rawData.length.toLocaleString()} rows (Fallback)`);
+      }
+    }
+
     applyAll();
   } catch(e) {
     console.error("Supabase Connection Error:", e);
-    document.getElementById("table-body").innerHTML =
-      '<tr><td colspan="3" style="text-align:center; padding:20px;">Failed to load secure assets.</td></tr>';
+    updateLog("Fetch Failed!");
+    
+    // Fallback หากเกิด Error และมี Cache ล่าสุด
+    const cachedData = localStorage.getItem(CACHE_KEY);
+    if (cachedData) {
+      rawData = JSON.parse(cachedData);
+      updateLog(`${rawData.length.toLocaleString()} rows (Offline)`);
+      applyAll();
+    } else {
+      document.getElementById("table-body").innerHTML =
+        '<tr><td colspan="3" style="text-align:center; padding:20px;">Failed to load secure assets.</td></tr>';
+    }
   }
+}
+
+function forceRefreshData() {
+  const icon = document.querySelector("#btnRefresh i");
+  if(icon) icon.classList.add("fa-spin");
+  loadTable(true).finally(() => {
+    if(icon) icon.classList.remove("fa-spin");
+  });
 }
 
 /* =========================
