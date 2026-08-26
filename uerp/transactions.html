@@ -535,13 +535,13 @@
 
                         <!-- Invoice No & Order No Column (Mobile Layout Optimized) -->
                         <td class="p-2">
-                            <!-- Mobile View (Vertical Layout, No Horizontal Scroll) -->
+                            <!-- Mobile View (จัดลำดับและตัวหนา/บางให้ตรงกับ Desktop) -->
                             <div class="sm:hidden leading-tight">
-                                <div class="font-bold text-slate-900 font-mono text-xs truncate max-w-[120px]" title="${row.order_no}">
-                                    ${row.order_no || '-'}
+                                <div class="font-bold text-slate-900 font-mono text-xs truncate max-w-[120px]" title="${row.invoice_no}">
+                                    ${row.invoice_no || '-'}
                                 </div>
-                                <div class="text-[10px] text-google-gray font-mono truncate max-w-[90px]" title="${row.invoice_no}">
-                                    ${truncateInvoiceLeft(row.invoice_no)}
+                                <div class="text-[10px] text-google-gray font-mono truncate max-w-[90px]" title="${row.order_no}">
+                                    ${row.order_no || '-'}
                                 </div>
                             </div>
 
@@ -551,7 +551,6 @@
                                 <div class="text-[10px] text-google-gray font-mono">${row.order_no || '-'}</div>
                             </div>
                         </td>
-
                         <!-- Item Code -->
                         <td class="p-2 font-mono font-bold text-google-blue max-w-[90px] sm:max-w-[130px] truncate" title="${row.item_code}">
                             ${row.item_code || '-'}
