@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full bg-slate-50 text-slate-800">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions Management | Unimerce Co., Ltd.</title>
+    
+    <!-- Open Graph (OG) Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Transactions | Unimerce ERP System">
+    <meta property="og:description" content="ระบบจัดการและตรวจสอบรายการธุรกรรมทางการเงินเรียลไทม์">
+    <meta property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1784542103/unimerce_nural_zc0bnj.jpg">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        google: {
+                            blue: '#1a73e8',
+                            blueHover: '#1557b0',
+                            red: '#d93025',
+                            redHover: '#b31b12',
+                            gray: '#5f6368',
+                            lightGray: '#f1f3f4',
+                            border: '#dadce0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+        }
+        .google-card {
+            background: #ffffff;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+        }
+        .google-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='%235f6368' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 18px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50">
+
+    <!-- Header Placeholder (ใช้ uerpheader ร่วมกัน) -->
+    <div id="uerp-header-container" class="mb-2"></div>
+
+    <main class="max-w-[1100px] mx-auto px-4 py-6 w-full flex-grow space-y-4">
+
+        <!-- Header Title & Action Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+                <h1 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-receipt text-google-blue"></i>
+                    รายการธุรกรรม (Transactions)
+                </h1>
+                <p class="text-xs text-google-gray">แสดงรายการประวัติการขาย และสรุปกำไรขาดทุนรายรายการ</p>
+            </div>
+            <button onclick="fetchTransactions()" class="self-start sm:self-auto px-3.5 py-1.5 bg-google-blue hover:bg-google-blueHover text-white text-xs font-semibold rounded shadow-sm flex items-center gap-1.5 transition-colors">
+                <i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล
+            </button>
+        </div>
+
+        <!-- Alert Notification Panel -->
+        <div id="loadingIndicator" class="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center gap-3">
+            <div class="text-google-blue animate-spin">
+                <i class="fa-solid fa-spinner text-base"></i>
+            </div>
+            <p class="text-xs font-medium text-google-blue">กำลังดึงข้อมูล Transactions จาก Supabase...</p>
+        </div>
+
+        <div id="errorMessage" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-3">
+            <i class="fa-solid fa-circle-exclamation text-google-red text-base mt-0.5"></i>
+            <div>
+                <h3 class="text-xs font-semibold text-google-red">เกิดข้อผิดพลาดในการโหลดข้อมูล</h3>
+                <p id="errorText" class="text-[11px] text-google-gray mt-0.5">-</p>
+            </div>
+        </div>
+
+        <!-- Filters & Search Toolbar -->
+        <div class="google-card p-3.5 bg-white flex flex-col md:flex-row items-center justify-between gap-3">
+            <!-- Search Bar -->
+            <div class="relative w-full md:w-72">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="ค้นหาตาม Order ID, ลูกค้า..." class="w-full pl-8 pr-3 py-1.5 border border-google-border rounded text-xs focus:outline-none focus:border-google-blue">
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
+                <!-- Select Year -->
+                <select id="yearFilter" onchange="applyFilters()" class="google-select bg-white border border-google-border rounded pl-2.5 pr-7 py-1.5 text-xs text-slate-700 font-medium focus:outline-none focus:border-google-blue cursor-pointer">
+                    <option value="ALL">ทุกปี</option>
+                    <option value="2026" selected>ปี 2026</option>
+                    <option value="2025">ปี 2025</option>
+                </select>
+
+                <!-- Select Month -->
+                <select id="monthFilter" onchange="applyFilters()" class="google-select bg-white border border-google-border rounded pl-2.5 pr-7 py-1.5 text-xs text-slate-700 font-medium focus:outline-none focus:border-google-blue cursor-pointer">
+                    <option value="ALL">ทุกเดือน</option>
+                    <option value="1">มกราคม</option>
+                    <option value="2">กุมภาพันธ์</option>
+                    <option value="3">มีนาคม</option>
+                    <option value="4">เมษายน</option>
+                    <option value="5">พฤษภาคม</option>
+                    <option value="6">มิถุนายน</option>
+                    <option value="7">กรกฎาคม</option>
+                    <option value="8">สิงหาคม</option>
+                    <option value="9">กันยายน</option>
+                    <option value="10">ตุลาคม</option>
+                    <option value="11">พฤศจิกายน</option>
+                    <option value="12">ธันวาคม</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Transactions Grid Table -->
+        <section class="google-card bg-white overflow-hidden">
+            <div class="w-full overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 text-google-gray font-bold border-b border-google-border uppercase tracking-wider">
+                            <th class="p-3 w-32">วันที่ / เวลา</th>
+                            <th class="p-3">รายละเอียด (Order / Item)</th>
+                            <th class="p-3 text-right">ยอดขาย (Sales)</th>
+                            <th class="p-3 text-right hidden sm:table-cell">ยอดรับสุทธิ (Net)</th>
+                            <th class="p-3 text-right hidden md:table-cell">ต้นทุน (COGS)</th>
+                            <th class="p-3 text-right">กำไร (GPM)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="txTableBody" class="divide-y divide-slate-100 text-slate-700">
+                        <!-- Dynamic Records -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table Pagination & Footer Status -->
+            <div class="p-3 border-t border-google-border bg-slate-50 flex items-center justify-between text-xs text-google-gray">
+                <div>แสดง <span id="recordCount" class="font-bold text-slate-800">0</span> รายการ</div>
+                <div class="flex items-center gap-1">
+                    <button id="prevBtn" onclick="changePage(-1)" class="px-2.5 py-1 border border-google-border rounded bg-white hover:bg-slate-100 disabled:opacity-50">ก่อนหน้า</button>
+                    <span id="pageIndicator" class="px-2 font-medium">หน้า 1 / 1</span>
+                    <button id="nextBtn" onclick="changePage(1)" class="px-2.5 py-1 border border-google-border rounded bg-white hover:bg-slate-100 disabled:opacity-50">ถัดไป</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-google-border bg-white py-4 mt-auto text-center">
+        <p class="text-[11px] text-google-gray">© 2026 บริษัท ยูนิเมิร์ซ จำกัด 0105569099432</p>
+    </footer>
+
+    <!-- Header Script Loader -->
+    <script>
+        async function loadUerpHeader() {
+            const container = document.getElementById('uerp-header-container');
+            if (!container) return;
+            try {
+                const res = await fetch('/uerp/uerpheader.html');
+                if (res.ok) {
+                    container.innerHTML = await res.text();
+                    const script = document.createElement('script');
+                    script.src = '/uerp/layoutuerp.js';
+                    script.onload = () => { if (typeof initUerpLayout === 'function') initUerpLayout(); };
+                    document.body.appendChild(script);
+                }
+            } catch (e) { console.error("Header Error:", e); }
+        }
+        document.addEventListener("DOMContentLoaded", loadUerpHeader);
+    </script>
+
+    <!-- Supabase Data Handling Script -->
+    <script>
+        // Supabase Connection Credentials (เหมือนกับหน้า Dashboard)
+        const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
+        
+        let supabaseClient = null;
+        let allTransactions = [];
+        let filteredTransactions = [];
+        
+        let currentPage = 1;
+        const pageSize = 15;
+
+        function formatMoney(amount) {
+            return '฿' + parseFloat(amount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+            fetchTransactions();
+        });
+
+        async function fetchTransactions() {
+            const loader = document.getElementById('loadingIndicator');
+            const errorPanel = document.getElementById('errorMessage');
+
+            loader.classList.remove('hidden');
+            errorPanel.classList.add('hidden');
+
+            try {
+                // ดึงข้อมูลจาก Table หรือ View (เช่น v_gpm_monthly_report หรือ Table ธุรกรรมจริง)
+                const { data, error } = await supabaseClient
+                    .from('v_gpm_monthly_report') 
+                    .select('*');
+
+                if (error) throw error;
+
+                allTransactions = data || [];
+                applyFilters();
+                loader.classList.add('hidden');
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                loader.classList.add('hidden');
+                errorPanel.classList.remove('hidden');
+                document.getElementById('errorText').innerText = err.message || err;
+            }
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const year = document.getElementById('yearFilter').value;
+            const month = document.getElementById('monthFilter').value;
+
+            filteredTransactions = allTransactions.filter(item => {
+                const itemYear = String(item.sales_year || '');
+                const itemMonth = String(item.sales_month || '');
+                const textMatch = !search || JSON.stringify(item).toLowerCase().includes(search);
+                const yearMatch = (year === 'ALL' || itemYear === year);
+                const monthMatch = (month === 'ALL' || itemMonth === month);
+
+                return textMatch && yearMatch && monthMatch;
+            });
+
+            currentPage = 1;
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('txTableBody');
+            tbody.innerHTML = '';
+
+            const total = filteredTransactions.length;
+            const totalPages = Math.ceil(total / pageSize) || 1;
+            const startIdx = (currentPage - 1) * pageSize;
+            const pageData = filteredTransactions.slice(startIdx, startIdx + pageSize);
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-google-gray">ไม่พบข้อมูลรายการธุรกรรม</td></tr>`;
+            } else {
+                pageData.forEach(row => {
+                    const sales = parseFloat(row.sales_amt) || 0;
+                    const cogs = parseFloat(row.cogs) || 0;
+                    const gpm = parseFloat(row.gpm) || 0;
+                    const net = parseFloat(row.net_received || row.net_amt || (sales * 0.97)) || 0;
+
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50 transition-colors";
+                    tr.innerHTML = `
+                        <td class="p-3 font-medium text-slate-800">${row.sales_year}-${String(row.sales_month).padStart(2, '0')}</td>
+                        <td class="p-3">
+                            <span class="font-bold text-slate-900 block">สรุปประจำเดือน ${row.sales_month}/${row.sales_year}</span>
+                            <span class="text-[10px] text-google-gray">Record ID: ${row.id || '-'}</span>
+                        </td>
+                        <td class="p-3 text-right font-semibold">${formatMoney(sales)}</td>
+                        <td class="p-3 text-right text-slate-600 hidden sm:table-cell">${formatMoney(net)}</td>
+                        <td class="p-3 text-right text-slate-500 hidden md:table-cell">${formatMoney(cogs)}</td>
+                        <td class="p-3 text-right font-bold text-google-blue">${formatMoney(gpm)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Pagination Controls UI Update
+            document.getElementById('recordCount').innerText = total.toLocaleString();
+            document.getElementById('pageIndicator').innerText = `หน้า ${currentPage} / ${totalPages}`;
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+        }
+
+        function changePage(delta) {
+            currentPage += delta;
+            renderTable();
+        }
+    </script>
+</body>
+</html>
