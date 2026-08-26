@@ -1,16 +1,10 @@
 <!DOCTYPE html>
-<html lang="th" class="h-full bg-slate-50 text-slate-800">
+<html lang="th" class="h-full bg-slate-100 text-slate-800">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transactions Management | Unimerce Co., Ltd.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UERP - Order Management | Unimerce Co., Ltd.</title>
     
-    <!-- Open Graph (OG) Tags -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Transactions | Unimerce ERP System">
-    <meta property="og:description" content="ระบบจัดการและตรวจสอบรายการธุรกรรมทางการเงินเรียลไทม์">
-    <meta property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1784542103/unimerce_nural_zc0bnj.jpg">
-
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -18,15 +12,14 @@
             theme: {
                 extend: {
                     colors: {
-                        google: {
-                            blue: '#1a73e8',
-                            blueHover: '#1557b0',
-                            red: '#d93025',
-                            redHover: '#b31b12',
-                            gray: '#5f6368',
-                            lightGray: '#f1f3f4',
-                            border: '#dadce0'
-                        }
+                        'google-blue': '#1a73e8',
+                        'google-blueHover': '#1557b0',
+                        'google-red': '#d93025',
+                        'google-gray': '#5f6368',
+                        'google-border': '#dadce0',
+                        'shopee': '#ee4d2d',
+                        'lazada': '#0f146d',
+                        'tiktok': '#000000'
                     }
                 }
             }
@@ -39,220 +32,446 @@
     
     <!-- Supabase JS Client CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Global Header & Layout Script -->
+    <script src="js/layoutuerp.js"></script>
 
     <style>
-        body {
-            font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+        body { 
+            font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif; 
+            touch-action: manipulation;
         }
         .google-card {
             background: #ffffff;
             border: 1px solid #dadce0;
-            border-radius: 8px;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            border-radius: 12px;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.05);
         }
         .google-select {
             appearance: none;
-            background-image: url("data:image/svg+xml;utf8,<svg fill='%235f6368' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+            background-image: url("data:image/svg+xml;utf8,<svg fill='%235f6368' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
             background-repeat: no-repeat;
-            background-position: right 8px center;
-            background-size: 18px;
+            background-position: right 6px center;
+            background-size: 16px;
+        }
+        /* Selection Highlight */
+        .row-selected {
+            background-color: #e8f0fe !important;
+        }
+        /* Duplicate Row Highlight (Soft Amber) */
+        .row-duplicate {
+            background-color: #fff7ed !important;
+        }
+        .row-selected.row-duplicate {
+            background-color: #fef08a !important;
+        }
+        th.sortable { cursor: pointer; user-select: none; }
+        th.sortable:hover { background-color: #f1f5f9; }
+        
+        /* Minimal Circular Checkbox */
+        .rounded-checkbox {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid #94a3b8;
+            border-radius: 50%;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .rounded-checkbox:checked {
+            background-color: #1a73e8;
+            border-color: #1a73e8;
+        }
+        .rounded-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            top: 2.5px;
+            left: 2.5px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: white;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col bg-slate-50">
+<body class="min-h-screen flex flex-col bg-slate-100">
 
-    <!-- Header Placeholder (ใช้ uerpheader ร่วมกัน) -->
-    <div id="uerp-header-container" class="mb-2"></div>
+    <!-- Dynamic Navigation Header Container -->
+    <div id="headerContainer"></div>
 
-    <main class="max-w-[1100px] mx-auto px-4 py-6 w-full flex-grow space-y-4">
+    <main class="max-w-[1400px] mx-auto px-2 sm:px-4 py-3 sm:py-5 w-full flex-grow space-y-2.5">
 
-        <!-- Header Title & Action Bar -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <!-- Top Header & Action Bar -->
+        <div class="flex items-center justify-between gap-2">
             <div>
-                <h1 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-receipt text-google-blue"></i>
-                    รายการธุรกรรม (Transactions)
+                <h1 class="text-sm sm:text-lg font-bold text-slate-900 flex items-center gap-1.5">
+                    <i class="fa-solid fa-boxes-packing text-google-blue"></i>
+                    <!-- Mobile: Show EN only, Desktop: Show Full TH/EN -->
+                    <span class="hidden sm:inline">รายการจัดการคำสั่งซื้อ (Order Management)</span>
+                    <span class="sm:hidden">Order Management</span>
                 </h1>
-                <p class="text-xs text-google-gray">แสดงรายการประวัติการขาย และสรุปกำไรขาดทุนรายรายการ</p>
             </div>
-            <button onclick="fetchTransactions()" class="self-start sm:self-auto px-3.5 py-1.5 bg-google-blue hover:bg-google-blueHover text-white text-xs font-semibold rounded shadow-sm flex items-center gap-1.5 transition-colors">
-                <i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล
-            </button>
-        </div>
-
-        <!-- Alert Notification Panel -->
-        <div id="loadingIndicator" class="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center gap-3">
-            <div class="text-google-blue animate-spin">
-                <i class="fa-solid fa-spinner text-base"></i>
-            </div>
-            <p class="text-xs font-medium text-google-blue">กำลังดึงข้อมูล Transactions จาก Supabase...</p>
-        </div>
-
-        <div id="errorMessage" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-3">
-            <i class="fa-solid fa-circle-exclamation text-google-red text-base mt-0.5"></i>
-            <div>
-                <h3 class="text-xs font-semibold text-google-red">เกิดข้อผิดพลาดในการโหลดข้อมูล</h3>
-                <p id="errorText" class="text-[11px] text-google-gray mt-0.5">-</p>
+            <div class="flex items-center gap-1.5">
+                <button id="submitBtn" onclick="submitChanges()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm flex items-center gap-1.5 transition disabled:opacity-40">
+                    <i class="fa-solid fa-floppy-disk text-[11px]"></i> <span>บันทึก</span> (<span id="pendingChangesCount">0</span>)
+                </button>
+                <button onclick="forceRefreshData()" class="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-lg transition">
+                    <i id="refreshIcon" class="fa-solid fa-rotate-right text-[11px]"></i>
+                </button>
             </div>
         </div>
 
-        <!-- Filters & Search Toolbar -->
-        <div class="google-card p-3.5 bg-white flex flex-col md:flex-row items-center justify-between gap-3">
-            <!-- Search Bar -->
-            <div class="relative w-full md:w-72">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="ค้นหาตาม Order ID, ลูกค้า..." class="w-full pl-8 pr-3 py-1.5 border border-google-border rounded text-xs focus:outline-none focus:border-google-blue">
+        <!-- Minimal Sub-header Toolbar: Show PK Circle Checkbox & Main Filters -->
+        <div class="google-card p-2 sm:p-3 bg-white space-y-2">
+            <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                <!-- Circular Minimal Show PK Filter -->
+                <label class="flex items-center gap-1.5 text-xs text-slate-600 font-medium cursor-pointer select-none">
+                    <input type="checkbox" id="showPKToggle" onchange="applyFilters()" class="rounded-checkbox">
+                    <span>showPK (<span id="selectedCountText" class="font-bold text-slate-900">0</span>)</span>
+                </label>
+
+                <!-- Status Select Filter -->
+                <div class="flex items-center gap-1.5">
+                    <select id="channelFilter" onchange="applyFilters()" class="google-select bg-slate-50 border border-google-border rounded-md px-2 py-1 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
+                        <option value="ALL" selected>ช่องทางทั้งหมด</option>
+                        <option value="Shopee">Shopee</option>
+                        <option value="Lazada">Lazada</option>
+                        <option value="TikTok">TikTok</option>
+                    </select>
+
+                    <select id="statusFilter" onchange="applyFilters()" class="google-select bg-slate-50 border border-google-border rounded-md px-2 py-1 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
+                        <option value="ALL" selected>สถานะทั้งหมด</option>
+                        <option value="PENDING">PENDING</option>
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="VOID">VOID</option>
+                    </select>
+                </div>
             </div>
 
-            <!-- Filters -->
-            <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
-                <!-- Select Year -->
-                <select id="yearFilter" onchange="applyFilters()" class="google-select bg-white border border-google-border rounded pl-2.5 pr-7 py-1.5 text-xs text-slate-700 font-medium focus:outline-none focus:border-google-blue cursor-pointer">
-                    <option value="ALL">ทุกปี</option>
-                    <option value="2026" selected>ปี 2026</option>
-                    <option value="2025">ปี 2025</option>
-                </select>
+            <!-- Search & Date Controls -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[11px]"></i>
+                    <input type="text" id="searchInput" oninput="applyFilters()" placeholder="ค้นหา Invoice, Order No, Item..." class="w-full pl-7 pr-2.5 py-1 border border-google-border rounded-md text-xs focus:outline-none focus:border-google-blue">
+                </div>
 
-                <!-- Select Month -->
-                <select id="monthFilter" onchange="applyFilters()" class="google-select bg-white border border-google-border rounded pl-2.5 pr-7 py-1.5 text-xs text-slate-700 font-medium focus:outline-none focus:border-google-blue cursor-pointer">
-                    <option value="ALL">ทุกเดือน</option>
-                    <option value="1">มกราคม</option>
-                    <option value="2">กุมภาพันธ์</option>
-                    <option value="3">มีนาคม</option>
-                    <option value="4">เมษายน</option>
-                    <option value="5">พฤษภาคม</option>
-                    <option value="6">มิถุนายน</option>
-                    <option value="7">กรกฎาคม</option>
-                    <option value="8">สิงหาคม</option>
-                    <option value="9">กันยายน</option>
-                    <option value="10">ตุลาคม</option>
-                    <option value="11">พฤศจิกายน</option>
-                    <option value="12">ธันวาคม</option>
-                </select>
+                <div class="flex items-center gap-1.5 justify-end">
+                    <select id="periodFilter" onchange="handlePeriodChange()" class="google-select bg-slate-50 border border-google-border rounded-md px-2 py-1 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
+                        <option value="ALL">ทั้งหมด</option>
+                        <option value="TODAY" selected>วันนี้</option>
+                        <option value="YESTERDAY">เมื่อวาน</option>
+                        <option value="THIS_WEEK">สัปดาห์นี้</option>
+                        <option value="THIS_MONTH">เดือนนี้</option>
+                        <option value="LAST_MONTH">เดือนที่แล้ว</option>
+                        <option value="THIS_YEAR">ปีนี้</option>
+                        <option value="CUSTOM">กำหนดเอง</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Custom Date Range Inputs -->
+            <div id="customDateContainer" class="hidden flex items-center justify-end gap-1.5 pt-1 text-xs text-slate-600">
+                <input type="date" id="startDate" onchange="applyFilters()" class="border border-google-border rounded px-1.5 py-0.5 text-[11px]">
+                <span>-</span>
+                <input type="date" id="endDate" onchange="applyFilters()" class="border border-google-border rounded px-1.5 py-0.5 text-[11px]">
             </div>
         </div>
 
-        <!-- Transactions Grid Table -->
+        <!-- Status Indicator -->
+        <div id="statusIndicator" class="hidden p-2 bg-blue-50 rounded-lg border border-blue-100 text-xs text-google-blue">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
+                <span id="statusText" class="font-medium text-[11px]">กำลังโหลดข้อมูล...</span>
+            </div>
+        </div>
+
+        <!-- Main Transactions Table (Mobile Vertical Scroll Only) -->
         <section class="google-card bg-white overflow-hidden">
-            <div class="w-full overflow-x-auto">
-                <table class="w-full text-left text-xs border-collapse">
+            <div class="w-full">
+                <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-slate-100 text-google-gray font-bold border-b border-google-border uppercase tracking-wider">
-                            <th class="p-3 w-32">วันที่ / เวลา</th>
-                            <th class="p-3">รายละเอียด (Order / Item)</th>
-                            <th class="p-3 text-right">ยอดขาย (Sales)</th>
-                            <th class="p-3 text-right hidden sm:table-cell">ยอดรับสุทธิ (Net)</th>
-                            <th class="p-3 text-right hidden md:table-cell">ต้นทุน (COGS)</th>
-                            <th class="p-3 text-right">กำไร (GPM)</th>
+                        <tr class="bg-slate-50 text-slate-500 font-semibold text-[11px] border-b border-google-border uppercase tracking-tight">
+                            <th class="p-2 w-20 sm:w-24 sortable" onclick="sortTable('date')">
+                                date <span id="sort_date" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                            </th>
+                            <th class="p-2 sortable" onclick="sortTable('invoice_no')">
+                                invoice / order_no <span id="sort_invoice_no" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                            </th>
+                            <th class="p-2 w-24 sm:w-32 sortable" onclick="sortTable('item_code')">
+                                item_code <span id="sort_item_code" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                            </th>
+                            <th class="p-2 hidden sm:table-cell sortable" onclick="sortTable('item_name')">
+                                item_name <span id="sort_item_name" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                            </th>
+                            <th class="p-2 text-right hidden sm:table-cell sortable" onclick="sortTable('sales_amt')">
+                                sales_amt <span id="sort_sales_amt" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                            </th>
+                            <th class="p-2 text-center hidden sm:table-cell w-20 sortable" onclick="sortTable('channel')">
+                                ch
+                            </th>
+                            <th class="p-2 text-center hidden sm:table-cell w-24">status</th>
                         </tr>
                     </thead>
-                    <tbody id="txTableBody" class="divide-y divide-slate-100 text-slate-700">
-                        <!-- Dynamic Records -->
+                    <tbody id="txTableBody" class="divide-y divide-slate-100 text-xs text-slate-700">
+                        <!-- Dynamic Order Records -->
                     </tbody>
                 </table>
             </div>
 
-            <!-- Table Pagination & Footer Status -->
-            <div class="p-3 border-t border-google-border bg-slate-50 flex items-center justify-between text-xs text-google-gray">
-                <div>แสดง <span id="recordCount" class="font-bold text-slate-800">0</span> รายการ</div>
-                <div class="flex items-center gap-1">
-                    <button id="prevBtn" onclick="changePage(-1)" class="px-2.5 py-1 border border-google-border rounded bg-white hover:bg-slate-100 disabled:opacity-50">ก่อนหน้า</button>
-                    <span id="pageIndicator" class="px-2 font-medium">หน้า 1 / 1</span>
-                    <button id="nextBtn" onclick="changePage(1)" class="px-2.5 py-1 border border-google-border rounded bg-white hover:bg-slate-100 disabled:opacity-50">ถัดไป</button>
+            <!-- Footer Counter & Scroll Status -->
+            <div class="p-2.5 border-t border-google-border bg-slate-50 flex items-center justify-between text-[11px] text-google-gray">
+                <div>แสดง <span id="renderedCount" class="font-bold text-slate-800">0</span> / <span id="recordCount" class="font-bold text-slate-800">0</span> รายการ</div>
+                <div id="infiniteLoader" class="hidden text-google-blue flex items-center gap-1 font-medium">
+                    <i class="fa-solid fa-circle-notch animate-spin"></i> กำลังโหลด...
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-google-border bg-white py-4 mt-auto text-center">
-        <p class="text-[11px] text-google-gray">© 2026 บริษัท ยูนิเมิร์ซ จำกัด 0105569099432</p>
-    </footer>
-
-    <!-- Header Script Loader -->
+    <!-- Supabase & Business Logics Script -->
     <script>
-        async function loadUerpHeader() {
-            const container = document.getElementById('uerp-header-container');
-            if (!container) return;
-            try {
-                const res = await fetch('/uerp/uerpheader.html');
-                if (res.ok) {
-                    container.innerHTML = await res.text();
-                    const script = document.createElement('script');
-                    script.src = '/uerp/layoutuerp.js';
-                    script.onload = () => { if (typeof initUerpLayout === 'function') initUerpLayout(); };
-                    document.body.appendChild(script);
-                }
-            } catch (e) { console.error("Header Error:", e); }
-        }
-        document.addEventListener("DOMContentLoaded", loadUerpHeader);
-    </script>
-
-    <!-- Supabase Data Handling Script -->
-    <script>
-        // Supabase Connection Credentials (เหมือนกับหน้า Dashboard)
         const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
-        
-        let supabaseClient = null;
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
         let allTransactions = [];
         let filteredTransactions = [];
+        let selectedRowIds = new Set();
+        let pendingStatusChanges = {};
+        let currentSortColumn = 'date';
+        let currentSortAsc = false;
         
-        let currentPage = 1;
-        const pageSize = 15;
+        let displayLimit = 50;
+        const limitStep = 50;
 
-        function formatMoney(amount) {
-            return '฿' + parseFloat(amount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHeader();
             fetchTransactions();
+            setupInfiniteScroll();
         });
 
-        async function fetchTransactions() {
-            const loader = document.getElementById('loadingIndicator');
-            const errorPanel = document.getElementById('errorMessage');
-
-            loader.classList.remove('hidden');
-            errorPanel.classList.add('hidden');
-
+        async function loadHeader() {
             try {
-                // ดึงข้อมูลจาก Table หรือ View (เช่น v_gpm_monthly_report หรือ Table ธุรกรรมจริง)
-                const { data, error } = await supabaseClient
-                    .from('v_gpm_monthly_report') 
-                    .select('*');
+                const res = await fetch('uerpheader.html');
+                if (!res.ok) throw new Error('Header file not found');
+                const html = await res.text();
+                
+                const headerContainer = document.getElementById('headerContainer');
+                headerContainer.innerHTML = html;
 
-                if (error) throw error;
+                const txTab = headerContainer.querySelector('[data-page="transactions"]');
+                if (txTab) txTab.classList.add('chrome-tab-active');
 
-                allTransactions = data || [];
-                applyFilters();
-                loader.classList.add('hidden');
+                if (typeof window.initUerpLayout === 'function') {
+                    window.__uerpLayoutInitialized = false;
+                    window.initUerpLayout();
+                }
             } catch (err) {
-                console.error("Fetch Error:", err);
-                loader.classList.add('hidden');
-                errorPanel.classList.remove('hidden');
-                document.getElementById('errorText').innerText = err.message || err;
+                console.warn('Header load error:', err);
             }
         }
 
+        // YY-MM-DD for Mobile, YYYY-MM-DD for Desktop
+        function formatDateFormatted(dateStr, isMobile = false) {
+            if (!dateStr) return '-';
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr.substring(0, 10);
+            const iso = d.toISOString().split('T')[0]; // YYYY-MM-DD
+            return isMobile ? iso.substring(2) : iso;   // YY-MM-DD on Mobile
+        }
+
+        function formatMoney(val) {
+            return '฿' + parseFloat(val || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Truncate left for Invoice No (Shows last 4 digits on Mobile)
+        function truncateInvoiceLeft(str) {
+            if (!str) return '-';
+            const s = String(str);
+            if (s.length <= 8) return s;
+            return '...' + s.slice(-4);
+        }
+
+        function updateStatus(msg, isError = false) {
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            statusIndicator.classList.remove('hidden');
+            statusIndicator.className = isError 
+                ? "p-2 bg-red-50 rounded-lg border border-red-200 text-xs text-google-red"
+                : "p-2 bg-blue-50 rounded-lg border border-blue-100 text-xs text-google-blue";
+            statusText.innerText = msg;
+        }
+
+        function forceRefreshData() {
+            localStorage.removeItem('uerp_orders_cache');
+            localStorage.removeItem('uerp_orders_cache_time');
+            fetchTransactions(true);
+        }
+
+        async function fetchTransactions(isManualRefresh = false) {
+            const cacheKey = 'uerp_orders_cache';
+            const timeKey = 'uerp_orders_cache_time';
+            const cachedData = localStorage.getItem(cacheKey);
+            const cachedTime = localStorage.getItem(timeKey);
+            const nowTime = new Date().getTime();
+
+            if (!isManualRefresh && cachedData && cachedTime && (nowTime - Number(cachedTime) < 12 * 3600 * 1000)) {
+                allTransactions = JSON.parse(cachedData);
+                document.getElementById('statusIndicator').classList.add('hidden');
+                applyFilters();
+                return;
+            }
+
+            updateStatus('กำลังโหลดข้อมูล...');
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('transactions')
+                    .select('*')
+                    .order('date', { ascending: false })
+                    .limit(1000);
+
+                if (error) throw error;
+
+                allTransactions = (data || []).map((row, idx) => ({
+                    ...row,
+                    _rowId: row.id || `row_${idx}_${Date.now()}`
+                }));
+
+                localStorage.setItem(cacheKey, JSON.stringify(allTransactions));
+                localStorage.setItem(timeKey, nowTime.toString());
+
+                document.getElementById('statusIndicator').classList.add('hidden');
+                applyFilters();
+            } catch (err) {
+                console.error("Supabase Query Error:", err);
+                updateStatus(`เกิดข้อผิดพลาด: ${err.message}`, true);
+            }
+        }
+
+        function handlePeriodChange() {
+            const period = document.getElementById('periodFilter').value;
+            const container = document.getElementById('customDateContainer');
+            if (period === 'CUSTOM') {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+            applyFilters();
+        }
+
         function applyFilters() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const year = document.getElementById('yearFilter').value;
-            const month = document.getElementById('monthFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase().trim();
+            const channel = document.getElementById('channelFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const period = document.getElementById('periodFilter').value;
+            const showPKOnly = document.getElementById('showPKToggle').checked;
 
-            filteredTransactions = allTransactions.filter(item => {
-                const itemYear = String(item.sales_year || '');
-                const itemMonth = String(item.sales_month || '');
-                const textMatch = !search || JSON.stringify(item).toLowerCase().includes(search);
-                const yearMatch = (year === 'ALL' || itemYear === year);
-                const monthMatch = (month === 'ALL' || itemMonth === month);
+            const now = new Date();
+            let startFilterDate = null;
+            let endFilterDate = null;
 
-                return textMatch && yearMatch && monthMatch;
+            // Default TODAY filter logic
+            if (period === 'TODAY') {
+                startFilterDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            } else if (period === 'YESTERDAY') {
+                startFilterDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+                endFilterDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 23, 59, 59);
+            } else if (period === 'THIS_WEEK') {
+                const day = now.getDay() || 7;
+                startFilterDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1);
+            } else if (period === 'THIS_MONTH') {
+                startFilterDate = new Date(now.getFullYear(), now.getMonth(), 1);
+            } else if (period === 'LAST_MONTH') {
+                startFilterDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                endFilterDate = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
+            } else if (period === 'THIS_YEAR') {
+                startFilterDate = new Date(now.getFullYear(), 0, 1);
+            } else if (period === 'CUSTOM') {
+                const s = document.getElementById('startDate').value;
+                const e = document.getElementById('endDate').value;
+                if (s) startFilterDate = new Date(s);
+                if (e) endFilterDate = new Date(e + 'T23:59:59');
+            }
+
+            // Map duplicates for Invoice No & Order No
+            const invoiceCounts = {};
+            const orderCounts = {};
+            allTransactions.forEach(item => {
+                if (item.invoice_no) invoiceCounts[item.invoice_no] = (invoiceCounts[item.invoice_no] || 0) + 1;
+                if (item.order_no) orderCounts[item.order_no] = (orderCounts[item.order_no] || 0) + 1;
             });
 
-            currentPage = 1;
+            filteredTransactions = allTransactions.filter(item => {
+                if (showPKOnly && !selectedRowIds.has(item._rowId)) return false;
+
+                const itemChannel = String(item.channel || '');
+                const itemStatus = String(item.status || 'PENDING');
+                
+                const textMatch = !search || 
+                    String(item.invoice_no || '').toLowerCase().includes(search) ||
+                    String(item.order_no || '').toLowerCase().includes(search) ||
+                    String(item.item_code || '').toLowerCase().includes(search) ||
+                    String(item.item_name || '').toLowerCase().includes(search);
+
+                const channelMatch = (channel === 'ALL' || itemChannel.toLowerCase() === channel.toLowerCase());
+                const statusMatch = (status === 'ALL' || itemStatus.toUpperCase() === status.toUpperCase());
+
+                let dateMatch = true;
+                if (startFilterDate || endFilterDate) {
+                    const rowDate = new Date(item.date);
+                    if (startFilterDate && rowDate < startFilterDate) dateMatch = false;
+                    if (endFilterDate && rowDate > endFilterDate) dateMatch = false;
+                }
+
+                item._isDuplicate = (invoiceCounts[item.invoice_no] > 1 || orderCounts[item.order_no] > 1);
+
+                return textMatch && channelMatch && statusMatch && dateMatch;
+            });
+
+            // Sorting logic
+            filteredTransactions.sort((a, b) => {
+                let valA = a[currentSortColumn] ?? '';
+                let valB = b[currentSortColumn] ?? '';
+                if (typeof valA === 'string') valA = valA.toLowerCase();
+                if (typeof valB === 'string') valB = valB.toLowerCase();
+
+                if (valA < valB) return currentSortAsc ? -1 : 1;
+                if (valA > valB) return currentSortAsc ? 1 : -1;
+                return 0;
+            });
+
+            updateSortIcons();
+            displayLimit = 50;
             renderTable();
+        }
+
+        function sortTable(column) {
+            if (currentSortColumn === column) {
+                currentSortAsc = !currentSortAsc;
+            } else {
+                currentSortColumn = column;
+                currentSortAsc = true;
+            }
+            applyFilters();
+        }
+
+        function updateSortIcons() {
+            ['date', 'invoice_no', 'item_code', 'item_name', 'sales_amt'].forEach(col => {
+                const el = document.getElementById(`sort_${col}`);
+                if (!el) return;
+                if (col === currentSortColumn) {
+                    el.className = "ml-0.5 text-[10px] text-google-blue font-bold";
+                    el.innerHTML = currentSortAsc 
+                        ? `<i class="fa-solid fa-arrow-up-wide-short"></i>` 
+                        : `<i class="fa-solid fa-arrow-down-wide-short"></i>`;
+                } else {
+                    el.className = "ml-0.5 text-[10px] text-slate-300";
+                    el.innerHTML = `<i class="fa-solid fa-arrow-down-wide-short"></i>`;
+                }
+            });
         }
 
         function renderTable() {
@@ -260,46 +479,181 @@
             tbody.innerHTML = '';
 
             const total = filteredTransactions.length;
-            const totalPages = Math.ceil(total / pageSize) || 1;
-            const startIdx = (currentPage - 1) * pageSize;
-            const pageData = filteredTransactions.slice(startIdx, startIdx + pageSize);
+            const pageData = filteredTransactions.slice(0, displayLimit);
 
             if (pageData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-google-gray">ไม่พบข้อมูลรายการธุรกรรม</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-google-gray">ไม่พบรายการคำสั่งซื้อ</td></tr>`;
             } else {
                 pageData.forEach(row => {
-                    const sales = parseFloat(row.sales_amt) || 0;
-                    const cogs = parseFloat(row.cogs) || 0;
-                    const gpm = parseFloat(row.gpm) || 0;
-                    const net = parseFloat(row.net_received || row.net_amt || (sales * 0.97)) || 0;
+                    const isSelected = selectedRowIds.has(row._rowId);
+                    const isDup = row._isDuplicate;
+
+                    // Channel Badge Styling
+                    let channelBadgeClass = "bg-slate-100 text-slate-700 border-slate-200";
+                    const ch = String(row.channel || '').toLowerCase();
+                    if (ch.includes('shopee')) channelBadgeClass = "bg-shopee text-white";
+                    else if (ch.includes('lazada')) channelBadgeClass = "bg-lazada text-white";
+                    else if (ch.includes('tiktok')) channelBadgeClass = "bg-tiktok text-white";
+
+                    const currentStatus = pendingStatusChanges[row._rowId] || row.status || 'PENDING';
 
                     const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-50 transition-colors";
+                    
+                    // Row Styling Rules:
+                    // Selected Row = Blue Highlight
+                    // Duplicate Row = Amber Highlight (Row Background)
+                    let rowBgClass = "hover:bg-slate-50";
+                    if (isDup) rowBgClass = "row-duplicate";
+                    if (isSelected) rowBgClass = "row-selected";
+
+                    tr.className = `transition-colors border-b border-slate-100 cursor-pointer ${rowBgClass}`;
+                    
+                    // Tap row to toggle selection (No checkbox column)
+                    tr.onclick = (e) => {
+                        if (e.target.tagName === 'SELECT' || e.target.tagName === 'OPTION' || e.target.tagName === 'INPUT') return;
+                        toggleRowSelection(row._rowId);
+                    };
+
                     tr.innerHTML = `
-                        <td class="p-3 font-medium text-slate-800">${row.sales_year}-${String(row.sales_month).padStart(2, '0')}</td>
-                        <td class="p-3">
-                            <span class="font-bold text-slate-900 block">สรุปประจำเดือน ${row.sales_month}/${row.sales_year}</span>
-                            <span class="text-[10px] text-google-gray">Record ID: ${row.id || '-'}</span>
+                        <!-- Date Column -->
+                        <td class="p-2 font-mono text-[11px] text-slate-600 whitespace-nowrap">
+                            <span class="sm:hidden">${formatDateFormatted(row.date, true)}</span>
+                            <span class="hidden sm:inline">${formatDateFormatted(row.date, false)}</span>
                         </td>
-                        <td class="p-3 text-right font-semibold">${formatMoney(sales)}</td>
-                        <td class="p-3 text-right text-slate-600 hidden sm:table-cell">${formatMoney(net)}</td>
-                        <td class="p-3 text-right text-slate-500 hidden md:table-cell">${formatMoney(cogs)}</td>
-                        <td class="p-3 text-right font-bold text-google-blue">${formatMoney(gpm)}</td>
+
+                        <!-- Invoice No & Order No Column (Mobile Layout Optimized) -->
+                        <td class="p-2">
+                            <!-- Mobile View (Vertical Layout, No Horizontal Scroll) -->
+                            <div class="sm:hidden leading-tight">
+                                <div class="font-bold text-slate-900 font-mono text-xs truncate max-w-[120px]" title="${row.order_no}">
+                                    ${row.order_no || '-'}
+                                </div>
+                                <div class="text-[10px] text-google-gray font-mono truncate max-w-[90px]" title="${row.invoice_no}">
+                                    ${truncateInvoiceLeft(row.invoice_no)}
+                                </div>
+                            </div>
+
+                            <!-- Desktop View -->
+                            <div class="hidden sm:block leading-tight">
+                                <div class="font-bold text-slate-900 font-mono">${row.invoice_no || '-'}</div>
+                                <div class="text-[10px] text-google-gray font-mono">${row.order_no || '-'}</div>
+                            </div>
+                        </td>
+
+                        <!-- Item Code -->
+                        <td class="p-2 font-mono font-bold text-google-blue max-w-[90px] sm:max-w-[130px] truncate" title="${row.item_code}">
+                            ${row.item_code || '-'}
+                            <div class="sm:hidden text-[10px] font-normal text-slate-500 truncate" title="${row.item_name}">
+                                ${row.item_name || ''}
+                            </div>
+                        </td>
+
+                        <!-- Item Name (Desktop Only) -->
+                        <td class="p-2 font-medium text-slate-800 hidden sm:table-cell max-w-[200px] truncate" title="${row.item_name}">
+                            ${row.item_name || '-'}
+                        </td>
+
+                        <!-- Sales Amount (Desktop Only) -->
+                        <td class="p-2 text-right font-bold text-slate-900 hidden sm:table-cell">
+                            ${formatMoney(row.sales_amt)}
+                        </td>
+
+                        <!-- Channel Badge (Desktop Only) -->
+                        <td class="p-2 text-center hidden sm:table-cell">
+                            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${channelBadgeClass}">
+                                ${row.channel || 'Direct'}
+                            </span>
+                        </td>
+
+                        <!-- Status Select Dropdown (Desktop Only) -->
+                        <td class="p-2 text-center hidden sm:table-cell">
+                            <select onchange="handleStatusChange('${row._rowId}', this.value)" class="bg-white border border-google-border rounded px-1 py-0.5 text-[10px] font-semibold focus:outline-none focus:border-google-blue">
+                                <option value="PENDING" ${currentStatus === 'PENDING' ? 'selected' : ''}>PENDING</option>
+                                <option value="ACTIVE" ${currentStatus === 'ACTIVE' ? 'selected' : ''}>ACTIVE</option>
+                                <option value="VOID" ${currentStatus === 'VOID' ? 'selected' : ''}>VOID</option>
+                            </select>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 });
             }
 
-            // Pagination Controls UI Update
+            document.getElementById('renderedCount').innerText = pageData.length.toLocaleString();
             document.getElementById('recordCount').innerText = total.toLocaleString();
-            document.getElementById('pageIndicator').innerText = `หน้า ${currentPage} / ${totalPages}`;
-            document.getElementById('prevBtn').disabled = currentPage === 1;
-            document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+            document.getElementById('selectedCountText').innerText = selectedRowIds.size.toLocaleString();
+            updatePendingChangesCount();
         }
 
-        function changePage(delta) {
-            currentPage += delta;
+        function toggleRowSelection(rowId) {
+            if (selectedRowIds.has(rowId)) {
+                selectedRowIds.delete(rowId);
+            } else {
+                selectedRowIds.add(rowId);
+            }
             renderTable();
+        }
+
+        function handleStatusChange(rowId, newStatus) {
+            pendingStatusChanges[rowId] = newStatus;
+            updatePendingChangesCount();
+        }
+
+        function updatePendingChangesCount() {
+            const count = Object.keys(pendingStatusChanges).length;
+            document.getElementById('pendingChangesCount').innerText = count;
+            document.getElementById('submitBtn').disabled = count === 0;
+        }
+
+        async function submitChanges() {
+            const count = Object.keys(pendingStatusChanges).length;
+            if (count === 0) return;
+
+            updateStatus(`กำลังบันทึก ${count} รายการลง Supabase...`);
+
+            try {
+                const updatePromises = Object.keys(pendingStatusChanges).map(rowId => {
+                    const item = allTransactions.find(t => t._rowId === rowId);
+                    if (!item || !item.id) return Promise.resolve();
+
+                    const newStatus = pendingStatusChanges[rowId];
+                    return supabaseClient
+                        .from('transactions')
+                        .update({ status: newStatus })
+                        .eq('id', item.id);
+                });
+
+                await Promise.all(updatePromises);
+                
+                Object.keys(pendingStatusChanges).forEach(rowId => {
+                    const item = allTransactions.find(t => t._rowId === rowId);
+                    if (item) item.status = pendingStatusChanges[rowId];
+                });
+
+                pendingStatusChanges = {};
+                localStorage.setItem('uerp_orders_cache', JSON.stringify(allTransactions));
+                
+                updateStatus('บันทึกเรียบร้อย!');
+                setTimeout(() => document.getElementById('statusIndicator').classList.add('hidden'), 2000);
+                applyFilters();
+            } catch (err) {
+                console.error("Submit Error:", err);
+                updateStatus(`เกิดข้อผิดพลาด: ${err.message}`, true);
+            }
+        }
+
+        function setupInfiniteScroll() {
+            window.addEventListener('scroll', () => {
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 250) {
+                    if (displayLimit < filteredTransactions.length) {
+                        document.getElementById('infiniteLoader').classList.remove('hidden');
+                        setTimeout(() => {
+                            displayLimit += limitStep;
+                            renderTable();
+                            document.getElementById('infiniteLoader').classList.add('hidden');
+                        }, 150);
+                    }
+                }
+            });
         }
     </script>
 </body>
