@@ -188,34 +188,46 @@
         </div>
 
         <!-- Main Transactions Table (Mobile Vertical Scroll Only) -->
-        <section class="google-card bg-white overflow-hidden">
-            <div class="w-full">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50 text-slate-500 font-semibold text-[11px] border-b border-google-border uppercase tracking-tight">
-                            <th class="p-2 w-20 sm:w-24 sortable" onclick="sortTable('date')">
-                                date <span id="sort_date" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                            </th>
-                            <th class="p-2 sortable" onclick="sortTable('invoice_no')">
-                                invoice / order_no <span id="sort_invoice_no" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                            </th>
-                            <th class="p-2 w-24 sm:w-32 sortable" onclick="sortTable('item_code')">
-                                item_code <span id="sort_item_code" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                            </th>
-                            <th class="p-2 hidden sm:table-cell sortable" onclick="sortTable('item_name')">
-                                item_name <span id="sort_item_name" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                            </th>
-                            <th class="p-2 text-right hidden sm:table-cell sortable" onclick="sortTable('sales_amt')">
-                                sales_amt <span id="sort_sales_amt" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                            </th>
-                            <th class="p-2 text-center hidden sm:table-cell w-20 sortable" onclick="sortTable('channel')">
-                                ch
-                            </th>
-                            <th class="p-2 text-center hidden sm:table-cell w-24">status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="txTableBody" class="divide-y divide-slate-100 text-xs text-slate-700">
-                        <!-- Dynamic Order Records -->
+<section class="google-card bg-white overflow-hidden">
+    <div class="w-full">
+        <table class="w-full text-left border-collapse table-fixed">
+            <thead>
+                <tr class="bg-slate-50 text-slate-500 font-semibold text-[11px] border-b border-google-border uppercase tracking-tight">
+                    <!-- Date: ล็อกกว้าง 80px (มือถือ) / 95px (จอใหญ่) -->
+                    <th class="p-2 w-[80px] sm:w-[95px] sortable" onclick="sortTable('date')">
+                        date <span id="sort_date" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                    </th>
+
+                    <!-- Invoice No: จัดกึ่งกลางหัวตาราง + ล็อกกว้าง 110px (มือถือ) / 140px (จอใหญ่) -->
+                    <th class="p-2 text-center w-[110px] sm:w-[140px] sortable" onclick="sortTable('invoice_no')">
+                        invoice / order_no <span id="sort_invoice_no" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                    </th>
+
+                    <!-- Item Code: ล็อกกว้าง 95px (มือถือ) / 120px (จอใหญ่) -->
+                    <th class="p-2 w-[95px] sm:w-[120px] sortable" onclick="sortTable('item_code')">
+                        item_code <span id="sort_item_code" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                    </th>
+
+                    <!-- Item Name: ไม่ใส่ความกว้าง เพื่อให้ยืดขยายกินพื้นที่ส่วนที่เหลือทั้งหมด -->
+                    <th class="p-2 hidden sm:table-cell sortable" onclick="sortTable('item_name')">
+                        item_name <span id="sort_item_name" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                    </th>
+
+                    <!-- Sales Amt: ล็อกกว้าง 110px -->
+                    <th class="p-2 text-right hidden sm:table-cell w-[110px] sortable" onclick="sortTable('sales_amt')">
+                        sales_amt <span id="sort_sales_amt" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                    </th>
+
+                    <!-- Channel: ล็อกกว้าง 60px -->
+                    <th class="p-2 text-center hidden sm:table-cell w-[60px] sortable" onclick="sortTable('channel')">
+                        ch
+                    </th>
+
+                    <!-- Status: ล็อกกว้าง 90px -->
+                    <th class="p-2 text-center hidden sm:table-cell w-[90px]">status</th>
+                </tr>
+            </thead>
+            <tbody id="txTableBody" class="divide-y divide-slate-100 text-xs text-slate-700">                        <!-- Dynamic Order Records -->
                     </tbody>
                 </table>
             </div>
