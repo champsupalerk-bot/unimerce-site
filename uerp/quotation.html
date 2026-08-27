@@ -3,727 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบสร้างใบเสนอราคา - Unimerce ERP</title>
-    
-    <!-- Analytics & Layout Scripts -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
-    <script src="/analytics.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <title>ใบเสนอราคา (Quotation) - UERP</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Export PDF / HTML2Canvas Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <script src="/uerp/config.js"></script>
-    <script src="/uerp/barcode-label-engine.js"></script>
-    <script src="/uerp/layoutuerp.js"></script>
-
-    <!-- Tailwind CSS & Font -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
-        body {
-            font-family: 'Sarabun', sans-serif;
-            background-color: #f3f4f6;
-        }
-        .paper-sheet {
-            background: white;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-        }
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white; padding: 0; }
-            .paper-sheet { box-shadow: none; border: none; padding: 0; }
-        }
+        body { font-family: 'Prompt', sans-serif; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="bg-slate-100 text-slate-800 min-h-screen pb-12">
 
-    <!-- Top Action Bar -->
-    <div class="max-w-6xl mx-auto mb-6 flex flex-wrap justify-between items-center gap-4 no-print bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-        <div>
-            <h1 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-file-invoice text-blue-600"></i> สร้างใบเสนอราคา (Quotation)
-            </h1>
-            <p class="text-sm text-gray-500">จัดการรายละเอียดลูกค้า รายการสินค้า และออกเอกสารใบเสนอราคา</p>
+    <!-- Content Wrapper -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        
+        <!-- Header & Action Buttons -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800"><i class="fa-solid fa-file-signature text-blue-600 mr-2"></i>ระบบออกใบเสนอราคา (Quotation)</h1>
+                <p class="text-xs text-gray-500">สร้าง ดูตัวอย่าง และพิมพ์ใบเสนอราคาแบบมืออาชีพ</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="resetForm()" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg text-xs font-semibold shadow-sm transition">
+                    <i class="fa-solid fa-rotate-left mr-1"></i> ล้างข้อมูล
+                </button>
+                <button onclick="openPreviewModal()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-md transition">
+                    <i class="fa-solid fa-eye mr-1"></i> ดูตัวอย่าง & พิมพ์ (Preview/PDF)
+                </button>
+            </div>
         </div>
-        <div class="flex items-center gap-3">
-            <button onclick="resetForm()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition">
-                <i class="fa-solid fa-rotate-right mr-1"></i> ล้างข้อมูล
-            </button>
-            <button onclick="openPreviewModal()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition shadow-md flex items-center gap-2">
-                <i class="fa-solid fa-eye"></i> ตรวจสอบเอกสาร & Export
-            </button>
-        </div>
-    </div>
 
-    <!-- Main Workspace -->
-    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-        <!-- Left Controls / Form Panel -->
-        <div class="lg:col-span-12 space-y-6">
-            
-            <!-- SECTION 1: CUSTOMER SELECTION -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center justify-between border-b pb-3 mb-4">
-                    <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-user-tag text-blue-600"></i> 1. ข้อมูลลูกค้า (Customer Details)
-                    </h2>
-                    <div class="flex items-center bg-gray-100 p-1 rounded-lg">
-                        <button id="btnModeDB" onclick="setCustomerMode('db')" class="px-3 py-1 rounded-md text-xs font-semibold bg-white text-blue-600 shadow-sm transition">
-                            <i class="fa-solid fa-database mr-1"></i> ค้นหาในระบบ
-                        </button>
-                        <button id="btnModeManual" onclick="setCustomerMode('manual')" class="px-3 py-1 rounded-md text-xs font-semibold text-gray-600 transition">
-                            <i class="fa-solid fa-pen-to-square mr-1"></i> กรอกเอง (Manual)
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Mode 1: DB Search -->
-                <div id="customerSearchContainer" class="relative mb-4">
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">ค้นหาจากระบบ (ระบุ ชื่อ, รหัส, เบอร์โทร, เลขภาษี ฯลฯ)</label>
-                    <div class="relative">
-                        <input type="text" id="custSearchInput" oninput="searchCustomers(this.value)" placeholder="พิมพ์คำค้นหาลูกค้า..." class="w-full pl-10 pr-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-400"></i>
-                    </div>
-                    <!-- Dropdown list -->
-                    <div id="custDropdown" class="hidden absolute z-30 left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-60 overflow-y-auto"></div>
-                </div>
-
-                <!-- Customer Form Inputs -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">ชื่อลูกค้า / บริษัท <span class="text-red-500">*</span></label>
-                        <input type="text" id="custName" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">เลขประจำตัวผู้เสียภาษี (TAX ID)</label>
-                        <input type="text" id="custTaxId" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">เบอร์โทรศัพท์</label>
-                        <input type="text" id="custPhone" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">ที่อยู่</label>
-                        <input type="text" id="custAddress" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">อีเมล</label>
-                        <input type="email" id="custEmail" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
+        <!-- Section 1: Customer Details -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-6">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b">
+                <h2 class="font-bold text-slate-700 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-user-tag text-blue-500"></i> ข้อมูลลูกค้า (Customer Details)
+                </h2>
+                <!-- Mode Toggle -->
+                <div class="bg-slate-100 p-1 rounded-lg flex gap-1">
+                    <button id="btnModeDB" onclick="setCustomerMode('db')" class="px-3 py-1 rounded-md text-xs font-semibold bg-white text-blue-600 shadow-sm transition">
+                        เลือกจาก DB
+                    </button>
+                    <button id="btnModeManual" onclick="setCustomerMode('manual')" class="px-3 py-1 rounded-md text-xs font-semibold text-gray-600 transition">
+                        กรอกเอง (Manual)
+                    </button>
                 </div>
             </div>
 
-            <!-- SECTION 2: PRODUCT SELECTION & ITEMS LIST -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center justify-between border-b pb-3 mb-4">
-                    <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-boxes-stacked text-blue-600"></i> 2. รายการสินค้า (Items Selection)
-                    </h2>
-                    <span class="text-xs text-gray-400">ค้นหาสินค้าจากตาราง `products` (Item_Code & Description)</span>
+            <!-- Customer Search Box (In DB Mode) -->
+            <div id="customerSearchContainer" class="relative mb-4">
+                <div class="relative">
+                    <input type="text" id="custSearchInput" oninput="searchCustomers(this.value)" placeholder="พิมพ์คำค้นหาลูกค้า (ชื่อ, รหัส, เบอร์โทร, เลขภาษี ฯลฯ)..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-xs"></i>
                 </div>
+                <!-- Dropdown Search Results -->
+                <div id="custDropdown" class="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
+            </div>
 
-                <!-- Product Search Box -->
-                <div class="relative mb-6">
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">เพิ่มรายการสินค้า</label>
-                    <div class="relative">
-                        <input type="text" id="prodSearchInput" oninput="searchProducts(this.value)" placeholder="พิมพ์รหัสสินค้า (Item_Code) หรือ รายละเอียด (Description)..." class="w-full pl-10 pr-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                        <i class="fa-solid fa-barcode absolute left-3.5 top-3.5 text-gray-400"></i>
+            <!-- Customer Form Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">ชื่อลูกค้า / บริษัท *</label>
+                    <input type="text" id="custName" class="w-full p-2 border border-slate-300 rounded-md text-xs focus:ring-1 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">เลขประจำตัวผู้เสียภาษี (Tax ID)</label>
+                    <input type="text" id="custTaxId" class="w-full p-2 border border-slate-300 rounded-md text-xs focus:ring-1 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">เบอร์โทรศัพท์</label>
+                    <input type="text" id="custPhone" class="w-full p-2 border border-slate-300 rounded-md text-xs focus:ring-1 focus:ring-blue-500">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-medium text-gray-600 mb-1">ที่อยู่</label>
+                    <input type="text" id="custAddress" class="w-full p-2 border border-slate-300 rounded-md text-xs focus:ring-1 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">อีเมล</label>
+                    <input type="email" id="custEmail" class="w-full p-2 border border-slate-300 rounded-md text-xs focus:ring-1 focus:ring-blue-500">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Product Search & Cart Table -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-6">
+            <h2 class="font-bold text-slate-700 text-sm mb-4 pb-2 border-b flex items-center gap-2">
+                <i class="fa-solid fa-boxes-stacked text-blue-500"></i> รายการสินค้า (Items Selection)
+            </h2>
+
+            <!-- Product Search Box -->
+            <div class="relative mb-5">
+                <div class="relative">
+                    <input type="text" id="prodSearchInput" oninput="searchProducts(this.value)" placeholder="พิมพ์รหัสสินค้า (Item_Code) หรือ รายละเอียด (Description)..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <i class="fa-solid fa-barcode absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+                </div>
+                <!-- Dropdown Product Results -->
+                <div id="prodDropdown" class="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
+            </div>
+
+            <!-- Cart Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-y border-slate-200 text-[11px] font-semibold text-slate-600 uppercase">
+                            <th class="py-2.5 px-2 text-center w-12">#</th>
+                            <th class="py-2.5 px-3">สินค้า / รายละเอียด</th>
+                            <th class="py-2.5 px-2 text-center w-36">ระดับราคา (Tier)</th>
+                            <th class="py-2.5 px-2 text-right w-28">ราคา/หน่วย</th>
+                            <th class="py-2.5 px-2 text-center w-20">จำนวน</th>
+                            <th class="py-2.5 px-2 text-center w-32">ส่วนลด/บรรทัด</th>
+                            <th class="py-2.5 px-2 text-right w-32">ราคารวม</th>
+                            <th class="py-2.5 px-2 text-center w-12"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartItemsTable" class="divide-y divide-slate-100">
+                        <tr id="emptyRow">
+                            <td colspan="8" class="text-center py-8 text-gray-400 text-xs">ยังไม่มีรายการสินค้า กรุณาค้นหาและเลือกสินค้าด้านบน</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Total Calculations Grid -->
+            <div class="mt-6 pt-4 border-t grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">หมายเหตุท้ายเอกสาร</label>
+                    <textarea id="docRemark" rows="3" placeholder="ข้อกำหนด ชำระเงิน กำหนดส่งมอบ ฯลฯ" class="w-full p-2 border border-slate-300 rounded-md text-xs focus:ring-1 focus:ring-blue-500"></textarea>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl space-y-2 border text-xs">
+                    <div class="flex justify-between text-gray-600">
+                        <span>รวมเป็นเงิน (Subtotal):</span>
+                        <span id="txtSubtotal" class="font-semibold">0.00 ฿</span>
                     </div>
-                    <!-- Dropdown Product List -->
-                    <div id="prodDropdown" class="hidden absolute z-30 left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-64 overflow-y-auto"></div>
+                    <div class="flex justify-between items-center text-gray-600">
+                        <span>ส่วนลดท้ายบิล:</span>
+                        <div class="flex items-center gap-1">
+                            <input type="number" id="billDiscountVal" value="0" min="0" oninput="calculateTotals()" class="w-20 p-1 border rounded text-right text-xs">
+                            <select id="billDiscountType" onchange="calculateTotals()" class="p-1 border rounded text-[10px] bg-white">
+                                <option value="THB">฿</option>
+                                <option value="PERCENT">%</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-gray-600">
+                        <span>จำนวนเงินหลังหักส่วนลด:</span>
+                        <span id="txtAfterDiscount" class="font-semibold">0.00 ฿</span>
+                    </div>
+                    <div class="flex justify-between text-gray-600">
+                        <span>ภาษีมูลค่าเพิ่ม (VAT 7%):</span>
+                        <span id="txtVat" class="font-semibold">0.00 ฿</span>
+                    </div>
+                    <div class="flex justify-between text-slate-800 font-bold text-sm pt-2 border-t border-slate-200">
+                        <span>จำนวนเงินรวมทั้งสิ้น:</span>
+                        <span id="txtGrandTotal" class="text-blue-600">0.00 ฿</span>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <!-- Table of Added Items -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm">
+    <!-- Section 3: Modal Preview/Export PDF -->
+    <div id="previewModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 overflow-y-auto hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+            <!-- Modal Header -->
+            <div class="p-4 bg-slate-800 text-white rounded-t-xl flex justify-between items-center">
+                <h3 class="font-bold text-sm"><i class="fa-solid fa-file-pdf text-red-400 mr-2"></i> ตัวอย่างเอกสารใบเสนอราคา (A4 Preview)</h3>
+                <button onclick="closePreviewModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <!-- Printable Paper Content (A4 Ratio) -->
+            <div class="p-6 overflow-y-auto flex-1 bg-gray-200">
+                <div id="quotationPaper" class="bg-white mx-auto p-8 shadow-md max-w-[210mm] min-h-[297mm] text-slate-800 text-xs space-y-6">
+                    <!-- Paper Header -->
+                    <div class="flex justify-between items-start border-b pb-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-blue-700">UNIMERCE GROUP</h2>
+                            <p class="text-[10px] text-gray-500">บริษัท ยูนิเมิร์ซ กรุ๊ป จำกัด</p>
+                            <p class="text-[10px] text-gray-500">123 ถนนสุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพฯ 10110</p>
+                            <p class="text-[10px] text-gray-500">โทร: 02-123-4567 | TAX ID: 0105551234567</p>
+                        </div>
+                        <div class="text-right">
+                            <h1 class="text-xl font-bold text-slate-800">ใบเสนอราคา</h1>
+                            <p class="text-[11px] font-semibold text-gray-600">QUOTATION</p>
+                            <div class="mt-2 text-[10px] text-gray-600">
+                                <div><strong>เลขที่:</strong> <span id="lblDocNo">-</span></div>
+                                <div><strong>วันที่:</strong> <span id="lblDocDate">-</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer & Doc Info Grid -->
+                    <div class="grid grid-cols-2 gap-4 bg-slate-50 p-3 rounded-lg border border-slate-200 text-[11px]">
+                        <div>
+                            <span class="font-bold text-gray-700 block mb-1">ลูกค้า / Customer:</span>
+                            <div id="lblCustName" class="font-semibold text-slate-800"></div>
+                            <div id="lblCustAddress" class="text-gray-600"></div>
+                            <div id="lblCustTax" class="text-gray-600"></div>
+                        </div>
+                        <div class="text-right">
+                            <div id="lblCustPhone" class="text-gray-600"></div>
+                            <div id="lblCustEmail" class="text-gray-600"></div>
+                        </div>
+                    </div>
+
+                    <!-- Item Table Preview -->
+                    <table class="w-full border-collapse border border-slate-200 text-[11px]">
                         <thead>
-                            <tr class="bg-slate-50 border-b border-gray-200 text-gray-600 font-medium">
-                                <th class="py-3 px-2 text-center w-12">ลำดับ</th>
-                                <th class="py-3 px-3 min-w-[200px]">รายการสินค้า</th>
-                                <th class="py-3 px-2 w-32 text-center">ระดับราคา</th>
-                                <th class="py-3 px-2 w-28 text-right">ราคาต่อหน่วย</th>
-                                <th class="py-3 px-2 w-20 text-center">จำนวน</th>
-                                <th class="py-3 px-2 w-36 text-center">ส่วนลด/รายการ</th>
-                                <th class="py-3 px-2 w-28 text-right">จำนวนเงิน</th>
-                                <th class="py-3 px-2 text-center w-12">ลบ</th>
+                            <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-semibold">
+                                <th class="py-2 px-2 border-r border-slate-200 w-10 text-center">#</th>
+                                <th class="py-2 px-3 border-r border-slate-200 text-left">รายการสินค้า</th>
+                                <th class="py-2 px-2 border-r border-slate-200 w-24 text-right">ราคา/หน่วย</th>
+                                <th class="py-2 px-2 border-r border-slate-200 w-16 text-center">จำนวน</th>
+                                <th class="py-2 px-2 border-r border-slate-200 w-20 text-center">ส่วนลด</th>
+                                <th class="py-2 px-2 text-right w-28">จำนวนเงิน</th>
                             </tr>
                         </thead>
-                        <tbody id="cartItemsTable" class="divide-y divide-gray-100">
-                            <tr id="emptyRow">
-                                <td colspan="8" class="text-center py-8 text-gray-400">ยังไม่มีรายการสินค้า กรุณาค้นหาและเลือกสินค้าด้านบน</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="lblTableBody" class="divide-y divide-slate-200"></tbody>
                     </table>
-                </div>
 
-                <!-- Summary Section -->
-                <div class="mt-6 border-t pt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">หมายเหตุเอกสาร (Remark)</label>
-                        <textarea id="docRemark" rows="3" placeholder="ข้อความเพิ่มเติมท้ายใบเสนอราคา..." class="w-full p-2.5 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    <!-- Total Calculations Preview -->
+                    <div class="flex justify-between items-start text-[11px] pt-2">
+                        <div class="w-1/2">
+                            <span class="font-bold text-gray-700">หมายเหตุ:</span>
+                            <p id="lblDocRemark" class="text-gray-600 whitespace-pre-line text-[10px] mt-1"></p>
+                        </div>
+                        <div class="w-5/12 space-y-1 text-right">
+                            <div class="flex justify-between"><span class="text-gray-600">รวมเป็นเงิน:</span><span id="lblSubtotal">0.00</span></div>
+                            <div class="flex justify-between"><span class="text-gray-600">ส่วนลดท้ายบิล:</span><span id="lblBillDiscount">0.00</span></div>
+                            <div class="flex justify-between"><span class="text-gray-600">ภาษีมูลค่าเพิ่ม 7%:</span><span id="lblVat">0.00</span></div>
+                            <div class="flex justify-between font-bold text-xs border-t border-slate-300 pt-1 text-blue-700"><span>จำนวนเงินรวมทั้งสิ้น:</span><span id="lblGrandTotal">0.00</span></div>
+                        </div>
                     </div>
 
-                    <div class="bg-slate-50 p-4 rounded-xl space-y-3">
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-600">ยอดรวมสินค้า (Subtotal):</span>
-                            <span id="txtSubtotal" class="font-semibold text-slate-800">0.00 ฿</span>
+                    <!-- Signatures Section -->
+                    <div class="grid grid-cols-2 gap-8 pt-12 text-center text-[10px]">
+                        <div>
+                            <div class="border-b border-gray-300 mb-1 h-12"></div>
+                            <p>ผู้เสนอราคา / Authorized Signature</p>
+                            <p class="text-gray-400">วันที่ / Date ...../...../.....</p>
                         </div>
-
-                        <!-- Bill Discount -->
-                        <div class="flex justify-between items-center gap-2 text-sm">
-                            <span class="text-gray-600">ส่วนลดท้ายบิล:</span>
-                            <div class="flex items-center gap-1">
-                                <input type="number" id="billDiscountVal" value="0" min="0" oninput="calculateTotals()" class="w-24 p-1 border rounded text-right text-sm">
-                                <select id="billDiscountType" onchange="calculateTotals()" class="p-1 border rounded text-xs bg-white">
-                                    <option value="THB">บาท</option>
-                                    <option value="PERCENT">%</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-600">หลังหักส่วนลด:</span>
-                            <span id="txtAfterDiscount" class="font-medium text-slate-800">0.00 ฿</span>
-                        </div>
-
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-600">ภาษีมูลค่าเพิ่ม (VAT 7%):</span>
-                            <span id="txtVat" class="font-medium text-slate-800">0.00 ฿</span>
-                        </div>
-
-                        <div class="flex justify-between items-center border-t pt-2 text-base font-bold text-blue-700">
-                            <span>จำนวนเงินรวมสุทธิ:</span>
-                            <span id="txtGrandTotal">0.00 ฿</span>
+                        <div>
+                            <div class="border-b border-gray-300 mb-1 h-12"></div>
+                            <p>ผู้อนุมัติสั่งซื้อ / Customer Acceptance</p>
+                            <p class="text-gray-400">วันที่ / Date ...../...../.....</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-        </div>
-    </div>
-
-    <!-- PREVIEW & EXPORT MODAL -->
-    <div id="previewModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl">
-            <!-- Modal Header -->
-            <div class="p-4 border-b flex justify-between items-center bg-slate-800 text-white rounded-t-2xl">
-                <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-file-pdf"></i> ตัวอย่างใบเสนอราคา (Preview)</h3>
-                <div class="flex items-center gap-2">
-                    <button onclick="downloadDocument('pdf')" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-semibold flex items-center gap-1">
-                        <i class="fa-solid fa-file-pdf"></i> โหลด PDF
-                    </button>
-                    <button onclick="downloadDocument('jpeg')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-semibold flex items-center gap-1">
-                        <i class="fa-solid fa-file-image"></i> โหลด JPEG
-                    </button>
-                    <button onclick="closePreviewModal()" class="text-gray-300 hover:text-white ml-2 text-xl font-bold">&times;</button>
-                </div>
-            </div>
-
-            <!-- Modal Body / Printable Render Sheet -->
-            <div class="p-6 overflow-y-auto bg-gray-200 flex justify-center">
-                
-                <!-- A4 ERP Paper Sheet -->
-                <div id="quotationPaper" class="paper-sheet w-[794px] min-h-[1123px] bg-white p-8 text-slate-800 text-xs flex flex-col justify-between">
-                    <div>
-                        <!-- Header / Logo & Company Info -->
-                        <div class="flex justify-between items-start border-b pb-4 mb-4">
-                            <div class="space-y-1">
-                                <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780642657/unimerce_home_btn_320_omzc5g.png" alt="Company Logo" class="h-12 object-contain mb-2">
-                                <div class="font-bold text-sm text-slate-900">บริษัท ยูนิเมิร์ซ จำกัด (สำนักงานใหญ่)</div>
-                                <div class="text-gray-600 max-w-xs">10/100 ซ.ลาดพร้าว 10 แขวงจอมพล เขตจตุจักร กรุงเทพฯ 10900</div>
-                                <div class="text-gray-600">เลขประจำตัวผู้เสียภาษี: 0105569099432</div>
-                                <div class="text-gray-600">อีเมล: sales@unimercegroup.com</div>
-                            </div>
-                            <div class="text-right">
-                                <h2 class="text-xl font-bold text-blue-800 tracking-wider">ใบเสนอราคา</h2>
-                                <p class="text-gray-500 font-semibold text-xs">QUOTATION</p>
-                                <div class="mt-3 space-y-1">
-                                    <div><span class="font-semibold">เลขที่เอกสาร:</span> <span id="lblDocNo">QT-202608-001</span></div>
-                                    <div><span class="font-semibold">วันที่:</span> <span id="lblDocDate">27/08/2026</span></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Customer Info Box -->
-                        <div class="bg-slate-50 p-3 rounded-lg border border-gray-200 mb-4 grid grid-cols-2 gap-4">
-                            <div>
-                                <span class="text-gray-400 block font-semibold text-[10px] uppercase">ข้อมูลลูกค้า (Customer)</span>
-                                <div id="lblCustName" class="font-bold text-slate-800 text-sm">--</div>
-                                <div id="lblCustAddress" class="text-gray-600">--</div>
-                                <div id="lblCustTax" class="text-gray-600">--</div>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-gray-400 block font-semibold text-[10px] uppercase">ช่องทางติดต่อ</span>
-                                <div id="lblCustPhone" class="text-gray-700">--</div>
-                                <div id="lblCustEmail" class="text-gray-700">--</div>
-                            </div>
-                        </div>
-
-                        <!-- Document Items Table -->
-                        <table class="w-full text-left border-collapse mb-4">
-                            <thead>
-                                <tr class="bg-slate-800 text-white font-semibold">
-                                    <th class="py-2 px-2 text-center w-10">ลำดับ</th>
-                                    <th class="py-2 px-3">รายการสินค้า (Description)</th>
-                                    <th class="py-2 px-2 text-right w-24">ราคา/หน่วย</th>
-                                    <th class="py-2 px-2 text-center w-16">จำนวน</th>
-                                    <th class="py-2 px-2 text-center w-20">ส่วนลด</th>
-                                    <th class="py-2 px-2 text-right w-24">จำนวนเงิน</th>
-                                </tr>
-                            </thead>
-                            <tbody id="lblTableBody" class="divide-y divide-gray-200 border-b">
-                                <!-- Dynamic Render -->
-                            </tbody>
-                        </table>
-
-                        <!-- Calculation Summary -->
-                        <div class="flex justify-between items-start">
-                            <div class="w-1/2 pr-4 space-y-2">
-                                <div class="bg-gray-50 p-2.5 rounded border">
-                                    <span class="font-semibold block text-slate-700 mb-1">รายละเอียดการชำระเงิน (Payment Info):</span>
-                                    <p class="text-gray-600">ธนาคารกสิกรไทย (บัญชีบริษัท)</p>
-                                    <p class="text-gray-600">ชื่อบัญชี: บจก. ยูนิเมิร์ซ</p>
-                                    <p class="font-bold text-slate-800">เลขที่บัญชี: 232-1-70687-0</p>
-                                </div>
-                                <div class="text-gray-500 italic" id="lblDocRemark"></div>
-                            </div>
-
-                            <div class="w-1/2 pl-4 space-y-1 text-right">
-                                <div class="flex justify-between py-1 border-b">
-                                    <span class="text-gray-600">รวมเงิน (Subtotal):</span>
-                                    <span id="lblSubtotal" class="font-medium">0.00</span>
-                                </div>
-                                <div class="flex justify-between py-1 border-b text-gray-600">
-                                    <span>ส่วนลดท้ายบิล:</span>
-                                    <span id="lblBillDiscount">0.00</span>
-                                </div>
-                                <div class="flex justify-between py-1 border-b text-gray-600">
-                                    <span>ภาษีมูลค่าเพิ่ม 7%:</span>
-                                    <span id="lblVat">0.00</span>
-                                </div>
-                                <div class="flex justify-between py-1.5 font-bold text-sm text-blue-900 border-b-2 border-slate-800">
-                                    <span>จำนวนเงินรวมทั้งสิ้น:</span>
-                                    <span id="lblGrandTotal">0.00</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Signature Area -->
-                    <div class="pt-8 grid grid-cols-2 gap-8 text-center border-t mt-8">
-                        <div>
-                            <div class="h-12 border-b border-dashed border-gray-400 mb-1"></div>
-                            <p class="font-medium text-slate-700">ผู้อนุมัติ / Authorized Signature</p>
-                            <p class="text-gray-400 text-[10px]">วันที่ _____/_____/_________</p>
-                        </div>
-                        <div>
-                            <div class="h-12 border-b border-dashed border-gray-400 mb-1"></div>
-                            <p class="font-medium text-slate-700">ผู้รับใบเสนอราคา / Customer Accept</p>
-                            <p class="text-gray-400 text-[10px]">วันที่ _____/_____/_________</p>
-                        </div>
-                    </div>
-                </div>
-
+            <!-- Modal Footer Actions -->
+            <div class="p-4 bg-slate-100 border-t rounded-b-xl flex justify-end gap-3">
+                <button onclick="downloadDocument('jpeg')" class="px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold shadow transition">
+                    <i class="fa-solid fa-file-image mr-1"></i> ดาวน์โหลด JPG
+                </button>
+                <button onclick="downloadDocument('pdf')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold shadow transition">
+                    <i class="fa-solid fa-file-pdf mr-1"></i> ดาวน์โหลด PDF
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- LOGIC SCRIPT -->
-    <script>
-        let cart = [];
-        let customerMode = 'db'; // 'db' | 'manual'
-
-        // Initialize Data
-        document.addEventListener('DOMContentLoaded', () => {
-            // Set Today Date in Label
-            document.getElementById('lblDocDate').innerText = new Date().toLocaleDateString('th-TH');
-            document.getElementById('lblDocNo').innerText = 'QT-' + new Date().toISOString().slice(0,7).replace('-','') + '-' + Math.floor(1000 + Math.random() * 9000);
-        });
-
-        // ----------------------------------------------------
-        // 1. CUSTOMER LOGIC
-        // ----------------------------------------------------
-        function setCustomerMode(mode) {
-            customerMode = mode;
-            const btnDB = document.getElementById('btnModeDB');
-            const btnManual = document.getElementById('btnModeManual');
-            const searchContainer = document.getElementById('customerSearchContainer');
-
-            if (mode === 'db') {
-                btnDB.className = "px-3 py-1 rounded-md text-xs font-semibold bg-white text-blue-600 shadow-sm transition";
-                btnManual.className = "px-3 py-1 rounded-md text-xs font-semibold text-gray-600 transition";
-                searchContainer.classList.remove('hidden');
-            } else {
-                btnManual.className = "px-3 py-1 rounded-md text-xs font-semibold bg-white text-blue-600 shadow-sm transition";
-                btnDB.className = "px-3 py-1 rounded-md text-xs font-semibold text-gray-600 transition";
-                searchContainer.classList.add('hidden');
-                clearCustomerFields();
-            }
-        }
-
-        async function searchCustomers(query) {
-            const dropdown = document.getElementById('custDropdown');
-            if (!query.trim()) {
-                dropdown.classList.add('hidden');
-                return;
-            }
-
-            try {
-                // Fetch from Supabase via central helper
-                const result = await window.supabaseFetch(`/customer_master?select=*&limit=10`);
-                
-                // Client-side multi-field filter
-                const filtered = result.filter(c => 
-                    (c.customer_code && c.customer_code.toLowerCase().includes(query.toLowerCase())) ||
-                    (c.customer_name && c.customer_name.toLowerCase().includes(query.toLowerCase())) ||
-                    (c.phone && c.phone.includes(query)) ||
-                    (c.email && c.email.toLowerCase().includes(query.toLowerCase())) ||
-                    (c.tax_id && c.tax_id.includes(query))
-                );
-
-                if (filtered.length === 0) {
-                    dropdown.innerHTML = `<div class="p-3 text-gray-400 text-xs">ไม่พบข้อมูลลูกค้า</div>`;
-                } else {
-                    dropdown.innerHTML = filtered.map(c => `
-                        <div onclick='selectCustomer(${JSON.stringify(c)})' class="p-3 hover:bg-blue-50 cursor-pointer border-b last:border-0">
-                            <div class="font-bold text-slate-800 text-xs">${c.customer_name || 'ไม่ระบุชื่อ'} <span class="text-gray-400 font-normal">(${c.customer_code})</span></div>
-                            <div class="text-[11px] text-gray-500">${c.customer_address || '-'} | Tel: ${c.phone || '-'}</div>
-                        </div>
-                    `).join('');
-                }
-                dropdown.classList.remove('hidden');
-            } catch (err) {
-                console.error("Search Customer Error:", err);
-            }
-        }
-
-        function selectCustomer(cust) {
-            document.getElementById('custName').value = cust.customer_name || '';
-            document.getElementById('custTaxId').value = cust.tax_id || '';
-            document.getElementById('custPhone').value = cust.phone || '';
-            document.getElementById('custAddress').value = cust.customer_address || '';
-            document.getElementById('custEmail').value = cust.email || '';
-
-            document.getElementById('custDropdown').classList.add('hidden');
-            document.getElementById('custSearchInput').value = '';
-        }
-
-        function clearCustomerFields() {
-            document.getElementById('custName').value = '';
-            document.getElementById('custTaxId').value = '';
-            document.getElementById('custPhone').value = '';
-            document.getElementById('custAddress').value = '';
-            document.getElementById('custEmail').value = '';
-        }
-
-        // ----------------------------------------------------
-        // 2. PRODUCT SELECTION & CART LOGIC
-        // ----------------------------------------------------
-        async function searchProducts(query) {
-            const dropdown = document.getElementById('prodDropdown');
-            if (!query.trim()) {
-                dropdown.classList.add('hidden');
-                return;
-            }
-
-            try {
-                // Fetch Products table scoped by Item_Code or Description
-                const result = await window.supabaseFetch(`/products?select=*&limit=15`);
-                
-                const filtered = result.filter(p => 
-                    (p.Item_Code && p.Item_Code.toLowerCase().includes(query.toLowerCase())) ||
-                    (p.Description && p.Description.toLowerCase().includes(query.toLowerCase()))
-                );
-
-                if (filtered.length === 0) {
-                    dropdown.innerHTML = `<div class="p-3 text-gray-400 text-xs">ไม่พบรายการสินค้า</div>`;
-                } else {
-                    dropdown.innerHTML = filtered.map(p => `
-                        <div onclick='addProductToCart(${JSON.stringify(p)})' class="p-3 hover:bg-blue-50 cursor-pointer border-b last:border-0 flex justify-between items-center">
-                            <div>
-                                <div class="font-bold text-slate-800 text-xs">${p.Item_Code}</div>
-                                <div class="text-xs text-gray-600">${p.Description || '-'}</div>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-xs font-semibold text-blue-600">PriceC: ${(p.PriceC || 0).toLocaleString()} ฿</span>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-                dropdown.classList.remove('hidden');
-            } catch (err) {
-                console.error("Search Product Error:", err);
-            }
-        }
-
-        function addProductToCart(product) {
-            // Price C as default
-            const defaultPrice = product.PriceC ?? product.ListPrice ?? 0;
-
-            const item = {
-                id: Date.now(),
-                Item_Code: product.Item_Code,
-                Description: product.Description || '',
-                productRef: product,
-                selectedPriceTier: 'PriceC',
-                unitPrice: parseFloat(defaultPrice),
-                qty: 1,
-                discountVal: 0,
-                discountType: 'THB' // 'THB' | 'PERCENT'
-            };
-
-            cart.push(item);
-            document.getElementById('prodDropdown').classList.add('hidden');
-            document.getElementById('prodSearchInput').value = '';
-            renderCart();
-        }
-
-        function updateTierPrice(cartId, tierName) {
-            const item = cart.find(i => i.id === cartId);
-            if (!item) return;
-
-            item.selectedPriceTier = tierName;
-            if (tierName !== 'MANUAL') {
-                item.unitPrice = parseFloat(item.productRef[tierName] || 0);
-            }
-            renderCart();
-        }
-
-        function updateUnitPrice(cartId, newPrice) {
-            const item = cart.find(i => i.id === cartId);
-            if (item) {
-                item.unitPrice = parseFloat(newPrice) || 0;
-                item.selectedPriceTier = 'MANUAL';
-                calculateTotals();
-            }
-        }
-
-        function updateQty(cartId, qty) {
-            const item = cart.find(i => i.id === cartId);
-            if (item) {
-                item.qty = Math.max(1, parseInt(qty) || 1);
-                calculateTotals();
-            }
-        }
-
-        function updateRowDiscount(cartId, val, type) {
-            const item = cart.find(i => i.id === cartId);
-            if (item) {
-                if (val !== null) item.discountVal = parseFloat(val) || 0;
-                if (type !== null) item.discountType = type;
-                calculateTotals();
-            }
-        }
-
-        function removeCartItem(cartId) {
-            cart = cart.filter(i => i.id !== cartId);
-            renderCart();
-        }
-
-        function renderCart() {
-            const tbody = document.getElementById('cartItemsTable');
-            if (cart.length === 0) {
-                tbody.innerHTML = `
-                    <tr id="emptyRow">
-                        <td colspan="8" class="text-center py-8 text-gray-400">ยังไม่มีรายการสินค้า กรุณาค้นหาและเลือกสินค้าด้านบน</td>
-                    </tr>`;
-                calculateTotals();
-                return;
-            }
-
-            tbody.innerHTML = cart.map((item, index) => {
-                const lineTotal = getLineTotal(item);
-
-                return `
-                    <tr class="hover:bg-gray-50 text-xs">
-                        <td class="py-3 px-2 text-center font-semibold text-gray-500">${index + 1}</td>
-                        <td class="py-3 px-3">
-                            <div class="font-bold text-slate-800">${item.Item_Code}</div>
-                            <div class="text-gray-500 text-[11px]">${item.Description}</div>
-                        </td>
-                        <td class="py-3 px-2 text-center">
-                            <select onchange="updateTierPrice(${item.id}, this.value)" class="p-1 border rounded text-xs bg-white">
-                                <option value="PriceC" ${item.selectedPriceTier === 'PriceC' ? 'selected' : ''}>Price C (Default)</option>
-                                <option value="PriceA" ${item.selectedPriceTier === 'PriceA' ? 'selected' : ''}>Price A</option>
-                                <option value="PriceB" ${item.selectedPriceTier === 'PriceB' ? 'selected' : ''}>Price B</option>
-                                <option value="PriceD" ${item.selectedPriceTier === 'PriceD' ? 'selected' : ''}>Price D</option>
-                                <option value="PriceL" ${item.selectedPriceTier === 'PriceL' ? 'selected' : ''}>Price L</option>
-                                <option value="PromotionPrice" ${item.selectedPriceTier === 'PromotionPrice' ? 'selected' : ''}>Promo Price</option>
-                                <option value="MANUAL" ${item.selectedPriceTier === 'MANUAL' ? 'selected' : ''}>Manual Edit</option>
-                            </select>
-                        </td>
-                        <td class="py-3 px-2 text-right">
-                            <input type="number" value="${item.unitPrice}" step="any" onchange="updateUnitPrice(${item.id}, this.value)" class="w-24 p-1 border rounded text-right text-xs">
-                        </td>
-                        <td class="py-3 px-2 text-center">
-                            <input type="number" value="${item.qty}" min="1" onchange="updateQty(${item.id}, this.value)" class="w-16 p-1 border rounded text-center text-xs">
-                        </td>
-                        <td class="py-3 px-2 text-center">
-                            <div class="flex items-center gap-1 justify-center">
-                                <input type="number" value="${item.discountVal}" min="0" oninput="updateRowDiscount(${item.id}, this.value, null)" class="w-16 p-1 border rounded text-right text-xs">
-                                <select onchange="updateRowDiscount(${item.id}, null, this.value)" class="p-1 border rounded text-[10px] bg-white">
-                                    <option value="THB" ${item.discountType === 'THB' ? 'selected' : ''}>฿</option>
-                                    <option value="PERCENT" ${item.discountType === 'PERCENT' ? 'selected' : ''}>%</option>
-                                </select>
-                            </div>
-                        </td>
-                        <td class="py-3 px-2 text-right font-bold text-slate-800" id="lineTotal_${item.id}">
-                            ${lineTotal.toLocaleString('th-TH', {minimumFractionDigits: 2})} ฿
-                        </td>
-                        <td class="py-3 px-2 text-center">
-                            <button onclick="removeCartItem(${item.id})" class="text-red-500 hover:text-red-700 text-sm">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-
-            calculateTotals();
-        }
-
-        function getLineTotal(item) {
-            const rawTotal = item.unitPrice * item.qty;
-            let discount = 0;
-            if (item.discountType === 'PERCENT') {
-                discount = rawTotal * (item.discountVal / 100);
-            } else {
-                discount = item.discountVal;
-            }
-            return Math.max(0, rawTotal - discount);
-        }
-
-        // ----------------------------------------------------
-        // 3. CALCULATIONS
-        // ----------------------------------------------------
-        function calculateTotals() {
-            let subtotal = 0;
-            cart.forEach(item => {
-                const total = getLineTotal(item);
-                const el = document.getElementById(`lineTotal_${item.id}`);
-                if (el) el.innerText = total.toLocaleString('th-TH', {minimumFractionDigits: 2}) + ' ฿';
-                subtotal += total;
-            });
-
-            // Bill Discount
-            const billDiscVal = parseFloat(document.getElementById('billDiscountVal').value) || 0;
-            const billDiscType = document.getElementById('billDiscountType').value;
-
-            let billDiscountAmt = 0;
-            if (billDiscType === 'PERCENT') {
-                billDiscountAmt = subtotal * (billDiscVal / 100);
-            } else {
-                billDiscountAmt = billDiscVal;
-            }
-
-            const afterDiscount = Math.max(0, subtotal - billDiscountAmt);
-            const vat = afterDiscount * 0.07;
-            const grandTotal = afterDiscount + vat;
-
-            // Render Control UI
-            document.getElementById('txtSubtotal').innerText = subtotal.toLocaleString('th-TH', {minimumFractionDigits: 2}) + ' ฿';
-            document.getElementById('txtAfterDiscount').innerText = afterDiscount.toLocaleString('th-TH', {minimumFractionDigits: 2}) + ' ฿';
-            document.getElementById('txtVat').innerText = vat.toLocaleString('th-TH', {minimumFractionDigits: 2}) + ' ฿';
-            document.getElementById('txtGrandTotal').innerText = grandTotal.toLocaleString('th-TH', {minimumFractionDigits: 2}) + ' ฿';
-
-            return { subtotal, billDiscountAmt, afterDiscount, vat, grandTotal };
-        }
-
-        // ----------------------------------------------------
-        // 4. PREVIEW & EXPORT MODAL
-        // ----------------------------------------------------
-        function openPreviewModal() {
-            // Validate Customer
-            const custName = document.getElementById('custName').value.trim();
-            if (!custName) {
-                alert('กรุณากรอกข้อมูลลูกค้าอย่างน้อยชื่อลูกค้าก่อนดู Preview');
-                return;
-            }
-
-            // Sync Customer Fields to Label
-            document.getElementById('lblCustName').innerText = custName;
-            document.getElementById('lblCustAddress').innerText = document.getElementById('custAddress').value || '-';
-            document.getElementById('lblCustTax').innerText = 'TAX ID: ' + (document.getElementById('custTaxId').value || '-');
-            document.getElementById('lblCustPhone').innerText = 'โทร: ' + (document.getElementById('custPhone').value || '-');
-            document.getElementById('lblCustEmail').innerText = 'อีเมล: ' + (document.getElementById('custEmail').value || '-');
-            document.getElementById('lblDocRemark').innerText = document.getElementById('docRemark').value;
-
-            // Sync Cart to Table
-            const tbody = document.getElementById('lblTableBody');
-            tbody.innerHTML = cart.map((item, idx) => {
-                const lineTotal = getLineTotal(item);
-                const discLabel = item.discountVal > 0 ? (item.discountType === 'PERCENT' ? `${item.discountVal}%` : `${item.discountVal}฿`) : '-';
-
-                return `
-                    <tr>
-                        <td class="py-2 px-2 text-center text-gray-500">${idx + 1}</td>
-                        <td class="py-2 px-3">
-                            <div class="font-bold text-slate-800">${item.Item_Code}</div>
-                            <div class="text-gray-500 text-[10px]">${item.Description}</div>
-                        </td>
-                        <td class="py-2 px-2 text-right">${item.unitPrice.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
-                        <td class="py-2 px-2 text-center">${item.qty}</td>
-                        <td class="py-2 px-2 text-center text-gray-600">${discLabel}</td>
-                        <td class="py-2 px-2 text-right font-medium">${lineTotal.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
-                    </tr>
-                `;
-            }).join('');
-
-            // Sync Calculation
-            const totals = calculateTotals();
-            document.getElementById('lblSubtotal').innerText = totals.subtotal.toLocaleString('th-TH', {minimumFractionDigits: 2});
-            document.getElementById('lblBillDiscount').innerText = totals.billDiscountAmt.toLocaleString('th-TH', {minimumFractionDigits: 2});
-            document.getElementById('lblVat').innerText = totals.vat.toLocaleString('th-TH', {minimumFractionDigits: 2});
-            document.getElementById('lblGrandTotal').innerText = totals.grandTotal.toLocaleString('th-TH', {minimumFractionDigits: 2});
-
-            document.getElementById('previewModal').classList.remove('hidden');
-        }
-
-        function closePreviewModal() {
-            document.getElementById('previewModal').classList.add('hidden');
-        }
-
-        // Download Action (PDF / JPEG)
-        async function downloadDocument(type) {
-            const paper = document.getElementById('quotationPaper');
-            
-            // Canvas Options for high clarity
-            const canvas = await html2canvas(paper, {
-                scale: 2,
-                useCORS: true,
-                logging: false
-            });
-
-            if (type === 'jpeg') {
-                const link = document.createElement('a');
-                link.download = `Quotation_${document.getElementById('lblDocNo').innerText}.jpg`;
-                link.href = canvas.toDataURL('image/jpeg', 0.95);
-                link.click();
-            } else if (type === 'pdf') {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgData = canvas.toDataURL('image/jpeg', 1.0);
-
-                const imgProps = pdf.getImageProperties(imgData);
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-                pdf.save(`Quotation_${document.getElementById('lblDocNo').innerText}.pdf`);
-            }
-        }
-
-        function resetForm() {
-            if(confirm('คุณต้องการล้างข้อมูลในแบบฟอร์มทั้งหมดใช่หรือไม่?')) {
-                cart = [];
-                clearCustomerFields();
-                document.getElementById('docRemark').value = '';
-                document.getElementById('billDiscountVal').value = '0';
-                renderCart();
-            }
-        }
-    </script>
+    <!-- Global Layout Engine (ถ้ามี) -->
+    <script src="config.js"></script>
+    <script src="layoutuerp.js"></script>
+    <!-- Quotation Logic Script -->
+    <script src="quotation.js"></script>
 </body>
 </html>
