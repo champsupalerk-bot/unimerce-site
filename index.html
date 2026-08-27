@@ -497,19 +497,19 @@ body{
 }
 
 /* =========================
-   CONTACT CARD (CLEAN & CENTERED)
+   CONTACT CARD (MINIMAL GRID LEFT-ALIGNED)
 ========================= */
 .contact-section {
   padding: 60px 20px 80px;
 }
 
 .contact-card {
-  max-width: 460px;
+  max-width: 480px;
   margin: 0 auto;
-  padding: 32px 28px;
+  padding: 36px 32px;
   background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
   border: 1px solid #eee;
 }
 
@@ -518,29 +518,31 @@ body{
   letter-spacing: 2px;
   text-align: center;
   color: #111;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
-.contact-list > div {
-  display: flex;
-  justify-content: space-between;
+/* ใช้ CSS Grid ล็อกความกว้างชื่อแผนกให้ 130px เพื่อให้ Email ชิดซ้ายเริ่มตรงกันทุกบรรทัด */
+.contact-list {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  row-gap: 12px;
+  column-gap: 16px;
   align-items: center;
-  padding: 10px 0;
-  font-size: 13.5px;
-  border-bottom: 1px dashed #f0f0f0;
 }
 
-.contact-list > div:last-child {
-  border-bottom: none;
+.contact-item {
+  display: contents; /* ปลดล็อก child elements ขึ้นมาบน Grid แม่ */
 }
 
-.contact-list span {
+.contact-list .label {
   color: #666;
+  font-size: 13.5px;
 }
 
 .contact-list a {
   color: #111;
   text-decoration: none;
+  font-size: 13.5px;
   font-weight: 500;
   transition: color 0.2s;
 }
@@ -550,15 +552,26 @@ body{
   text-decoration: underline;
 }
 
-.contact-list .mobile {
-  margin-top: 8px;
-  padding-top: 14px;
-  border-top: 1px solid #eee;
-  border-bottom: none;
+/* เส้นคั่น Minimal บางเบา */
+.contact-divider {
+  grid-column: 1 / -1;
+  height: 1px;
+  background: #f0f0f0;
+  margin: 4px 0;
+}
+
+.contact-mobile-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  column-gap: 16px;
+  padding-top: 8px;
+  border-top: 1px dashed #e5e5e5;
+  margin-top: 4px;
 }
 
 /* =========================
-   MOBILE
+   MOBILE RESPONSIVE
 ========================= */
 @media(max-width:768px){
 
@@ -618,13 +631,19 @@ body{
 
 @media(max-width:480px){
   .contact-card {
-    padding: 24px 18px;
+    padding: 24px 20px;
   }
-  .contact-list > div {
+  .contact-list, .contact-mobile-row {
+    grid-template-columns: 1fr;
+    row-gap: 4px;
+  }
+  .contact-item {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    padding: 8px 0;
+    margin-bottom: 6px;
+  }
+  .contact-mobile-row {
+    margin-top: 8px;
   }
 }
 
@@ -830,12 +849,39 @@ body{
     <h2>CONTACT US</h2>
     
     <div class="contact-list">
-      <div><span>สอบถามข้อมูลสินค้า</span><a href="mailto:contact@unimercegroup.com">contact@unimercegroup.com</a></div>
-      <div><span>สั่งซื้อสินค้า</span><a href="mailto:sales@unimercegroup.com">sales@unimercegroup.com</a></div>
-      <div><span>จัดซื้อ</span><a href="mailto:purchase@unimercegroup.com">purchase@unimercegroup.com</a></div>
-      <div><span>ติดตามเอกสาร</span><a href="mailto:billing@unimercegroup.com">billing@unimercegroup.com</a></div>
-      <div><span>บริการหลังการขาย</span><a href="mailto:support@unimercegroup.com">support@unimercegroup.com</a></div>
-      <div class="mobile"><span>Mobile</span><a href="tel:+66944955505">+66 (0)94 495 5505</a></div>
+      <div class="contact-item">
+        <span class="label">สอบถามข้อมูลสินค้า</span>
+        <a href="mailto:contact@unimercegroup.com">contact@unimercegroup.com</a>
+      </div>
+      <div class="contact-divider"></div>
+
+      <div class="contact-item">
+        <span class="label">สั่งซื้อสินค้า</span>
+        <a href="mailto:sales@unimercegroup.com">sales@unimercegroup.com</a>
+      </div>
+      <div class="contact-divider"></div>
+
+      <div class="contact-item">
+        <span class="label">จัดซื้อ</span>
+        <a href="mailto:purchase@unimercegroup.com">purchase@unimercegroup.com</a>
+      </div>
+      <div class="contact-divider"></div>
+
+      <div class="contact-item">
+        <span class="label">ติดตามเอกสาร</span>
+        <a href="mailto:billing@unimercegroup.com">billing@unimercegroup.com</a>
+      </div>
+      <div class="contact-divider"></div>
+
+      <div class="contact-item">
+        <span class="label">บริการหลังการขาย</span>
+        <a href="mailto:support@unimercegroup.com">support@unimercegroup.com</a>
+      </div>
+
+      <div class="contact-mobile-row">
+        <span class="label">Mobile</span>
+        <a href="tel:+66944955505">+66 (0)94 495 5505</a>
+      </div>
     </div>
   </div>
 </section>
