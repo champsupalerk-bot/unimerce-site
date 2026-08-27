@@ -211,7 +211,7 @@ function addProductToCart(product) {
     };
 
     cart.push(item);
-    
+
     const dropdown = document.getElementById('prodDropdown');
     const searchInput = document.getElementById('prodSearchInput');
     if (dropdown) dropdown.classList.add('hidden');
@@ -338,7 +338,7 @@ function getLineTotal(item) {
 }
 
 // ----------------------------------------------------
-// 3. CALCULATIONS
+// 3. CALCULATIONS (ไม่มีภาษีมูลค่าเพิ่ม / VAT 7%)
 // ----------------------------------------------------
 function calculateTotals() {
     let subtotal = 0;
@@ -362,21 +362,16 @@ function calculateTotals() {
         billDiscountAmt = billDiscVal;
     }
 
-    const afterDiscount = Math.max(0, subtotal - billDiscountAmt);
-    const vat = afterDiscount * 0.07;
-    const grandTotal = afterDiscount + vat;
+    // ยอดรวมหลังหักส่วนลด (คิดเป็น Grand Total ทันทีเนื่องจากยังไม่ได้จด VAT)
+    const grandTotal = Math.max(0, subtotal - billDiscountAmt);
 
     const elSub = document.getElementById('txtSubtotal');
-    const elAfter = document.getElementById('txtAfterDiscount');
-    const elVat = document.getElementById('txtVat');
     const elGrand = document.getElementById('txtGrandTotal');
 
     if (elSub) elSub.innerText = subtotal.toLocaleString('th-TH', {minimumFractionDigits: 2}) + ' ฿';
-    if (elAfter) elAfter.innerText = afterDiscount.toLocaleString('th-TH', {minimumFractionDigits: 2}) + ' ฿';
-    if (elVat) elVat.innerText = vat.toLocaleString('th-TH', {minimumFractionDigits: 2}) + ' ฿';
     if (elGrand) elGrand.innerText = grandTotal.toLocaleString('th-TH', {minimumFractionDigits: 2}) + ' ฿';
 
-    return { subtotal, billDiscountAmt, afterDiscount, vat, grandTotal };
+    return { subtotal, billDiscountAmt, grandTotal };
 }
 
 // ----------------------------------------------------
@@ -390,11 +385,11 @@ function openPreviewModal() {
     }
 
     document.getElementById('lblCustName').innerText = custName;
-    document.getElementById('lblCustAddress').innerText = document.getElementById('custAddress').value || '-';
-    document.getElementById('lblCustTax').innerText = 'TAX ID: ' + (document.getElementById('custTaxId').value || '-');
-    document.getElementById('lblCustPhone').innerText = 'โทร: ' + (document.getElementById('custPhone').value || '-');
-    document.getElementById('lblCustEmail').innerText = 'อีเมล: ' + (document.getElementById('custEmail').value || '-');
-    document.getElementById('lblDocRemark').innerText = document.getElementById('docRemark').value;
+    document.getElementById('lblCustAddress').innerText = document.getElementById('custAddress').value ? 'ที่อยู่: ' + document.getElementById('custAddress').value : '';
+    document.getElementById('lblCustTax').innerText = document.getElementById('custTaxId').value ? 'เลขประจำตัวผู้เสียภาษี: ' + document.getElementById('custTaxId').value : '';
+    document.getElementById('lblCustPhone').innerText = document.getElementById('custPhone').value ? 'เบอร์โทร: ' + document.getElementById('custPhone').value : '';
+    document.getElementById('lblCustEmail').innerText = document.getElementById('custEmail').value ? 'อีเมล: ' + document.getElementById('custEmail').value : '';
+    document.getElementById('lblDocRemark').innerText = document.getElementById('docRemark').value || '-';
 
     const tbody = document.getElementById('lblTableBody');
     if (tbody) {
@@ -421,7 +416,6 @@ function openPreviewModal() {
     const totals = calculateTotals();
     document.getElementById('lblSubtotal').innerText = totals.subtotal.toLocaleString('th-TH', {minimumFractionDigits: 2});
     document.getElementById('lblBillDiscount').innerText = totals.billDiscountAmt.toLocaleString('th-TH', {minimumFractionDigits: 2});
-    document.getElementById('lblVat').innerText = totals.vat.toLocaleString('th-TH', {minimumFractionDigits: 2});
     document.getElementById('lblGrandTotal').innerText = totals.grandTotal.toLocaleString('th-TH', {minimumFractionDigits: 2});
 
     document.getElementById('previewModal').classList.remove('hidden');
@@ -434,7 +428,7 @@ function closePreviewModal() {
 async function downloadDocument(type) {
     const paper = document.getElementById('quotationPaper');
     if (!paper) return;
-    
+
     const canvas = await html2canvas(paper, {
         scale: 2,
         useCORS: true,
