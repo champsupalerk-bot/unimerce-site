@@ -8,8 +8,17 @@ window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
 // ฟังก์ชันศูนย์กลางสำหรับยิงดึงข้อมูล (ดึงสิทธิ์และ URL จากด้านบนอัตโนมัติ)
 window.supabaseFetch = async function(endpoint) {
     try {
-        const cleanEndpoint = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
-        const response = await fetch(`${window.SUPABASE_URL}/rest/v1${cleanEndpoint}`, {
+        let requestUrl = "";
+
+        // ตรวจสอบว่า endpoint เป็น URL เต็ม หรือเป็น path ย่อย
+        if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
+            requestUrl = endpoint;
+        } else {
+            const cleanEndpoint = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+            requestUrl = `${window.SUPABASE_URL}/rest/v1${cleanEndpoint}`;
+        }
+
+        const response = await fetch(requestUrl, {
             method: 'GET',
             headers: {
                 'apikey': window.SUPABASE_ANON_KEY,
@@ -17,7 +26,11 @@ window.supabaseFetch = async function(endpoint) {
                 'Content-Type': 'application/json'
             }
         });
-        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status}`);
+        }
+
         return await response.json();
     } catch (error) {
         console.error("Supabase Fetch Error:", error);
