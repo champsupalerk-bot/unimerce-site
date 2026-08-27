@@ -136,6 +136,15 @@
                     <textarea id="docRemark" rows="3" placeholder="ข้อกำหนด ชำระเงิน กำหนดส่งมอบ ฯลฯ" class="w-full p-2 border border-slate-300 rounded-md text-xs focus:ring-1 focus:ring-blue-500"></textarea>
                 </div>
                 <div class="bg-slate-50 p-4 rounded-xl space-y-2 border text-xs">
+                    <!-- Option VAT Checkbox -->
+                    <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-200">
+                        <label for="chkIncludeVat" class="font-semibold text-slate-700 cursor-pointer flex items-center gap-2">
+                            <input type="checkbox" id="chkIncludeVat" onchange="calculateTotals()" checked class="rounded text-blue-600 focus:ring-blue-500 w-4 h-4">
+                            คำนวณภาษีมูลค่าเพิ่ม (VAT 7%)
+                        </label>
+                        <span class="text-[10px] text-slate-500">(ราคารวม VAT ในตัวแล้ว)</span>
+                    </div>
+
                     <div class="flex justify-between text-gray-600">
                         <span>รวมเป็นเงิน (Subtotal):</span>
                         <span id="txtSubtotal" class="font-semibold">0.00 ฿</span>
@@ -151,7 +160,7 @@
                         </div>
                     </div>
                     <div class="flex justify-between text-gray-600">
-                        <span>จำนวนเงินหลังหักส่วนลด:</span>
+                        <span>มูลค่าก่อนภาษี (Pre-Tax):</span>
                         <span id="txtAfterDiscount" class="font-semibold">0.00 ฿</span>
                     </div>
                     <div class="flex justify-between text-gray-600">
@@ -179,13 +188,16 @@
             <!-- Printable Paper Content (A4 Ratio) -->
             <div class="p-6 overflow-y-auto flex-1 bg-gray-200">
                 <div id="quotationPaper" class="bg-white mx-auto p-8 shadow-md max-w-[210mm] min-h-[297mm] text-slate-800 text-xs space-y-6">
-                    <!-- Paper Header -->
+                    <!-- Paper Header (แก้ไขข้อมูลบริษัท + โลโก้) -->
                     <div class="flex justify-between items-start border-b pb-4">
-                        <div>
-                            <h2 class="text-xl font-bold text-blue-700">UNIMERCE GROUP</h2>
-                            <p class="text-[10px] text-gray-500">บริษัท ยูนิเมิร์ซ กรุ๊ป จำกัด</p>
-                            <p class="text-[10px] text-gray-500">123 ถนนสุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพฯ 10110</p>
-                            <p class="text-[10px] text-gray-500">โทร: 02-123-4567 | TAX ID: 0105551234567</p>
+                        <div class="flex items-start gap-3">
+                            <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780642657/unimerce_home_btn_320_omzc5g.png" alt="Unimerce Logo" class="h-14 object-contain">
+                            <div>
+                                <h2 class="text-base font-bold text-slate-900">บริษัท ยูนิเมิร์ซ จำกัด (สำนักงานใหญ่)</h2>
+                                <p class="text-[10px] text-gray-600">10/100 ซ.ลาดพร้าว 10 แขวงจอมพล เขตจตุจักร กรุงเทพฯ 10900</p>
+                                <p class="text-[10px] text-gray-600">เลขประจำตัวผู้เสียภาษี: 0105569099432</p>
+                                <p class="text-[10px] text-gray-600">Email: sales@unimercegroup.com</p>
+                            </div>
                         </div>
                         <div class="text-right">
                             <h1 class="text-xl font-bold text-slate-800">ใบเสนอราคา</h1>
@@ -226,30 +238,46 @@
                         <tbody id="lblTableBody" class="divide-y divide-slate-200"></tbody>
                     </table>
 
-                    <!-- Total Calculations Preview -->
-                    <div class="flex justify-between items-start text-[11px] pt-2">
-                        <div class="w-1/2">
-                            <span class="font-bold text-gray-700">หมายเหตุ:</span>
-                            <p id="lblDocRemark" class="text-gray-600 whitespace-pre-line text-[10px] mt-1"></p>
+                    <!-- Total Calculations & Payment Info Preview -->
+                    <div class="flex justify-between items-start text-[11px] pt-2 gap-4">
+                        <div class="w-7/12 space-y-3">
+                            <!-- Bank Payment Details -->
+                            <div class="bg-blue-50 border border-blue-200 p-2.5 rounded-lg text-[10px]">
+                                <p class="font-bold text-blue-900 mb-1 flex items-center gap-1">
+                                    <i class="fa-solid fa-building-columns"></i> ช่องทางการชำระเงิน (Bank Details)
+                                </p>
+                                <div class="text-slate-700 space-y-0.5">
+                                    <p><strong>ธนาคาร:</strong> ธนาคารกสิกรไทย (K-Bank)</p>
+                                    <p><strong>ชื่อบัญชี:</strong> บจก. ยูนิเมิร์ซ</p>
+                                    <p><strong>เลขที่บัญชี:</strong> <span class="font-bold text-blue-800">232-1-70687-0</span> (บัญชีออมทรัพย์)</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="font-bold text-gray-700">หมายเหตุ:</span>
+                                <p id="lblDocRemark" class="text-gray-600 whitespace-pre-line text-[10px] mt-1"></p>
+                            </div>
                         </div>
+
                         <div class="w-5/12 space-y-1 text-right">
                             <div class="flex justify-between"><span class="text-gray-600">รวมเป็นเงิน:</span><span id="lblSubtotal">0.00</span></div>
                             <div class="flex justify-between"><span class="text-gray-600">ส่วนลดท้ายบิล:</span><span id="lblBillDiscount">0.00</span></div>
+                            <div class="flex justify-between"><span class="text-gray-600">มูลค่าก่อนภาษี:</span><span id="lblPreTax">0.00</span></div>
                             <div class="flex justify-between"><span class="text-gray-600">ภาษีมูลค่าเพิ่ม 7%:</span><span id="lblVat">0.00</span></div>
                             <div class="flex justify-between font-bold text-xs border-t border-slate-300 pt-1 text-blue-700"><span>จำนวนเงินรวมทั้งสิ้น:</span><span id="lblGrandTotal">0.00</span></div>
                         </div>
                     </div>
 
                     <!-- Signatures Section -->
-                    <div class="grid grid-cols-2 gap-8 pt-12 text-center text-[10px]">
+                    <div class="grid grid-cols-2 gap-8 pt-10 text-center text-[10px]">
                         <div>
                             <div class="border-b border-gray-300 mb-1 h-12"></div>
-                            <p>ผู้เสนอราคา / Authorized Signature</p>
+                            <p class="font-semibold">ผู้เสนอราคา / Authorized Signature</p>
                             <p class="text-gray-400">วันที่ / Date ...../...../.....</p>
                         </div>
                         <div>
                             <div class="border-b border-gray-300 mb-1 h-12"></div>
-                            <p>ผู้อนุมัติสั่งซื้อ / Customer Acceptance</p>
+                            <p class="font-semibold">ผู้อนุมัติสั่งซื้อ / Customer Acceptance</p>
                             <p class="text-gray-400">วันที่ / Date ...../...../.....</p>
                         </div>
                     </div>
@@ -268,7 +296,7 @@
         </div>
     </div>
 
-    <!-- Global Layout Engine (ถ้ามี) -->
+    <!-- Global Layout Engine -->
     <script src="config.js"></script>
     <script src="layoutuerp.js"></script>
     <!-- Quotation Logic Script -->
