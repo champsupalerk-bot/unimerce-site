@@ -1,98 +1,103 @@
 /* =========================
    GLOBAL STYLES
 ========================= */
-* {
-  box-sizing: border-box;
+
+*{
+  box-sizing:border-box;
 }
 
-html {
-  scroll-behavior: smooth;
+html{
+  scroll-behavior:smooth;
 }
 
-body {
-  margin: 0;
+body{
+  margin:0;
   font-family: 'Kanit', sans-serif;
-  background: #fdfbf9;
-  color: #0f172a; 
-  padding-top: 0;
-  overflow-x: hidden;
+  background:#fdfbf9;
+  color:#0f172a; 
+  padding-top:0; /* ปรับลด Space ด้านบนติด Topbar เพื่อ UX ที่ดีขึ้น ไม่ให้เกิดช่องว่างมากเกินไป */
+  overflow-x:hidden;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
+a{
+  text-decoration:none;
+  color:inherit;
 }
 
-img {
-  max-width: 100%;
-  display: block;
+img{
+  max-width:100%;
+  display:block;
 }
 
 /* =========================
    PAGE WIDTH CONTAINER
 ========================= */
-.section-inner {
-  width: 100%;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0 24px;
+
+.section-inner{
+  width:100%;
+  max-width:1180px;
+  margin:0 auto;
+  padding:0 24px;
 }
 
 /* =========================
    HERO BANNER SECTION
 ========================= */
-.hero {
-  position: relative;
-  min-height: 92vh;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
+
+.hero{
+  position:relative;
+  min-height:92vh;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
   background:
     linear-gradient(rgba(15, 23, 42, 0.40), rgba(15, 23, 42, 0.60)),
     url('https://res.cloudinary.com/dzgaej1wo/image/upload/v1786549831/cous_banner_zjoksl.png') center/cover no-repeat;
 }
 
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
   background: radial-gradient(circle at center, rgba(255,255,255,0.05), transparent 75%);
 }
 
-.smoke {
-  position: absolute;
-  width: 520px;
-  height: 520px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.05);
-  filter: blur(90px);
-  animation: floatSmoke 14s infinite ease-in-out;
-  will-change: transform, opacity;
+/* Premium Smoke Effect */
+
+.smoke{
+  position:absolute;
+  width:520px;
+  height:520px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.05);
+  filter:blur(90px);
+  animation:floatSmoke 14s infinite ease-in-out;
+  will-change:transform, opacity;
   pointer-events: none;
 }
 
-.smoke.one {
-  top: 10%;
-  left: -120px;
+.smoke.one{
+  top:10%;
+  left:-120px;
 }
 
-.smoke.two {
-  bottom: -120px;
-  right: -120px;
-  animation-delay: 3s;
+.smoke.two{
+  bottom:-120px;
+  right:-120px;
+  animation-delay:3s;
 }
 
-@keyframes floatSmoke {
-  0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.5; }
-  50% { transform: translateY(-30px) translateX(40px) scale(1.15); opacity: 0.8; }
-  100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.5; }
+@keyframes floatSmoke{
+  0%{transform:translateY(0) translateX(0) scale(1); opacity: 0.5;}
+  50%{transform:translateY(-30px) translateX(40px) scale(1.15); opacity: 0.8;}
+  100%{transform:translateY(0) translateX(0) scale(1); opacity: 0.5;}
 }
 
-.hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 760px;
-  color: #fff;
+.hero-content{
+  position:relative;
+  z-index:2;
+  max-width:760px;
+  color:#fff;
   animation: aromaMistyFade 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
@@ -101,49 +106,55 @@ img {
   100% { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
-.breadcrumb {
-  font-size: 13px;
-  letter-spacing: 1px;
-  margin-bottom: 20px;
-  opacity: 0.8;
+.breadcrumb{
+  font-size:13px;
+  letter-spacing:1px;
+  margin-bottom:20px;
+  opacity:0.8;
   font-weight: 300;
 }
 
-.breadcrumb a {
-  opacity: 0.9;
+.breadcrumb a{
+  opacity:0.9;
 }
 
-.hero-kicker {
+.hero-kicker{
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 14px;
-  letter-spacing: 4px;
-  margin-bottom: 18px;
-  opacity: 0.9;
+  font-size:14px;
+  letter-spacing:4px;
+  margin-bottom:18px;
+  opacity:0.9;
   font-weight: 500;
   color: #ebd3be;
 }
 
-.hero-logo {
+.hero-logo{
   height: 1.2em;
   width: auto;
   object-fit: contain;
 }
 
+/* จัดให้โลโก้อยู่บรรทัดบน และ Aroma Systems อยู่บรรทัดล่าง */
+
 .hero-title {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
+  flex-direction: column; /* เรียงเป็นแนวตั้ง (โลโก้บน, ตัวหนังสือล่าง) */
+  align-items: flex-start; /* ชิดซ้าย */
+  gap: 12px;               /* ระยะห่างระหว่างโลโก้กับตัวหนังสือ */
   margin-bottom: 26px;
 }
 
+/* ปรับโลโก้บรรทัดบนให้ใหญ่ โดดเด่น */
+
 .hero-title-logo {
-  height: clamp(80px, 10vw, 120px);
+  height: clamp(80px, 10vw, 120px); /* ความสูงใหญ่สะใจ และย่อขยายตามหน้าจออัตโนมัติ */
   width: auto;
   object-fit: contain;
 }
+
+/* ปรับขนาดตัวหนังสือ Aroma Systems บรรทัดล่าง */
 
 .hero-title-text {
   font-size: clamp(30px, 6vw, 50px);
@@ -153,53 +164,62 @@ img {
   color: #e1e1e1;
 }
 
-.hero-desc {
-  max-width: 660px;
-  font-size: 16px;
-  line-height: 1.9;
-  color: rgba(255,255,255,0.90);
+.hero-title-logo {
+  height: 2.5em;
+  width: auto;
+  object-fit: contain;
+}
+
+.hero-desc{
+  max-width:660px;
+  font-size:16px;
+  line-height:1.9;
+  color:rgba(255,255,255,0.90);
   font-weight: 300;
 }
 
-.hero-actions {
-  margin-top: 38px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+.hero-actions{
+  margin-top:38px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
 }
 
-.hero-btn {
-  padding: 14px 28px;
-  border-radius: 999px;
-  font-size: 14px;
+.hero-btn{
+  padding:14px 28px;
+  border-radius:999px;
+  font-size:14px;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition:all 0.3s ease;
 }
 
-.hero-btn.primary {
-  background: #fff;
-  color: #0f172a;
+.hero-btn.primary{
+  background:#fff;
+  color:#0f172a;
   box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
-.hero-btn.secondary {
-  border: 1px solid rgba(255,255,255,0.35);
-  color: #fff;
-  backdrop-filter: blur(8px);
+.hero-btn.secondary{
+  border:1px solid rgba(255,255,255,0.35);
+  color:#fff;
+  backdrop-filter:blur(8px);
 }
 
-.hero-btn:hover {
-  transform: translateY(-3px);
+.hero-btn:hover{
+  transform:translateY(-3px);
   box-shadow: 0 15px 30px rgba(0,0,0,0.2);
 }
 
 /* =========================
    DYNAMIC SECTION DESIGN SYSTEM
 ========================= */
-.section {
-  padding: 120px 0;
+
+.section{
+  padding:120px 0;
   position: relative;
 }
+
+/* Section Colors (โทนสลับ มืด-สว่าง-มืด) */
 
 .section-light {
   background: #fdfbf9;
@@ -209,10 +229,12 @@ img {
   background: #f4f6f9;
 }
 
-.section-dark {
-  background: #0f172a; 
-  color: #fff;
+.section-dark{
+  background:#0f172a; 
+  color:#fff;
 }
+
+/* WOW EFFECT: หยดน้ำกระจายเป็นออร่าจางๆ (Ripple Aura) */
 
 .ripple-effect {
   position: absolute;
@@ -243,11 +265,12 @@ img {
 }
 
 /* =========================
-   SECTION HEADERS
+   SECTION HEADERS (Editorial Style)
 ========================= */
-.section-head {
-  max-width: 850px;
-  margin-bottom: 60px;
+
+.section-head{
+  max-width:850px;
+  margin-bottom:60px;
 }
 
 .section-head.center {
@@ -256,11 +279,11 @@ img {
   text-align: center;
 }
 
-.section-kicker {
-  font-size: 12px;
-  letter-spacing: 3px;
-  color: #9b7f63;
-  margin-bottom: 14px;
+.section-kicker{
+  font-size:12px;
+  letter-spacing:3px;
+  color:#9b7f63;
+  margin-bottom:14px;
   font-weight: 600;
 }
 
@@ -268,28 +291,29 @@ img {
   color: #ebd3be;
 }
 
-.section-title {
-  font-size: clamp(30px, 4.5vw, 48px);
-  line-height: 1.2;
-  margin-bottom: 22px;
-  letter-spacing: -1px;
+.section-title{
+  font-size:clamp(30px, 4.5vw, 48px);
+  line-height:1.2;
+  margin-bottom:22px;
+  letter-spacing:-1px;
   font-weight: 600;
 }
 
-.section-desc {
-  font-size: 16px;
-  line-height: 1.95;
-  color: #475569;
+.section-desc{
+  font-size:16px;
+  line-height:1.95;
+  color:#475569;
   font-weight: 300;
 }
 
-.section-dark .section-desc {
-  color: rgba(241, 245, 249, 0.80);
+.section-dark .section-desc{
+  color:rgba(241, 245, 249, 0.80);
 }
 
 /* =========================
-   EDITORIAL ROW STYLE
+   EDITORIAL ROW STYLE (สลับซ้ายขวา)
 ========================= */
+
 .editorial-row {
   display: flex;
   align-items: center;
@@ -332,23 +356,26 @@ img {
 }
 
 /* =========================
-   TECHNOLOGY CLUSTER CARDS
+   TECHNOLOGY CLUSTER CARDS (CLEAN & BULLET STYLES)
 ========================= */
-.tech-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 30px;
+
+.tech-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:30px;
 }
 
-.tech-card {
-  background: #fff;
-  border-radius: 24px;
-  padding: 40px;
+.tech-card{
+  background:#fff;
+  border-radius:24px;
+  padding:40px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.02);
+  box-shadow:0 10px 30px rgba(15, 23, 42, 0.02);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
+
+/* 🏆 Cold-Air Diffuser (Hero Highlight Styles) */
 
 .tech-card.recommended-hero {
   border: 2px solid #9b7f63;
@@ -356,6 +383,8 @@ img {
   transform: translateY(-4px);
   background: #fffdfb;
 }
+
+/* สไตล์เฉพาะสำหรับลดความโดดเด่นของระบบที่ไม่เน้นขาย */
 
 .tech-card.not-focused {
   border: 1px dashed #cbd5e1;
@@ -377,30 +406,32 @@ img {
   text-transform: uppercase;
 }
 
-.tech-name {
-  font-size: 26px;
-  line-height: 1.2;
+.tech-name{
+  font-size:26px;
+  line-height:1.2;
   margin: 0 0 6px 0;
   color: #0f172a;
   font-weight: 600;
 }
 
-.tech-sub {
-  color: #9b7f63;
-  font-size: 13px;
+.tech-sub{
+  color:#9b7f63;
+  font-size:13px;
   letter-spacing: 1px;
   text-transform: uppercase;
   font-weight: 500;
   margin-bottom: 20px;
 }
 
-.tech-body {
-  font-size: 15px;
-  line-height: 1.85;
-  color: #475569;
+.tech-body{
+  font-size:15px;
+  line-height:1.85;
+  color:#475569;
   font-weight: 300;
   margin-bottom: 26px;
 }
+
+/* Modern Minimalist Bullet List instead of Box-in-Box */
 
 .tech-bullet-list {
   list-style: none;
@@ -435,6 +466,8 @@ img {
   box-shadow: 0 0 8px #9b7f63;
 }
 
+/* Disclaimer Notice Box สำหรับข้อเสียระบบ HVAC */
+
 .tech-disclaimer-box {
   margin-top: 20px;
   padding: 14px 18px;
@@ -460,8 +493,9 @@ img {
 }
 
 /* =========================
-   PRODUCT BANNER
+   [UPDATED] BRAND PRODUCT BANNER STYLES (.PNG ADAPTIVE)
 ========================= */
+
 .product-showcase-section {
   width: 100%;
   background: radial-gradient(circle at top right, #fdfbf9 0%, #f1ebe5 100%);
@@ -552,8 +586,9 @@ img {
 }
 
 /* =========================
-   COMPARISON TABLE
+   FITTED COMPARISON TABLE (MOBILE PERFECT UX)
 ========================= */
+
 .compare-container {
   width: 100%;
   background: rgba(255, 255, 255, 0.03);
@@ -562,6 +597,8 @@ img {
   overflow: hidden;
 }
 
+/* Table Architecture */
+
 .table-header-row {
   display: grid;
   grid-template-columns: 1.2fr 1.8fr 1fr;
@@ -569,4 +606,378 @@ img {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.table-body-row
+.table-body-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.8fr 1fr;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: *background* 0.2s ease;
+}
+
+.table-body-row:last-child {
+  border-bottom: none;
+}
+
+.table-body-row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Recommended row focus inside the table */
+
+.table-body-row.row-highlight {
+  background: rgba(235, 211, 190, 0.06);
+}
+
+/* ลดความเด่นของแถวที่เราไม่ได้โฟกัสขาย */
+
+.table-body-row.row-dimmed {
+  opacity: 0.5;
+}
+
+.table-cell {
+  padding: 22px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.85);
+  align-self: start;
+  word-break: break-word;
+}
+
+.table-cell.th {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 13px;
+  color: #ebd3be;
+  padding: 18px 22px;
+}
+
+.table-cell.bold-tech {
+  font-weight: 500;
+  color: #fff;
+}
+
+.table-cell.bold-tech span {
+  display: inline-block;
+  font-size: 11px;
+  color: #ebd3be;
+  margin-left: 4px;
+}
+
+.table-cell.highlight-spec {
+  font-weight: 500;
+  color: #ebd3be;
+}
+
+/* =========================
+   WATERLESS OIL GUIDE CONTENT BOXES
+========================= */
+
+.oil-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+  align-items:stretch;
+}
+
+.info-box{
+  background:#fff;
+  border-radius:24px;
+  padding:40px;
+  border:1px solid #f1f5f9;
+  box-shadow:0 15px 35px rgba(15, 23, 42, 0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.info-box h3{
+  margin-top:0;
+  font-size:24px;
+  margin-bottom:20px;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.info-box p{
+  font-size:15px;
+  line-height:1.85;
+  color:#475569;
+  font-weight: 300;
+  margin-bottom: 24px;
+}
+
+.info-box-img {
+  width: 100%;
+  height: 160px;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.info-box-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.point-list{
+  display:grid;
+  gap:12px;
+  margin-top:auto;
+}
+
+.point-item{
+  padding:14px 18px;
+  border-radius:14px;
+  background:#f8fafc;
+  font-size:14px;
+  line-height:1.6;
+  color: #334155;
+  font-weight: 400;
+}
+
+/* =========================
+   CONTROL DASHBOARD GRID
+========================= */
+
+.control-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+}
+
+.control-card{
+  background:#fff;
+  border-radius:24px;
+  padding:40px;
+  border:1px solid #f1f5f9;
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.02);
+}
+
+.control-card h3{
+  margin-top:0;
+  font-size:24px;
+  color: #0f172a;
+  font-weight: 600;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 12px;
+}
+
+.control-card ul{
+  padding-left:18px;
+  line-height:2.2;
+  color:#475569;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* =========================
+   CTA PREMIUM BANNER
+========================= */
+
+.cta-wrapper {
+  padding-top: 60px;
+}
+
+.cta{
+  position:relative;
+  overflow:hidden;
+  border-radius:32px;
+  padding:80px 60px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color:#fff;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
+}
+
+.cta::before{
+  content:"";
+  position:absolute;
+  width:450px;
+  height:450px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(235, 211, 190, 0.08), transparent 70%);
+  right:-100px;
+  top:-100px;
+  filter:blur(20px);
+}
+
+.cta-title{
+  position:relative;
+  z-index:2;
+  font-size:clamp(30px, 4.5vw, 48px);
+  line-height:1.2;
+  margin-bottom:20px;
+  max-width:760px;
+  font-weight: 600;
+}
+
+.cta-desc{
+  position:relative;
+  z-index:2;
+  max-width:720px;
+  line-height:1.9;
+  color:rgba(255,255,255,0.85);
+  font-weight: 300;
+  font-size: 16px;
+}
+
+.cta-actions{
+  position:relative;
+  z-index:2;
+  margin-top:38px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
+}
+
+.cta-btn{
+  padding:14px 32px;
+  border-radius:999px;
+  background:#fff;
+  color:#0f172a;
+  font-size:14px;
+  font-weight: 500;
+  transition:all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.cta-btn:hover{
+  transform:translateY(-3px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+/* =========================
+   ADVANCED MOBILE UX OPTIMIZATION
+========================= */
+
+@media(max-width:900px){
+
+  .hero{
+    min-height:auto;
+    padding:120px 0 80px; 
+  }
+
+  /* 🎯 [จุดแก้ไขมัดรวมที่เดียว] อัปสเกลเนื้อหาคำอธิบาย/บทความทั้งหมดบนมือถือเป็น 17px โดยหัวข้อใหญ่คงเดิม */
+
+  .hero-desc,
+  .section-desc,
+  .tech-body,
+  .info-box p,
+  .tech-disclaimer-text,
+  .product-showcase-p {
+    font-size: 17px !important;
+    line-height: 1.85;
+  }
+
+  .section{
+    padding:80px 0; 
+  }
+
+  /* Editorial & Layout Reset */
+
+  .editorial-row, .editorial-row.reverse {
+    flex-direction: column;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+
+  .tech-grid,
+  .oil-layout,
+  .control-grid{
+    grid-template-columns:1fr;
+  }
+
+  .tech-card,
+  .info-box,
+  .control-card{
+    padding:28px;
+    border-radius:20px;
+  }
+
+  .tech-card.recommended-hero {
+    transform: none;
+  }
+
+  .recommend-badge {
+    top: 20px;
+    right: 20px;
+  }
+
+  /* Responsive Banner PNG Mobile Stack Optimization */
+
+  .product-showcase-section {
+    padding: 50px 0;
+  }
+
+  .product-showcase-wrapper {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .product-showcase-info {
+    max-width: 100%;
+  }
+
+  .product-showcase-media {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .product-showcase-img {
+    max-height: 260px;
+  }
+
+  .product-showcase-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cta{
+    padding:50px 30px;
+    border-radius:24px;
+  }
+
+  .section-inner{
+    padding:0 20px;
+  }
+
+  .hero-actions,
+  .cta-actions{
+    flex-direction:column;
+    align-items:stretch;
+    gap: 12px;
+  }
+
+  .hero-btn,
+  .cta-btn{
+    width:100%;
+    text-align:center;
+    padding: 14px;
+  }
+
+  /* 📱 MOBILE PERFECT RENDER: FIT ALL COLUMN 100% SCREEN */
+
+  .table-header-row, .table-body-row {
+    grid-template-columns: 1fr 1.3fr 0.9fr; 
+  }
+
+  .table-cell {
+    padding: 12px 8px; 
+    font-size: 13px; 
+    line-height: 1.5;
+  }
+
+  .table-cell.th {
+    padding: 14px 8px;
+    font-size: 11px;
+  }
+
+  .ripple-effect {
+    width: 280px;
+    height: 280px;
+    left: 50%;
+    top: 90%;
+  }
+
+}
