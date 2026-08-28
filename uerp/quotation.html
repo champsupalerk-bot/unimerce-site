@@ -27,8 +27,8 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen pb-12">
 
-    <!-- UERP Header -->
-    <div id="uerpHeader"></div>
+    <!-- Header Placeholder -->
+    <div id="headerContainer"></div>
 
     <!-- Content Wrapper (จำกัดความกว้าง 1000px) -->
     <div class="max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 pt-6">
@@ -296,5 +296,51 @@
     
     <!-- Quotation Logic Script -->
     <script src="quotation.js"></script>
+
+    <script>
+        // ====================================================
+        // UERP Header Injection
+        // ====================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHeader();
+        });
+
+        async function loadHeader() {
+            try {
+                const res = await fetch('uerpheader.html');
+
+                if (!res.ok) {
+                    throw new Error('Header load failed');
+                }
+
+                const html = await res.text();
+
+                const headerContainer = document.getElementById('headerContainer');
+
+                if (!headerContainer) {
+                    throw new Error('headerContainer not found');
+                }
+
+                headerContainer.innerHTML = html;
+
+                // Active menu สำหรับหน้า Quotation
+                const quotationTab = headerContainer.querySelector('[data-page="quotation"]');
+
+                if (quotationTab) {
+                    quotationTab.classList.add('chrome-tab-active');
+                }
+
+                // เรียก Layout Engine หลังจาก Inject Header แล้ว
+                if (typeof window.initUerpLayout === 'function') {
+                    window.__uerpLayoutInitialized = false;
+                    window.initUerpLayout();
+                }
+
+            } catch (err) {
+                console.warn('Cannot load header dynamically:', err);
+            }
+        }
+    </script>
+
 </body>
 </html>
