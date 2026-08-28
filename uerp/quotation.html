@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -40,7 +41,7 @@
 <body class="bg-slate-100 text-slate-800 min-h-screen pb-12">
     <!-- Header Placeholder -->
     <div id="headerContainer"></div>
-    <!-- Content Wrapper (จำกัดความกว้าง 1000px) -->
+    <!-- Content Wrapper -->
     <div class="max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <!-- Header & Action Buttons -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -91,18 +92,17 @@
                     </button>
                 </div>
             </div>
-            <!-- Customer Search Box (In DB Mode) -->
+            <!-- Customer Search Box -->
             <div id="customerSearchContainer" class="relative mb-4">
                 <div class="relative">
                     <input
                         type="text"
                         id="custSearchInput"
                         oninput="searchCustomers(this.value)"
-                        placeholder="พิมพ์คำค้นหาลูกค้า (ชื่อ, รหัส, เบอร์โทร, เลขภาษี ฯลฯ)..."
+                        placeholder="กำลังเตรียมข้อมูลลูกค้า..."
                         class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-xs"></i>
                 </div>
-                <!-- Dropdown Search Results -->
                 <div
                     id="custDropdown"
                     class="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden">
@@ -170,11 +170,10 @@
                         type="text"
                         id="prodSearchInput"
                         oninput="searchProducts(this.value)"
-                        placeholder="พิมพ์รหัสสินค้า (Item_Code) หรือ รายละเอียด (Description)..."
+                        placeholder="กำลังเตรียมข้อมูลสินค้า..."
                         class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     <i class="fa-solid fa-barcode absolute left-3.5 top-3 text-gray-400 text-xs"></i>
                 </div>
-                <!-- Dropdown Product Results -->
                 <div
                     id="prodDropdown"
                     class="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden">
@@ -185,35 +184,19 @@
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-slate-50 border-y border-slate-200 text-[11px] font-semibold text-slate-600 uppercase">
-                            <th class="py-2.5 px-2 text-center w-12">
-                                #
-                            </th>
-                            <th class="py-2.5 px-3">
-                                สินค้า / รายละเอียด
-                            </th>
-                            <th class="py-2.5 px-2 text-center w-36">
-                                ระดับราคา (Tier)
-                            </th>
-                            <th class="py-2.5 px-2 text-right w-28">
-                                ราคา/หน่วย
-                            </th>
-                            <th class="py-2.5 px-2 text-center w-20">
-                                จำนวน
-                            </th>
-                            <th class="py-2.5 px-2 text-center w-32">
-                                ส่วนลด/บรรทัด
-                            </th>
-                            <th class="py-2.5 px-2 text-right w-32">
-                                ราคารวม
-                            </th>
+                            <th class="py-2.5 px-2 text-center w-12">#</th>
+                            <th class="py-2.5 px-3">สินค้า / รายละเอียด</th>
+                            <th class="py-2.5 px-2 text-center w-36">ระดับราคา (Tier)</th>
+                            <th class="py-2.5 px-2 text-right w-28">ราคา/หน่วย</th>
+                            <th class="py-2.5 px-2 text-center w-20">จำนวน</th>
+                            <th class="py-2.5 px-2 text-center w-32">ส่วนลด/บรรทัด</th>
+                            <th class="py-2.5 px-2 text-right w-32">ราคารวม</th>
                             <th class="py-2.5 px-2 text-center w-12"></th>
                         </tr>
                     </thead>
                     <tbody id="cartItemsTable" class="divide-y divide-slate-100">
                         <tr id="emptyRow">
-                            <td
-                                colspan="8"
-                                class="text-center py-8 text-gray-400 text-xs">
+                            <td colspan="8" class="text-center py-8 text-gray-400 text-xs">
                                 ยังไม่มีรายการสินค้า กรุณาค้นหาและเลือกสินค้าด้านบน
                             </td>
                         </tr>
@@ -234,17 +217,11 @@
                 </div>
                 <div class="bg-slate-50 p-4 rounded-xl space-y-2 border text-xs">
                     <div class="flex justify-between text-gray-600">
-                        <span>
-                            รวมเป็นเงิน (Subtotal):
-                        </span>
-                        <span id="txtSubtotal" class="font-semibold">
-                            0.00 ฿
-                        </span>
+                        <span>รวมเป็นเงิน (Subtotal):</span>
+                        <span id="txtSubtotal" class="font-semibold">0.00 ฿</span>
                     </div>
                     <div class="flex justify-between items-center text-gray-600">
-                        <span>
-                            ส่วนลดท้ายบิล:
-                        </span>
+                        <span>ส่วนลดท้ายบิล:</span>
                         <div class="flex items-center gap-1">
                             <input
                                 type="number"
@@ -263,12 +240,8 @@
                         </div>
                     </div>
                     <div class="flex justify-between text-slate-800 font-bold text-sm pt-2 border-t border-slate-200">
-                        <span>
-                            จำนวนเงินรวมทั้งสิ้น:
-                        </span>
-                        <span id="txtGrandTotal" class="text-blue-600">
-                            0.00 ฿
-                        </span>
+                        <span>จำนวนเงินรวมทั้งสิ้น:</span>
+                        <span id="txtGrandTotal" class="text-blue-600">0.00 ฿</span>
                     </div>
                 </div>
             </div>
@@ -291,12 +264,12 @@
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <!-- Printable Paper Content (A4 Ratio) -->
+            <!-- Printable Paper Content -->
             <div class="p-6 overflow-y-auto flex-1 bg-gray-200">
                 <div
                     id="quotationPaper"
                     class="bg-white mx-auto p-8 shadow-md max-w-[210mm] min-h-[297mm] text-slate-800 text-xs space-y-6">
-                    <!-- Paper Header (Logo เล็กลง + ข้อมูลอยู่ด้านใต้) -->
+                    <!-- Paper Header -->
                     <div class="flex justify-between items-start border-b pb-4">
                         <div class="space-y-1.5">
                             <img
@@ -376,10 +349,7 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody
-                            id="lblTableBody"
-                            class="divide-y divide-slate-200">
-                        </tbody>
+                        <tbody id="lblTableBody" class="divide-y divide-slate-200"></tbody>
                     </table>
                     <!-- Total Calculations Preview -->
                     <div class="flex justify-between items-start text-[11px] pt-2 gap-4">
@@ -423,25 +393,19 @@
                                 <span class="text-gray-600">
                                     รวมเป็นเงิน:
                                 </span>
-                                <span id="lblSubtotal">
-                                    0.00
-                                </span>
+                                <span id="lblSubtotal">0.00</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">
                                     ส่วนลดท้ายบิล:
                                 </span>
-                                <span id="lblBillDiscount">
-                                    0.00
-                                </span>
+                                <span id="lblBillDiscount">0.00</span>
                             </div>
                             <div class="flex justify-between font-bold text-xs border-t border-slate-300 pt-2 text-blue-700">
                                 <span>
                                     จำนวนเงินรวมทั้งสิ้น:
                                 </span>
-                                <span id="lblGrandTotal">
-                                    0.00
-                                </span>
+                                <span id="lblGrandTotal">0.00</span>
                             </div>
                         </div>
                     </div>
@@ -485,11 +449,14 @@
             </div>
         </div>
     </div>
-    <!-- UERP Layout Script Integration -->
+    <!-- =========================================================
+         UERP CORE
+         ========================================================= -->
     <script src="/uerp/config.js"></script>
+    <script src="/uerp/uerp-cache.js"></script>
     <script src="/uerp/barcode-label-engine.js"></script>
     <script src="/uerp/layoutuerp.js"></script>
-    <!-- Quotation Logic Script -->
+    <!-- Quotation Logic -->
     <script src="quotation.js"></script>
     <!-- Load Shared UERP Header -->
     <script>
