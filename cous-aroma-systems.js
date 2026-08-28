@@ -1,39 +1,30 @@
-/**
- * COUS AROMA - External Component Loader
- * Dynamic Header & Footer Includer
- */
-
-// ฟังก์ชันโหลด HTML Template อเนกประสงค์
-async function loadComponent(elementId, fileUrl) {
-  const container = document.getElementById(elementId);
-  if (!container) return;
-
-  try {
-    const response = await fetch(fileUrl);
-    if (!response.ok) throw new Error(`Failed to load ${fileUrl}: ${response.statusText}`);
-    
-    const html = await response.text();
-    container.innerHTML = html;
-
-    // รัน JavaScript ที่อาจจะแถมมากับตัว Template (เช่น สคริปต์ใน Header)
-    const scripts = container.querySelectorAll("script");
-    scripts.forEach((oldScript) => {
-      const newScript = document.createElement("script");
-      if (oldScript.src) {
-        newScript.src = oldScript.src;
-      } else {
-        newScript.textContent = oldScript.textContent;
-      }
-      document.body.appendChild(newScript);
-      oldScript.remove();
-    });
-  } catch (error) {
-    console.warn(`[Template Loader] Skip loading ${fileUrl}:`, error.message);
-  }
-}
-
-// เริ่มทำงานเมื่อ DOM โหลดโครงสร้างสำเร็จ
-document.addEventListener("DOMContentLoaded", () => {
-  loadComponent("header-placeholder", "header.html");
-  loadComponent("footer-placeholder", "footer.html");
-});
+// ดึงไฟล์ header.html มาแสดงผล 
+fetch("header.html") 
+  .then(res => { 
+    if(res.ok) return res.text(); 
+    throw new Error('Header not found'); 
+  }) 
+  .then(data => { 
+    document.getElementById("header-placeholder").innerHTML = data; 
+    // โหลด Script ที่อาจติดมากับ Header 
+    const scripts = document.getElementById("header-placeholder").querySelectorAll("script"); 
+    scripts.forEach(oldScript => { 
+      const newScript = document.createElement("script"); 
+      if(oldScript.src) { newScript.src = oldScript.src; }  
+      else { newScript.textContent = oldScript.textContent; } 
+      document.body.appendChild(newScript); 
+      oldScript.remove(); 
+    }); 
+  }) 
+  .catch(err => console.log("Header external file template load skip.")); 
+ 
+// ดึงไฟล์ footer.html มาแสดงผล 
+fetch("footer.html") 
+  .then(res => { 
+    if(res.ok) return res.text(); 
+    throw new Error('Footer not found'); 
+  }) 
+  .then(data => { 
+    document.getElementById("footer-placeholder").innerHTML = data; 
+  }) 
+  .catch(err => console.log("Footer external file template load skip.")); 
