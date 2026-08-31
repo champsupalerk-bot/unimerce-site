@@ -23,10 +23,8 @@
 <meta property="og:image:width" content="600" />
 <meta property="og:image:height" content="600" />
 
-<!-- FontAwesome สำหรับไอคอน -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-<!-- Tailwind CSS & Config สำหรับ Google Color Scheme -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -54,34 +52,27 @@ html, body {
   color: #111;
   height: 100vh;
   height: 100dvh;
-  overflow: hidden; /* ล็อกไม่ให้หน้าต่างใหญ่ Scroll */
+  overflow: hidden;
 }
 
-/* Header ให้ปล่อย Fullwidth อิสระ */
 #headerContainer {
   width: 100%;
   flex-shrink: 0;
 }
 
-/* =========================
-   PAGE DETAIL WRAPPER (ล็อกเฉพาะเนื้อหาด้านล่างที่ 1000px)
-========================= */
 .page-detail-wrapper {
   max-width: 1000px !important;
   width: 100% !important;
   margin-left: auto !important;
   margin-right: auto !important;
   padding: 4px 16px 12px 16px;
-  height: calc(100vh - 60px); /* หักความสูงของ Header ออกเพื่อให้พอดีหน้าจอ */
+  height: calc(100vh - 60px);
   height: calc(100dvh - 60px);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
 
-/* =========================
-   BREADCRUMB ROW & RIGHT CONTROL GROUP
-========================= */
 .breadcrumb-row {
   display: flex;
   justify-content: space-between;
@@ -114,7 +105,6 @@ html, body {
   gap: 10px;
 }
 
-/* Checkbox วงกลม & Toggle Buttons */
 .hide-zero-wrap, .show-pk-wrap {
   display: flex;
   align-items: center;
@@ -142,6 +132,7 @@ html, body {
   border: none;
   margin-left: 2px;
 }
+
 .btn-help-icon:hover {
   background: #2f5ea8;
   color: #fff;
@@ -207,9 +198,6 @@ html, body {
   transform: scale(1);
 }
 
-/* =========================
-   CATEGORY FILTER BAR
-========================= */
 .category-filter-bar {
   display: flex;
   flex-wrap: wrap;
@@ -222,9 +210,6 @@ html, body {
   flex-shrink: 0;
 }
 
-/* =========================
-   FILTER BAR & DROPDOWN
-========================= */
 .filterbar {
   margin-bottom: 8px;
   flex-shrink: 0;
@@ -278,7 +263,6 @@ html, body {
   transform: scale(0.98);
 }
 
-/* EXECUTION LOG & REFRESH BUTTON */
 .action-left-group {
   display: flex;
   align-items: center;
@@ -361,9 +345,6 @@ html, body {
   box-shadow: 0 0 0 3px rgba(47, 94, 168, 0.12), 0 4px 12px rgba(0,0,0,0.04);
 }
 
-/* =========================
-   TABLE WRAP (ยืดขยายเต็มพื้นที่ที่เหลือ)
-========================= */
 .table-wrap {
   width: 100%;
   flex: 1;
@@ -411,7 +392,6 @@ tbody tr:hover {
   cursor: pointer;
 }
 
-/* ROW SELECTION HIGHLIGHT */
 tbody tr.row-selected {
   background-color: #e8f0fe !important;
 }
@@ -462,9 +442,6 @@ tbody tr.row-selected td {
   opacity: 0.9;
 }
 
-/* =========================
-   BARCODE SHORTCUT BUTTON (SVG)
-========================= */
 .btn-barcode-trigger {
   background: none;
   border: none;
@@ -478,13 +455,11 @@ tbody tr.row-selected td {
   border-radius: 4px;
   transition: background 0.1s;
 }
+
 .btn-barcode-trigger:hover {
   background: #e8e8e8;
 }
 
-/* =========================
-   MOBILE FRIENDLY POPUP MODAL STYLES
-========================= */
 .barcode-modal-overlay, .help-modal-overlay {
   display: none;
   position: fixed;
@@ -496,6 +471,7 @@ tbody tr.row-selected td {
   padding: 16px;
   box-sizing: border-box;
 }
+
 .barcode-modal-content, .help-modal-content {
   background: #fff;
   padding: 20px;
@@ -506,6 +482,7 @@ tbody tr.row-selected td {
   text-align: center;
   box-sizing: border-box;
 }
+
 .barcode-modal-title, .help-modal-title {
   margin: 0 0 12px 0;
   font-size: 16px;
@@ -513,16 +490,12 @@ tbody tr.row-selected td {
   color: #2f5ea8;
 }
 
-/* ซ่อนกล่องแปลงภาพดิบ */
 #hiddenStickerWrapper {
   position: absolute;
   left: -9999px;
   top: -9999px;
 }
 
-/* =========================================================
-   STICKER EXACT OVERRIDE
-========================================================= */
 .actual-sticker-target {
   width: 300px !important;
   height: 200px !important;
@@ -603,28 +576,30 @@ tbody tr.row-selected td {
   padding: 10px;
 }
 
-/* =========================
-   MOBILE ADJUSTMENTS
-========================= */
 @media(max-width:768px){
   .page-detail-wrapper {
     padding: 2px 8px 8px 8px;
     height: 100vh;
     height: 100dvh;
   }
+
   .category-filter-bar {
     gap: 8px;
     padding: 6px 8px;
   }
+
   .category-label {
     font-size: 13px;
   }
+
   tbody td {
     font-size: 14px;
   }
+
   .table-wrap{
     overflow-x:hidden;
   }
+
   thead th.col-stock{
     background:#2f5ea8;
     color:#fff;
@@ -647,50 +622,68 @@ tbody tr.row-selected td {
 
 <body>
 
-<!-- Header แยกอยู่นอก Detail Wrapper ปล่อยให้แสดงผล Fullwidth ตามปกติ -->
 <div id="headerContainer"></div>
 
 <div id="toast" class="toast-notice">Copied to clipboard</div>
 
-<!-- เนื้อหา Detail ทั้งหมดถูกหุ้มด้วย .page-detail-wrapper ที่ล็อกความกว้างไว้ที่ 1000px -->
 <div class="page-detail-wrapper">
 
   <div class="breadcrumb-row">
     <div class="breadcrumb"><a href="/">HOME</a> / INVENTORY</div>
+
     <div class="top-right-options">
+
       <label class="hide-zero-wrap">
         <input type="checkbox" id="hideZero" checked />
         Hide 0 / –
       </label>
+
       <label class="show-pk-wrap" title="กรองแสดงเฉพาะรายการที่ติ๊กเลือกไว้">
         <input type="checkbox" id="showOnlySelected" />
         Show PK (<span id="selectedCount">0</span>)
       </label>
-      <button class="btn-help-icon" onclick="openHelpModal()" title="คู่มือฟังก์ชันการเลือก">?</button>
+
+      <button class="btn-help-icon"
+              onclick="openHelpModal()"
+              title="คู่มือฟังก์ชันการเลือก">?</button>
+
     </div>
   </div>
 
   <div class="filterbar">
-    <input id="searchBox" type="text" placeholder="Search Item Code / Description..." />
+    <input id="searchBox"
+           type="text"
+           placeholder="Search Item Code / Description..." />
   </div>
 
-  <!-- DROPDOWN & ACTION BAR -->
   <div class="dropdown-bar-wrap">
-    <!-- ฝั่งซ้าย: ปุ่ม PK, Execution Log และ ปุ่ม Refresh -->
+
     <div class="action-left-group">
-      <a href="/uerp/picklist" class="btn-picklist" title="Picklist Realtime">
+
+      <a href="/uerp/picklist"
+         class="btn-picklist"
+         title="Picklist Realtime">
         <i class="fa-solid fa-list-check"></i>
         <span>PK</span>
       </a>
-      <span id="execLog" class="execution-log" title="Data Status">Init...</span>
-      <button id="btnRefresh" class="btn-refresh-cache" onclick="forceRefreshData()" title="Force Refresh Cache (1000/batch)">
+
+      <span id="execLog"
+            class="execution-log"
+            title="Data Status">Init...</span>
+
+      <button id="btnRefresh"
+              class="btn-refresh-cache"
+              onclick="forceRefreshData()"
+              title="Force Refresh Cache (1000/batch)">
         <i class="fa-solid fa-rotate-right"></i>
       </button>
+
     </div>
 
-    <!-- Dropdown ฝั่งขวา -->
     <div class="dropdown-controls">
+
       <span class="dropdown-label">view:</span>
+
       <select id="column3Select" class="google-select">
         <option value="OnHand">OnHand</option>
         <option value="PriceC">PriceC</option>
@@ -702,518 +695,169 @@ tbody tr.row-selected td {
         <option value="StockStatus">StockStatus</option>
         <option value="จำนวนต่อลัง">จำนวนต่อลัง</option>
         <option value="INDEX2_BRAND">Brand</option>
-        <option value="Location">Location</option> 
+        <option value="Location">Location</option>
       </select>
+
     </div>
   </div>
 
   <div class="category-filter-bar">
+
     <label class="category-label">
-      <input type="checkbox" class="cat-checkbox" value="WaterPurification" /> กรองน้ำ
+      <input type="checkbox"
+             class="cat-checkbox"
+             value="WaterPurification" />
+      กรองน้ำ
     </label>
+
     <label class="category-label">
-      <input type="checkbox" class="cat-checkbox" value="WaterQualityTools" /> วัดค่าน้ำ
+      <input type="checkbox"
+             class="cat-checkbox"
+             value="WaterQualityTools" />
+      วัดค่าน้ำ
     </label>
+
     <label class="category-label">
-      <input type="checkbox" class="cat-checkbox" value="MeasurementTools" /> วัดค่าทั่วไป
+      <input type="checkbox"
+             class="cat-checkbox"
+             value="MeasurementTools" />
+      วัดค่าทั่วไป
     </label>
+
     <label class="category-label">
-      <input type="checkbox" class="cat-checkbox" value="AromaSystems" /> อโรม่า
+      <input type="checkbox"
+             class="cat-checkbox"
+             value="AromaSystems" />
+      อโรม่า
     </label>
+
   </div>
 
   <div class="table-wrap" id="tableWrapContainer">
+
     <table>
+
       <thead>
         <tr>
+
           <th onclick="sortTable('Item_Code')">
-            Item Code <span class="sort-arrow" id="arrow-Item_Code">↕</span>
+            Item Code
+            <span class="sort-arrow" id="arrow-Item_Code">↕</span>
           </th>
+
           <th onclick="sortTable('Description')">
-            Description <span class="sort-arrow" id="arrow-Description">↕</span>
+            Description
+            <span class="sort-arrow" id="arrow-Description">↕</span>
           </th>
-          <th onclick="sortTable(document.getElementById('column3Select').value)" class="col-stock">
-            <span id="col3HeaderName">OH</span> <span class="sort-arrow" id="arrow-Col3">↕</span>
+
+          <th onclick="sortTable(document.getElementById('column3Select').value)"
+              class="col-stock">
+            <span id="col3HeaderName">OH</span>
+            <span class="sort-arrow" id="arrow-Col3">↕</span>
           </th>
+
         </tr>
       </thead>
+
       <tbody id="table-body">
-        <tr><td colspan="3">กำลังโหลดข้อมูล...</td></tr>
+        <tr>
+          <td colspan="3">กำลังโหลดข้อมูล...</td>
+        </tr>
       </tbody>
+
     </table>
+
   </div>
 
 </div>
 
 <div id="hiddenStickerWrapper">
+
   <div id="stickerTarget" class="actual-sticker-target">
+
     <div id="lblProductName" class="sticker-p-name"></div>
+
     <div class="sticker-barcode-area">
       <svg id="barcodeSvgCanvas"></svg>
     </div>
+
     <div class="sticker-footer-row">
-      <span class="sticker-web-url">www.unimercegroup.com</span>
-      <span id="lblLocationField" class="sticker-location-field"></span>
+      <span class="sticker-web-url">
+        www.unimercegroup.com
+      </span>
+
+      <span id="lblLocationField"
+            class="sticker-location-field"></span>
     </div>
+
   </div>
+
 </div>
 
-<div id="barcodeModal" class="barcode-modal-overlay" onclick="closeModalOnOutsideClick(event)">
+<div id="barcodeModal"
+     class="barcode-modal-overlay"
+     onclick="closeModalOnOutsideClick(event)">
+
   <div class="barcode-modal-content">
-    <div class="barcode-modal-title">แตะค้างที่ป้ายเพื่อบันทึกJpeg</div>
-    
-    <div style="margin: 15px 0 20px 0; display: flex; justify-content: center;" id="resultImageContainer">
+
+    <div class="barcode-modal-title">
+      แตะค้างที่ป้ายเพื่อบันทึกJpeg
     </div>
 
-    <button class="btn-cancel-modal" onclick="closeBarcodeModal()">Close</button>
+    <div style="margin: 15px 0 20px 0; display: flex; justify-content: center;"
+         id="resultImageContainer">
+    </div>
+
+    <button class="btn-cancel-modal"
+            onclick="closeBarcodeModal()">
+      Close
+    </button>
+
   </div>
+
 </div>
 
-<!-- HELP MODAL POPUP -->
-<div id="helpModal" class="help-modal-overlay" onclick="if(event.target===this) closeHelpModal()">
+<div id="helpModal"
+     class="help-modal-overlay"
+     onclick="if(event.target===this) closeHelpModal()">
+
   <div class="help-modal-content">
-    <div class="help-modal-title">💡 วิธีการใช้งานระบบเลือกรายการ</div>
-    <div style="font-size: 13px; color: #444; text-align: left; line-height: 1.6; margin-bottom: 15px;">
-      <p><b>1. คลิกเลือกรายการ:</b> คลิกแถวเพื่อไฮไลต์ + คัดลอกข้อมูลลง Clipboard ทันที</p>
-      <p><b>2. Show PK:</b> ติ๊กเพื่อกรองดูเฉพาะรายการที่เลือกไว้</p>
-      <p><b>3. Clear All (ล้างค่าทั้งหมด):</b> <u>ดับเบิ้ลคลิก (Double-Click)</u> บนตาราง เพื่อยกเลิกการเลือกทั้งหมด</p>
+
+    <div class="help-modal-title">
+      💡 วิธีการใช้งานระบบเลือกรายการ
     </div>
-    <button class="btn-cancel-modal" onclick="closeHelpModal()">เข้าใจแล้ว</button>
+
+    <div style="font-size: 13px; color: #444; text-align: left; line-height: 1.6; margin-bottom: 15px;">
+
+      <p>
+        <b>1. คลิกเลือกรายการ:</b>
+        คลิกแถวเพื่อไฮไลต์ + คัดลอกข้อมูลลง Clipboard ทันที
+      </p>
+
+      <p>
+        <b>2. Show PK:</b>
+        ติ๊กเพื่อกรองดูเฉพาะรายการที่เลือกไว้
+      </p>
+
+      <p>
+        <b>3. Clear All (ล้างค่าทั้งหมด):</b>
+        <u>ดับเบิ้ลคลิก (Double-Click)</u>
+        บนตาราง เพื่อยกเลิกการเลือกทั้งหมด
+      </p>
+
+    </div>
+
+    <button class="btn-cancel-modal"
+            onclick="closeHelpModal()">
+      เข้าใจแล้ว
+    </button>
+
   </div>
+
 </div>
 
-<script>
+<!-- Inventory JavaScript -->
+<script src="/uerp/inventory.js"></script>
 
-/* =========================
-   LOAD HEADER
-========================= */
-fetch('uerpheader.html')
-  .then(res => {
-    if (!res.ok) throw new Error("Header not found");
-    return res.text();
-  })
-  .then(data => {
-    const placeholder = document.getElementById("headerContainer");
-    if (placeholder) {
-      placeholder.innerHTML = data;
-      if (typeof window.initUerpLayout === "function") {
-        window.__uerpLayoutInitialized = false;
-        window.initUerpLayout();
-      }
-    }
-  })
-  .catch(err => console.error("Error loading header:", err));
-
-let rawData      = [];
-let filteredData = [];
-let viewData     = [];
-let selectedItemCodes = new Set(); // เก็บ Item_Code ที่ถูกคลิกเลือก
-
-let sortState = {
-  key: null,
-  dir: "asc"
-};
-
-function updateLog(msg) {
-  const el = document.getElementById("execLog");
-  if (el) el.textContent = msg;
-}
-
-function cleanNumber(val) {
-  if (val === null || val === undefined) return 0;
-  if (typeof val === 'number') return val;
-  let str = String(val).replace(/,/g, '').trim();
-  if (str === "" || str === "-") return 0;
-  let parsed = parseFloat(str);
-  return isNaN(parsed) ? 0 : parsed;
-}
-
-function escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function highlightText(text, query) {
-  if (!text) return "-";
-  if (!query) return text;
-  const safeQuery = escapeRegExp(query);
-  const regex = new RegExp(`(${safeQuery})`, 'gi');
-  return text.replace(regex, '<mark class="bg-yellow-200 text-black rounded-sm px-0.5 font-medium">$1</mark>');
-}
-
-/* =========================
-   LOAD DATA (WITH 24H CACHE & 1000-ROW BATCH PAGINATION)
-========================= */
-const CACHE_KEY = "uerp_products_cache_data";
-const CACHE_TIME_KEY = "uerp_products_cache_timestamp";
-const ONE_DAY_MS = 24 * 60 * 60 * 1000; // 24 ชั่วโมง
-
-async function fetchAllFromSupabaseInBatches() {
-  const BATCH_SIZE = 1000;
-  let offset = 0;
-  let allRows = [];
-  let fetchMore = true;
-  let batchIndex = 1;
-
-  while (fetchMore) {
-    updateLog(`Fetching ${batchIndex}...`);
-    const pageData = await window.supabaseFetch('products', {
-      limit: BATCH_SIZE,
-      offset: offset
-    });
-
-    if (Array.isArray(pageData) && pageData.length > 0) {
-      allRows = allRows.concat(pageData);
-      if (pageData.length < BATCH_SIZE) {
-        fetchMore = false;
-      } else {
-        offset += BATCH_SIZE;
-        batchIndex++;
-      }
-    } else {
-      fetchMore = false;
-    }
-  }
-
-  return allRows;
-}
-
-async function loadTable(forceRefresh = false) {
-  try {
-    if (typeof window.supabaseFetch !== 'function') {
-      throw new Error("window.supabaseFetch is not defined. Check config.js path.");
-    }
-
-    const now = Date.now();
-    const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
-    const cachedData = localStorage.getItem(CACHE_KEY);
-
-    let isCacheValid = cachedTime && cachedData && (now - parseInt(cachedTime, 10) < ONE_DAY_MS);
-
-    if (!forceRefresh && isCacheValid) {
-      rawData = JSON.parse(cachedData);
-      updateLog(`${rawData.length.toLocaleString()} rows (Cache)`);
-    } else {
-      updateLog("Connecting...");
-      rawData = await fetchAllFromSupabaseInBatches();
-
-      if (rawData.length > 0) {
-        localStorage.setItem(CACHE_KEY, JSON.stringify(rawData));
-        localStorage.setItem(CACHE_TIME_KEY, now.toString());
-        updateLog(`${rawData.length.toLocaleString()} rows (Live)`);
-      } else if (cachedData) {
-        rawData = JSON.parse(cachedData);
-        updateLog(`${rawData.length.toLocaleString()} rows (Fallback)`);
-      }
-    }
-
-    applyAll();
-  } catch(e) {
-    console.error("Supabase Connection Error:", e);
-    updateLog("Fetch Failed!");
-    
-    const cachedData = localStorage.getItem(CACHE_KEY);
-    if (cachedData) {
-      rawData = JSON.parse(cachedData);
-      updateLog(`${rawData.length.toLocaleString()} rows (Offline)`);
-      applyAll();
-    } else {
-      document.getElementById("table-body").innerHTML =
-        '<tr><td colspan="3" style="text-align:center; padding:20px;">Failed to load secure assets.</td></tr>';
-    }
-  }
-}
-
-function forceRefreshData() {
-  const icon = document.querySelector("#btnRefresh i");
-  if(icon) icon.classList.add("fa-spin");
-  loadTable(true).finally(() => {
-    if(icon) icon.classList.remove("fa-spin");
-  });
-}
-
-/* =========================
-   APPLY ALL
-========================= */
-function applyAll(){
-  const q              = document.getElementById("searchBox").value.toLowerCase().trim();
-  const hideZero       = document.getElementById("hideZero").checked;
-  const showOnlySelected = document.getElementById("showOnlySelected").checked;
-  const currentCol3    = document.getElementById("column3Select").value;
-
-  const checkedCategories = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value);
-
-  let result = rawData;
-
-  if (checkedCategories.length > 0) {
-    result = result.filter(i => {
-      const cat = String(i.MainCategory || "").trim();
-      return checkedCategories.includes(cat);
-    });
-  }
-
-  if(q){
-    result = result.filter(i =>
-      String(i.Item_Code   || "").toLowerCase().includes(q) ||
-      String(i.Description || "").toLowerCase().includes(q) ||
-      String(i[currentCol3]  || "").toLowerCase().includes(q)
-    );
-  }
-
-  if(hideZero){
-    result = result.filter(i => {
-      const rawVal = i.OnHand;
-      if(rawVal === undefined || rawVal === null) return false;
-      const vStr = String(rawVal).trim();
-      if(vStr === "" || vStr === "-") return false;
-      
-      const n = cleanNumber(rawVal);
-      if(n === 0) return false;
-      return true;
-    });
-  }
-
-  // ตัวกรอง Show PK (แสดงเฉพาะรายการที่ติ๊กเลือกไว้)
-  if(showOnlySelected){
-    result = result.filter(i => selectedItemCodes.has(String(i.Item_Code || "")));
-  }
-
-  filteredData = result;
-
-  if(sortState.key){
-    applySortOnFiltered();
-  } else {
-    viewData = filteredData;
-    renderTable(viewData);
-  }
-}
-
-/* =========================
-   SORT
-========================= */
-function sortTable(key){
-  if(sortState.key === key){
-    sortState.dir = sortState.dir === "asc" ? "desc" : "asc";
-  } else {
-    sortState.key = key;
-    sortState.dir = "asc";
-  }
-  applySortOnFiltered();
-}
-
-function applySortOnFiltered(){
-  const key = sortState.key;
-  const dir = sortState.dir;
-
-  viewData = [...filteredData].sort((a, b) => {
-    let v1 = a[key] ?? "";
-    let v2 = b[key] ?? "";
-
-    if(key === 'OnHand' || key === 'ListPrice' || key === 'PromotionPrice' || key === 'ราคาต่อลัง' || key === 'จำนวนต่อลัง') {
-       let n1 = cleanNumber(v1);
-       let n2 = cleanNumber(v2);
-       return dir === "asc" ? n1 - n2 : n2 - n1;
-    }
-
-    const n1 = parseFloat(v1);
-    const n2 = parseFloat(v2);
-    if(!isNaN(n1) && !isNaN(n2)){
-      return dir === "asc" ? n1 - n2 : n2 - n1;
-    }
-
-    v1 = String(v1).toLowerCase();
-    v2 = String(v2).toLowerCase();
-
-    if(v1 < v2) return dir === "asc" ? -1 : 1;
-    if(v1 > v2) return dir === "asc" ?  1 : -1;
-    return 0;
-  });
-
-  updateArrows(key, dir);
-  renderTable(viewData);
-}
-
-/* =========================
-   RENDER TABLE
-========================= */
-function renderTable(data){
-  const tbody = document.getElementById("table-body");
-  const currentCol3 = document.getElementById("column3Select").value;
-  const q = document.getElementById("searchBox").value.trim();
-
-  if(!data || data.length === 0){
-    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#aaa;padding:20px;">No results found.</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = data.map(p => {
-    let cellValue = p[currentCol3] !== undefined && p[currentCol3] !== null ? p[currentCol3] : "-";
-    let cellClass = "col-stock";
-    
-    if(currentCol3 === "ReorderSTATUS" && String(cellValue).trim() === "ORDER!") {
-      cellClass += " order-alert";
-    }
-
-    if((currentCol3 === "OnHand" || currentCol3 === "PromotionPrice" || currentCol3 === "จำนวนต่อลัง") && cellValue !== "-") {
-       let num = cleanNumber(cellValue);
-       cellValue = num.toLocaleString();
-    }
-
-    const itemCode = String(p.Item_Code || "-");
-    const desc = String(p.Description || "-");
-    const location = String(p.Location || "");
-
-    const safeItemCode = itemCode.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-    const safeDesc = desc.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-    const safeLocation = location.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-
-    const highlightedCode = highlightText(itemCode, q);
-    const highlightedDesc = highlightText(desc, q);
-
-    const isSelected = selectedItemCodes.has(itemCode);
-    const rowClass = isSelected ? "row-selected" : "";
-
-    return `
-      <tr class="${rowClass}" onclick="toggleRowSelection(this, '${safeItemCode}', event)">
-        <td class="col-code">
-          <span>${highlightedCode}</span>
-          <button class="btn-barcode-trigger" onclick="openBarcodeGenModal('${safeDesc}', '${safeItemCode}', '${safeLocation}', event)" title="Generate Barcode">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
-              <line x1="6" y1="7" x2="6" y2="17" stroke-width="2.5" />
-              <line x1="9.5" y1="7" x2="9.5" y2="17" stroke-width="1" />
-              <line x1="12" y1="7" x2="12" y2="17" stroke-width="2" />
-              <line x1="14.5" y1="7" x2="14.5" y2="17" stroke-width="1" />
-              <line x1="18" y1="7" x2="18" y2="17" stroke-width="3" />
-              <path d="M 2,7 V 2 H 7" stroke-width="1.5" />
-              <path d="M 17,2 H 22 V 7" stroke-width="1.5" />
-              <path d="M 2,17 V 22 H 7" stroke-width="1.5" />
-              <path d="M 17,22 H 22 V 17" stroke-width="1.5" />
-            </svg>
-          </button>
-        </td>
-        <td class="col-desc">${highlightedDesc}</td>
-        <td class="${cellClass}">${cellValue}</td>
-      </tr>
-    `;
-  }).join("");
-}
-
-/* =========================
-   ROW SELECTION & COPY
-========================= */
-function toggleRowSelection(rowElement, itemCode, event) {
-  if (event.target.closest('.btn-barcode-trigger')) return;
-
-  if (selectedItemCodes.has(itemCode)) {
-    selectedItemCodes.delete(itemCode);
-    rowElement.classList.remove('row-selected');
-  } else {
-    selectedItemCodes.add(itemCode);
-    rowElement.classList.add('row-selected');
-    copyRowText(rowElement);
-  }
-
-  document.getElementById('selectedCount').textContent = selectedItemCodes.size;
-
-  // หากเปิดการกรอง Show PK ไว้และถอดเลือกออก ให้ re-apply เพื่อซ่อนแถวทันที
-  if (document.getElementById('showOnlySelected').checked) {
-    applyAll();
-  }
-}
-
-function copyRowText(rowElement) {
-  const tds = rowElement.getElementsByTagName("td");
-  let text = "";
-  for(let i = 0; i < tds.length; i++) {
-     let tempTd = tds[i].cloneNode(true);
-     const btn = tempTd.querySelector('.btn-barcode-trigger');
-     if(btn) btn.remove();
-     text += tempTd.innerText.trim() + (i === tds.length - 1 ? "" : " ");
-  }
-  
-  navigator.clipboard.writeText(text).then(() => {
-     showToast("Copied to clipboard");
-  });
-}
-
-function showToast(msg) {
-  const toast = document.getElementById("toast");
-  toast.textContent = msg;
-  toast.style.display = "block";
-  setTimeout(() => { toast.style.display = "none"; }, 1500);
-}
-
-/* DOUBLE CLICK TO CLEAR ALL */
-function clearAllSelections() {
-  if (selectedItemCodes.size === 0) return;
-  selectedItemCodes.clear();
-  document.getElementById('selectedCount').textContent = "0";
-  showToast("Cleared All Selections");
-  applyAll();
-}
-
-/* HELP MODAL */
-function openHelpModal() {
-  document.getElementById('helpModal').style.display = 'flex';
-}
-function closeHelpModal() {
-  document.getElementById('helpModal').style.display = 'none';
-}
-
-/* =========================
-   ARROWS UPDATE & DYNAMIC SELECT HEADER TEXT
-========================= */
-function updateArrows(active, dir){
-  const currentCol3 = document.getElementById("column3Select").value;
-  const selectElement = document.getElementById("column3Select");
-  const selectedText = selectElement.options[selectElement.selectedIndex].text;
-  
-  document.getElementById("col3HeaderName").textContent = selectedText === "OnHand" ? "OH" : selectedText;
-
-  ["Item_Code", "Description"].forEach(k => {
-    const el = document.getElementById("arrow-" + k);
-    if(el) el.textContent = k === active ? (dir === "asc" ? "↑" : "↓") : "↕";
-  });
-
-  const el3 = document.getElementById("arrow-Col3");
-  if(el3) el3.textContent = currentCol3 === active ? (dir === "asc" ? "↑" : "↓") : "↕";
-}
-
-/* =========================
-   INIT EVENTS
-========================= */
-window.addEventListener("load", () => {
-
-  document.getElementById("searchBox").addEventListener("input", () => {
-    applyAll();
-  });
-
-  document.getElementById("hideZero").addEventListener("change", () => {
-    applyAll();
-  });
-
-  document.getElementById("showOnlySelected").addEventListener("change", () => {
-    applyAll();
-  });
-
-  document.getElementById("column3Select").addEventListener("change", (e) => {
-    sortState.key = e.target.value;
-    applyAll();
-  });
-
-  document.querySelectorAll('.cat-checkbox').forEach(cb => {
-    cb.addEventListener("change", () => {
-      applyAll();
-    });
-  });
-
-  // Event ดับเบิ้ลคลิกบนพื้นที่ตารางเพื่อ Clear All Selected
-  document.getElementById("tableWrapContainer").addEventListener("dblclick", () => {
-    clearAllSelections();
-  });
-
-  loadTable();
-});
-
-</script>
 </body>
 </html>
