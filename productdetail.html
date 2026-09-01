@@ -2,82 +2,63 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-
   <link rel="icon" type="image/x-icon" href="/favicon.ico?v=99" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title id="meta-title">UNIMERCE | Product Detail</title>
-
   <meta
     id="meta-desc"
     name="description"
     content="ดูรายละเอียดสินค้า ข้อมูลทางเทคนิค และสั่งซื้อผ่านระบบอีเมลของ UNIMERCE GROUP"
   />
-
   <meta
     name="keywords"
     content="UNIMERCE, เครื่องกรองน้ำ, เครื่องพ่นอโรมา, เครื่องมือวัดคุณภาพน้ำ, Vitev Thailand, รายละเอียดสินค้า, เครื่องกระจายกลิ่น"
   />
-
   <meta name="author" content="UNIMERCE GROUP" />
   <meta name="robots" content="index, follow" />
-
   <!-- =========================
        OPEN GRAPH
   ========================== -->
-
   <meta property="og:type" content="website" />
-
   <meta
     id="og-title"
     property="og:title"
     content="UNIMERCE | รายละเอียดสินค้า"
   />
-
   <meta
     id="og-desc"
     property="og:description"
     content="ดูรายละเอียดสินค้า ข้อมูลทางเทคนิค และสั่งซื้อผ่านระบบอีเมลของ UNIMERCE GROUP"
   />
-
   <meta
     id="og-image"
     property="og:image"
     content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1782202879/ogproductdetail85_hkiema.jpg"
   />
-
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-
   <!-- =========================
        FONT
   ========================== -->
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
   <link
     href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700&display=swap"
     rel="stylesheet"
   />
-
   <!-- =========================================================
        CORE CSS
   ========================================================== -->
-
   <style>
     /* ==========================================
        CORE DESIGN SYSTEM
     ========================================== */
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: "Kanit", Arial, sans-serif;
     }
-
     body {
       background: #ffffff;
       color: #1a1a1a;
@@ -86,17 +67,14 @@
       -webkit-font-smoothing: antialiased;
       padding-top: 80px;
     }
-
     .container {
       max-width: 1000px;
       margin: 0 auto;
       padding: 10px 16px 80px;
     }
-
     /* ==========================================
        BREADCRUMB
     ========================================== */
-
     .breadcrumb {
       font-size: 13px;
       color: #888;
@@ -104,39 +82,32 @@
       letter-spacing: 0.5px;
       display: block !important;
     }
-
     .breadcrumb a {
       color: #888;
       text-decoration: none;
       transition: color 0.2s;
     }
-
     .breadcrumb a:hover {
       text-decoration: underline;
       color: #2f5ea8;
     }
-
     /* ==========================================
        MAIN PRODUCT GRID
     ========================================== */
-
     .main-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 40px;
       margin-bottom: 40px;
     }
-
     /* ==========================================
        IMAGE GALLERY
     ========================================== */
-
     .image-gallery {
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
-
     .main-img-wrap {
       width: 100%;
       aspect-ratio: 1 / 1;
@@ -148,19 +119,16 @@
       align-items: center;
       justify-content: center;
     }
-
     .main-img-wrap img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
-
     .thumb-row {
       display: flex;
       gap: 8px;
       overflow-x: auto;
     }
-
     .thumb-box {
       width: 64px;
       height: 64px;
@@ -174,28 +142,23 @@
       align-items: center;
       justify-content: center;
     }
-
     .thumb-box.active {
       border-color: #2f5ea8;
     }
-
     .thumb-box img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
-
     /* ==========================================
        INFO ZONE
     ========================================== */
-
     .info-zone {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       width: 100%;
     }
-
     .product-name {
       font-size: 24px;
       font-weight: 500;
@@ -204,39 +167,32 @@
       color: #111;
       text-align: left;
     }
-
     /* ==========================================
        PRODUCT META TABLE
     ========================================== */
-
     .meta-table {
       width: 100%;
       max-width: 380px;
       border-collapse: collapse;
       margin-bottom: 24px;
     }
-
     .meta-table td {
       padding: 8px 0;
       font-size: 18px;
       border-bottom: 1px dashed #eee;
       vertical-align: middle;
     }
-
     .meta-table td.lbl {
       color: #777;
       width: 120px;
     }
-
     .meta-table td.val {
       color: #111;
       font-weight: 500;
     }
-
     /* ==========================================
        PRICE BOX
     ========================================== */
-
     .price-box-wrapper {
       display: flex;
       align-items: center;
@@ -248,49 +204,40 @@
       max-width: 380px;
       margin-bottom: 20px;
     }
-
     .price-box {
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
-
     .price-old {
       font-size: 13px;
       color: #999;
       text-decoration: line-through;
     }
-
     .price-new {
       font-size: 24px;
       font-weight: 700;
       color: #111;
     }
-
     /* ==========================================
        MOBILE DYNAMIC BLOCK
     ========================================== */
-
     .mobile-dynamic-block {
       display: none;
     }
-
     /* ==========================================
        QUANTITY
     ========================================== */
-
     .qty-row {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-bottom: 24px;
     }
-
     .qty-label {
       font-size: 13px;
       color: #666;
     }
-
     .qty-control {
       display: flex;
       align-items: center;
@@ -300,7 +247,6 @@
       background: #fff;
       height: 34px;
     }
-
     .qty-btn {
       width: 34px;
       height: 100%;
@@ -314,11 +260,9 @@
       align-items: center;
       justify-content: center;
     }
-
     .qty-btn:hover {
       background: #f5f5f5;
     }
-
     .qty-input {
       width: 46px;
       height: 100%;
@@ -333,11 +277,9 @@
       color: #111;
       padding: 0;
     }
-
     /* ==========================================
        ACTION BUTTONS
     ========================================== */
-
     .btn-group {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -345,7 +287,6 @@
       width: 100%;
       max-width: 380px;
     }
-
     .btn-primary {
       background: #2f5ea8;
       color: #fff;
@@ -360,12 +301,10 @@
       transition: 0.2s;
       width: 100%;
     }
-
     .btn-primary:hover {
       background: #fff;
       color: #2f5ea8;
     }
-
     .btn-cart {
       background: #ffffff;
       color: #2f5ea8;
@@ -380,15 +319,12 @@
       transition: 0.2s;
       width: 100%;
     }
-
     .btn-cart:hover {
       background: #f4f7fc;
     }
-
     /* ==========================================
        SHOPEE STYLE HEART
     ========================================== */
-
     .shopee-heart-wrapper {
       display: inline-flex;
       flex-direction: column;
@@ -399,33 +335,27 @@
       transition: transform 0.1s ease;
       padding: 4px 8px;
     }
-
     .shopee-heart-wrapper:active {
       transform: scale(0.9);
     }
-
     .shopee-heart-icon {
       font-size: 26px;
       line-height: 1;
       color: #e2e8f0;
       transition: color 0.2s ease;
     }
-
     .shopee-heart-wrapper.liked .shopee-heart-icon {
       color: #ff4d4f;
     }
-
     .shopee-like-counter {
       font-size: 11px;
       color: #666;
       margin-top: 2px;
       font-weight: 500;
     }
-
     /* ==========================================
        PRODUCT DETAIL
     ========================================== */
-
     .detail-sections {
       display: flex;
       flex-direction: column;
@@ -434,7 +364,6 @@
       padding-top: 32px;
       margin-bottom: 60px;
     }
-
     .sec-block h2 {
       font-size: 15px;
       font-weight: 600;
@@ -445,24 +374,20 @@
       border-left: 3px solid #2f5ea8;
       padding-left: 10px;
     }
-
     .sec-block .body-text {
       font-size: 14.5px;
       color: #333;
       line-height: 1.8;
       white-space: pre-line;
     }
-
     /* ==========================================
        FOOTER CONTACT
     ========================================== */
-
     .contact-footer-bar {
       border-top: 1px solid #eee;
       padding-top: 40px;
       text-align: center;
     }
-
     .contact-footer-title {
       font-size: 13px;
       letter-spacing: 2px;
@@ -470,7 +395,6 @@
       margin-bottom: 6px;
       text-transform: uppercase;
     }
-
     .clean-email-link {
       display: inline-block;
       color: #2f5ea8;
@@ -479,16 +403,13 @@
       font-weight: 500;
       transition: color 0.2s ease;
     }
-
     .clean-email-link:hover {
       color: #1a3e75;
       text-decoration: underline;
     }
-
     /* ==========================================
        ORDER MODAL
     ========================================== */
-
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -503,11 +424,9 @@
       z-index: 1000;
       padding: 16px;
     }
-
     .modal-overlay.active {
       display: flex;
     }
-
     .modal-box {
       background: #fff;
       border-radius: 16px;
@@ -517,19 +436,16 @@
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
       animation: popUp 0.25s ease;
     }
-
     @keyframes popUp {
       from {
         opacity: 0;
         transform: scale(0.95);
       }
-
       to {
         opacity: 1;
         transform: scale(1);
       }
     }
-
     .modal-header {
       display: flex;
       justify-content: space-between;
@@ -538,13 +454,11 @@
       border-bottom: 1px solid #f0f0f0;
       padding-bottom: 10px;
     }
-
     .modal-title {
       font-size: 15px;
       font-weight: 600;
       color: #111;
     }
-
     .modal-close {
       font-size: 22px;
       cursor: pointer;
@@ -553,14 +467,12 @@
       background: none;
       line-height: 1;
     }
-
     .modal-instruction-text {
       font-size: 13px;
       color: #444;
       margin-bottom: 10px;
       line-height: 1.6;
     }
-
     .email-row-info {
       display: flex;
       align-items: center;
@@ -572,7 +484,6 @@
       margin-bottom: 16px;
       border: 1px solid #eee;
     }
-
     .btn-inline-copy {
       background: #fff;
       border: 1px solid #ddd;
@@ -583,25 +494,21 @@
       color: #2f5ea8;
       font-weight: 500;
     }
-
     .btn-inline-copy:hover {
       background: #f5f5f5;
       border-color: #2f5ea8;
     }
-
     .copy-area-header-flex {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 6px;
     }
-
     .copy-area-header-flex span {
       font-size: 13px;
       font-weight: 500;
       color: #111;
     }
-
     .copy-area {
       background: #f5f5f5;
       border: 1px solid #eee;
@@ -616,11 +523,9 @@
       max-height: 140px;
       overflow-y: auto;
     }
-
     /* ==========================================
        BANK PAYMENT
     ========================================== */
-
     .bank-payment-box {
       background: #f4fbf7;
       border: 1px solid #b7ebd0;
@@ -628,7 +533,6 @@
       padding: 14px;
       margin-bottom: 18px;
     }
-
     .bank-payment-box .bank-title {
       font-size: 12.5px;
       font-weight: 600;
@@ -638,12 +542,10 @@
       align-items: center;
       gap: 6px;
     }
-
     .bank-payment-box .bank-title::before {
       content: "▪";
       font-size: 14px;
     }
-
     .bank-detail-flex {
       display: flex;
       justify-content: space-between;
@@ -651,18 +553,15 @@
       font-size: 13.5px;
       color: #1a1a1a;
     }
-
     .bank-detail-flex .kbank-btn-copy {
       color: #00a651;
       border-color: #b7ebd0;
     }
-
     .bank-detail-flex .kbank-btn-copy:hover {
       background: #00a651;
       color: #fff;
       border-color: #00a651;
     }
-
     .toast-msg {
       font-size: 12px;
       color: #00a651;
@@ -671,11 +570,9 @@
       min-height: 18px;
       font-weight: 500;
     }
-
     /* ==========================================
        STATUS
     ========================================== */
-
     .status-container {
       display: flex;
       flex-direction: column;
@@ -684,18 +581,15 @@
       min-height: 50vh;
       text-align: center;
     }
-
     .loading-text {
       font-size: 15px;
       color: #888;
     }
-
     .error-text {
       font-size: 15px;
       color: #ff4d4f;
       margin-bottom: 12px;
     }
-
     .back-btn {
       display: inline-block;
       padding: 8px 18px;
@@ -705,11 +599,9 @@
       border-radius: 8px;
       font-size: 13px;
     }
-
     /* ==========================================
        BARCODE BUTTON
     ========================================== */
-
     .btn-barcode-trigger {
       background: none;
       border: none;
@@ -723,21 +615,17 @@
       border-radius: 6px;
       transition: background 0.1s;
     }
-
     .btn-barcode-trigger:hover {
       background: #e8e8e8;
     }
-
     /* ==========================================
        HIDDEN STICKER
     ========================================== */
-
     #hiddenStickerWrapper {
       position: absolute;
       left: -9999px;
       top: -9999px;
     }
-
     .actual-sticker-target {
       width: 300px;
       height: 200px;
@@ -751,7 +639,6 @@
       color: #000000;
       padding: 12px 14px;
     }
-
     .sticker-p-name {
       font-size: 14px;
       font-weight: bold;
@@ -763,18 +650,15 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
     .sticker-barcode-area {
       text-align: center;
       margin: auto 0;
       width: 100%;
     }
-
     .sticker-barcode-area svg {
       width: 100%;
       max-height: 85px;
     }
-
     .sticker-footer-row {
       display: flex;
       justify-content: space-between;
@@ -782,19 +666,15 @@
       font-size: 12px;
       font-weight: bold;
     }
-
     .sticker-web-url {
       color: #111;
     }
-
     .sticker-location-field {
       color: #555;
     }
-
     /* ==========================================
        BARCODE MODAL
     ========================================== */
-
     .barcode-modal-overlay {
       display: none;
       position: fixed;
@@ -808,7 +688,6 @@
       align-items: center;
       padding: 16px;
     }
-
     .barcode-modal-content {
       background: #fff;
       padding: 20px;
@@ -818,14 +697,12 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       text-align: center;
     }
-
     .barcode-modal-title {
       margin: 0 0 12px 0;
       font-size: 16px;
       font-weight: bold;
       color: #2f5ea8;
     }
-
     .btn-cancel-modal {
       background: none;
       border: none;
@@ -836,48 +713,39 @@
       margin-top: 5px;
       padding: 10px;
     }
-
     /* ==========================================
        MOBILE
     ========================================== */
-
     @media (max-width: 768px) {
-
       body {
         font-size: 16px !important;
         line-height: 1.8;
         padding-top: 75px;
       }
-
       .breadcrumb {
         margin-bottom: 12px;
       }
-
       .main-grid {
         grid-template-columns: 1fr;
         gap: 12px;
         margin-bottom: 16px;
       }
-
       .info-zone {
         display: flex;
         flex-direction: column;
         align-items: stretch;
       }
-
       .info-zone .product-name,
       .info-zone .meta-table,
       .info-zone .price-box-wrapper {
         display: none;
       }
-
       .mobile-dynamic-block {
         display: flex;
         flex-direction: column;
         width: 100%;
         margin-top: 8px;
       }
-
       .mobile-dynamic-block .product-name {
         display: block !important;
         font-size: 22px !important;
@@ -885,7 +753,6 @@
         line-height: 1.3;
         margin-bottom: 8px;
       }
-
       .mobile-price-heart-row {
         display: flex;
         justify-content: space-between;
@@ -896,166 +763,122 @@
         margin-bottom: 12px;
         width: 100%;
       }
-
       .mobile-price-left .price-old {
         font-size: 11px;
       }
-
       .mobile-price-left .price-new {
         font-size: 20px;
       }
-
       .shopee-heart-icon {
         font-size: 22px;
       }
-
       .qty-row {
         margin-bottom: 14px;
       }
-
       .mobile-table-placeholder {
         display: block !important;
         margin-top: 20px;
         width: 100%;
       }
-
       .mobile-table-placeholder .meta-table {
         display: table !important;
         max-width: 100%;
         margin-bottom: 0;
       }
-
       .btn-group {
         grid-template-columns: 1fr 1fr;
         gap: 10px;
         width: 100%;
         margin-top: 2px;
       }
-
       .btn-primary,
       .btn-cart {
         padding: 10px 8px;
         font-size: 13.5px;
         border-radius: 8px;
       }
-
       .sec-block h2 {
         font-size: 18px !important;
         margin-bottom: 10px;
       }
-
       .sec-block .body-text {
         font-size: 18px !important;
         line-height: 1.85;
         color: #222222;
       }
-
       .modal-box {
         max-height: 90vh;
         overflow-y: auto;
       }
     }
   </style>
-
   <!-- =========================
        ANALYTICS
   ========================== -->
-
   <script
     async
     src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"
   ></script>
-
   <script src="/analytics.js"></script>
-
   <!-- =========================
        BARCODE LIBRARIES
   ========================== -->
-
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
   <!-- Barcode engine remains separate -->
   <script src="/barcode-label-engine.js"></script>
-
 </head>
-
 <body>
-
   <!-- =========================
        HEADER
   ========================== -->
-
   <div id="header-placeholder"></div>
-
   <!-- =========================
        MAIN CONTENT
   ========================== -->
-
   <main class="container" id="main-content">
-
     <div class="status-container">
       <div class="loading-text">
         กำลังเรียกดูข้อมูลสินค้า...
       </div>
     </div>
-
   </main>
-
   <!-- =========================
        FOOTER
   ========================== -->
-
   <div id="footer-placeholder"></div>
-
   <!-- =========================================================
        HIDDEN BARCODE STICKER
   ========================================================== -->
-
   <div id="hiddenStickerWrapper">
-
     <div id="stickerTarget" class="actual-sticker-target">
-
       <div id="lblProductName" class="sticker-p-name"></div>
-
       <div class="sticker-barcode-area">
         <svg id="barcodeSvgCanvas"></svg>
       </div>
-
       <div class="sticker-footer-row">
-
         <span class="sticker-web-url">
           www.unimercegroup.com
         </span>
-
         <span
           id="lblLocationField"
           class="sticker-location-field"
         ></span>
-
       </div>
-
     </div>
-
   </div>
-
   <!-- =========================================================
        BARCODE MODAL
   ========================================================== -->
-
   <div
     id="barcodeModal"
     class="barcode-modal-overlay"
     onclick="closeBarcodeModalOnOutsideClick(event)"
   >
-
     <div class="barcode-modal-content">
-
       <div class="barcode-modal-title">
         แตะค้างที่ป้ายเพื่อบันทึก
       </div>
-
       <div
         style="
           margin: 15px 0 20px 0;
@@ -1064,31 +887,23 @@
         "
         id="resultImageContainer"
       ></div>
-
       <button
         class="btn-cancel-modal"
         onclick="closeBarcodeModal()"
       >
         Close
       </button>
-
     </div>
-
   </div>
-
   <!-- =========================================================
        CONFIG
   ========================================================== -->
-
   <script src="/config.js"></script>
-
   <!-- =========================================================
        MAIN JAVASCRIPT
        Separated into:
        /productdetail.js
   ========================================================== -->
-
   <script src="/productdetail.js"></script>
-
 </body>
 </html>
