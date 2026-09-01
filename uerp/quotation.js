@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const lblDate = document.getElementById('lblDocDate');
     const lblNo = document.getElementById('lblDocNo');
     if (lblDate) {
-        lblDate.innerText = new Date().toLocaleDateString('th-TH');
+        lblDate.innerText =
+            new Date().toLocaleDateString('th-TH');
     }
     if (lblNo) {
         lblNo.innerText =
@@ -32,7 +33,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function initLocalCache() {
     showSearchLoading(true);
     try {
-        console.log("UERP Engine: Starting Data Pre-load & Caching...");
+        console.log(
+            "UERP Engine: Starting Data Pre-load & Caching..."
+        );
         // ------------------------------------------------------------------
         // CUSTOMER MASTER
         // ------------------------------------------------------------------
@@ -44,6 +47,7 @@ async function initLocalCache() {
         );
         // ------------------------------------------------------------------
         // PRODUCTS
+        // ------------------------------------------------------------------
         // ใช้ชื่อ Field ใหม่ตาม Supabase
         // ------------------------------------------------------------------
         cachedProducts = await fetchAllBatches(
@@ -54,7 +58,10 @@ async function initLocalCache() {
         );
         isDataLoaded = true;
     } catch (err) {
-        console.error("Cache Loading Error:", err);
+        console.error(
+            "Cache Loading Error:",
+            err
+        );
     } finally {
         showSearchLoading(false);
     }
@@ -69,13 +76,20 @@ async function fetchAllBatches(endpointWithSelect) {
     let keepFetching = true;
     while (keepFetching) {
         const separator =
-            endpointWithSelect.includes('?') ? '&' : '?';
+            endpointWithSelect.includes('?')
+                ? '&'
+                : '?';
         const url =
             `${endpointWithSelect}${separator}` +
             `limit=${limit}&offset=${offset}`;
-        const data = await window.supabaseFetch(url);
-        if (Array.isArray(data) && data.length > 0) {
-            allData = allData.concat(data);
+        const data =
+            await window.supabaseFetch(url);
+        if (
+            Array.isArray(data) &&
+            data.length > 0
+        ) {
+            allData =
+                allData.concat(data);
             offset += limit;
             if (data.length < limit) {
                 keepFetching = false;
@@ -91,9 +105,13 @@ async function fetchAllBatches(endpointWithSelect) {
 // ==========================================================================
 function showSearchLoading(isLoading) {
     const custInput =
-        document.getElementById('custSearchInput');
+        document.getElementById(
+            'custSearchInput'
+        );
     const prodInput =
-        document.getElementById('prodSearchInput');
+        document.getElementById(
+            'prodSearchInput'
+        );
     if (isLoading) {
         if (custInput) {
             custInput.placeholder =
@@ -120,11 +138,17 @@ function showSearchLoading(isLoading) {
 function setCustomerMode(mode) {
     customerMode = mode;
     const btnDB =
-        document.getElementById('btnModeDB');
+        document.getElementById(
+            'btnModeDB'
+        );
     const btnManual =
-        document.getElementById('btnModeManual');
+        document.getElementById(
+            'btnModeManual'
+        );
     const searchContainer =
-        document.getElementById('customerSearchContainer');
+        document.getElementById(
+            'customerSearchContainer'
+        );
     if (mode === 'db') {
         if (btnDB) {
             btnDB.className =
@@ -135,7 +159,9 @@ function setCustomerMode(mode) {
                 "px-3 py-1 rounded-md text-xs font-semibold text-gray-600 transition";
         }
         if (searchContainer) {
-            searchContainer.classList.remove('hidden');
+            searchContainer.classList.remove(
+                'hidden'
+            );
         }
     } else {
         if (btnManual) {
@@ -147,7 +173,9 @@ function setCustomerMode(mode) {
                 "px-3 py-1 rounded-md text-xs font-semibold text-gray-600 transition";
         }
         if (searchContainer) {
-            searchContainer.classList.add('hidden');
+            searchContainer.classList.add(
+                'hidden'
+            );
         }
         clearCustomerFields();
     }
@@ -157,40 +185,54 @@ function setCustomerMode(mode) {
 // ==========================================================================
 function searchCustomers(query) {
     const dropdown =
-        document.getElementById('custDropdown');
+        document.getElementById(
+            'custDropdown'
+        );
     const q =
         query.trim().toLowerCase();
     if (!q) {
         if (dropdown) {
-            dropdown.classList.add('hidden');
+            dropdown.classList.add(
+                'hidden'
+            );
         }
         return;
     }
     const filtered =
         cachedCustomers
             .filter(c =>
-                (c.customer_code &&
+                (
+                    c.customer_code &&
                     String(c.customer_code)
                         .toLowerCase()
-                        .includes(q))
+                        .includes(q)
+                )
                 ||
-                (c.customer_name &&
+                (
+                    c.customer_name &&
                     String(c.customer_name)
                         .toLowerCase()
-                        .includes(q))
+                        .includes(q)
+                )
                 ||
-                (c.phone &&
+                (
+                    c.phone &&
                     String(c.phone)
-                        .includes(q))
+                        .includes(q)
+                )
                 ||
-                (c.email &&
+                (
+                    c.email &&
                     String(c.email)
                         .toLowerCase()
-                        .includes(q))
+                        .includes(q)
+                )
                 ||
-                (c.tax_id &&
+                (
+                    c.tax_id &&
                     String(c.tax_id)
-                        .includes(q))
+                        .includes(q)
+                )
             )
             .slice(0, 15);
     if (!dropdown) {
@@ -222,22 +264,34 @@ function searchCustomers(query) {
                 `)
                 .join('');
     }
-    dropdown.classList.remove('hidden');
+    dropdown.classList.remove(
+        'hidden'
+    );
 }
 // ==========================================================================
 // SELECT CUSTOMER
 // ==========================================================================
 function selectCustomer(cust) {
     const custName =
-        document.getElementById('custName');
+        document.getElementById(
+            'custName'
+        );
     const custTaxId =
-        document.getElementById('custTaxId');
+        document.getElementById(
+            'custTaxId'
+        );
     const custPhone =
-        document.getElementById('custPhone');
+        document.getElementById(
+            'custPhone'
+        );
     const custAddress =
-        document.getElementById('custAddress');
+        document.getElementById(
+            'custAddress'
+        );
     const custEmail =
-        document.getElementById('custEmail');
+        document.getElementById(
+            'custEmail'
+        );
     if (custName) {
         custName.value =
             cust.customer_name || '';
@@ -259,11 +313,17 @@ function selectCustomer(cust) {
             cust.email || '';
     }
     const dropdown =
-        document.getElementById('custDropdown');
+        document.getElementById(
+            'custDropdown'
+        );
     const searchInput =
-        document.getElementById('custSearchInput');
+        document.getElementById(
+            'custSearchInput'
+        );
     if (dropdown) {
-        dropdown.classList.add('hidden');
+        dropdown.classList.add(
+            'hidden'
+        );
     }
     if (searchInput) {
         searchInput.value = '';
@@ -293,28 +353,35 @@ function clearCustomerFields() {
 // ==========================================================================
 function searchProducts(query) {
     const dropdown =
-        document.getElementById('prodDropdown');
+        document.getElementById(
+            'prodDropdown'
+        );
     const q =
         query.trim().toLowerCase();
     if (!q) {
         if (dropdown) {
-            dropdown.classList.add('hidden');
+            dropdown.classList.add(
+                'hidden'
+            );
         }
         return;
     }
-    // ใช้ Field ใหม่
     const filtered =
         cachedProducts
             .filter(p =>
-                (p.item_code &&
+                (
+                    p.item_code &&
                     String(p.item_code)
                         .toLowerCase()
-                        .includes(q))
+                        .includes(q)
+                )
                 ||
-                (p.name &&
+                (
+                    p.name &&
                     String(p.name)
                         .toLowerCase()
-                        .includes(q))
+                        .includes(q)
+                )
             )
             .slice(0, 15);
     if (!dropdown) {
@@ -351,7 +418,9 @@ function searchProducts(query) {
                 `)
                 .join('');
     }
-    dropdown.classList.remove('hidden');
+    dropdown.classList.remove(
+        'hidden'
+    );
 }
 // ==========================================================================
 // ADD PRODUCT TO CART
@@ -362,7 +431,8 @@ function addProductToCart(product) {
         product.pricec ?? 0;
     const item = {
         id:
-            Date.now() + Math.random(),
+            Date.now() +
+            Math.random(),
         item_code:
             product.item_code,
         name:
@@ -382,11 +452,17 @@ function addProductToCart(product) {
     };
     cart.push(item);
     const dropdown =
-        document.getElementById('prodDropdown');
+        document.getElementById(
+            'prodDropdown'
+        );
     const searchInput =
-        document.getElementById('prodSearchInput');
+        document.getElementById(
+            'prodSearchInput'
+        );
     if (dropdown) {
-        dropdown.classList.add('hidden');
+        dropdown.classList.add(
+            'hidden'
+        );
     }
     if (searchInput) {
         searchInput.value = '';
@@ -396,9 +472,14 @@ function addProductToCart(product) {
 // ==========================================================================
 // UPDATE PRICE TIER
 // ==========================================================================
-function updateTierPrice(cartId, tierName) {
+function updateTierPrice(
+    cartId,
+    tierName
+) {
     const item =
-        cart.find(i => i.id === cartId);
+        cart.find(
+            i => i.id === cartId
+        );
     if (!item) {
         return;
     }
@@ -415,9 +496,14 @@ function updateTierPrice(cartId, tierName) {
 // ==========================================================================
 // UPDATE MANUAL PRICE
 // ==========================================================================
-function updateUnitPrice(cartId, newPrice) {
+function updateUnitPrice(
+    cartId,
+    newPrice
+) {
     const item =
-        cart.find(i => i.id === cartId);
+        cart.find(
+            i => i.id === cartId
+        );
     if (item) {
         item.unitPrice =
             parseFloat(newPrice) || 0;
@@ -429,9 +515,14 @@ function updateUnitPrice(cartId, newPrice) {
 // ==========================================================================
 // UPDATE QUANTITY
 // ==========================================================================
-function updateQty(cartId, qty) {
+function updateQty(
+    cartId,
+    qty
+) {
     const item =
-        cart.find(i => i.id === cartId);
+        cart.find(
+            i => i.id === cartId
+        );
     if (item) {
         item.qty =
             Math.max(
@@ -444,9 +535,15 @@ function updateQty(cartId, qty) {
 // ==========================================================================
 // UPDATE ROW DISCOUNT
 // ==========================================================================
-function updateRowDiscount(cartId, val, type) {
+function updateRowDiscount(
+    cartId,
+    val,
+    type
+) {
     const item =
-        cart.find(i => i.id === cartId);
+        cart.find(
+            i => i.id === cartId
+        );
     if (item) {
         if (val !== null) {
             item.discountVal =
@@ -464,7 +561,9 @@ function updateRowDiscount(cartId, val, type) {
 // ==========================================================================
 function removeCartItem(cartId) {
     cart =
-        cart.filter(i => i.id !== cartId);
+        cart.filter(
+            i => i.id !== cartId
+        );
     renderCart();
 }
 // ==========================================================================
@@ -472,14 +571,17 @@ function removeCartItem(cartId) {
 // ==========================================================================
 function renderCart() {
     const tbody =
-        document.getElementById('cartItemsTable');
+        document.getElementById(
+            'cartItemsTable'
+        );
     if (!tbody) {
         return;
     }
     if (cart.length === 0) {
         tbody.innerHTML = `
             <tr id="emptyRow">
-                <td colspan="8"
+                <td
+                    colspan="8"
                     class="text-center py-8 text-gray-400">
                     ยังไม่มีรายการสินค้า
                     กรุณาค้นหาและเลือกสินค้าด้านบน
@@ -491,10 +593,11 @@ function renderCart() {
     }
     tbody.innerHTML =
         cart
-            .map((item, index) => {
-                const lineTotal =
-                    getLineTotal(item);
-                return `
+            .map(
+                (item, index) => {
+                    const lineTotal =
+                        getLineTotal(item);
+                    return `
                     <tr class="hover:bg-gray-50 text-xs">
                         <td class="py-3 px-2 text-center font-semibold text-gray-500">
                             ${index + 1}
@@ -511,31 +614,38 @@ function renderCart() {
                             <select
                                 onchange="updateTierPrice(${item.id}, this.value)"
                                 class="p-1 border rounded text-xs bg-white">
-                                <option value="pricec"
+                                <option
+                                    value="pricec"
                                     ${item.selectedPriceTier === 'pricec' ? 'selected' : ''}>
                                     Price C (Default)
                                 </option>
-                                <option value="pricea"
+                                <option
+                                    value="pricea"
                                     ${item.selectedPriceTier === 'pricea' ? 'selected' : ''}>
                                     Price A
                                 </option>
-                                <option value="priceb"
+                                <option
+                                    value="priceb"
                                     ${item.selectedPriceTier === 'priceb' ? 'selected' : ''}>
                                     Price B
                                 </option>
-                                <option value="priced"
+                                <option
+                                    value="priced"
                                     ${item.selectedPriceTier === 'priced' ? 'selected' : ''}>
                                     Price D
                                 </option>
-                                <option value="pricel"
+                                <option
+                                    value="pricel"
                                     ${item.selectedPriceTier === 'pricel' ? 'selected' : ''}>
                                     Price L
                                 </option>
-                                <option value="promotion_price"
+                                <option
+                                    value="promotion_price"
                                     ${item.selectedPriceTier === 'promotion_price' ? 'selected' : ''}>
                                     Promo Price
                                 </option>
-                                <option value="MANUAL"
+                                <option
+                                    value="MANUAL"
                                     ${item.selectedPriceTier === 'MANUAL' ? 'selected' : ''}>
                                     Manual Edit
                                 </option>
@@ -568,11 +678,13 @@ function renderCart() {
                                 <select
                                     onchange="updateRowDiscount(${item.id}, null, this.value)"
                                     class="p-1 border rounded text-[10px] bg-white">
-                                    <option value="THB"
+                                    <option
+                                        value="THB"
                                         ${item.discountType === 'THB' ? 'selected' : ''}>
                                         ฿
                                     </option>
-                                    <option value="PERCENT"
+                                    <option
+                                        value="PERCENT"
                                         ${item.discountType === 'PERCENT' ? 'selected' : ''}>
                                         %
                                     </option>
@@ -597,8 +709,9 @@ function renderCart() {
                             </button>
                         </td>
                     </tr>
-                `;
-            })
+                    `;
+                }
+            )
             .join('');
     calculateTotals();
 }
@@ -607,9 +720,13 @@ function renderCart() {
 // ==========================================================================
 function getLineTotal(item) {
     const rawTotal =
-        item.unitPrice * item.qty;
+        item.unitPrice *
+        item.qty;
     let discount = 0;
-    if (item.discountType === 'PERCENT') {
+    if (
+        item.discountType ===
+        'PERCENT'
+    ) {
         discount =
             rawTotal *
             (item.discountVal / 100);
@@ -658,14 +775,17 @@ function calculateTotals() {
         billDiscValInput
             ? parseFloat(
                 billDiscValInput.value
-              ) || 0
+            ) || 0
             : 0;
     const billDiscType =
         billDiscTypeInput
             ? billDiscTypeInput.value
             : 'THB';
     let billDiscountAmt = 0;
-    if (billDiscType === 'PERCENT') {
+    if (
+        billDiscType ===
+        'PERCENT'
+    ) {
         billDiscountAmt =
             subtotal *
             (billDiscVal / 100);
@@ -715,8 +835,12 @@ function calculateTotals() {
 // ==========================================================================
 function openPreviewModal() {
     const custName =
-        document.getElementById('custName')
-            ? document.getElementById('custName').value.trim()
+        document.getElementById(
+            'custName'
+        )
+            ? document.getElementById(
+                'custName'
+            ).value.trim()
             : '';
     if (!custName) {
         alert(
@@ -785,18 +909,20 @@ function openPreviewModal() {
     if (tbody) {
         tbody.innerHTML =
             cart
-                .map((item, idx) => {
-                    const lineTotal =
-                        getLineTotal(item);
-                    const discLabel =
-                        item.discountVal > 0
-                            ? (
-                                item.discountType === 'PERCENT'
-                                    ? `${item.discountVal}%`
-                                    : `${item.discountVal}฿`
-                              )
-                            : '-';
-                    return `
+                .map(
+                    (item, idx) => {
+                        const lineTotal =
+                            getLineTotal(item);
+                        const discLabel =
+                            item.discountVal > 0
+                                ? (
+                                    item.discountType ===
+                                    'PERCENT'
+                                        ? `${item.discountVal}%`
+                                        : `${item.discountVal}฿`
+                                  )
+                                : '-';
+                        return `
                         <tr>
                             <td class="py-2 px-2 text-center text-gray-500">
                                 ${idx + 1}
@@ -832,8 +958,9 @@ function openPreviewModal() {
                                 )}
                             </td>
                         </tr>
-                    `;
-                })
+                        `;
+                    }
+                )
                 .join('');
     }
     const totals =
@@ -867,7 +994,9 @@ function openPreviewModal() {
         );
     document.getElementById(
         'previewModal'
-    ).classList.remove('hidden');
+    ).classList.remove(
+        'hidden'
+    );
 }
 // ==========================================================================
 // CLOSE PREVIEW
@@ -875,10 +1004,25 @@ function openPreviewModal() {
 function closePreviewModal() {
     document.getElementById(
         'previewModal'
-    ).classList.add('hidden');
+    ).classList.add(
+        'hidden'
+    );
 }
 // ==========================================================================
 // DOWNLOAD DOCUMENT
+// ==========================================================================
+// PDF OPTIMIZATION
+//
+// เดิม:
+// html2canvas scale: 2
+// JPEG quality: 1.0
+//
+// ใหม่:
+// html2canvas scale: 1.5
+// JPEG quality: 0.75
+// jsPDF compression: true
+//
+// ลดขนาด PDF ลงอย่างมาก โดยยังคงความคมชัดเพียงพอสำหรับ A4
 // ==========================================================================
 async function downloadDocument(type) {
     const paper =
@@ -888,15 +1032,22 @@ async function downloadDocument(type) {
     if (!paper) {
         return;
     }
+    // ----------------------------------------------------------------------
+    // Render HTML -> Canvas
+    // ----------------------------------------------------------------------
     const canvas =
         await html2canvas(
             paper,
             {
-                scale: 2,
+                scale: 1.5,
                 useCORS: true,
-                logging: false
+                logging: false,
+                backgroundColor: '#ffffff'
             }
         );
+    // ----------------------------------------------------------------------
+    // JPEG
+    // ----------------------------------------------------------------------
     if (type === 'jpeg') {
         const link =
             document.createElement('a');
@@ -909,23 +1060,37 @@ async function downloadDocument(type) {
         link.href =
             canvas.toDataURL(
                 'image/jpeg',
-                0.95
+                0.85
             );
         link.click();
-    } else if (type === 'pdf') {
+        return;
+    }
+    // ----------------------------------------------------------------------
+    // PDF
+    // ----------------------------------------------------------------------
+    if (type === 'pdf') {
         const {
             jsPDF
         } = window.jspdf;
+        // สร้าง A4 พร้อม compression
         const pdf =
             new jsPDF(
-                'p',
-                'mm',
-                'a4'
+                {
+                    orientation: 'p',
+                    unit: 'mm',
+                    format: 'a4',
+                    compress: true
+                }
             );
+        // ------------------------------------------------------------------
+        // JPEG สำหรับ PDF
+        // ------------------------------------------------------------------
+        // 0.75 ช่วยลดขนาดไฟล์ลงเยอะกว่าการใช้ 1.0
+        // ------------------------------------------------------------------
         const imgData =
             canvas.toDataURL(
                 'image/jpeg',
-                1.0
+                0.75
             );
         const imgProps =
             pdf.getImageProperties(
@@ -934,16 +1099,27 @@ async function downloadDocument(type) {
         const pdfWidth =
             pdf.internal.pageSize.getWidth();
         const pdfHeight =
-            (imgProps.height * pdfWidth) /
+            (
+                imgProps.height *
+                pdfWidth
+            ) /
             imgProps.width;
+        // ------------------------------------------------------------------
+        // ใส่ภาพลง A4
+        // ------------------------------------------------------------------
         pdf.addImage(
             imgData,
             'JPEG',
             0,
             0,
             pdfWidth,
-            pdfHeight
+            pdfHeight,
+            undefined,
+            'FAST'
         );
+        // ------------------------------------------------------------------
+        // Save
+        // ------------------------------------------------------------------
         pdf.save(
             `Quotation_${
                 document.getElementById(
