@@ -1039,7 +1039,7 @@ async function downloadDocument(type) {
         await html2canvas(
             paper,
             {
-                scale: 1.5,
+                scale: 2,
                 useCORS: true,
                 logging: false,
                 backgroundColor: '#ffffff'
@@ -1060,7 +1060,7 @@ async function downloadDocument(type) {
         link.href =
             canvas.toDataURL(
                 'image/jpeg',
-                0.85
+                1.0
             );
         link.click();
         return;
@@ -1090,7 +1090,7 @@ async function downloadDocument(type) {
         const imgData =
             canvas.toDataURL(
                 'image/jpeg',
-                0.75
+                0.86
             );
         const imgProps =
             pdf.getImageProperties(
