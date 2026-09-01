@@ -7,6 +7,128 @@ let filtered = [];
 let currentPage = 1;
 const itemsPerPage = 30;
 /* =========================
+   SHARED PRODUCT FUNCTIONS
+   ใช้ร่วมกับ index.js / productdetail.js
+========================= */
+async function fetchAllProducts() {
+  return await window.supabaseFetch("products");
+}
+async function getProductByCode(code) {
+  const products = await fetchAllProducts();
+  return products.find(
+    p => String(p.item_code || "").trim() === String(code || "").trim()
+  );
+}
+function cleanNumber(val) {
+  if (val === null || val === undefined) return 0;
+  if (typeof val === "number") return val;
+  const str = String(val)
+    .replace(/,/g, "")
+    .trim();
+  if (str === "" || str === "-") return 0;
+  const parsed = parseFloat(str);
+  return isNaN(parsed) ? 0 : parsed;
+}
+function createProductCard(p) {
+  const img = String(
+    p.image_link_01 || ""
+  ).trim();
+  const sku =
+    p.item_code || "-";
+  const category =
+    p.main_category || "-";
+  const productName =
+    p.name ||
+    p.index4_description ||
+    "-";
+  let onhand = p.onhand;
+  if (
+    onhand === null ||
+    onhand === undefined ||
+    onhand === ""
+  ) {
+    onhand = "0";
+  } else {
+    onhand =
+      cleanNumber(onhand).toLocaleString();
+  }
+  const listPriceFormatted =
+    (
+      p.list_price !== null &&
+      p.list_price !== undefined &&
+      p.list_price !== ""
+    )
+      ? cleanNumber(p.list_price).toLocaleString()
+      : "";
+  const promoPriceFormatted =
+    (
+      p.promotion_price !== null &&
+      p.promotion_price !== undefined &&
+      p.promotion_price !== ""
+    )
+      ? cleanNumber(p.promotion_price).toLocaleString()
+      : "-";
+  const detailUrl =
+    "/productdetail.html?code=" +
+    encodeURIComponent(String(sku).trim());
+  const imageSrc =
+    img ||
+    "https://via.placeholder.com/600x600?text=No+Image";
+  return `
+    <a
+      href="${detailUrl}"
+      class="card-link"
+    >
+      <div class="card">
+        <img
+          src="${imageSrc}"
+          alt="${productName}"
+          onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'"
+        />
+        <div class="content">
+          <div class="top-info">
+            <div class="sku">
+              ${sku}
+            </div>
+            <div class="category">
+              ${category}
+            </div>
+          </div>
+          <div class="name">
+            ${productName}
+          </div>
+          <div class="bottom-row">
+            <div class="price-box">
+              <div class="price-old">
+                ${
+                  listPriceFormatted
+                    ? "฿" + listPriceFormatted
+                    : ""
+                }
+              </div>
+              <div class="price-new">
+                ${
+                  promoPriceFormatted !== "-"
+                    ? "฿" + promoPriceFormatted
+                    : "-"
+                }
+              </div>
+            </div>
+            <div class="stock-box">
+              <div class="stock-label">
+                คงเหลือ
+              </div>
+              <div class="stock-value">
+                ${onhand}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  `;
+}
+/* =========================
    LOAD HEADER
 ========================= */
 fetch("header.html")
@@ -25,7 +147,7 @@ fetch("header.html")
       menuBtn.addEventListener("click", () => {
         menuDropdown.classList.toggle("active");
       });
-      window.addEventListener("click", (e) => {
+      window.addEventListener("click", e => {
         if (
           !menuBtn.contains(e.target) &&
           !menuDropdown.contains(e.target)
@@ -53,54 +175,12 @@ fetch("footer.html")
     console.error("Footer load error:", err);
   });
 /* =========================
-   CLEAN NUMBER
-========================= */
-function cleanNumber(val) {
-  if (
-    val === null ||
-    val === undefined
-  ) {
-    return 0;
-  }
-  if (typeof val === "number") {
-    return val;
-  }
-  let str =
-    String(val)
-      .replace(/,/g, "")
-      .trim();
-  if (
-    str === "" ||
-    str === "-"
-  ) {
-    return 0;
-  }
-  const parsed =
-    parseFloat(str);
-  return isNaN(parsed)
-    ? 0
-    : parsed;
-}
-/* =========================
    LOAD PRODUCTS
 ========================= */
 async function loadProducts() {
   try {
-    /*
-      ดึงข้อมูลจาก Supabase table:
-      products
-      Field ที่ใช้ในหน้านี้:
-      item_code
-      name
-      main_category
-      image_link_01
-      onhand
-      list_price
-      promotion_price
-      stock_status
-    */
     rawProducts =
-      await window.supabaseFetch("products");
+      await fetchAllProducts();
     console.log(
       "Products loaded:",
       rawProducts.length
@@ -125,10 +205,14 @@ async function loadProducts() {
       "Failed to load products:",
       e
     );
-    document.getElementById(
-      "product-grid"
-    ).innerHTML =
-      '<div class="loading">Failed to secure product master data.</div>';
+    const grid =
+      document.getElementById(
+        "product-grid"
+      );
+    if (grid) {
+      grid.innerHTML =
+        '<div class="loading">Failed to secure product master data.</div>';
+    }
   }
 }
 /* =========================
@@ -254,6 +338,9 @@ function processAndRender() {
     document.getElementById(
       "product-grid"
     );
+  if (!grid) {
+    return;
+  }
   if (
     paginatedProducts.length === 0
   ) {
@@ -267,150 +354,7 @@ function processAndRender() {
   ========================= */
   const productCards =
     paginatedProducts
-      .map(p => {
-        /* =========================
-           IMAGE
-        ========================= */
-        const img =
-          String(
-            p.image_link_01 || ""
-          ).trim();
-        /* =========================
-           ITEM CODE
-        ========================= */
-        const sku =
-          p.item_code || "-";
-        /* =========================
-           CATEGORY
-        ========================= */
-        const category =
-          p.main_category || "-";
-        /* =========================
-           PRODUCT NAME
-        ========================= */
-        const productName =
-          p.name ||
-          p.index4_description ||
-          "-";
-        /* =========================
-           ON HAND
-        ========================= */
-        let onhand =
-          p.onhand;
-        if (
-          onhand === null ||
-          onhand === undefined ||
-          onhand === ""
-        ) {
-          onhand = "0";
-        }
-        else {
-          onhand =
-            cleanNumber(
-              onhand
-            ).toLocaleString();
-        }
-        /* =========================
-           LIST PRICE
-        ========================= */
-        const listPrice =
-          p.list_price;
-        const listPriceFormatted =
-          (
-            listPrice !== null &&
-            listPrice !== undefined &&
-            listPrice !== ""
-          )
-            ? cleanNumber(
-                listPrice
-              ).toLocaleString()
-            : "";
-        /* =========================
-           PROMOTION PRICE
-        ========================= */
-        const promotionPrice =
-          p.promotion_price;
-        const promoPriceFormatted =
-          (
-            promotionPrice !== null &&
-            promotionPrice !== undefined &&
-            promotionPrice !== ""
-          )
-            ? cleanNumber(
-                promotionPrice
-              ).toLocaleString()
-            : "-";
-        /* =========================
-           ESCAPE URL
-        ========================= */
-        const detailUrl =
-          "/productdetail.html?code=" +
-          encodeURIComponent(
-            String(sku).trim()
-          );
-        /* =========================
-           IMAGE FALLBACK
-        ========================= */
-        const imageSrc =
-          img ||
-          "https://via.placeholder.com/600x600?text=No+Image";
-        /* =========================
-           RETURN CARD
-        ========================= */
-        return `
-          <div
-            class="card"
-            onclick="window.location.href='${detailUrl}'"
-          >
-            <img
-              src="${imageSrc}"
-              alt="${productName}"
-              onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'"
-            />
-            <div class="content">
-              <div class="top-info">
-                <div class="sku">
-                  ${sku}
-                </div>
-                <div class="category">
-                  ${category}
-                </div>
-              </div>
-              <div class="name">
-                ${productName}
-              </div>
-              <div class="bottom-row">
-                <div class="price-box">
-                  <div class="price-old">
-                    ${
-                      listPriceFormatted
-                        ? "฿" +
-                          listPriceFormatted
-                        : ""
-                    }
-                  </div>
-                  <div class="price-new">
-                    ${
-                      promoPriceFormatted !== "-"
-                        ? "฿" +
-                          promoPriceFormatted
-                        : "-"
-                    }
-                  </div>
-                </div>
-                <div class="stock-box">
-                  <div class="stock-label">
-                    คงเหลือ
-                  </div>
-                  <div class="stock-value">
-                    ${onhand}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-      })
+      .map(createProductCard)
       .join("");
   /* =========================
      FINAL RENDER
@@ -512,8 +456,8 @@ window.changePage =
     currentPage = page;
     processAndRender();
     window.scrollTo({
-      top:0,
-      behavior:"smooth"
+      top: 0,
+      behavior: "smooth"
     });
   };
 /* =========================
