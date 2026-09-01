@@ -2,37 +2,29 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8" />
-
 <link rel="icon" type="image/jpeg" href="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780903215/favicon.ico_vnm1uh.png" />
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
 <title>UNIMERCE GROUP | Essential Systems for Better Living</title>
 <meta name="description" content="UNIMERCE คัดสรรระบบและนวัตกรรมที่สร้างคุณค่าจากการใช้งานจริง คุณภาพชีวิตที่ดีเกิดจากการตัดสินใจที่ดี ซึ่งสามารถวัดผลและพิสูจน์ได้" />
 <meta name="keywords" content="UNIMERCE, เครื่องกรองน้ำ, เครื่องพ่นอโรมา, COUS, AROMA, เครื่องมือวัดคุณภาพน้ำ, Vitev Thailand, น้ำด่าง" />
 <meta name="author" content="UNIMERCE GROUP" />
 <meta name="robots" content="index, follow" />
-
 <link rel="canonical" href="https://www.unimercegroup.com/" />
-
 <meta property="og:type" content="website" />
 <meta property="og:title" content="UNIMERCE GROUP | คัดสรรเครื่องมือเพื่อสมดุลแห่งคุณภาพชีวิต" />
 <meta property="og:description" content="A curated system of essential tools. ค้นพบระบบกรองน้ำและเครื่องหอมอโรมาที่ออกแบบมาเพื่อความพอดีและยั่งยืน" />
 <meta property="og:url" content="https://www.unimercegroup.com/" />
 <meta property="og:site_name" content="UNIMERCE GROUP" />
-<meta property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1782184221/U001_g21kfk.jpg" /> 
+<meta property="og:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1782184221/U001_g21kfk.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="UNIMERCE GROUP | Essential Systems for Better Living" />
 <meta property="og:locale" content="th_TH" />
-
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="UNIMERCE GROUP | คัดสรรเครื่องมือเพื่อสมดุลแห่งคุณภาพชีวิต" />
 <meta name="twitter:description" content="A curated system of essential tools. เครื่องมือยกระดับคุณภาพชีวิตและสุนทรียภาพแห่งการดำรงชีพ" />
 <meta name="twitter:image" content="https://res.cloudinary.com/dzgaej1wo/image/upload/v1782184221/U001_g21kfk.jpg" />
-
 <style>
-
 /* =========================
    BASE
 ========================= */
@@ -42,30 +34,29 @@
   box-sizing:border-box;
   font-family:"Kanit", Arial, sans-serif;
 }
-
 body{
   background:#ffffff;
   color:#111;
   overflow-x:hidden;
 }
-
-/* [UPDATED SECTION] เพิ่มมิติความลึกด้วยสถาปัตยกรรม Parallax Scrolling และรองรับ Mobile Responsive */
+/* =========================
+   PARALLAX BACKGROUND
+========================= */
 .bg{
   position:fixed;
-  top:-10vh;                   
+  top:-10vh;
   left:0;
   width:100%;
-  height:120vh;                 
+  height:120vh;
   z-index:-1;
-  background-image: url('https://res.cloudinary.com/dzgaej1wo/image/upload/v1782728394/001-_exrtalite_bg_nlhc48.jpg');
-  background-size: cover;        
-  background-position: center;  
-  background-repeat: no-repeat;  
-  will-change: transform;      
+  background-image:url('https://res.cloudinary.com/dzgaej1wo/image/upload/v1782728394/001-_exrtalite_bg_nlhc48.jpg');
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  will-change:transform;
 }
-
 /* =========================
-   TOP BAR (minimal)
+   TOP BAR
 ========================= */
 .topbar{
   position:fixed;
@@ -81,14 +72,12 @@ body{
   border-bottom:1px solid #eee;
   z-index:100;
 }
-
 .logo{
   font-size:12px;
   letter-spacing:3px;
   color:#111;
   text-decoration:none;
 }
-
 .menu{
   width:28px;
   height:14px;
@@ -97,7 +86,6 @@ body{
   justify-content:space-between;
   cursor:pointer;
 }
-
 .menu span{
   height:2px;
   background:#111;
@@ -105,7 +93,6 @@ body{
   border-radius:999px;
   transition:0.3s;
 }
-
 /* =========================
    MENU DROPDOWN
 ========================= */
@@ -125,12 +112,10 @@ body{
   z-index:200;
   box-shadow:0 18px 40px rgba(0,0,0,0.08);
 }
-
 .menu-dropdown.active{
   display:flex;
   animation:fadeDown 0.25s ease;
 }
-
 .menu-dropdown a{
   text-decoration:none;
   color:#111;
@@ -139,12 +124,10 @@ body{
   border-radius:12px;
   transition:0.2s;
 }
-
 .menu-dropdown a:hover{
   background:#f5f5f5;
   transform:translateX(3px);
 }
-
 @keyframes fadeDown{
   from{
     opacity:0;
@@ -155,7 +138,6 @@ body{
     transform:translateY(0);
   }
 }
-
 /* =========================
    HERO
 ========================= */
@@ -168,44 +150,37 @@ body{
   text-align:center;
   padding:100px 20px 60px;
 }
-
 .tag{
   font-size:12px;
   letter-spacing:3px;
   color:#666;
 }
-
-/* คอนเทนเนอร์และตัวจัดการภาพโลโก้ตรงกลางให้ออกมาพอดีและสมดุล */
-.hero-logo-wrap {
-  max-width: 580px;
-  width: 100%;
-  margin: 35px 0;
-  padding: 0 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.hero-logo-wrap{
+  max-width:580px;
+  width:100%;
+  margin:35px 0;
+  padding:0 20px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
-
-.hero-logo-img {
-  width: 100%;
-  height: auto;
-  display: block;
+.hero-logo-img{
+  width:100%;
+  height:auto;
+  display:block;
 }
-
 .sub{
   max-width:720px;
   font-size:18px;
   color:#555;
   line-height:1.8;
 }
-
 /* =========================
    HERO CTA
 ========================= */
 .hero-action{
   margin-top:28px;
 }
-
 .hero-btn{
   display:inline-flex;
   align-items:center;
@@ -220,36 +195,31 @@ body{
   border:1px solid #111;
   transition:0.25s;
 }
-
 .hero-btn:hover{
   background:#fff;
   color:#111;
   transform:translateY(-2px);
 }
-
 /* =========================
    SECTION SYSTEM
 ========================= */
 .section{
   padding:60px 20px;
 }
-
 .title{
   text-align:center;
   font-size:24px;
   margin-bottom:30px;
   letter-spacing:2px;
 }
-
 .textblock{
   max-width:720px;
   margin:0 auto;
   line-height:1.8;
   color:#444;
 }
-
 /* =========================
-   SHOP (MINIMAL BUTTON ROW)
+   SHOP
 ========================= */
 .shopbar{
   display:flex;
@@ -258,7 +228,6 @@ body{
   flex-wrap:wrap;
   margin-top:10px;
 }
-
 .shopbtn{
   font-size:12px;
   padding:8px 14px;
@@ -268,12 +237,10 @@ body{
   color:#111;
   transition:0.2s;
 }
-
 .shopbtn:hover{
   background:#111;
   color:#fff;
 }
-
 /* =========================
    ALL PRODUCT LINK
 ========================= */
@@ -281,7 +248,6 @@ body{
   text-align:center;
   margin-top:18px;
 }
-
 .allproduct-link{
   display:inline-flex;
   align-items:center;
@@ -291,12 +257,10 @@ body{
   font-size:13px;
   transition:0.2s;
 }
-
 .allproduct-link:hover{
   color:#111;
   transform:translateX(3px);
 }
-
 /* =========================
    GRID
 ========================= */
@@ -304,23 +268,21 @@ body{
   max-width:1000px;
   margin:0 auto;
   display:grid;
-  grid-template-columns:repeat(4, minmax(0, 1fr));
+  grid-template-columns:repeat(4,minmax(0,1fr));
   gap:22px;
   align-items:start;
 }
-
 /* =========================
-   CARD (STYLE FROM PRODUCT PAGE)
+   PRODUCT CARD
 ========================= */
-.card-link {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-  justify-self: center;
-  width: 100%;
-  max-width: 280px;
+.card-link{
+  text-decoration:none;
+  color:inherit;
+  display:block;
+  justify-self:center;
+  width:100%;
+  max-width:280px;
 }
-
 .card{
   background:#fff;
   border-radius:16px;
@@ -330,13 +292,12 @@ body{
   transition:0.2s ease;
   width:100%;
   box-sizing:border-box;
+  cursor:pointer;
 }
-
 .card:hover{
   transform:translateY(-3px);
   box-shadow:0 10px 24px rgba(0,0,0,0.10);
 }
-
 .card img{
   width:100%;
   aspect-ratio:1/1;
@@ -344,12 +305,10 @@ body{
   display:block;
   background:#f3f3f3;
 }
-
 .card .content{
   padding:14px;
   box-sizing:border-box;
 }
-
 .top-info{
   display:grid;
   grid-template-columns:1fr auto;
@@ -357,19 +316,16 @@ body{
   margin-bottom:8px;
   gap:10px;
 }
-
 .sku{
   font-size:14px;
   font-weight:600;
   color:#111;
 }
-
 .category{
   font-size:11px;
   color:#888;
   text-align:right;
 }
-
 .name{
   font-size:15px;
   font-weight:600;
@@ -377,106 +333,90 @@ body{
   margin-bottom:12px;
   min-height:44px;
 }
-
 .bottom-row{
   display:grid;
   grid-template-columns:1fr auto;
   align-items:end;
   gap:10px;
 }
-
 .price-box{
   display:flex;
   flex-direction:column;
   gap:4px;
 }
-
 .price-old{
   font-size:13px;
   color:#999;
   text-decoration:line-through;
 }
-
 .price-new{
   font-size:22px;
   font-weight:700;
   color:#111;
   line-height:1;
 }
-
 .stock-box{
   text-align:right;
 }
-
 .stock-label{
   font-size:11px;
   color:#999;
   margin-bottom:2px;
 }
-
 .stock-value{
   font-size:16px;
   font-weight:600;
   color:#111;
 }
-
 .loading{
   text-align:center;
   color:#888;
   padding:40px;
   grid-column:1/-1;
 }
-
 /* =========================
-   CATEGORY BUTTONS (INDEX ORIGINAL)
+   CATEGORY BUTTONS
 ========================= */
 .category-btn{
   text-decoration:none;
   color:inherit;
   display:block;
 }
-
-.category-card {
+.category-card{
   border:1px solid #eee;
   border-radius:16px;
   padding:22px;
   transition:0.25s;
   background:#fff;
 }
-
-.category-card:hover {
+.category-card:hover{
   transform:translateY(-5px);
   border-color:#ddd;
   background:#f5f5f5;
 }
-
 .category-card h3{
   font-size:16px;
   margin-bottom:8px;
 }
-
 .category-card p{
   font-size:13px;
   color:#666;
   line-height:1.6;
 }
-
 /* =========================
-   CATEGORIES ZONE
+   CATEGORIES
 ========================= */
 .categories-section{
   background:#fafafa;
 }
-
 /* =========================
-   RECOMMENDED ZONE
+   RECOMMENDED
 ========================= */
 .recommend{
   background:#fff;
   border-top:1px solid #eee;
   border-bottom:1px solid #eee;
 }
-
 /* =========================
    BRANDS
 ========================= */
@@ -488,562 +428,523 @@ body{
   justify-content:center;
   gap:10px;
 }
-
 .brandtag{
   font-size:12px;
   border:1px solid #ddd;
   padding:6px 12px;
   border-radius:999px;
 }
-
 /* =========================
-   CONTACT CARD (MINIMAL GRID LEFT-ALIGNED)
+   CONTACT CARD
 ========================= */
-.contact-section {
-  padding: 60px 20px 80px;
+.contact-section{
+  padding:60px 20px 80px;
 }
-
-.contact-card {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 36px 32px;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-  border: 1px solid #eee;
+.contact-card{
+  max-width:480px;
+  margin:0 auto;
+  padding:36px 32px;
+  background:#ffffff;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.04);
+  border:1px solid #eee;
 }
-
-.contact-card h2 {
-  font-size: 20px;
-  letter-spacing: 2px;
-  text-align: center;
-  color: #111;
-  margin-bottom: 28px;
+.contact-card h2{
+  font-size:20px;
+  letter-spacing:2px;
+  text-align:center;
+  color:#111;
+  margin-bottom:28px;
 }
-
-/* ใช้ CSS Grid ล็อกความกว้างชื่อแผนกให้ 130px เพื่อให้ Email ชิดซ้ายเริ่มตรงกันทุกบรรทัด */
-.contact-list {
-  display: grid;
-  grid-template-columns: 130px 1fr;
-  row-gap: 12px;
-  column-gap: 16px;
-  align-items: center;
+.contact-list{
+  display:grid;
+  grid-template-columns:130px 1fr;
+  row-gap:12px;
+  column-gap:16px;
+  align-items:center;
 }
-
-.contact-item {
-  display: contents; /* ปลดล็อก child elements ขึ้นมาบน Grid แม่ */
+.contact-item{
+  display:contents;
 }
-
-.contact-list .label {
-  color: #666;
-  font-size: 13.5px;
+.contact-list .label{
+  color:#666;
+  font-size:13.5px;
 }
-
-.contact-list a {
-  color: #111;
-  text-decoration: none;
-  font-size: 13.5px;
-  font-weight: 500;
-  transition: color 0.2s;
+.contact-list a{
+  color:#111;
+  text-decoration:none;
+  font-size:13.5px;
+  font-weight:500;
+  transition:color 0.2s;
 }
-
-.contact-list a:hover {
-  color: #2563eb;
-  text-decoration: underline;
+.contact-list a:hover{
+  color:#2563eb;
+  text-decoration:underline;
 }
-
-/* เส้นคั่น Minimal บางเบา */
-.contact-divider {
-  grid-column: 1 / -1;
-  height: 1px;
-  background: #f0f0f0;
-  margin: 4px 0;
+.contact-divider{
+  grid-column:1 / -1;
+  height:1px;
+  background:#f0f0f0;
+  margin:4px 0;
 }
-
-.contact-mobile-row {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 130px 1fr;
-  column-gap: 16px;
-  padding-top: 8px;
-  border-top: 1px dashed #e5e5e5;
-  margin-top: 4px;
+.contact-mobile-row{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:130px 1fr;
+  column-gap:16px;
+  padding-top:8px;
+  border-top:1px dashed #e5e5e5;
+  margin-top:4px;
 }
-
 /* =========================
-   MOBILE RESPONSIVE
+   MOBILE
 ========================= */
 @media(max-width:768px){
-
-  .hero-logo-wrap {
-    max-width: 280px;
-    margin: 20px 0;
+  .hero-logo-wrap{
+    max-width:280px;
+    margin:20px 0;
   }
-
   .hero{
     padding:120px 24px 60px;
   }
-
   .sub{
     font-size:15px;
   }
-
   .grid{
     display:block;
     column-count:2;
     column-gap:12px;
   }
-
   .card-link,
   .category-btn{
-    break-inside: avoid;
+    break-inside:avoid;
     margin-bottom:12px;
     display:inline-block;
     width:100%;
   }
-
   .card,
   .category-card{
     width:100%;
   }
-
   .category-card{
     padding:18px;
     border-radius:14px;
   }
-
-  .category-card h3{ font-size:14px; }
-  .category-card p{ font-size:12px; line-height:1.5; }
-
-  .card .content{ padding:12px; }
-  .name{ font-size:13px; min-height:auto; }
-  .price-new{ font-size:18px; }
-  .sku{ font-size:13px; }
-  .stock-value{ font-size:14px; }
-
+  .category-card h3{
+    font-size:14px;
+  }
+  .category-card p{
+    font-size:12px;
+    line-height:1.5;
+  }
+  .card .content{
+    padding:12px;
+  }
+  .name{
+    font-size:13px;
+    min-height:auto;
+  }
+  .price-new{
+    font-size:18px;
+  }
+  .sku{
+    font-size:13px;
+  }
+  .stock-value{
+    font-size:14px;
+  }
   .menu-dropdown{
     width:calc(100% - 32px);
     right:16px;
     top:72px;
   }
-
 }
-
+/* =========================
+   SMALL MOBILE
+========================= */
 @media(max-width:480px){
-  .contact-card {
-    padding: 24px 20px;
+  .contact-card{
+    padding:24px 20px;
   }
-  .contact-list, .contact-mobile-row {
-    grid-template-columns: 1fr;
-    row-gap: 4px;
+  .contact-list,
+  .contact-mobile-row{
+    grid-template-columns:1fr;
+    row-gap:4px;
   }
-  .contact-item {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 6px;
+  .contact-item{
+    display:flex;
+    flex-direction:column;
+    margin-bottom:6px;
   }
-  .contact-mobile-row {
-    margin-top: 8px;
+  .contact-mobile-row{
+    margin-top:8px;
   }
 }
-
+/* =========================
+   DESKTOP
+========================= */
 @media(min-width:1024px){
-  .name{ font-weight:500; letter-spacing:0.2px; }
-  .price-new{ font-weight:600; }
-  .title{ font-weight:700; }
-  body{ font-weight:400; }
+  .name{
+    font-weight:500;
+    letter-spacing:0.2px;
+  }
+  .price-new{
+    font-weight:600;
+  }
+  .title{
+    font-weight:700;
+  }
+  body{
+    font-weight:400;
+  }
 }
-
 </style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LRV59ZF3R"></script>
 <script src="/analytics.js"></script>
 </head>
-
 <body>
-
 <div class="bg"></div>
-
 <div id="header-placeholder"></div>
-
+<!-- =========================
+     HERO
+========================= -->
 <section class="hero">
-
-  <div class="tag">ADAPTIVE ESSENTIAL SYSTEMS</div>
-
-  <div class="hero-logo-wrap">
-    <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780633652/ULOGO_CLEAR_1060_jkvqqm.png" alt="UNIMERCE GROUP" class="hero-logo-img" />
+  <div class="tag">
+    ADAPTIVE ESSENTIAL SYSTEMS
   </div>
-
+  <div class="hero-logo-wrap">
+    <img
+      src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780633652/ULOGO_CLEAR_1060_jkvqqm.png"
+      alt="UNIMERCE GROUP"
+      class="hero-logo-img"
+    />
+  </div>
   <div class="sub">
     A curated system of essential tools designed for balance, usability, and long-term quality of life.
   </div>
-
   <div class="hero-action">
-    <a class="hero-btn" href="/products">
+    <a
+      class="hero-btn"
+      href="/products"
+    >
       ALL PRODUCTS
     </a>
-    <a class="hero-btn" href="/inventory" style="background:#2f5ea8;border-color:#2f5ea8;">
+    <a
+      class="hero-btn"
+      href="/inventory"
+      style="background:#2f5ea8;border-color:#2f5ea8;"
+    >
       INVENTORY
     </a>
   </div>
-
 </section>
-
+<!-- =========================
+     SHOP
+========================= -->
 <section class="section">
-
-  <div class="title">SHOP</div>
-
+  <div class="title">
+    SHOP
+  </div>
   <div class="shopbar">
-
-    <a class="shopbtn" href="https://shopee.co.th/shop/123173321" target="_blank">
+    <a
+      class="shopbtn"
+      href="https://shopee.co.th/shop/123173321"
+      target="_blank"
+    >
       Shopee
     </a>
-
-    <a class="shopbtn" href="https://www.lazada.co.th/shop/vitevthailand/" target="_blank">
+    <a
+      class="shopbtn"
+      href="https://www.lazada.co.th/shop/vitevthailand/"
+      target="_blank"
+    >
       Lazada
     </a>
-
-    <a class="shopbtn" href="#">
+    <a
+      class="shopbtn"
+      href="#"
+    >
       TikTok (soon)
     </a>
-
   </div>
-
 </section>
-
+<!-- =========================
+     CATEGORIES
+========================= -->
 <section class="section categories-section">
-
-  <div class="title">CATEGORIES</div>
-
-  <div class="grid">
-
-    <a href="vitev-premium-alkaline-water.html" class="category-btn">
-      <div class="category-card">
-        <h3>Vitev Premium Alkaline Water</h3>
-        <p>Clean water systems for essential daily living.</p>
-      </div>
-    </a>
-
-    <a href="water-quality-tools.html" class="category-btn">
-      <div class="category-card">
-        <h3>Water Quality Tester</h3>
-        <p>Analytical instruments for liquid and water quality monitoring.</p>
-      </div>
-    </a>
-
-    <a href="/measurement-solutions.html" class="category-btn">
-      <div class="category-card">
-        <h3>Measurement Solutions</h3>
-        <p>Precision instruments for every professional standard.</p>
-      </div>
-    </a>
-
-    <a href="/cous-aroma-systems" class="category-btn">
-      <div class="category-card">
-        <h3>COUS Aroma Systems</h3>
-        <p>Advanced scent diffusion technologies for architectural spaces.</p>
-      </div>
-    </a>
-
+  <div class="title">
+    CATEGORIES
   </div>
-
+  <div class="grid">
+    <a
+      href="vitev-premium-alkaline-water.html"
+      class="category-btn"
+    >
+      <div class="category-card">
+        <h3>
+          Vitev Premium Alkaline Water
+        </h3>
+        <p>
+          Clean water systems for essential daily living.
+        </p>
+      </div>
+    </a>
+    <a
+      href="water-quality-tools.html"
+      class="category-btn"
+    >
+      <div class="category-card">
+        <h3>
+          Water Quality Tester
+        </h3>
+        <p>
+          Analytical instruments for liquid and water quality monitoring.
+        </p>
+      </div>
+    </a>
+    <a
+      href="/measurement-solutions.html"
+      class="category-btn"
+    >
+      <div class="category-card">
+        <h3>
+          Measurement Solutions
+        </h3>
+        <p>
+          Precision instruments for every professional standard.
+        </p>
+      </div>
+    </a>
+    <a
+      href="/cous-aroma-systems"
+      class="category-btn"
+    >
+      <div class="category-card">
+        <h3>
+          COUS Aroma Systems
+        </h3>
+        <p>
+          Advanced scent diffusion technologies for architectural spaces.
+        </p>
+      </div>
+    </a>
+  </div>
   <div class="allproduct-link-wrap">
-
-    <a class="allproduct-link" href="/products">
+    <a
+      class="allproduct-link"
+      href="/products"
+    >
       สินค้าทั้งหมด →
     </a>
-
   </div>
-
 </section>
-
+<!-- =========================
+     RECOMMENDED PRODUCTS
+========================= -->
 <section class="section recommend">
-
-  <div class="title">RECOMMENDED PRODUCTS</div>
-
-  <div class="grid" id="recommend-grid">
+  <div class="title">
+    RECOMMENDED PRODUCTS
+  </div>
+  <div
+    class="grid"
+    id="recommend-grid"
+  >
     <div class="loading">
       Loading recommended products...
     </div>
   </div>
-
 </section>
-
+<!-- =========================
+     WHO WE ARE
+========================= -->
 <section class="section">
-
-  <div class="title">WHO WE ARE</div>
-
-  <div class="textblock">
-
-    <p>
-      <strong>Essence of Presence</strong><br>
-      เราให้ความสำคัญกับแก่นแท้ภายใต้รูปทรงของสรรพสิ่ง ท่ามกลางความเปลี่ยนแปลงรอบตัว UNIMERCE เชื่อมั่นในความเรียบง่ายอันสงบนิ่ง และความโน้มเอียงของชีวิตในการแสวงหาสมดุลที่พอดี
-    </p>
-
-    <br>
-
-    <p>
-      <strong>Refinement of Selection</strong><br>
-      การเลือกสรรของเราคือการมองให้ลึกยิ่งกว่าภาพลักษณ์ ค่อยๆ ลดทอนสิ่งที่ไม่จำเป็นและปรุงแต่งเกินจริง จนเหลือเพียงเครื่องมือที่มีเหตุผลของการดำรงอยู่ เพื่อส่งมอบองค์ประกอบชีวิตที่เงียบงามและยั่งยืน
-    </p>
-
+  <div class="title">
+    WHO WE ARE
   </div>
-
-</section>
-
-<br><br>
-
-<section class="section">
-
-  <div class="title">WHAT WE DO</div>
-
   <div class="textblock">
-
     <p>
-      เราคัดสรรนวัตกรรมร่วมสมัยผ่านมุมมองของความสมดุล โดยเชื่อมโยงชีวิตเข้ากับความแม่นยำของวิทยาศาสตร์และการยกระดับผัสสะของมนุษย์ เพื่อสนับสนุนความยั่งยืนในระยะยาว (Longevity) มากกว่าความสะดวกชั่วคราว
+      <strong>
+        Essence of Presence
+      </strong>
+      <br>
+      เราให้ความสำคัญกับแก่นแท้ภายใต้รูปทรงของสรรพสิ่ง
+      ท่ามกลางความเปลี่ยนแปลงรอบตัว UNIMERCE
+      เชื่อมั่นในความเรียบง่ายอันสงบนิ่ง
+      และความโน้มเอียงของชีวิตในการแสวงหาสมดุลที่พอดี
     </p>
-
     <br>
-
     <p>
-      ในมิติของสิ่งแวดล้อมทางกายภาพ เรานำเสนอระบบวิเคราะห์เชิงลึกด้วยเครื่องมือผู้เชี่ยวชาญ ไม่ว่าจะเป็นอุปกรณ์เพื่อ **วัดคุณภาพน้ำ** และ **วัดค่าน้ำ** ให้บริสุทธิ์ปลอดภัย พร้อมชุดนวัตกรรมสำหรับวิเคราะห์ปัจจัยรอบตัวอย่างแม่นยำ ทั้งระบบตรวจสอบที่รองรับการ **วัดค่า pH**, เครื่องมือตรวจสอบความเข้มข้นเพื่อ **วัดBRIX** และ **วัดค่าความหวาน** ในสารละลาย ตลาดจนวิศวกรรมเฉพาะทางสำหรับการ **วัดแสง** และ **วัดเสียง** เพื่อควบคุมมลภาวะและจัดสรรสภาพแวดล้อมให้ลงตัวที่สุด
+      <strong>
+        Refinement of Selection
+      </strong>
+      <br>
+      การเลือกสรรของเราคือการมองให้ลึกยิ่งกว่าภาพลักษณ์
+      ค่อยๆ ลดทอนสิ่งที่ไม่จำเป็นและปรุงแต่งเกินจริง
+      จนเหลือเพียงเครื่องมือที่มีเหตุผลของการดำรงอยู่
+      เพื่อส่งมอบองค์ประกอบชีวิตที่เงียบงามและยั่งยืน
     </p>
-
-    <br>
-
-    <p>
-      ร่วมกับการสร้างบรรยากาศและสุนทรียภาพผ่านผัสสะ ด้วยระบบกระจายกลิ่นอโรมาขั้นสูงที่จะช่วยจัดสมดุลย์สภาวะอารมณ์และจังหวะการหายใจ ทุกผลิตภัณฑ์ผ่านการทดสอบและกลั่นกรองจากการใช้งานจริง เพื่อให้เป็นระบบเครื่องมือที่พร้อมเคียงข้างและเกื้อหนุนสมดุลแห่งการมีอยู่ของชีวิตอย่างแท้จริง
-    </p>
-
   </div>
-
 </section>
-
+<br>
+<br>
+<!-- =========================
+     WHAT WE DO
+========================= -->
 <section class="section">
-
-  <div class="title">OUR BRANDS</div>
-
+  <div class="title">
+    WHAT WE DO
+  </div>
+  <div class="textblock">
+    <p>
+      เราคัดสรรนวัตกรรมร่วมสมัยผ่านมุมมองของความสมดุล
+      โดยเชื่อมโยงชีวิตเข้ากับความแม่นยำของวิทยาศาสตร์
+      และการยกระดับผัสสะของมนุษย์
+      เพื่อสนับสนุนความยั่งยืนในระยะยาว (Longevity)
+      มากกว่าความสะดวกชั่วคราว
+    </p>
+    <br>
+    <p>
+      ในมิติของสิ่งแวดล้อมทางกายภาพ
+      เรานำเสนอระบบวิเคราะห์เชิงลึกด้วยเครื่องมือผู้เชี่ยวชาญ
+      ไม่ว่าจะเป็นอุปกรณ์เพื่อ
+      <strong>วัดคุณภาพน้ำ</strong>
+      และ
+      <strong>วัดค่าน้ำ</strong>
+      ให้บริสุทธิ์ปลอดภัย
+      พร้อมชุดนวัตกรรมสำหรับวิเคราะห์ปัจจัยรอบตัวอย่างแม่นยำ
+      ทั้งระบบตรวจสอบที่รองรับการ
+      <strong>วัดค่า pH</strong>
+      เครื่องมือตรวจสอบความเข้มข้นเพื่อ
+      <strong>วัดBRIX</strong>
+      และ
+      <strong>วัดค่าความหวาน</strong>
+      ในสารละลาย
+      ตลาดจนวิศวกรรมเฉพาะทางสำหรับการ
+      <strong>วัดแสง</strong>
+      และ
+      <strong>วัดเสียง</strong>
+      เพื่อควบคุมมลภาวะและจัดสรรสภาพแวดล้อมให้ลงตัวที่สุด
+    </p>
+    <br>
+    <p>
+      ร่วมกับการสร้างบรรยากาศและสุนทรียภาพผ่านผัสสะ
+      ด้วยระบบกระจายกลิ่นอโรมาขั้นสูงที่จะช่วยจัดสมดุลย์สภาวะอารมณ์
+      และจังหวะการหายใจ
+      ทุกผลิตภัณฑ์ผ่านการทดสอบและกลั่นกรองจากการใช้งานจริง
+      เพื่อให้เป็นระบบเครื่องมือที่พร้อมเคียงข้าง
+      และเกื้อหนุนสมดุลแห่งการมีอยู่ของชีวิตอย่างแท้จริง
+    </p>
+  </div>
+</section>
+<!-- =========================
+     OUR BRANDS
+========================= -->
+<section class="section">
+  <div class="title">
+    OUR BRANDS
+  </div>
   <div class="brands">
-
     <div class="brandtag">
-      <a href="https://vitev.com" target="_blank">Vitev</a>
+      <a
+        href="https://vitev.com"
+        target="_blank"
+      >
+        Vitev
+      </a>
     </div>
-
     <div class="brandtag">
-      <a href="https://www.unimercegroup.com/cous-aroma-systems" target="_blank">COUS</a>
+      <a
+        href="https://www.unimercegroup.com/cous-aroma-systems"
+        target="_blank"
+      >
+        COUS
+      </a>
     </div>
-
     <div class="brandtag">
       Smart Sensor
     </div>
-
     <div class="brandtag">
       GVDA
     </div>
-
   </div>
-
 </section>
-
+<!-- =========================
+     CONTACT
+========================= -->
 <section class="contact-section">
   <div class="contact-card">
-    <h2>CONTACT US</h2>
-    
+    <h2>
+      CONTACT US
+    </h2>
     <div class="contact-list">
       <div class="contact-item">
-        <span class="label">สอบถามข้อมูลทั่วไป</span>
-        <a href="mailto:contact@unimercegroup.com">contact@unimercegroup.com</a>
+        <span class="label">
+          สอบถามข้อมูลทั่วไป
+        </span>
+        <a href="mailto:contact@unimercegroup.com">
+          contact@unimercegroup.com
+        </a>
       </div>
       <div class="contact-divider"></div>
-
       <div class="contact-item">
-        <span class="label">สั่งซื้อสินค้า</span>
-        <a href="mailto:sales@unimercegroup.com">sales@unimercegroup.com</a>
+        <span class="label">
+          สั่งซื้อสินค้า
+        </span>
+        <a href="mailto:sales@unimercegroup.com">
+          sales@unimercegroup.com
+        </a>
       </div>
       <div class="contact-divider"></div>
-
       <div class="contact-item">
-        <span class="label">จัดซื้อ</span>
-        <a href="mailto:purchase@unimercegroup.com">purchase@unimercegroup.com</a>
+        <span class="label">
+          จัดซื้อ
+        </span>
+        <a href="mailto:purchase@unimercegroup.com">
+          purchase@unimercegroup.com
+        </a>
       </div>
       <div class="contact-divider"></div>
-
       <div class="contact-item">
-        <span class="label">บัญชี-การเงิน</span>
-        <a href="mailto:billing@unimercegroup.com">billing@unimercegroup.com</a>
+        <span class="label">
+          บัญชี-การเงิน
+        </span>
+        <a href="mailto:billing@unimercegroup.com">
+          billing@unimercegroup.com
+        </a>
       </div>
       <div class="contact-divider"></div>
-
       <div class="contact-item">
-        <span class="label">บริการหลังการขาย</span>
-        <a href="mailto:support@unimercegroup.com">support@unimercegroup.com</a>
+        <span class="label">
+          บริการหลังการขาย
+        </span>
+        <a href="mailto:support@unimercegroup.com">
+          support@unimercegroup.com
+        </a>
       </div>
-
       <div class="contact-mobile-row">
-        <span class="label">Mobile</span>
-        <a href="tel:+66944955505">+66 (0)94 495 5505</a>
+        <span class="label">
+          Mobile
+        </span>
+        <a href="tel:+66944955505">
+          +66 (0)94 495 5505
+        </a>
       </div>
     </div>
   </div>
 </section>
-
 <div id="footer-placeholder"></div>
-
+<!-- =========================
+     SHARED CONFIG
+========================= -->
 <script src="config.js"></script>
-
-<script>
-
-/* =========================
-   LOAD HEADER (กลไกการดึงส่วนหัว)
-========================= */
-fetch("header.html")
-  .then(response => response.text())
-  .then(data => {
-    document.getElementById("header-placeholder").innerHTML = data;
-
-    const menuBtn = document.getElementById("menuBtn");
-    const menuDropdown = document.getElementById("menuDropdown");
-
-    if(menuBtn && menuDropdown){
-
-      menuBtn.addEventListener("click", () => {
-        menuDropdown.classList.toggle("active");
-      });
-
-      window.addEventListener("click", (e) => {
-
-        if(
-          !menuBtn.contains(e.target) &&
-          !menuDropdown.contains(e.target)
-        ){
-          menuDropdown.classList.remove("active");
-        }
-
-      });
-
-    }
-
-  });
-
-/* =========================
-   LOAD FOOTER (กลไกการดึงส่วนท้าย)
-========================= */
-fetch("footer.html")
-  .then(response => response.text())
-  .then(data => {
-    document.getElementById("footer-placeholder").innerHTML = data;
-  });
-
-/* =========================
-   FETCH & RENDER RECOMMENDED PRODUCTS
-========================= */
-const targetCodes = ["10002", "10006", "10019", "10056"];
-
-function cleanNumber(val) {
-  if (val === null || val === undefined) return 0;
-  if (typeof val === 'number') return val;
-  let str = String(val).replace(/,/g, '').trim();
-  if (str === "" || str === "-") return 0;
-  let parsed = parseFloat(str);
-  return isNaN(parsed) ? 0 : parsed;
-}
-
-async function loadRecommendedProducts() {
-  try {
-    // โยกไปเรียกใช้งานศูนย์กลางสคริปต์ฟังก์ชันดึงข้อมูลจากตาราง products 
-    const rawProducts = await window.supabaseFetch('products');
-
-    // กรองและเรียงลำดับเฉพาะ 4 ชิ้นที่กำหนด
-    const recommendedProducts = rawProducts
-      .filter(p => targetCodes.includes(String(p.Item_Code || "").trim()))
-      .sort((a, b) => targetCodes.indexOf(String(a.Item_Code).trim()) - targetCodes.indexOf(String(b.Item_Code).trim()));
-
-    const grid = document.getElementById("recommend-grid");
-
-    if(recommendedProducts.length === 0) {
-      grid.innerHTML = '<div class="loading">No recommended products found.</div>';
-      return;
-    }
-
-    const htmlCards = recommendedProducts.map(p => {
-      const img = (p.image_link01 || "").trim();
-      const sku = p.Item_Code || '-';
-      const category = p.MainCategory || '-';
-      
-      let onhand = p.OnHand || '0';
-      if(onhand !== "-") {
-        onhand = cleanNumber(onhand).toLocaleString();
-      }
-
-      // --- [จุดที่แก้] แปลงราคาให้มี Comma ---
-      const listPriceNum = cleanNumber(p.ListPrice);
-      const promoPriceNum = cleanNumber(p.PromotionPrice);
-
-      const oldPriceText = listPriceNum > 0 ? '฿' + listPriceNum.toLocaleString() : '';
-      const newPriceText = promoPriceNum > 0 ? '฿' + promoPriceNum.toLocaleString() : '-';
-      // ------------------------------------
-
-      return `
-        <a href="productdetail.html?code=${sku}" class="card-link">
-          <div class="card">
-            <img 
-              src="${img}"
-              onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'"
-            />
-            <div class="content">
-              <div class="top-info">
-                <div class="sku">${sku}</div>
-                <div class="category">${category}</div>
-              </div>
-
-              <div class="name">
-                ${p.Description || '-'}
-              </div>
-
-              <div class="bottom-row">
-                <div class="price-box">
-                  <div class="price-old">
-                    ${oldPriceText}
-                  </div>
-                  <div class="price-new">
-                    ${newPriceText}
-                  </div>
-                </div>
-                <div class="stock-box">
-                  <div class="stock-label">คงเหลือ</div>
-                  <div class="stock-value">${onhand}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </a>
-      `;
-    }).join('');
-
-    grid.innerHTML = htmlCards;
-
-  } catch(e) {
-    console.error(e);
-    document.getElementById("recommend-grid").innerHTML =
-      '<div class="loading">Failed to master recommended products.</div>';
-  }
-}
-
-window.addEventListener("load", loadRecommendedProducts);
-
-/* ===================================================
-   [NEW CODE] PARALLAX CONTROLLER (สร้างเอฟเฟกต์มิติความลึกฉากหลัง)
-=================================================== */
-window.addEventListener("scroll", () => {
-  const scrolled = window.scrollY;
-  const bgLayer = document.querySelector(".bg");
-  if (bgLayer) {
-    // ค่าอัตราส่วน 0.12 หมายถึงฉากหลังจะเคลื่อนตัวช้ากว่า Foreground ประมาณ 88%
-    // สามารถเพิ่ม-ลดทอนค่านี้ได้ตามความรู้สึกต้องการลึก-ตื้น (แนะนำช่วง 0.08 - 0.15)
-    bgLayer.style.transform = `translateY(${scrolled * 0.12}px)`;
-  }
-});
-
-</script>
-
+<!-- =========================
+     PRODUCT FUNCTIONS
+     ต้องโหลดก่อน index.js
+========================= -->
+<script src="products.js"></script>
+<!-- =========================
+     HOME FUNCTIONS
+========================= -->
+<script src="index.js"></script>
 </body>
 </html>
