@@ -103,7 +103,7 @@ const CACHE_KEY =
 const CACHE_TIME_KEY =
   "uerp_itemmaster_cache_timestamp";
 const ONE_DAY_MS =
-  24 * 60 * 60 * 1000;
+  1 * 60 * 60 * 1000;
 /* =========================
    LOAD DATA
    TABLE: itemmaster
@@ -271,11 +271,23 @@ function forceRefreshData() {
     document.querySelector(
       "#btnRefresh i"
     );
+
   if (icon) {
     icon.classList.add(
       "fa-spin"
     );
   }
+
+  // Clear cache ก่อนโหลดข้อมูลใหม่
+  localStorage.removeItem(
+    CACHE_KEY
+  );
+
+  localStorage.removeItem(
+    CACHE_TIME_KEY
+  );
+
+  // Force fetch จาก Supabase
   loadTable(true)
     .finally(() => {
       if (icon) {
@@ -285,6 +297,7 @@ function forceRefreshData() {
       }
     });
 }
+
 /* =========================
    APPLY ALL FILTERS
 ========================= */
