@@ -1,399 +1,115 @@
 <!-- =========================
  UNIMERCE UERP Shared Header
- Version 2.7 - SalesReport Dropdown + Transaction / GR / Billing
+ Version 2.8 - Native Sales Report Dropdown
  Analytics Architecture
 ========================= -->
-
 <style>
-    .no-scrollbar::-webkit-scrollbar {
-        display: none;
-    }
-
-    .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    /* =========================
-       Desktop Chrome Tab Active
-    ========================= */
-    @media (min-width: 768px) {
-        .chrome-tab-active {
-            background-color: #ffffff !important;
-            border-color: #dadce0 #dadce0 transparent !important;
-            color: #1a73e8 !important;
-            border-radius: 6px 6px 0 0;
-            margin-bottom: -1px;
-            font-weight: 600;
-        }
-    }
-
-    /* =========================
-       SalesReport Dropdown
-    ========================= */
-    .sales-report-dropdown {
-        position: relative;
-    }
-
-    .sales-report-menu {
-        display: none;
-        position: absolute;
-        top: calc(100% + 1px);
-        left: 0;
-        min-width: 180px;
-        background: #ffffff;
-        border: 1px solid #dadce0;
-        border-radius: 0 0 8px 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
-        z-index: 1000;
-        overflow: hidden;
-    }
-
-    .sales-report-menu.show {
-        display: block;
-    }
-
-    .sales-report-menu a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        font-size: 12px;
-        color: #475569;
-        text-decoration: none;
-        white-space: nowrap;
-        transition: background-color 0.15s ease, color 0.15s ease;
-    }
-
-    .sales-report-menu a:hover {
-        background-color: #f1f5f9;
-        color: #1a73e8;
-    }
-
-    .sales-report-menu a i {
-        width: 16px;
-        text-align: center;
-    }
-
-    /* =========================
-       Mobile Dropdown
-    ========================= */
-    @media (max-width: 767px) {
-        .sales-report-dropdown {
-            position: static;
-        }
-
-        .sales-report-menu {
-            position: fixed;
-            top: auto;
-            left: 8px;
-            right: 8px;
-            min-width: 0;
-            border-radius: 8px;
-            margin-top: 0;
-        }
-
-        .sales-report-menu a {
-            justify-content: flex-start;
-            padding: 12px 16px;
-            font-size: 13px;
-        }
-    }
+.no-scrollbar::-webkit-scrollbar{display:none}
+.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+@media (min-width:768px){
+.chrome-tab-active{background-color:#fff!important;border-color:#dadce0 #dadce0 transparent!important;color:#1a73e8!important;border-radius:6px 6px 0 0;margin-bottom:-1px;font-weight:600}
+}
+.sales-report-dropdown{position:relative;flex:1}
+.sales-report-summary{list-style:none;cursor:pointer}
+.sales-report-summary::-webkit-details-marker{display:none}
+.sales-report-summary .sales-report-arrow{transition:transform .15s ease}
+.sales-report-dropdown[open] .sales-report-arrow{transform:rotate(180deg)}
+.sales-report-dropdown[open] .sales-report-summary{color:#1a73e8}
+.sales-report-menu{position:absolute;top:100%;left:0;min-width:180px;background:#fff;border:1px solid #dadce0;border-top:0;border-radius:0 0 8px 8px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:1000;overflow:hidden}
+.sales-report-menu a{display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:12px;color:#475569;text-decoration:none;white-space:nowrap;transition:background-color .15s ease,color .15s ease}
+.sales-report-menu a:hover{background-color:#f1f5f9;color:#1a73e8}
+.sales-report-menu a i{width:16px;text-align:center}
+@media (max-width:767px){
+.sales-report-dropdown{position:relative}
+.sales-report-menu{position:absolute;top:100%;left:0;right:auto;min-width:170px;border:1px solid #dadce0;border-radius:0 0 8px 8px}
+.sales-report-menu a{padding:12px 14px;font-size:12px}
+}
 </style>
-
 <!-- =========================
  Top Header (เมนูหลักด้านบน)
 ========================= -->
 <header class="bg-white border-b border-google-border shadow-sm">
-    <div class="max-w-[1000px] mx-auto px-4 h-16 flex items-center justify-between">
-
-        <!-- Logo / System Name (คงไอคอนเดิม fa-layer-group และเป็นลิงก์ไป Inventory) -->
-        <div class="flex items-center gap-3">
-
-            <a href="/uerp/inventory" 
-               data-page="inventory"
-               class="w-10 h-10 rounded-xl bg-google-blue text-white flex items-center justify-center shadow-sm hover:opacity-90 transition-opacity"
-               title="Inventory Management">
-                <i class="fa-solid fa-layer-group"></i>
-            </a>
-
-            <div>
-                <div class="text-sm font-bold text-slate-800 tracking-tight">
-                    UNIMERCE UERP
-                </div>
-
-                <div class="text-[11px] text-google-gray">
-                    Business Intelligence Platform
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Action Menu (มุมบนขวา) -->
-        <div class="flex items-center gap-4 text-google-gray">
-            
-            <a href="/uerp/system" 
-               data-page="system"
-               class="hover:text-google-blue transition text-base flex items-center justify-center p-1" 
-               title="System Settings">
-                <i class="fa-solid fa-gear"></i>
-            </a>
-
-            <button class="hover:text-google-blue transition text-base flex items-center justify-center p-1" 
-                    title="Notification">
-                <i class="fa-regular fa-bell"></i>
-            </button>
-
-            <button class="hover:text-google-blue transition text-base flex items-center justify-center p-1" 
-                    title="User">
-                <i class="fa-regular fa-circle-user"></i>
-            </button>
-            
-        </div>
-
-    </div>
+<div class="max-w-[1000px] mx-auto px-4 h-16 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<a href="/uerp/inventory" data-page="inventory" class="w-10 h-10 rounded-xl bg-google-blue text-white flex items-center justify-center shadow-sm hover:opacity-90 transition-opacity" title="Inventory Management">
+<i class="fa-solid fa-layer-group"></i>
+</a>
+<div>
+<div class="text-sm font-bold text-slate-800 tracking-tight">UNIMERCE UERP</div>
+<div class="text-[11px] text-google-gray">Business Intelligence Platform</div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-google-gray">
+<a href="/uerp/system" data-page="system" class="hover:text-google-blue transition text-base flex items-center justify-center p-1" title="System Settings">
+<i class="fa-solid fa-gear"></i>
+</a>
+<button class="hover:text-google-blue transition text-base flex items-center justify-center p-1" title="Notification">
+<i class="fa-regular fa-bell"></i>
+</button>
+<button class="hover:text-google-blue transition text-base flex items-center justify-center p-1" title="User">
+<i class="fa-regular fa-circle-user"></i>
+</button>
+</div>
+</div>
 </header>
-
 <!-- =========================
  Main Navigation (5 เมนูหลักด้านล่าง)
 ========================= -->
 <div class="bg-slate-100 border-b border-google-border md:pt-2 md:px-4">
-
-    <div class="max-w-[1000px] mx-auto">
-        
-        <nav class="grid grid-cols-5 md:flex md:items-end md:gap-1 overflow-x-auto no-scrollbar text-center md:text-left">
-
-            <!-- =====================================================
-                 1. SalesReport Dropdown
-                 เดิมเป็นปุ่ม SalesReport ที่กดแล้วเข้า Report โดยตรง
-                 เปลี่ยนเป็น Dropdown:
-                 - Overview
-                 - byItem
-                 - byCategory
-            ====================================================== -->
-            <div class="sales-report-dropdown flex-1 md:flex-none">
-
-                <button type="button"
-                        id="salesReportToggle"
-                        class="chrome-tab w-full px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent"
-                        title="Sales Report">
-
-                    <i class="fa-solid fa-chart-line text-sm md:text-xs"></i>
-
-                    <span class="block md:inline tracking-tight">
-                        SalesReport
-                    </span>
-
-                    <i id="salesReportArrow"
-                       class="fa-solid fa-chevron-down text-[8px] md:text-[9px] transition-transform">
-                    </i>
-
-                </button>
-
-                <!-- =========================
-                     SalesReport Dropdown Menu
-                ========================== -->
-                <div id="salesReportMenu"
-                     class="sales-report-menu">
-
-                    <!-- Overview -->
-                    <a href="/uerp/overview"
-                       data-page="overview">
-
-                        <i class="fa-solid fa-chart-pie"></i>
-
-                        <span>
-                            Overview
-                        </span>
-
-                    </a>
-
-                    <!-- byItem -->
-                    <a href="/uerp/byitem"
-                       data-page="byItem">
-
-                        <i class="fa-solid fa-arrow-trend-up"></i>
-
-                        <span>
-                            byItem
-                        </span>
-
-                    </a>
-
-                    <!-- byCategory -->
-                    <a href="/uerp/bycategory"
-                       data-page="byCategory">
-
-                        <i class="fa-solid fa-boxes-stacked"></i>
-
-                        <span>
-                            byCategory
-                        </span>
-
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <!-- =====================================================
-                 2. Transaction
-                 เมนูใหม่แทน byItem เดิม
-            ====================================================== -->
-            <a href="/uerp/transactions"
-               data-page="transactions"
-               class="chrome-tab flex-1 md:flex-none px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
-
-                <i class="fa-solid fa-right-left text-sm md:text-xs"></i>
-
-                <span class="block md:inline tracking-tight">
-                    Transaction
-                </span>
-
-            </a>
-
-
-            <!-- =====================================================
-                 3. GR
-                 เมนูใหม่แทน byCategory เดิม
-            ====================================================== -->
-            <a href="/uerp/gr"
-               data-page="gr"
-               class="chrome-tab flex-1 md:flex-none px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
-
-                <i class="fa-solid fa-truck-ramp-box text-sm md:text-xs"></i>
-
-                <span class="block md:inline tracking-tight">
-                    GR
-                </span>
-
-            </a>
-
-
-            <!-- =====================================================
-                 4. Billing
-            ====================================================== -->
-            <a href="/uerp/billing"
-               data-page="billing"
-               class="chrome-tab flex-1 md:flex-none px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
-
-                <i class="fa-solid fa-file-invoice-dollar text-sm md:text-xs"></i>
-
-                <span class="block md:inline tracking-tight">
-                    Billing
-                </span>
-
-            </a>
-
-
-            <!-- =====================================================
-                 5. Quotation
-                 คงของเดิม
-            ====================================================== -->
-            <a href="/uerp/quotation"
-               data-page="quotation"
-               class="chrome-tab flex-1 md:flex-none px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
-
-                <i class="fa-solid fa-coins text-sm md:text-xs"></i>
-
-                <span class="block md:inline tracking-tight">
-                    Quotation
-                </span>
-
-            </a>
-
-        </nav>
-
-    </div>
-
-</div>
-
-
+<div class="max-w-[1000px] mx-auto">
+<nav class="grid grid-cols-5 md:flex md:items-end md:gap-1 overflow-x-auto no-scrollbar text-center md:text-left">
 <!-- =========================
- SalesReport Dropdown Script
+ 1. Sales Report Dropdown
 ========================= -->
-<script>
-
-    document.addEventListener("DOMContentLoaded", function () {
-
-        const toggle = document.getElementById("salesReportToggle");
-        const menu = document.getElementById("salesReportMenu");
-        const arrow = document.getElementById("salesReportArrow");
-
-        if (!toggle || !menu) {
-            return;
-        }
-
-        /* =========================
-           Toggle Dropdown
-        ========================== */
-        toggle.addEventListener("click", function (event) {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            const isOpen = menu.classList.contains("show");
-
-            if (isOpen) {
-
-                menu.classList.remove("show");
-
-                if (arrow) {
-                    arrow.style.transform = "rotate(0deg)";
-                }
-
-            } else {
-
-                menu.classList.add("show");
-
-                if (arrow) {
-                    arrow.style.transform = "rotate(180deg)";
-                }
-
-            }
-
-        });
-
-
-        /* =========================
-           Close when clicking outside
-        ========================== */
-        document.addEventListener("click", function (event) {
-
-            if (!event.target.closest(".sales-report-dropdown")) {
-
-                menu.classList.remove("show");
-
-                if (arrow) {
-                    arrow.style.transform = "rotate(0deg)";
-                }
-
-            }
-
-        });
-
-
-        /* =========================
-           Close dropdown after
-           selecting a report
-        ========================== */
-        const reportLinks = menu.querySelectorAll("a");
-
-        reportLinks.forEach(function (link) {
-
-            link.addEventListener("click", function () {
-
-                menu.classList.remove("show");
-
-                if (arrow) {
-                    arrow.style.transform = "rotate(0deg)";
-                }
-
-            });
-
-        });
-
-    });
-
-</script>
+<details class="sales-report-dropdown md:flex-none">
+<summary class="sales-report-summary chrome-tab w-full px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent" title="Sales Report">
+<i class="fa-solid fa-chart-line text-sm md:text-xs"></i>
+<span class="block md:inline tracking-tight">Sales Report</span>
+<i class="sales-report-arrow fa-solid fa-chevron-down text-[8px] md:text-[9px]"></i>
+</summary>
+<div class="sales-report-menu">
+<a href="/uerp/overview" data-page="overview">
+<i class="fa-solid fa-chart-pie"></i>
+<span>Overview</span>
+</a>
+<a href="/uerp/byitem" data-page="byItem">
+<i class="fa-solid fa-arrow-trend-up"></i>
+<span>byItem</span>
+</a>
+<a href="/uerp/bycategory" data-page="byCategory">
+<i class="fa-solid fa-boxes-stacked"></i>
+<span>byCategory</span>
+</a>
+</div>
+</details>
+<!-- =========================
+ 2. Transaction
+========================= -->
+<a href="/uerp/transactions" data-page="transactions" class="chrome-tab flex-1 md:flex-none px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
+<i class="fa-solid fa-right-left text-sm md:text-xs"></i>
+<span class="block md:inline tracking-tight">Transaction</span>
+</a>
+<!-- =========================
+ 3. GR
+========================= -->
+<a href="/uerp/gr" data-page="gr" class="chrome-tab flex-1 md:flex-none px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
+<i class="fa-solid fa-truck-ramp-box text-sm md:text-xs"></i>
+<span class="block md:inline tracking-tight">GR</span>
+</a>
+<!-- =========================
+ 4. Billing
+========================= -->
+<a href="/uerp/billing" data-page="billing" class="chrome-tab flex-1 md:flex-none px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
+<i class="fa-solid fa-file-invoice-dollar text-sm md:text-xs"></i>
+<span class="block md:inline tracking-tight">Billing</span>
+</a>
+<!-- =========================
+ 5. Quotation
+========================= -->
+<a href="/uerp/quotation" data-page="quotation" class="chrome-tab flex-1 md:flex-none px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
+<i class="fa-solid fa-coins text-sm md:text-xs"></i>
+<span class="block md:inline tracking-tight">Quotation</span>
+</a>
+</nav>
+</div>
+</div>
