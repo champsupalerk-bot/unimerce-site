@@ -1,6 +1,6 @@
 <!-- =========================
  UNIMERCE UERP Shared Header
- Version 2.9 - Sales Report Dropdown via Layout Engine
+ Version 2.6 - Added Inventory Link on Original Logo
  Analytics Architecture
 ========================= -->
 
@@ -8,12 +8,10 @@
     .no-scrollbar::-webkit-scrollbar {
         display: none;
     }
-
     .no-scrollbar {
         -ms-overflow-style: none;
         scrollbar-width: none;
     }
-
     @media (min-width: 768px) {
         .chrome-tab-active {
             background-color: #ffffff !important;
@@ -24,69 +22,6 @@
             font-weight: 600;
         }
     }
-
-    /* =========================
-       Sales Report Dropdown
-    ========================= */
-    .sales-report-dropdown {
-        position: relative;
-    }
-
-    .sales-report-menu {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        min-width: 180px;
-        background: #ffffff;
-        border: 1px solid #dadce0;
-        border-top: 0;
-        border-radius: 0 0 8px 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
-        z-index: 1000;
-        overflow: hidden;
-    }
-
-    .sales-report-menu a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        font-size: 12px;
-        color: #475569;
-        text-decoration: none;
-        white-space: nowrap;
-        transition: background-color 0.15s ease, color 0.15s ease;
-    }
-
-    .sales-report-menu a:hover {
-        background-color: #f1f5f9;
-        color: #1a73e8;
-    }
-
-    .sales-report-menu a i {
-        width: 16px;
-        text-align: center;
-    }
-
-    @media (max-width: 767px) {
-        .sales-report-dropdown {
-            position: relative;
-        }
-
-        .sales-report-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            min-width: 170px;
-            border: 1px solid #dadce0;
-            border-radius: 0 0 8px 8px;
-        }
-
-        .sales-report-menu a {
-            padding: 12px 14px;
-            font-size: 12px;
-        }
-    }
 </style>
 
 <!-- =========================
@@ -95,191 +30,94 @@
 <header class="bg-white border-b border-google-border shadow-sm">
     <div class="max-w-[1000px] mx-auto px-4 h-16 flex items-center justify-between">
 
-        <!-- Logo / System Name -->
+        <!-- Logo / System Name (คงไอคอนเดิม fa-layer-group และเป็นลิงก์ไป Inventory) -->
         <div class="flex items-center gap-3">
-
-            <a href="/uerp/inventory"
+            <a href="/uerp/inventory" 
                data-page="inventory"
                class="w-10 h-10 rounded-xl bg-google-blue text-white flex items-center justify-center shadow-sm hover:opacity-90 transition-opacity"
                title="Inventory Management">
                 <i class="fa-solid fa-layer-group"></i>
             </a>
-
-            <!-- UNIMERCE UERP -> UERP Home -->
-            <a href="https://www.unimercegroup.com/uerp"
-               class="block"
-               title="UNIMERCE UERP">
-
+            <div>
                 <div class="text-sm font-bold text-slate-800 tracking-tight">
                     UNIMERCE UERP
                 </div>
-
                 <div class="text-[11px] text-google-gray">
                     Business Intelligence Platform
                 </div>
-
-            </a>
-
+            </div>
         </div>
 
         <!-- Action Menu (มุมบนขวา) -->
         <div class="flex items-center gap-4 text-google-gray">
-
-            <a href="/uerp/system"
+            
+            <a href="/uerp/system" 
                data-page="system"
-               class="hover:text-google-blue transition text-base flex items-center justify-center p-1"
+               class="hover:text-google-blue transition text-base flex items-center justify-center p-1" 
                title="System Settings">
                 <i class="fa-solid fa-gear"></i>
             </a>
 
-            <button class="hover:text-google-blue transition text-base flex items-center justify-center p-1"
-                    title="Notification">
+            <button class="hover:text-google-blue transition text-base flex items-center justify-center p-1" title="Notification">
                 <i class="fa-regular fa-bell"></i>
             </button>
 
-            <button class="hover:text-google-blue transition text-base flex items-center justify-center p-1"
-                    title="User">
+            <button class="hover:text-google-blue transition text-base flex items-center justify-center p-1" title="User">
                 <i class="fa-regular fa-circle-user"></i>
             </button>
-
+            
         </div>
-
     </div>
 </header>
 
 <!-- =========================
- Main Navigation
- 5 เมนูหลัก
+ Main Navigation (5 เมนูหลักด้านล่าง)
 ========================= -->
 <div class="bg-slate-100 border-b border-google-border md:pt-2 md:px-4">
     <div class="max-w-[1000px] mx-auto">
-
+        
         <nav class="grid grid-cols-5 md:flex md:items-end md:gap-1 overflow-x-auto no-scrollbar text-center md:text-left">
+            
+            <!-- 1. Overview -->
+            <a href="/uerp/"
+               data-page="SalesReport"
+               class="chrome-tab px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
+                <i class="fa-solid fa-chart-line text-sm md:text-xs"></i>
+                <span class="block md:inline tracking-tight">SalesReport</span>
+            </a>
 
-            <!-- =========================
-                 1. Sales Report
-                 Dropdown
-            ========================== -->
-            <div class="sales-report-dropdown flex-1 md:flex-none">
+            <!-- 2. Sales -->
+            <a href="/uerp/sales"
+               data-page="byItem"
+               class="chrome-tab px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
+                <i class="fa-solid fa-arrow-trend-up text-sm md:text-xs"></i>
+                <span class="block md:inline tracking-tight">byItem</span>
+            </a>
 
-                <button type="button"
-                        data-uerp-dropdown-toggle
-                        class="chrome-tab w-full px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent"
-                        title="Sales Report">
+            <!-- 3. Product -->
+            <a href="/uerp/products"
+               data-page="byCategory"
+               class="chrome-tab px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
+                <i class="fa-solid fa-box-open text-sm md:text-xs"></i>
+                <span class="block md:inline tracking-tight">byCategory</span>
+            </a>
 
-                    <i class="fa-solid fa-chart-line text-sm md:text-xs"></i>
-
-                    <span class="block md:inline tracking-tight">
-                        Sales Report
-                    </span>
-
-                    <i class="fa-solid fa-chevron-down text-[8px] md:text-[9px]">
-                    </i>
-
-                </button>
-
-                <!-- Sales Report Dropdown -->
-                <div data-uerp-dropdown
-                     class="sales-report-menu hidden">
-
-                    <a href="/uerp/overview"
-                       data-page="overview">
-
-                        <i class="fa-solid fa-chart-pie"></i>
-
-                        <span>
-                            Overview
-                        </span>
-
-                    </a>
-
-                    <a href="/uerp/byitem"
-                       data-page="byItem">
-
-                        <i class="fa-solid fa-arrow-trend-up"></i>
-
-                        <span>
-                            byItem
-                        </span>
-
-                    </a>
-
-                    <a href="/uerp/bycategory"
-                       data-page="byCategory">
-
-                        <i class="fa-solid fa-boxes-stacked"></i>
-
-                        <span>
-                            byCategory
-                        </span>
-
-                    </a>
-
-                </div>
-
-            </div>
-
-            <!-- =========================
-                 2. Transaction
-            ========================== -->
+            <!-- 4. Customer -->
             <a href="/uerp/transactions"
-               data-page="transactions"
-               class="chrome-tab flex-1 md:flex-none px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
-
-                <i class="fa-solid fa-right-left text-sm md:text-xs"></i>
-
-                <span class="block md:inline tracking-tight">
-                    Transaction
-                </span>
-
+               data-page="byTransaction"
+               class="chrome-tab px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
+                <i class="fa-solid fa-users text-sm md:text-xs"></i>
+                <span class="block md:inline tracking-tight">byTransaction</span>
             </a>
 
-            <!-- =========================
-                 3. GR
-            ========================== -->
-            <a href="/uerp/gr"
-               data-page="gr"
-               class="chrome-tab flex-1 md:flex-none px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
-
-                <i class="fa-solid fa-truck-ramp-box text-sm md:text-xs"></i>
-
-                <span class="block md:inline tracking-tight">
-                    GR
-                </span>
-
-            </a>
-
-            <!-- =========================
-                 4. Billing
-            ========================== -->
-            <a href="/uerp/billing"
-               data-page="billing"
-               class="chrome-tab flex-1 md:flex-none px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
-
-                <i class="fa-solid fa-file-invoice-dollar text-sm md:text-xs"></i>
-
-                <span class="block md:inline tracking-tight">
-                    Billing
-                </span>
-
-            </a>
-
-            <!-- =========================
-                 5. Quotation
-            ========================== -->
+            <!-- 5. Quotation -->
             <a href="/uerp/quotation"
                data-page="quotation"
-               class="chrome-tab flex-1 md:flex-none px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
-
+               class="chrome-tab px-1 py-2 md:px-5 md:py-2.5 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 text-[10px] sm:text-xs text-slate-600 hover:text-google-blue transition-colors border-t border-x border-transparent">
                 <i class="fa-solid fa-coins text-sm md:text-xs"></i>
-
-                <span class="block md:inline tracking-tight">
-                    Quotation
-                </span>
-
+                <span class="block md:inline tracking-tight">Quotation</span>
             </a>
 
         </nav>
-
     </div>
 </div>
