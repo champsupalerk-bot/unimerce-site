@@ -65,12 +65,15 @@
         initUerpLayout();
     }
 
-    // เปิดเผยฟังก์ชันออกไปที่ Global Scope (window) เพื่อให้สคริปต์ภายนอกสามารถเรียกใช้โดยตรงได้
+    // เปิดเผยฟังก์ชันออกไปที่ Global Scope
+    // เพื่อให้สคริปต์ภายนอกสามารถเรียกใช้โดยตรงได้
     window.initUerpLayout = initUerpLayout;
 
     function initUerpLayout(){
+
         // ป้องกันการทำงานซ้ำซ้อนถ้าถูกเรียกไปแล้ว
         if (window.__uerpLayoutInitialized) return;
+
         window.__uerpLayoutInitialized = true;
 
         console.log(
@@ -91,21 +94,31 @@
      * menu: data-uerp-menu
      */
     function initMobileMenu(){
-        const toggle = document.querySelector("[data-uerp-menu-toggle]");
-        const menu = document.querySelector("[data-uerp-menu]");
+
+        const toggle = document.querySelector(
+            "[data-uerp-menu-toggle]"
+        );
+
+        const menu = document.querySelector(
+            "[data-uerp-menu]"
+        );
 
         if(!toggle || !menu){
+
             console.log(
                 "Mobile menu not found (skip)"
             );
+
             return;
         }
 
         toggle.addEventListener(
             "click",
             function(){
+
                 menu.classList.toggle("hidden");
                 toggle.classList.toggle("active");
+
             }
         );
 
@@ -118,38 +131,108 @@
      * Dropdown Menu
      *
      * HTML:
+     *
      * <button data-uerp-dropdown-toggle>
      * <div data-uerp-dropdown>
+     *
+     * รองรับ Sales Report Dropdown
      */
     function initDropdown(){
-        const buttons = document.querySelectorAll("[data-uerp-dropdown-toggle]");
+
+        const buttons = document.querySelectorAll(
+            "[data-uerp-dropdown-toggle]"
+        );
 
         if(!buttons.length){
+
+            console.log(
+                "Dropdown not found (skip)"
+            );
+
             return;
         }
 
-        buttons.forEach(btn=>{
+        buttons.forEach(function(btn){
+
             btn.addEventListener(
                 "click",
                 function(e){
+
+                    e.preventDefault();
                     e.stopPropagation();
+
                     const target = btn.nextElementSibling;
-                    if(target){
-                        target.classList.toggle("hidden");
+
+                    if(!target){
+                        return;
                     }
+
+                    // ปิด dropdown ตัวอื่นก่อน
+                    document.querySelectorAll(
+                        "[data-uerp-dropdown]"
+                    ).forEach(function(el){
+
+                        if(el !== target){
+                            el.classList.add("hidden");
+                        }
+
+                    });
+
+                    // เปิด / ปิด dropdown ปัจจุบัน
+                    target.classList.toggle("hidden");
+
                 }
             );
+
         });
 
+        // คลิกด้านนอก = ปิด dropdown
         document.addEventListener(
             "click",
             function(){
-                document.querySelectorAll("[data-uerp-dropdown]")
-                .forEach(el=>{
+
+                document.querySelectorAll(
+                    "[data-uerp-dropdown]"
+                ).forEach(function(el){
+
                     el.classList.add("hidden");
+
                 });
+
             }
         );
+
+        // คลิกใน dropdown ไม่ให้ event ไปถึง document
+        document.querySelectorAll(
+            "[data-uerp-dropdown]"
+        ).forEach(function(dropdown){
+
+            dropdown.addEventListener(
+                "click",
+                function(e){
+
+                    e.stopPropagation();
+
+                }
+            );
+
+            // เมื่อเลือกเมนู ให้ปิด dropdown
+            dropdown.querySelectorAll(
+                "a"
+            ).forEach(function(link){
+
+                link.addEventListener(
+                    "click",
+                    function(){
+
+                        dropdown.classList.add("hidden");
+
+                    }
+                );
+
+            });
+
+        });
 
         console.log(
             "Dropdown ready"
@@ -161,22 +244,29 @@
      * Compare current URL
      */
     function setActiveMenu(){
+
         const current = window.location.pathname.split("/").pop();
 
-        document.querySelectorAll("[data-uerp-link]")
-        .forEach(link=>{
+        document.querySelectorAll(
+            "[data-uerp-link]"
+        ).forEach(function(link){
+
             const href = link.getAttribute("href");
+
             if(!href) return;
 
             const file = href.split("/").pop();
 
             if(file === current){
+
                 link.classList.add(
                     "active",
                     "text-blue-600",
                     "font-bold"
                 );
+
             }
+
         });
 
         console.log(
@@ -191,6 +281,7 @@
      * document.addEventListener('uerp-ready', function(){})
      */
     function dispatchReadyEvent(){
+
         document.dispatchEvent(
             new CustomEvent(
                 "uerp-ready",
@@ -207,4 +298,5 @@
             "color:#16a34a;font-weight:bold;"
         );
     }
+
 })();
