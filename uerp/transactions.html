@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>UERP - Order Management | Unimerce Co., Ltd.</title>
-    
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -25,20 +24,16 @@
             }
         }
     </script>
-
     <!-- Google Fonts & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <!-- Supabase JS Client CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <!-- Global Header & Layout Script -->
     <script src="js/layoutuerp.js"></script>
-
     <style>
-        body { 
-            font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif; 
+        body {
+            font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
             touch-action: manipulation;
         }
         .google-card {
@@ -54,21 +49,22 @@
             background-position: right 6px center;
             background-size: 16px;
         }
-        /* Selection Highlight */
         .row-selected {
             background-color: #e8f0fe !important;
         }
-        /* Duplicate Row Highlight (Soft Amber) */
         .row-duplicate {
             background-color: #fff7ed !important;
         }
         .row-selected.row-duplicate {
             background-color: #fef08a !important;
         }
-        th.sortable { cursor: pointer; user-select: none; }
-        th.sortable:hover { background-color: #f1f5f9; }
-        
-        /* Minimal Circular Checkbox */
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+        th.sortable:hover {
+            background-color: #f1f5f9;
+        }
         .rounded-checkbox {
             appearance: none;
             width: 14px;
@@ -94,24 +90,50 @@
             border-radius: 50%;
             background: white;
         }
+        .period-btn {
+            transition: all 0.15s ease;
+        }
+        @media (max-width: 639px) {
+            .mobile-item-name {
+                white-space: normal;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+                line-height: 1.35;
+            }
+            .mobile-order-tail {
+                font-size: 15px;
+                font-weight: 700;
+                line-height: 1.15;
+                letter-spacing: 0.2px;
+            }
+            .mobile-order-main {
+                font-size: 11px;
+                line-height: 1.2;
+            }
+            .mobile-item-code {
+                font-size: 15px;
+                line-height: 1.25;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-100">
-
     <!-- Dynamic Navigation Header Container -->
     <div id="headerContainer"></div>
-
     <main class="max-w-[1000px] mx-auto px-2 sm:px-4 py-3 sm:py-5 w-full flex-grow space-y-2.5">
-
         <!-- Top Header & Action Bar -->
         <div class="flex items-center justify-between gap-2">
-            <div>
-                <h1 class="text-sm sm:text-lg font-bold text-slate-900 flex items-center gap-1.5">
-                    <i class="fa-solid fa-boxes-packing text-google-blue"></i>
-                    <!-- Mobile: Show EN only, Desktop: Show Full TH/EN -->
-                    <span class="hidden sm:inline">รายการจัดการคำสั่งซื้อ (Order Management)</span>
-                    <span class="sm:hidden">Order Management</span>
-                </h1>
+            <div class="flex items-center gap-2 min-w-0">
+                <div>
+                    <h1 class="text-sm sm:text-lg font-bold text-slate-900 flex items-center gap-1.5">
+                        <i class="fa-solid fa-boxes-packing text-google-blue"></i>
+                        <span class="hidden sm:inline">รายการจัดการคำสั่งซื้อ (Order Management)</span>
+                        <span class="sm:hidden">Order Management</span>
+                    </h1>
+                </div>
+                <span id="orderCountTop" class="px-2 py-0.5 bg-blue-50 text-google-blue border border-blue-100 rounded-full text-[10px] font-bold whitespace-nowrap">
+                    0 Orders
+                </span>
             </div>
             <div class="flex items-center gap-1.5">
                 <button id="submitBtn" onclick="submitChanges()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm flex items-center gap-1.5 transition disabled:opacity-40">
@@ -122,17 +144,13 @@
                 </button>
             </div>
         </div>
-
-        <!-- Minimal Sub-header Toolbar: Show PK Circle Checkbox & Main Filters -->
+        <!-- Minimal Sub-header Toolbar -->
         <div class="google-card p-2 sm:p-3 bg-white space-y-2">
             <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
-                <!-- Circular Minimal Show PK Filter -->
                 <label class="flex items-center gap-1.5 text-xs text-slate-600 font-medium cursor-pointer select-none">
                     <input type="checkbox" id="showPKToggle" onchange="applyFilters()" class="rounded-checkbox">
                     <span>showPK (<span id="selectedCountText" class="font-bold text-slate-900">0</span>)</span>
                 </label>
-
-                <!-- Status Select Filter -->
                 <div class="flex items-center gap-1.5">
                     <select id="channelFilter" onchange="applyFilters()" class="google-select bg-slate-50 border border-google-border rounded-md px-2 py-1 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
                         <option value="ALL" selected>ช่องทางทั้งหมด</option>
@@ -140,7 +158,6 @@
                         <option value="Lazada">Lazada</option>
                         <option value="TikTok">TikTok</option>
                     </select>
-
                     <select id="statusFilter" onchange="applyFilters()" class="google-select bg-slate-50 border border-google-border rounded-md px-2 py-1 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
                         <option value="ALL" selected>สถานะทั้งหมด</option>
                         <option value="PENDING">PENDING</option>
@@ -149,133 +166,125 @@
                     </select>
                 </div>
             </div>
-
-            <!-- Search & Date Controls -->
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
-                <div class="relative flex-1">
-                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[11px]"></i>
-                    <input type="text" id="searchInput" oninput="applyFilters()" placeholder="ค้นหา Invoice, Order No, Item..." class="w-full pl-7 pr-2.5 py-1 border border-google-border rounded-md text-xs focus:outline-none focus:border-google-blue">
-                </div>
-
-                <div class="flex items-center gap-1.5 justify-end">
-                    <select id="periodFilter" onchange="handlePeriodChange()" class="google-select bg-slate-50 border border-google-border rounded-md px-2 py-1 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
-                        <option value="ALL">ทั้งหมด</option>
-                        <option value="TODAY" selected>วันนี้</option>
-                        <option value="YESTERDAY">เมื่อวาน</option>
-                        <option value="THIS_WEEK">สัปดาห์นี้</option>
-                        <option value="THIS_MONTH">เดือนนี้</option>
-                        <option value="LAST_MONTH">เดือนที่แล้ว</option>
-                        <option value="THIS_YEAR">ปีนี้</option>
-                        <option value="CUSTOM">กำหนดเอง</option>
-                    </select>
-                </div>
+            <!-- Search -->
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[11px]"></i>
+                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="ค้นหา Invoice, Order No, Item..." class="w-full pl-7 pr-2.5 py-1.5 border border-google-border rounded-md text-xs focus:outline-none focus:border-google-blue">
             </div>
-
-            <!-- Custom Date Range Inputs -->
-            <div id="customDateContainer" class="hidden flex items-center justify-end gap-1.5 pt-1 text-xs text-slate-600">
-                <input type="date" id="startDate" onchange="applyFilters()" class="border border-google-border rounded px-1.5 py-0.5 text-[11px]">
-                <span>-</span>
-                <input type="date" id="endDate" onchange="applyFilters()" class="border border-google-border rounded px-1.5 py-0.5 text-[11px]">
+            <!-- Quick Period Buttons -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5">
+                <button type="button" onclick="setPeriod('TODAY')" data-period="TODAY" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
+                    วันนี้
+                </button>
+                <button type="button" onclick="setPeriod('YESTERDAY')" data-period="YESTERDAY" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
+                    เมื่อวาน
+                </button>
+                <button type="button" onclick="setPeriod('THIS_MONTH')" data-period="THIS_MONTH" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
+                    เดือนนี้
+                </button>
+                <button type="button" onclick="setPeriod('LAST_MONTH')" data-period="LAST_MONTH" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
+                    เดือนที่แล้ว
+                </button>
+                <button type="button" onclick="togglePeriodMenu()" class="px-2.5 py-1 rounded-md text-[11px] font-semibold border border-google-border bg-white text-slate-600 whitespace-nowrap">
+                    Custom <i class="fa-solid fa-chevron-down text-[8px] ml-0.5"></i>
+                </button>
+            </div>
+            <!-- Additional Period Dropdown -->
+            <div id="periodMenu" class="hidden">
+                <select id="periodFilter" onchange="handleCustomPeriodChange()" class="google-select w-full bg-slate-50 border border-google-border rounded-md px-2 py-1.5 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
+                    <option value="ALL">ทั้งหมด</option>
+                    <option value="THIS_WEEK">สัปดาห์นี้</option>
+                    <option value="THIS_YEAR">ปีนี้</option>
+                    <option value="CUSTOM">กำหนดวันที่เอง</option>
+                </select>
+            </div>
+            <!-- Custom Date Range -->
+            <div id="customDateContainer" class="hidden flex items-center gap-2 pt-1 text-xs text-slate-600">
+                <div class="flex-1 flex items-center gap-1.5 bg-slate-50 border border-google-border rounded-md px-2 py-1.5">
+                    <span class="text-[10px] text-slate-500">จาก</span>
+                    <input type="date" id="startDate" onchange="applyFilters()" class="min-w-0 flex-1 bg-transparent text-[11px] outline-none">
+                </div>
+                <span class="text-slate-400">→</span>
+                <div class="flex-1 flex items-center gap-1.5 bg-slate-50 border border-google-border rounded-md px-2 py-1.5">
+                    <span class="text-[10px] text-slate-500">ถึง</span>
+                    <input type="date" id="endDate" onchange="applyFilters()" class="min-w-0 flex-1 bg-transparent text-[11px] outline-none">
+                </div>
             </div>
         </div>
-
-        <!-- Status Indicator -->
         <div id="statusIndicator" class="hidden p-2 bg-blue-50 rounded-lg border border-blue-100 text-xs text-google-blue">
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
                 <span id="statusText" class="font-medium text-[11px]">กำลังโหลดข้อมูล...</span>
             </div>
         </div>
-
-        <!-- Main Transactions Table (Mobile Vertical Scroll Only) -->
-<section class="google-card bg-white overflow-hidden">
-    <div class="w-full">
-        <table class="w-full text-left border-collapse table-fixed">
-            <thead>
-                <tr class="bg-slate-50 text-slate-500 font-semibold text-[11px] border-b border-google-border uppercase tracking-tight">
-                    <!-- Date: ล็อกกว้าง 80px (มือถือ) / 95px (จอใหญ่) -->
-                    <th class="p-2 w-[80px] sm:w-[95px] sortable" onclick="sortTable('date')">
-                        date <span id="sort_date" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                    </th>
-
-                    <!-- Invoice No: จัดกึ่งกลางหัวตาราง + ล็อกกว้าง 110px (มือถือ) / 140px (จอใหญ่) -->
-                    <th class="p-2 text-center w-[110px] sm:w-[140px] sortable" onclick="sortTable('invoice_no')">
-                        order_no <span id="sort_invoice_no" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                    </th>
-
-                    <!-- Item Code: ล็อกกว้าง 95px (มือถือ) / 120px (จอใหญ่) -->
-                    <th class="p-2 w-[95px] sm:w-[120px] sortable" onclick="sortTable('item_code')">
-                        item_code <span id="sort_item_code" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                    </th>
-
-                    <!-- Item Name: ไม่ใส่ความกว้าง เพื่อให้ยืดขยายกินพื้นที่ส่วนที่เหลือทั้งหมด -->
-                    <th class="p-2 hidden sm:table-cell sortable" onclick="sortTable('item_name')">
-                        item_name <span id="sort_item_name" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                    </th>
-
-                    <!-- Sales Amt: ล็อกกว้าง 110px -->
-                    <th class="p-2 text-right hidden sm:table-cell w-[120px] sortable" onclick="sortTable('sales_amt')">
-                        sales_amt <span id="sort_sales_amt" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                    </th>
-
-                    <!-- Channel: ล็อกกว้าง 60px -->
-                    <th class="p-2 text-center hidden sm:table-cell w-[60px] sortable" onclick="sortTable('channel')">
-                        ch
-                    </th>
-
-                    <!-- Status: ล็อกกว้าง 90px -->
-                    <th class="p-2 text-center hidden sm:table-cell w-[90px]">status</th>
-                </tr>
-            </thead>
-            <tbody id="txTableBody" class="divide-y divide-slate-100 text-xs text-slate-700">                        <!-- Dynamic Order Records -->
-                    </tbody>
+        <!-- Main Transactions Table -->
+        <section class="google-card bg-white overflow-hidden">
+            <div class="w-full">
+                <table class="w-full text-left border-collapse table-fixed">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-500 font-semibold text-[11px] border-b border-google-border uppercase tracking-tight">
+                            <th class="p-2 w-[68px] sm:w-[95px] sortable" onclick="sortTable('date')">
+                                date <span id="sort_date" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                            </th>
+                            <th class="p-2 text-center w-[82px] sm:w-[140px] sortable" onclick="sortTable('invoice_no')">
+                                order_no <span id="sort_invoice_no" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                            </th>
+                            <th class="p-2 sm:w-[120px] sortable" onclick="sortTable('item_code')">
+                                item_code <span id="sort_item_code" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                            </th>
+                            <th class="p-2 hidden sm:table-cell sortable" onclick="sortTable('item_name')">
+                                item_name <span id="sort_item_name" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                            </th>
+                            <th class="p-2 text-right hidden sm:table-cell w-[120px] sortable" onclick="sortTable('sales_amt')">
+                                sales_amt <span id="sort_sales_amt" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                            </th>
+                            <th class="p-2 text-center hidden sm:table-cell w-[60px] sortable" onclick="sortTable('channel')">
+                                ch
+                            </th>
+                            <th class="p-2 text-center hidden sm:table-cell w-[90px]">
+                                status
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="txTableBody" class="divide-y divide-slate-100 text-xs text-slate-700"></tbody>
                 </table>
             </div>
-
-            <!-- Footer Counter & Scroll Status -->
-            <div class="p-2.5 border-t border-google-border bg-slate-50 flex items-center justify-between text-[11px] text-google-gray">
-                <div>แสดง <span id="renderedCount" class="font-bold text-slate-800">0</span> / <span id="recordCount" class="font-bold text-slate-800">0</span> รายการ</div>
+            <div class="p-2.5 border-t border-google-border bg-slate-50 flex items-center justify-end text-[11px] text-google-gray">
                 <div id="infiniteLoader" class="hidden text-google-blue flex items-center gap-1 font-medium">
                     <i class="fa-solid fa-circle-notch animate-spin"></i> กำลังโหลด...
                 </div>
             </div>
         </section>
     </main>
-
-    <!-- Supabase & Business Logics Script -->
     <script>
         const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-
         let allTransactions = [];
         let filteredTransactions = [];
+        let filteredOrderGroups = [];
         let selectedRowIds = new Set();
         let pendingStatusChanges = {};
         let currentSortColumn = 'date';
         let currentSortAsc = false;
-        
-        let displayLimit = 50;
-        const limitStep = 50;
-
+        let currentPeriod = 'TODAY';
+        let displayLimit = 25;
+        const limitStep = 25;
         document.addEventListener('DOMContentLoaded', () => {
+            setPeriod('TODAY', false);
             loadHeader();
             fetchTransactions();
             setupInfiniteScroll();
         });
-
         async function loadHeader() {
             try {
                 const res = await fetch('uerpheader.html');
                 if (!res.ok) throw new Error('Header file not found');
                 const html = await res.text();
-                
                 const headerContainer = document.getElementById('headerContainer');
                 headerContainer.innerHTML = html;
-
                 const txTab = headerContainer.querySelector('[data-page="transactions"]');
                 if (txTab) txTab.classList.add('chrome-tab-active');
-
                 if (typeof window.initUerpLayout === 'function') {
                     window.__uerpLayoutInitialized = false;
                     window.initUerpLayout();
@@ -284,77 +293,62 @@
                 console.warn('Header load error:', err);
             }
         }
-
-        // YY-MM-DD for Mobile, YYYY-MM-DD for Desktop
         function formatDateFormatted(dateStr, isMobile = false) {
             if (!dateStr) return '-';
             const d = new Date(dateStr);
-            if (isNaN(d.getTime())) return dateStr.substring(0, 10);
-            const iso = d.toISOString().split('T')[0]; // YYYY-MM-DD
-            return isMobile ? iso.substring(2) : iso;   // YY-MM-DD on Mobile
+            if (isNaN(d.getTime())) {
+                const raw = String(dateStr).substring(0, 10);
+                return isMobile ? raw.substring(2) : raw;
+            }
+            const iso = d.toISOString().split('T')[0];
+            return isMobile ? iso.substring(2) : iso;
         }
-
         function formatMoney(val) {
-            return '฿' + parseFloat(val || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return '฿' + parseFloat(val || 0).toLocaleString('th-TH', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
         }
-
-        // Truncate left for Invoice No (Shows last 4 digits on Mobile)
-        function truncateInvoiceLeft(str) {
-            if (!str) return '-';
-            const s = String(str);
-            if (s.length <= 8) return s;
-            return '...' + s.slice(-4);
-        }
-
         function updateStatus(msg, isError = false) {
             const statusIndicator = document.getElementById('statusIndicator');
             const statusText = document.getElementById('statusText');
             statusIndicator.classList.remove('hidden');
-            statusIndicator.className = isError 
+            statusIndicator.className = isError
                 ? "p-2 bg-red-50 rounded-lg border border-red-200 text-xs text-google-red"
                 : "p-2 bg-blue-50 rounded-lg border border-blue-100 text-xs text-google-blue";
             statusText.innerText = msg;
         }
-
         function forceRefreshData() {
             localStorage.removeItem('uerp_orders_cache');
             localStorage.removeItem('uerp_orders_cache_time');
             fetchTransactions(true);
         }
-
         async function fetchTransactions(isManualRefresh = false) {
             const cacheKey = 'uerp_orders_cache';
             const timeKey = 'uerp_orders_cache_time';
             const cachedData = localStorage.getItem(cacheKey);
             const cachedTime = localStorage.getItem(timeKey);
             const nowTime = new Date().getTime();
-
             if (!isManualRefresh && cachedData && cachedTime && (nowTime - Number(cachedTime) < 12 * 3600 * 1000)) {
                 allTransactions = JSON.parse(cachedData);
                 document.getElementById('statusIndicator').classList.add('hidden');
                 applyFilters();
                 return;
             }
-
             updateStatus('กำลังโหลดข้อมูล...');
-
             try {
                 const { data, error } = await supabaseClient
                     .from('transactions')
                     .select('*')
                     .order('date', { ascending: false })
                     .limit(1000);
-
                 if (error) throw error;
-
                 allTransactions = (data || []).map((row, idx) => ({
                     ...row,
                     _rowId: row.id || `row_${idx}_${Date.now()}`
                 }));
-
                 localStorage.setItem(cacheKey, JSON.stringify(allTransactions));
                 localStorage.setItem(timeKey, nowTime.toString());
-
                 document.getElementById('statusIndicator').classList.add('hidden');
                 applyFilters();
             } catch (err) {
@@ -362,30 +356,56 @@
                 updateStatus(`เกิดข้อผิดพลาด: ${err.message}`, true);
             }
         }
-
-        function handlePeriodChange() {
+        function setPeriod(period, shouldApply = true) {
+            currentPeriod = period;
+            document.getElementById('customDateContainer').classList.toggle('hidden', period !== 'CUSTOM');
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                const active = btn.dataset.period === period;
+                btn.classList.toggle('bg-google-blue', active);
+                btn.classList.toggle('text-white', active);
+                btn.classList.toggle('border-google-blue', active);
+                btn.classList.toggle('bg-white', !active);
+                btn.classList.toggle('text-slate-600', !active);
+                btn.classList.toggle('border-google-border', !active);
+            });
+            if (shouldApply) applyFilters();
+        }
+        function togglePeriodMenu() {
+            document.getElementById('periodMenu').classList.toggle('hidden');
+        }
+        function handleCustomPeriodChange() {
             const period = document.getElementById('periodFilter').value;
-            const container = document.getElementById('customDateContainer');
-            if (period === 'CUSTOM') {
-                container.classList.remove('hidden');
-            } else {
-                container.classList.add('hidden');
-            }
+            currentPeriod = period;
+            document.getElementById('customDateContainer').classList.toggle('hidden', period !== 'CUSTOM');
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.classList.remove('bg-google-blue', 'text-white', 'border-google-blue');
+                btn.classList.add('bg-white', 'text-slate-600', 'border-google-border');
+            });
             applyFilters();
         }
-
+        function getUniqueOrderGroups(rows) {
+            const groups = new Map();
+            rows.forEach(row => {
+                const orderNo = String(row.order_no || row.invoice_no || row._rowId);
+                if (!groups.has(orderNo)) {
+                    groups.set(orderNo, []);
+                }
+                groups.get(orderNo).push(row);
+            });
+            return Array.from(groups.entries()).map(([orderNo, items]) => ({
+                orderNo,
+                items
+            }));
+        }
         function applyFilters() {
             const search = document.getElementById('searchInput').value.toLowerCase().trim();
             const channel = document.getElementById('channelFilter').value;
             const status = document.getElementById('statusFilter').value;
-            const period = document.getElementById('periodFilter').value;
+            const period = currentPeriod;
             const showPKOnly = document.getElementById('showPKToggle').checked;
-
             const now = new Date();
             let startFilterDate = null;
             let endFilterDate = null;
-
-            // Default TODAY filter logic
             if (period === 'TODAY') {
                 startFilterDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             } else if (period === 'YESTERDAY') {
@@ -404,62 +424,54 @@
             } else if (period === 'CUSTOM') {
                 const s = document.getElementById('startDate').value;
                 const e = document.getElementById('endDate').value;
-                if (s) startFilterDate = new Date(s);
+                if (s) startFilterDate = new Date(s + 'T00:00:00');
                 if (e) endFilterDate = new Date(e + 'T23:59:59');
             }
-
-            // Map duplicates for Invoice No & Order No
             const invoiceCounts = {};
             const orderCounts = {};
             allTransactions.forEach(item => {
                 if (item.invoice_no) invoiceCounts[item.invoice_no] = (invoiceCounts[item.invoice_no] || 0) + 1;
                 if (item.order_no) orderCounts[item.order_no] = (orderCounts[item.order_no] || 0) + 1;
             });
-
             filteredTransactions = allTransactions.filter(item => {
                 if (showPKOnly && !selectedRowIds.has(item._rowId)) return false;
-
                 const itemChannel = String(item.channel || '');
                 const itemStatus = String(item.status || 'PENDING');
-                
-                const textMatch = !search || 
+                const textMatch = !search ||
                     String(item.invoice_no || '').toLowerCase().includes(search) ||
                     String(item.order_no || '').toLowerCase().includes(search) ||
                     String(item.item_code || '').toLowerCase().includes(search) ||
                     String(item.item_name || '').toLowerCase().includes(search);
-
-                const channelMatch = (channel === 'ALL' || itemChannel.toLowerCase() === channel.toLowerCase());
-                const statusMatch = (status === 'ALL' || itemStatus.toUpperCase() === status.toUpperCase());
-
+                const channelMatch = channel === 'ALL' || itemChannel.toLowerCase() === channel.toLowerCase();
+                const statusMatch = status === 'ALL' || itemStatus.toUpperCase() === status.toUpperCase();
                 let dateMatch = true;
                 if (startFilterDate || endFilterDate) {
                     const rowDate = new Date(item.date);
                     if (startFilterDate && rowDate < startFilterDate) dateMatch = false;
                     if (endFilterDate && rowDate > endFilterDate) dateMatch = false;
                 }
-
-                item._isDuplicate = (invoiceCounts[item.invoice_no] > 1 || orderCounts[item.order_no] > 1);
-
+                item._isDuplicate = invoiceCounts[item.invoice_no] > 1 || orderCounts[item.order_no] > 1;
                 return textMatch && channelMatch && statusMatch && dateMatch;
             });
-
-            // Sorting logic
             filteredTransactions.sort((a, b) => {
                 let valA = a[currentSortColumn] ?? '';
                 let valB = b[currentSortColumn] ?? '';
-                if (typeof valA === 'string') valA = valA.toLowerCase();
-                if (typeof valB === 'string') valB = valB.toLowerCase();
-
+                if (currentSortColumn === 'sales_amt') {
+                    valA = Number(valA) || 0;
+                    valB = Number(valB) || 0;
+                } else {
+                    valA = String(valA).toLowerCase();
+                    valB = String(valB).toLowerCase();
+                }
                 if (valA < valB) return currentSortAsc ? -1 : 1;
                 if (valA > valB) return currentSortAsc ? 1 : -1;
                 return 0;
             });
-
             updateSortIcons();
-            displayLimit = 50;
+            filteredOrderGroups = getUniqueOrderGroups(filteredTransactions);
+            displayLimit = 25;
             renderTable();
         }
-
         function sortTable(column) {
             if (currentSortColumn === column) {
                 currentSortAsc = !currentSortAsc;
@@ -469,15 +481,14 @@
             }
             applyFilters();
         }
-
         function updateSortIcons() {
             ['date', 'invoice_no', 'item_code', 'item_name', 'sales_amt'].forEach(col => {
                 const el = document.getElementById(`sort_${col}`);
                 if (!el) return;
                 if (col === currentSortColumn) {
                     el.className = "ml-0.5 text-[10px] text-google-blue font-bold";
-                    el.innerHTML = currentSortAsc 
-                        ? `<i class="fa-solid fa-arrow-up-wide-short"></i>` 
+                    el.innerHTML = currentSortAsc
+                        ? `<i class="fa-solid fa-arrow-up-wide-short"></i>`
                         : `<i class="fa-solid fa-arrow-down-wide-short"></i>`;
                 } else {
                     el.className = "ml-0.5 text-[10px] text-slate-300";
@@ -485,98 +496,80 @@
                 }
             });
         }
-
         function renderTable() {
             const tbody = document.getElementById('txTableBody');
             tbody.innerHTML = '';
-
-            const total = filteredTransactions.length;
-            const pageData = filteredTransactions.slice(0, displayLimit);
-
+            const totalOrders = filteredOrderGroups.length;
+            const visibleGroups = filteredOrderGroups.slice(0, displayLimit);
+            const pageData = visibleGroups.flatMap(group => group.items);
             if (pageData.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-google-gray">ไม่พบรายการคำสั่งซื้อ</td></tr>`;
             } else {
                 pageData.forEach(row => {
                     const isSelected = selectedRowIds.has(row._rowId);
                     const isDup = row._isDuplicate;
-
-                    // Channel Badge Styling
                     let channelBadgeClass = "bg-slate-100 text-slate-700 border-slate-200";
                     const ch = String(row.channel || '').toLowerCase();
                     if (ch.includes('shopee')) channelBadgeClass = "bg-shopee text-white";
                     else if (ch.includes('lazada')) channelBadgeClass = "bg-lazada text-white";
                     else if (ch.includes('tiktok')) channelBadgeClass = "bg-tiktok text-white";
-
                     const currentStatus = pendingStatusChanges[row._rowId] || row.status || 'PENDING';
-
+                    const orderNo = String(row.order_no || '-');
+                    const orderPrefix = orderNo.length > 3 ? orderNo.slice(0, -3) : '';
+                    const orderTail = orderNo.length > 3 ? orderNo.slice(-3) : orderNo;
                     const tr = document.createElement('tr');
-                    
-                    // Row Styling Rules:
-                    // Selected Row = Blue Highlight
-                    // Duplicate Row = Amber Highlight (Row Background)
                     let rowBgClass = "hover:bg-slate-50";
                     if (isDup) rowBgClass = "row-duplicate";
                     if (isSelected) rowBgClass = "row-selected";
-
                     tr.className = `transition-colors border-b border-slate-100 cursor-pointer ${rowBgClass}`;
-                    
-                    // Tap row to toggle selection (No checkbox column)
                     tr.onclick = (e) => {
                         if (e.target.tagName === 'SELECT' || e.target.tagName === 'OPTION' || e.target.tagName === 'INPUT') return;
                         toggleRowSelection(row._rowId);
                     };
-
                     tr.innerHTML = `
-                        <!-- Date Column -->
-                        <td class="p-2 font-mono text-[11px] text-slate-600 whitespace-nowrap">
+                        <td class="p-2 align-top font-mono text-[11px] text-slate-600 whitespace-nowrap">
                             <span class="sm:hidden">${formatDateFormatted(row.date, true)}</span>
                             <span class="hidden sm:inline">${formatDateFormatted(row.date, false)}</span>
                         </td>
-
-                        <!-- Invoice No & Order No Column (Mobile Layout Optimized) -->
-                        <td class="p-2">
-                            <!-- Mobile View (จัดลำดับและตัวหนา/บางให้ตรงกับ Desktop) -->
-                            <div class="sm:hidden leading-tight">
-                                <div class="font-bold text-slate-900 font-mono text-xs truncate max-w-[120px]" title="${row.invoice_no}">
+                        <td class="p-2 align-top">
+                            <div class="sm:hidden leading-tight w-[78px] overflow-hidden">
+                                <div class="mobile-order-main font-bold text-slate-900 font-mono truncate" title="${row.invoice_no || ''}">
                                     ${row.invoice_no || '-'}
                                 </div>
-                                <div class="text-[10px] text-google-gray font-mono truncate max-w-[90px]" title="${row.order_no}">
-                                    ${row.order_no || '-'}
+                                <div class="text-[9px] text-google-gray font-mono truncate" title="${orderNo}">
+                                    ${orderPrefix}
+                                </div>
+                                <div class="mobile-order-tail font-mono text-slate-900">
+                                    ${orderTail}
                                 </div>
                             </div>
-
-                            <!-- Desktop View -->
                             <div class="hidden sm:block leading-tight">
                                 <div class="font-bold text-slate-900 font-mono">${row.invoice_no || '-'}</div>
                                 <div class="text-[10px] text-google-gray font-mono">${row.order_no || '-'}</div>
                             </div>
                         </td>
-                        <!-- Item Code -->
-                        <td class="p-2 font-mono font-bold text-google-blue max-w-[90px] sm:max-w-[130px] truncate" title="${row.item_code}">
-                            ${row.item_code || '-'}
-                            <div class="sm:hidden text-[10px] font-normal text-slate-500 truncate" title="${row.item_name}">
-                                ${row.item_name || ''}
+                        <td class="p-2 align-top sm:font-mono sm:font-bold sm:text-google-blue sm:max-w-[130px]">
+                            <div class="mobile-item-code font-mono font-bold text-google-blue sm:hidden">
+                                ${row.item_code || '-'}
+                            </div>
+                            <div class="hidden sm:block truncate" title="${row.item_code || ''}">
+                                ${row.item_code || '-'}
+                            </div>
+                            <div class="mobile-item-name sm:hidden text-[15px] font-medium text-slate-800">
+                                ${row.item_name || '-'}
                             </div>
                         </td>
-
-                        <!-- Item Name (Desktop Only) -->
-                        <td class="p-2 font-medium text-slate-800 hidden sm:table-cell max-w-[200px] truncate" title="${row.item_name}">
+                        <td class="p-2 font-medium text-slate-800 hidden sm:table-cell max-w-[200px] truncate" title="${row.item_name || ''}">
                             ${row.item_name || '-'}
                         </td>
-
-                        <!-- Sales Amount (Desktop Only) -->
                         <td class="p-2 text-right font-bold text-slate-900 hidden sm:table-cell">
                             ${formatMoney(row.sales_amt)}
                         </td>
-
-                        <!-- Channel Badge (Desktop Only) -->
                         <td class="p-2 text-center hidden sm:table-cell">
                             <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${channelBadgeClass}">
                                 ${row.channel || 'Direct'}
                             </span>
                         </td>
-
-                        <!-- Status Select Dropdown (Desktop Only) -->
                         <td class="p-2 text-center hidden sm:table-cell">
                             <select onchange="handleStatusChange('${row._rowId}', this.value)" class="bg-white border border-google-border rounded px-1 py-0.5 text-[10px] font-semibold focus:outline-none focus:border-google-blue">
                                 <option value="PENDING" ${currentStatus === 'PENDING' ? 'selected' : ''}>PENDING</option>
@@ -588,13 +581,10 @@
                     tbody.appendChild(tr);
                 });
             }
-
-            document.getElementById('renderedCount').innerText = pageData.length.toLocaleString();
-            document.getElementById('recordCount').innerText = total.toLocaleString();
+            document.getElementById('orderCountTop').innerText = `${totalOrders.toLocaleString()} Orders`;
             document.getElementById('selectedCountText').innerText = selectedRowIds.size.toLocaleString();
             updatePendingChangesCount();
         }
-
         function toggleRowSelection(rowId) {
             if (selectedRowIds.has(rowId)) {
                 selectedRowIds.delete(rowId);
@@ -603,59 +593,54 @@
             }
             renderTable();
         }
-
         function handleStatusChange(rowId, newStatus) {
             pendingStatusChanges[rowId] = newStatus;
             updatePendingChangesCount();
         }
-
         function updatePendingChangesCount() {
             const count = Object.keys(pendingStatusChanges).length;
             document.getElementById('pendingChangesCount').innerText = count;
             document.getElementById('submitBtn').disabled = count === 0;
         }
-
         async function submitChanges() {
             const count = Object.keys(pendingStatusChanges).length;
             if (count === 0) return;
-
             updateStatus(`กำลังบันทึก ${count} รายการลง Supabase...`);
-
             try {
                 const updatePromises = Object.keys(pendingStatusChanges).map(rowId => {
                     const item = allTransactions.find(t => t._rowId === rowId);
                     if (!item || !item.id) return Promise.resolve();
-
                     const newStatus = pendingStatusChanges[rowId];
                     return supabaseClient
                         .from('transactions')
                         .update({ status: newStatus })
                         .eq('id', item.id);
                 });
-
-                await Promise.all(updatePromises);
-                
-                Object.keys(pendingStatusChanges).forEach(rowId => {
+                const results = await Promise.all(updatePromises);
+                Object.keys(pendingStatusChanges).forEach((rowId, index) => {
                     const item = allTransactions.find(t => t._rowId === rowId);
-                    if (item) item.status = pendingStatusChanges[rowId];
+                    if (item && !results[index]?.error) {
+                        item.status = pendingStatusChanges[rowId];
+                    }
                 });
-
+                const failedResult = results.find(result => result?.error);
+                if (failedResult?.error) throw failedResult.error;
                 pendingStatusChanges = {};
                 localStorage.setItem('uerp_orders_cache', JSON.stringify(allTransactions));
-                
                 updateStatus('บันทึกเรียบร้อย!');
-                setTimeout(() => document.getElementById('statusIndicator').classList.add('hidden'), 2000);
+                setTimeout(() => {
+                    document.getElementById('statusIndicator').classList.add('hidden');
+                }, 2000);
                 applyFilters();
             } catch (err) {
                 console.error("Submit Error:", err);
                 updateStatus(`เกิดข้อผิดพลาด: ${err.message}`, true);
             }
         }
-
         function setupInfiniteScroll() {
             window.addEventListener('scroll', () => {
                 if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 250) {
-                    if (displayLimit < filteredTransactions.length) {
+                    if (displayLimit < filteredOrderGroups.length) {
                         document.getElementById('infiniteLoader').classList.remove('hidden');
                         setTimeout(() => {
                             displayLimit += limitStep;
