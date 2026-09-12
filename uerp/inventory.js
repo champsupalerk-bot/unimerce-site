@@ -9,8 +9,10 @@ fetch('uerpheader.html')
   .then(data => {
     const placeholder =
       document.getElementById("headerContainer");
+
     if (placeholder) {
       placeholder.innerHTML = data;
+
       if (typeof window.initUerpLayout === "function") {
         window.__uerpLayoutInitialized = false;
         window.initUerpLayout();
@@ -33,7 +35,7 @@ let viewData = [];
 let selectedItemCodes = new Set();
 
 let sortState = {
-  key: "item_code",
+  key: null,
   dir: "asc"
 };
 
@@ -339,7 +341,6 @@ function forceRefreshData() {
     );
   }
 
-  // Clear cache ก่อนโหลดข้อมูลใหม่
   localStorage.removeItem(
     CACHE_KEY
   );
@@ -348,7 +349,6 @@ function forceRefreshData() {
     CACHE_TIME_KEY
   );
 
-  // Force fetch จาก Supabase
   loadTable(true)
     .finally(() => {
 
@@ -580,10 +580,44 @@ function applySortOnFiltered() {
       .sort((a, b) => {
 
         let v1 =
-          a[key] ?? "";
+          a[key];
 
         let v2 =
-          b[key] ?? "";
+          b[key];
+
+        /* =========================
+           ITEM CODE / DESCRIPTION
+           STRING SORT
+        ========================= */
+        if (
+          key === "item_code" ||
+          key === "name"
+        ) {
+
+          v1 =
+            String(
+              v1 ?? ""
+            ).trim();
+
+          v2 =
+            String(
+              v2 ?? ""
+            ).trim();
+
+          const result =
+            v1.localeCompare(
+              v2,
+              undefined,
+              {
+                numeric: true,
+                sensitivity: "base"
+              }
+            );
+
+          return dir === "asc"
+            ? result
+            : -result;
+        }
 
         /* =========================
            NUMERIC FIELDS
@@ -624,34 +658,21 @@ function applySortOnFiltered() {
         }
 
         /* =========================
-           TRY NUMERIC
-        ========================= */
-        const n1 =
-          parseFloat(v1);
-
-        const n2 =
-          parseFloat(v2);
-
-        if (
-          !isNaN(n1) &&
-          !isNaN(n2)
-        ) {
-
-          return dir === "asc"
-            ? n1 - n2
-            : n2 - n1;
-        }
-
-        /* =========================
-           STRING
+           DATE / OTHER STRING FIELDS
         ========================= */
         v1 =
-          String(v1)
-            .toLowerCase();
+          String(
+            v1 ?? ""
+          )
+          .trim()
+          .toLowerCase();
 
         v2 =
-          String(v2)
-            .toLowerCase();
+          String(
+            v2 ?? ""
+          )
+          .trim()
+          .toLowerCase();
 
         if (
           v1 < v2
