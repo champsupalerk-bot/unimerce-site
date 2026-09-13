@@ -759,6 +759,7 @@ function renderTable(data) {
         currentCol3 === "pricec" ||
         currentCol3 === "listprice" ||
         currentCol3 === "avgsalecost" ||
+        currentCol3 === "onhand_cost" ||
         currentCol3 === "price_ctn"
       ) {
 
