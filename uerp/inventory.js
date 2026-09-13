@@ -586,37 +586,77 @@ function applySortOnFiltered() {
           b[key];
 
         /* =========================
-           ITEM CODE / DESCRIPTION
-           STRING SORT
+           ITEM CODE
+           A-Z / Z-A
         ========================= */
         if (
-          key === "item_code" ||
+          key === "item_code"
+        ) {
+
+          v1 =
+            String(
+              v1 ?? ""
+            )
+            .trim()
+            .toUpperCase();
+
+          v2 =
+            String(
+              v2 ?? ""
+            )
+            .trim()
+            .toUpperCase();
+
+          if (v1 < v2) {
+            return dir === "asc"
+              ? -1
+              : 1;
+          }
+
+          if (v1 > v2) {
+            return dir === "asc"
+              ? 1
+              : -1;
+          }
+
+          return 0;
+        }
+
+        /* =========================
+           DESCRIPTION
+           A-Z / Z-A
+        ========================= */
+        if (
           key === "name"
         ) {
 
           v1 =
             String(
               v1 ?? ""
-            ).trim();
+            )
+            .trim()
+            .toUpperCase();
 
           v2 =
             String(
               v2 ?? ""
-            ).trim();
+            )
+            .trim()
+            .toUpperCase();
 
-          const result =
-            v1.localeCompare(
-              v2,
-              undefined,
-              {
-                numeric: true,
-                sensitivity: "base"
-              }
-            );
+          if (v1 < v2) {
+            return dir === "asc"
+              ? -1
+              : 1;
+          }
 
-          return dir === "asc"
-            ? result
-            : -result;
+          if (v1 > v2) {
+            return dir === "asc"
+              ? 1
+              : -1;
+          }
+
+          return 0;
         }
 
         /* =========================
@@ -753,8 +793,34 @@ function renderTable(data) {
       /* =========================
          NUMBER FORMATTING
       ========================= */
+
+      /* ONHAND
+         Example: 1,234
+      */
       if (
-        currentCol3 === "onhand" ||
+        currentCol3 === "onhand"
+      ) {
+
+        if (
+          cellValue !== "-"
+        ) {
+
+          const num =
+            cleanNumber(
+              cellValue
+            );
+
+          cellValue =
+            num.toLocaleString(
+              'en-US'
+            );
+        }
+      }
+
+      /* PRICE / COST
+         Example: 1,234.56
+      */
+      if (
         currentCol3 === "pricep" ||
         currentCol3 === "pricec" ||
         currentCol3 === "listprice" ||
@@ -773,7 +839,13 @@ function renderTable(data) {
             );
 
           cellValue =
-            num.toLocaleString();
+            num.toLocaleString(
+              'en-US',
+              {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              }
+            );
         }
       }
 
