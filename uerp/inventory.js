@@ -35,7 +35,7 @@ let viewData = [];
 let selectedItemCodes = new Set();
 
 let sortState = {
-  key: null,
+  key: onhand,
   dir: "asc"
 };
 
