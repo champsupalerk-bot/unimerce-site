@@ -638,7 +638,7 @@ function applySortOnFiltered() {
           key === "weight_kg" ||
           key === "salecost" ||
           key === "avgsalecost" ||
-          key === "onhandcost" ||
+          key === "onhand_cost" ||
           key === "netreceived" ||
           key === "gpm_percent_from_netreceived" ||
           key === "marginx_percent" ||
