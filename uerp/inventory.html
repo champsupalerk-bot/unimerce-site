@@ -604,6 +604,7 @@ tbody tr.row-selected td {
     background:#2f5ea8;
     color:#fff;
   }
+
 }
 
 </style>
@@ -629,7 +630,10 @@ tbody tr.row-selected td {
 <div class="page-detail-wrapper">
 
   <div class="breadcrumb-row">
-    <div class="breadcrumb"><a href="/">HOME</a> / INVENTORY</div>
+
+    <div class="breadcrumb">
+      <a href="/">HOME</a> / INVENTORY
+    </div>
 
     <div class="top-right-options">
 
@@ -638,22 +642,28 @@ tbody tr.row-selected td {
         Hide 0 / –
       </label>
 
-      <label class="show-pk-wrap" title="กรองแสดงเฉพาะรายการที่ติ๊กเลือกไว้">
+      <label class="show-pk-wrap"
+             title="กรองแสดงเฉพาะรายการที่ติ๊กเลือกไว้">
         <input type="checkbox" id="showOnlySelected" />
         Show PK (<span id="selectedCount">0</span>)
       </label>
 
       <button class="btn-help-icon"
               onclick="openHelpModal()"
-              title="คู่มือฟังก์ชันการเลือก">?</button>
+              title="คู่มือฟังก์ชันการเลือก">
+        ?
+      </button>
 
     </div>
+
   </div>
 
   <div class="filterbar">
+
     <input id="searchBox"
            type="text"
            placeholder="Search Item Code / Description..." />
+
   </div>
 
   <div class="dropdown-bar-wrap">
@@ -669,7 +679,9 @@ tbody tr.row-selected td {
 
       <span id="execLog"
             class="execution-log"
-            title="Data Status">Init...</span>
+            title="Data Status">
+        Init...
+      </span>
 
       <button id="btnRefresh"
               class="btn-refresh-cache"
@@ -682,9 +694,13 @@ tbody tr.row-selected td {
 
     <div class="dropdown-controls">
 
-      <span class="dropdown-label">view:</span>
+      <span class="dropdown-label">
+        view:
+      </span>
 
-      <select id="column3Select" class="google-select">
+      <select id="column3Select"
+              class="google-select">
+
         <option value="onhand">OnHand</option>
         <option value="pricec">PriceC</option>
         <option value="priced">PriceD</option>
@@ -698,73 +714,110 @@ tbody tr.row-selected td {
         <option value="reorder_status">reorder_status</option>
         <option value="packcode_rounding">Pack / CTN</option>
         <option value="location">Location</option>
+
       </select>
 
     </div>
+
   </div>
 
   <div class="category-filter-bar">
 
     <label class="category-label">
+
       <input type="checkbox"
              class="cat-checkbox"
              value="WaterPurification" />
+
       กรองน้ำ
+
     </label>
 
     <label class="category-label">
+
       <input type="checkbox"
              class="cat-checkbox"
              value="WaterQualityTools" />
+
       วัดค่าน้ำ
+
     </label>
 
     <label class="category-label">
+
       <input type="checkbox"
              class="cat-checkbox"
              value="MeasurementTools" />
+
       วัดค่าทั่วไป
+
     </label>
 
     <label class="category-label">
+
       <input type="checkbox"
              class="cat-checkbox"
              value="AromaSystems" />
+
       อโรม่า
+
     </label>
 
   </div>
 
-  <div class="table-wrap" id="tableWrapContainer">
+  <div class="table-wrap"
+       id="tableWrapContainer">
 
     <table>
 
       <thead>
+
         <tr>
 
-          <th onclick="sortTable('Item_Code')">
+          <th onclick="sortTable('item_code')">
             Item Code
-            <span class="sort-arrow" id="arrow-Item_Code">↕</span>
+            <span class="sort-arrow"
+                  id="arrow-Item_Code">
+              ↕
+            </span>
           </th>
 
-          <th onclick="sortTable('Description')">
+          <th onclick="sortTable('name')">
             Description
-            <span class="sort-arrow" id="arrow-Description">↕</span>
+            <span class="sort-arrow"
+                  id="arrow-Description">
+              ↕
+            </span>
           </th>
 
           <th onclick="sortTable(document.getElementById('column3Select').value)"
               class="col-stock">
-            <span id="col3HeaderName">OH</span>
-            <span class="sort-arrow" id="arrow-Col3">↕</span>
+
+            <span id="col3HeaderName">
+              OH
+            </span>
+
+            <span class="sort-arrow"
+                  id="arrow-Col3">
+              ↕
+            </span>
+
           </th>
 
         </tr>
+
       </thead>
 
       <tbody id="table-body">
+
         <tr>
-          <td colspan="3">กำลังโหลดข้อมูล...</td>
+
+          <td colspan="3">
+            กำลังโหลดข้อมูล...
+          </td>
+
         </tr>
+
       </tbody>
 
     </table>
@@ -775,21 +828,29 @@ tbody tr.row-selected td {
 
 <div id="hiddenStickerWrapper">
 
-  <div id="stickerTarget" class="actual-sticker-target">
+  <div id="stickerTarget"
+       class="actual-sticker-target">
 
-    <div id="lblProductName" class="sticker-p-name"></div>
+    <div id="lblProductName"
+         class="sticker-p-name">
+    </div>
 
     <div class="sticker-barcode-area">
+
       <svg id="barcodeSvgCanvas"></svg>
+
     </div>
 
     <div class="sticker-footer-row">
+
       <span class="sticker-web-url">
         www.unimercegroup.com
       </span>
 
       <span id="lblLocationField"
-            class="sticker-location-field"></span>
+            class="sticker-location-field">
+      </span>
+
     </div>
 
   </div>
@@ -858,7 +919,6 @@ tbody tr.row-selected td {
 
 </div>
 
-<!-- Inventory JavaScript -->
 <script src="/uerp/inventory.js"></script>
 
 </body>
