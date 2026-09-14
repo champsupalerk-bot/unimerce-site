@@ -1,20 +1,7 @@
-/* =========================================================
-   UERP - Transactions / Order Management
-   Unimerce Co., Ltd.
-   ========================================================= */
-
-/* =========================
-   Base
-   ========================= */
-
 body {
     font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
     touch-action: manipulation;
 }
-
-/* =========================
-   Google Style Card
-   ========================= */
 
 .google-card {
     background: #ffffff;
@@ -23,10 +10,6 @@ body {
     box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.05);
 }
 
-/* =========================
-   Select
-   ========================= */
-
 .google-select {
     appearance: none;
     background-image: url("data:image/svg+xml;utf8,<svg fill='%235f6368' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
@@ -34,10 +17,6 @@ body {
     background-position: right 6px center;
     background-size: 16px;
 }
-
-/* =========================
-   Row States
-   ========================= */
 
 .row-selected {
     background-color: #e8f0fe !important;
@@ -51,10 +30,6 @@ body {
     background-color: #fef08a !important;
 }
 
-/* =========================
-   Table Sorting
-   ========================= */
-
 th.sortable {
     cursor: pointer;
     user-select: none;
@@ -63,10 +38,6 @@ th.sortable {
 th.sortable:hover {
     background-color: #f1f5f9;
 }
-
-/* =========================
-   Circular Checkbox
-   ========================= */
 
 .rounded-checkbox {
     appearance: none;
@@ -96,20 +67,73 @@ th.sortable:hover {
     background: white;
 }
 
-/* =========================
-   Period Buttons
-   ========================= */
-
 .period-btn {
     transition: all 0.15s ease;
 }
 
-/* =========================
-   Mobile
-   ========================= */
+.order-count-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 9px;
+    min-height: 25px;
+    background: #dc2626;
+    color: #ffffff;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.25px;
+    white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(220, 38, 38, 0.28);
+}
+
+.order-count-badge #orderCountNumber {
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.order-count-badge.is-zero {
+    background: #94a3b8;
+    box-shadow: none;
+}
+
+.status-select {
+    appearance: none;
+    min-width: 72px;
+    padding: 3px 20px 3px 7px;
+    border: 0;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.3;
+    text-align: center;
+    text-align-last: center;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s ease;
+}
+
+.status-select:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.status-active {
+    background-color: #16a34a;
+    color: #ffffff;
+}
+
+.status-pending {
+    background-color: #facc15;
+    color: #713f12;
+}
+
+.status-void {
+    background-color: #dc2626;
+    color: #ffffff;
+}
 
 @media (max-width: 639px) {
-
     .mobile-item-name {
         white-space: normal;
         overflow-wrap: anywhere;
@@ -133,4 +157,52 @@ th.sortable:hover {
         font-size: 15px;
         line-height: 1.25;
     }
+
+    .order-count-badge {
+        padding: 4px 8px;
+        gap: 4px;
+        font-size: 9px;
+    }
+
+    .order-count-badge #orderCountNumber {
+        font-size: 11px;
+    }
+}
+
+.status-select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    min-width: 72px;
+    padding: 3px 20px 3px 7px;
+    border: 0 !important;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.3;
+    text-align: center;
+    text-align-last: center;
+    cursor: pointer;
+    outline: none;
+}
+
+.status-active {
+    background-color: #16a34a !important;
+    color: #ffffff !important;
+}
+
+.status-pending {
+    background-color: #facc15 !important;
+    color: #713f12 !important;
+}
+
+.status-void {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+}
+
+#orderCountTop {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+    border-color: #dc2626 !important;
+    box-shadow: 0 2px 5px rgba(220, 38, 38, 0.25);
 }
