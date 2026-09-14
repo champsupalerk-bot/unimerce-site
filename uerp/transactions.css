@@ -1,0 +1,136 @@
+/* =========================================================
+   UERP - Transactions / Order Management
+   Unimerce Co., Ltd.
+   ========================================================= */
+
+/* =========================
+   Base
+   ========================= */
+
+body {
+    font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+    touch-action: manipulation;
+}
+
+/* =========================
+   Google Style Card
+   ========================= */
+
+.google-card {
+    background: #ffffff;
+    border: 1px solid #dadce0;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.05);
+}
+
+/* =========================
+   Select
+   ========================= */
+
+.google-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%235f6368' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    background-size: 16px;
+}
+
+/* =========================
+   Row States
+   ========================= */
+
+.row-selected {
+    background-color: #e8f0fe !important;
+}
+
+.row-duplicate {
+    background-color: #fff7ed !important;
+}
+
+.row-selected.row-duplicate {
+    background-color: #fef08a !important;
+}
+
+/* =========================
+   Table Sorting
+   ========================= */
+
+th.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+th.sortable:hover {
+    background-color: #f1f5f9;
+}
+
+/* =========================
+   Circular Checkbox
+   ========================= */
+
+.rounded-checkbox {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid #94a3b8;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.rounded-checkbox:checked {
+    background-color: #1a73e8;
+    border-color: #1a73e8;
+}
+
+.rounded-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    top: 2.5px;
+    left: 2.5px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+}
+
+/* =========================
+   Period Buttons
+   ========================= */
+
+.period-btn {
+    transition: all 0.15s ease;
+}
+
+/* =========================
+   Mobile
+   ========================= */
+
+@media (max-width: 639px) {
+
+    .mobile-item-name {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        line-height: 1.35;
+    }
+
+    .mobile-order-tail {
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: 0.2px;
+    }
+
+    .mobile-order-main {
+        font-size: 11px;
+        line-height: 1.2;
+    }
+
+    .mobile-item-code {
+        font-size: 15px;
+        line-height: 1.25;
+    }
+}
