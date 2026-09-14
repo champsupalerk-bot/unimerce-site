@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>UERP - Order Management | Unimerce Co., Ltd.</title>
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -23,15 +25,29 @@
             }
         }
     </script>
+
+    <!-- Google Fonts & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="transactions.css">
+
+    <!-- Supabase JS Client CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- UERP CSS -->
+    <link rel="stylesheet" href="transactions.css">
+
+    <!-- Global Header & Layout Script -->
     <script src="layoutuerp.js"></script>
 </head>
+
 <body class="min-h-screen flex flex-col bg-slate-100">
+
+    <!-- Dynamic Navigation Header Container -->
     <div id="headerContainer"></div>
+
     <main class="max-w-[1000px] mx-auto px-2 sm:px-4 py-3 sm:py-5 w-full flex-grow space-y-2.5">
+
+        <!-- Top Header & Action Bar -->
         <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 min-w-0">
                 <div>
@@ -41,135 +57,242 @@
                         <span class="sm:hidden">Order Management</span>
                     </h1>
                 </div>
+
                 <span id="orderCountTop" class="order-count-badge">
-                    <span id="orderCountNumber">0</span>
-                    <span>ORDERS</span>
+                    0 Orders
                 </span>
             </div>
+
             <div class="flex items-center gap-1.5">
                 <button id="submitBtn" onclick="submitChanges()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm flex items-center gap-1.5 transition disabled:opacity-40">
                     <i class="fa-solid fa-floppy-disk text-[11px]"></i>
-                    <span>บันทึก</span> (<span id="pendingChangesCount">0</span>)
+                    <span>บันทึก</span>
+                    (<span id="pendingChangesCount">0</span>)
                 </button>
+
                 <button onclick="forceRefreshData()" class="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-lg transition">
                     <i id="refreshIcon" class="fa-solid fa-rotate-right text-[11px]"></i>
                 </button>
             </div>
         </div>
+
+        <!-- Minimal Sub-header Toolbar -->
         <div class="google-card p-2 sm:p-3 bg-white space-y-2">
+
             <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
+
                 <label class="flex items-center gap-1.5 text-xs text-slate-600 font-medium cursor-pointer select-none">
                     <input type="checkbox" id="showPKToggle" onchange="applyFilters()" class="rounded-checkbox">
-                    <span>showPK (<span id="selectedCountText" class="font-bold text-slate-900">0</span>)</span>
+                    <span>
+                        showPK
+                        (<span id="selectedCountText" class="font-bold text-slate-900">0</span>)
+                    </span>
                 </label>
+
                 <div class="flex items-center gap-1.5">
+
                     <select id="channelFilter" onchange="applyFilters()" class="google-select bg-slate-50 border border-google-border rounded-md px-2 py-1 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
                         <option value="ALL" selected>ช่องทางทั้งหมด</option>
                         <option value="Shopee">Shopee</option>
                         <option value="Lazada">Lazada</option>
                         <option value="TikTok">TikTok</option>
                     </select>
+
                     <select id="statusFilter" onchange="applyFilters()" class="google-select bg-slate-50 border border-google-border rounded-md px-2 py-1 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
                         <option value="ALL" selected>สถานะทั้งหมด</option>
                         <option value="PENDING">PENDING</option>
                         <option value="ACTIVE">ACTIVE</option>
                         <option value="VOID">VOID</option>
                     </select>
+
                 </div>
             </div>
+
+            <!-- Search -->
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[11px]"></i>
-                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="ค้นหา Invoice, Order No, Item..." class="w-full pl-7 pr-2.5 py-1.5 border border-google-border rounded-md text-xs focus:outline-none focus:border-google-blue">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    oninput="applyFilters()"
+                    placeholder="ค้นหา Invoice, Order No, Item..."
+                    class="w-full pl-7 pr-2.5 py-1.5 border border-google-border rounded-md text-xs focus:outline-none focus:border-google-blue"
+                >
             </div>
+
+            <!-- Quick Period Buttons -->
             <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5">
-                <button type="button" onclick="setPeriod('TODAY')" data-period="TODAY" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
+
+                <button
+                    type="button"
+                    onclick="setPeriod('TODAY')"
+                    data-period="TODAY"
+                    class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap"
+                >
                     วันนี้
                 </button>
-                <button type="button" onclick="setPeriod('YESTERDAY')" data-period="YESTERDAY" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
+
+                <button
+                    type="button"
+                    onclick="setPeriod('YESTERDAY')"
+                    data-period="YESTERDAY"
+                    class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap"
+                >
                     เมื่อวาน
                 </button>
-                <button type="button" onclick="setPeriod('THIS_MONTH')" data-period="THIS_MONTH" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
+
+                <button
+                    type="button"
+                    onclick="setPeriod('THIS_MONTH')"
+                    data-period="THIS_MONTH"
+                    class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap"
+                >
                     เดือนนี้
                 </button>
-                <button type="button" onclick="setPeriod('LAST_MONTH')" data-period="LAST_MONTH" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
+
+                <button
+                    type="button"
+                    onclick="setPeriod('LAST_MONTH')"
+                    data-period="LAST_MONTH"
+                    class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap"
+                >
                     เดือนที่แล้ว
                 </button>
-                <button type="button" onclick="togglePeriodMenu()" class="px-2.5 py-1 rounded-md text-[11px] font-semibold border border-google-border bg-white text-slate-600 whitespace-nowrap">
-                    Custom <i class="fa-solid fa-chevron-down text-[8px] ml-0.5"></i>
+
+                <button
+                    type="button"
+                    onclick="togglePeriodMenu()"
+                    class="px-2.5 py-1 rounded-md text-[11px] font-semibold border border-google-border bg-white text-slate-600 whitespace-nowrap"
+                >
+                    Custom
+                    <i class="fa-solid fa-chevron-down text-[8px] ml-0.5"></i>
                 </button>
+
             </div>
+
+            <!-- Additional Period Dropdown -->
             <div id="periodMenu" class="hidden">
-                <select id="periodFilter" onchange="handlePeriodChange()" class="google-select w-full bg-slate-50 border border-google-border rounded-md px-2 py-1.5 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
-                    <option value="TODAY">วันนี้</option>
-                    <option value="YESTERDAY">เมื่อวาน</option>
+                <select
+                    id="periodFilter"
+                    onchange="handleCustomPeriodChange()"
+                    class="google-select w-full bg-slate-50 border border-google-border rounded-md px-2 py-1.5 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue"
+                >
+                    <option value="ALL">ทั้งหมด</option>
                     <option value="THIS_WEEK">สัปดาห์นี้</option>
-                    <option value="THIS_MONTH">เดือนนี้</option>
-                    <option value="LAST_MONTH">เดือนที่แล้ว</option>
                     <option value="THIS_YEAR">ปีนี้</option>
                     <option value="CUSTOM">กำหนดวันที่เอง</option>
                 </select>
             </div>
+
+            <!-- Custom Date Range -->
             <div id="customDateContainer" class="hidden flex items-center gap-2 pt-1 text-xs text-slate-600">
+
                 <div class="flex-1 flex items-center gap-1.5 bg-slate-50 border border-google-border rounded-md px-2 py-1.5">
                     <span class="text-[10px] text-slate-500">จาก</span>
-                    <input type="date" id="startDate" onchange="applyFilters()" class="min-w-0 flex-1 bg-transparent text-[11px] outline-none">
+                    <input
+                        type="date"
+                        id="startDate"
+                        onchange="applyFilters()"
+                        class="min-w-0 flex-1 bg-transparent text-[11px] outline-none"
+                    >
                 </div>
+
                 <span class="text-slate-400">→</span>
+
                 <div class="flex-1 flex items-center gap-1.5 bg-slate-50 border border-google-border rounded-md px-2 py-1.5">
                     <span class="text-[10px] text-slate-500">ถึง</span>
-                    <input type="date" id="endDate" onchange="applyFilters()" class="min-w-0 flex-1 bg-transparent text-[11px] outline-none">
+                    <input
+                        type="date"
+                        id="endDate"
+                        onchange="applyFilters()"
+                        class="min-w-0 flex-1 bg-transparent text-[11px] outline-none"
+                    >
                 </div>
+
             </div>
         </div>
+
+        <!-- Status Indicator -->
         <div id="statusIndicator" class="hidden p-2 bg-blue-50 rounded-lg border border-blue-100 text-xs text-google-blue">
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
                 <span id="statusText" class="font-medium text-[11px]">กำลังโหลดข้อมูล...</span>
             </div>
         </div>
+
+        <!-- Main Transactions Table -->
         <section class="google-card bg-white overflow-hidden">
-            <div class="w-full sticky-table-container">
+
+            <div class="w-full">
                 <table class="w-full text-left border-collapse table-fixed">
+
                     <thead>
                         <tr class="bg-slate-50 text-slate-500 font-semibold text-[11px] border-b border-google-border uppercase tracking-tight">
+
                             <th class="p-2 w-[68px] sm:w-[95px] sortable" onclick="sortTable('date')">
-                                date <span id="sort_date" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                                date
+                                <span id="sort_date" class="ml-0.5 text-[10px] text-slate-300">
+                                    <i class="fa-solid fa-arrow-down-wide-short"></i>
+                                </span>
                             </th>
+
                             <th class="p-2 text-center w-[82px] sm:w-[140px] sortable" onclick="sortTable('invoice_no')">
-                                order_no <span id="sort_invoice_no" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                                order_no
+                                <span id="sort_invoice_no" class="ml-0.5 text-[10px] text-slate-300">
+                                    <i class="fa-solid fa-arrow-down-wide-short"></i>
+                                </span>
                             </th>
+
                             <th class="p-2 sm:w-[120px] sortable" onclick="sortTable('item_code')">
-                                item_code <span id="sort_item_code" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                                item_code
+                                <span id="sort_item_code" class="ml-0.5 text-[10px] text-slate-300">
+                                    <i class="fa-solid fa-arrow-down-wide-short"></i>
+                                </span>
                             </th>
+
                             <th class="p-2 hidden sm:table-cell sortable" onclick="sortTable('item_name')">
-                                item_name <span id="sort_item_name" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                                item_name
+                                <span id="sort_item_name" class="ml-0.5 text-[10px] text-slate-300">
+                                    <i class="fa-solid fa-arrow-down-wide-short"></i>
+                                </span>
                             </th>
+
                             <th class="p-2 text-right hidden sm:table-cell w-[120px] sortable" onclick="sortTable('sales_amt')">
-                                sales_amt <span id="sort_sales_amt" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                                sales_amt
+                                <span id="sort_sales_amt" class="ml-0.5 text-[10px] text-slate-300">
+                                    <i class="fa-solid fa-arrow-down-wide-short"></i>
+                                </span>
                             </th>
+
                             <th class="p-2 text-center hidden sm:table-cell w-[60px] sortable" onclick="sortTable('channel')">
                                 ch
                             </th>
+
                             <th class="p-2 text-center hidden sm:table-cell w-[90px]">
                                 status
                             </th>
+
                         </tr>
                     </thead>
+
                     <tbody id="txTableBody" class="divide-y divide-slate-100 text-xs text-slate-700"></tbody>
+
                 </table>
             </div>
-            <div class="p-2.5 border-t border-google-border bg-slate-50 flex items-center justify-between text-[11px] text-google-gray">
-                <div id="executionLog" class="flex items-center gap-1 font-medium truncate"></div>
+
+            <div class="p-2.5 border-t border-google-border bg-slate-50 flex items-center justify-end text-[11px] text-google-gray">
                 <div id="infiniteLoader" class="hidden text-google-blue flex items-center gap-1 font-medium">
-                    <i class="fa-solid fa-circle-notch animate-spin"></i> กำลังโหลด...
+                    <i class="fa-solid fa-circle-notch animate-spin"></i>
+                    กำลังโหลด...
                 </div>
             </div>
+
         </section>
-        <div class="hidden">
-            <span id="renderedCount">0</span>
-            <span id="recordCount">0</span>
-        </div>
     </main>
-    <script src="transaction.js"></script>
+
+    <!-- Transactions JS -->
+    <script src="transactions.js"></script>
+
 </body>
 </html>
