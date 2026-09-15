@@ -1,277 +1,1873 @@
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Our Story & Proposal for Blue 💖</title>
-  
-  <!-- Google Fonts: Mali & Kalam & Itim -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Itim&family=Kalam:wght@400;700&family=Mali:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>For Baby</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+<style>
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #f4eee5;
+  color: #4e514f;
+  font-family: "Kanit", sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+:root {
+  --cream: #f4eee5;
+  --cream2: #eee5d8;
+  --blue: #c9dce1;
+  --pink: #ead3d0;
+  --green: #cbd2c3;
+  --text: #4e514f;
+  --soft: #8d918c;
+  --white: #fffaf3;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+}
+
+
+/* =========================================================
+   LOADER
+========================================================= */
+
+#loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    opacity 1.2s ease,
+    visibility 1.2s ease;
+}
+
+#loader.hide {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loader-heart {
+  font-family: "Playfair Display", serif;
+  font-size: 25px;
+  color: #777b77;
+  animation: breathe 2.2s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,100% {
+    opacity: .35;
+    transform: scale(.96);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+.page-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: .45;
+}
+
+.glow.one {
+  width: 300px;
+  height: 300px;
+  background: var(--pink);
+  top: 5%;
+  left: -100px;
+}
+
+.glow.two {
+  width: 360px;
+  height: 360px;
+  background: var(--blue);
+  top: 45%;
+  right: -150px;
+}
+
+.glow.three {
+  width: 300px;
+  height: 300px;
+  background: var(--green);
+  bottom: 5%;
+  left: 15%;
+}
+
+
+/* =========================================================
+   TOP
+========================================================= */
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 68px;
+  padding: 0 24px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.logo {
+  font-family: "Playfair Display", serif;
+  font-size: 18px;
+  color: #666b68;
+  opacity: .8;
+}
+
+.sound {
+  pointer-events: auto;
+  border: 0;
+  background: rgba(255,250,243,.6);
+  backdrop-filter: blur(12px);
+  color: #777;
+  border-radius: 30px;
+  padding: 8px 15px;
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: #9eb6ba;
+  z-index: 600;
+}
+
+
+/* =========================================================
+   COMMON
+========================================================= */
+
+.section {
+  position: relative;
+  z-index: 5;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: #92958f;
+}
+
+.serif {
+  font-family: "Playfair Display", serif;
+}
+
+.soft-text {
+  color: var(--soft);
+  line-height: 1.9;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+  min-height: 100svh;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  padding: 0 22px 70px;
+}
+
+.hero-photo {
+  position: absolute;
+  inset: 12px;
+  border-radius: 30px;
+  overflow: hidden;
+  background: #ddd4c8;
+}
+
+.hero-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  animation: heroBreath 9s ease-in-out infinite alternate;
+}
+
+@keyframes heroBreath {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.035);
+  }
+}
+
+.hero-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,0) 35%,
+      rgba(40,45,43,.48) 100%
+    );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+  width: 100%;
+  padding: 0 10px;
+}
+
+.hero-small {
+  font-size: 12px;
+  margin-bottom: 14px;
+  opacity: .85;
+}
+
+.hero h1 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(65px, 18vw, 130px);
+  line-height: .85;
+  font-weight: 400;
+}
+
+.hero-bottom {
+  margin-top: 25px;
+  font-size: 12px;
+  opacity: .85;
+}
+
+
+/* =========================================================
+   STORY
+========================================================= */
+
+.story {
+  padding: 18vh 25px;
+  min-height: 90svh;
+  display: flex;
+  align-items: center;
+}
+
+.story-inner {
+  max-width: 700px;
+}
+
+.story h2 {
+  margin-top: 20px;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(46px, 12vw, 82px);
+  line-height: 1.05;
+  font-weight: 400;
+  color: #555955;
+}
+
+.story p {
+  margin-top: 30px;
+  font-size: 16px;
+  line-height: 2;
+  color: #858984;
+}
+
+
+/* =========================================================
+   FLOATING PHOTO
+========================================================= */
+
+.photo-moment {
+  min-height: 100svh;
+  padding: 10vh 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-wrap {
+  width: min(88vw, 500px);
+  position: relative;
+}
+
+.photo-wrap img {
+  width: 100%;
+  max-height: 76svh;
+  object-fit: contain;
+  border-radius: 28px;
+  box-shadow: 0 25px 70px rgba(80,75,65,.15);
+}
+
+.photo-label {
+  position: absolute;
+  left: -8px;
+  bottom: -28px;
+  background: rgba(255,250,243,.88);
+  backdrop-filter: blur(12px);
+  padding: 13px 20px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(60,55,50,.08);
+}
+
+.photo-label span {
+  display: block;
+  font-size: 10px;
+  color: #999;
+}
+
+.photo-label strong {
+  display: block;
+  margin-top: 3px;
+  font-family: "Playfair Display", serif;
+  font-size: 19px;
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   LETTER
+========================================================= */
+
+.letter {
+  min-height: 100svh;
+  padding: 18vh 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.letter-card {
+  max-width: 650px;
+}
+
+.letter-card h2 {
+  margin-top: 18px;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(45px, 11vw, 78px);
+  line-height: 1.05;
+  font-weight: 400;
+}
+
+.letter-card p {
+  margin-top: 30px;
+  font-size: 16px;
+  line-height: 2;
+  color: #858984;
+}
+
+.letter-card p + p {
+  margin-top: 18px;
+}
+
+
+/* =========================================================
+   FULL PHOTO
+========================================================= */
+
+.full-photo {
+  min-height: 100svh;
+  padding: 7vh 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.full-photo-inner {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  height: 86svh;
+  border-radius: 32px;
+  overflow: hidden;
+}
+
+.full-photo-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.full-photo-inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to top,
+      rgba(30,35,33,.48),
+      transparent 45%
+    );
+}
+
+.full-caption {
+  position: absolute;
+  z-index: 2;
+  left: 25px;
+  bottom: 30px;
+  color: white;
+}
+
+.full-caption h2 {
+  margin-top: 8px;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(38px, 9vw, 75px);
+  line-height: 1;
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   MEMORY STACK
+========================================================= */
+
+.memories {
+  padding: 15vh 22px;
+}
+
+.memories-title {
+  max-width: 650px;
+  margin-bottom: 70px;
+}
+
+.memories-title h2 {
+  margin-top: 15px;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(48px, 12vw, 90px);
+  line-height: 1;
+  font-weight: 400;
+}
+
+.memory-stack {
+  max-width: 520px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 85px;
+}
+
+.memory-card {
+  position: relative;
+}
+
+.memory-card:nth-child(2) {
+  transform: rotate(1.5deg);
+}
+
+.memory-card:nth-child(3) {
+  transform: rotate(-1.2deg);
+}
+
+.memory-card img {
+  width: 100%;
+  max-height: 76svh;
+  object-fit: contain;
+  border-radius: 25px;
+  box-shadow: 0 20px 55px rgba(60,55,50,.12);
+}
+
+.memory-text {
+  margin-top: 16px;
+  padding-left: 8px;
+}
+
+.memory-text span {
+  font-size: 10px;
+  color: #9a9c97;
+}
+
+.memory-text h3 {
+  margin-top: 5px;
+  font-family: "Playfair Display", serif;
+  font-size: 28px;
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   CAKE
+========================================================= */
+
+.cake {
+  min-height: 100svh;
+  padding: 15vh 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cake-inner {
+  max-width: 600px;
+  text-align: center;
+}
+
+.cake-inner h2 {
+  margin-top: 15px;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(46px, 11vw, 82px);
+  line-height: 1;
+  font-weight: 400;
+}
+
+.cake-inner p {
+  margin-top: 25px;
+  color: #858984;
+  line-height: 1.9;
+}
+
+.cake-photo {
+  margin: 55px auto 0;
+  width: min(82vw, 430px);
+}
+
+.cake-photo img {
+  width: 100%;
+  border-radius: 28px;
+  box-shadow: 0 25px 65px rgba(70,65,58,.15);
+}
+
+
+/* =========================================================
+   TRAVEL
+========================================================= */
+
+.travel {
+  padding: 15vh 22px;
+}
+
+.travel-heading {
+  text-align: center;
+  margin-bottom: 70px;
+}
+
+.travel-heading h2 {
+  margin-top: 15px;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(50px, 12vw, 90px);
+  line-height: 1;
+  font-weight: 400;
+}
+
+.travel-item {
+  max-width: 650px;
+  margin: 0 auto 100px;
+}
+
+.travel-item img {
+  width: 100%;
+  max-height: 78svh;
+  object-fit: contain;
+  border-radius: 28px;
+}
+
+.travel-caption {
+  padding: 20px 8px 0;
+}
+
+.travel-caption h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 35px;
+  font-weight: 400;
+}
+
+.travel-caption p {
+  margin-top: 6px;
+  color: #898d88;
+}
+
+
+/* =========================================================
+   QUIET
+========================================================= */
+
+.quiet {
+  min-height: 90svh;
+  padding: 15vh 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.quiet-inner {
+  max-width: 750px;
+}
+
+.quiet-inner h2 {
+  margin-top: 18px;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(48px, 12vw, 92px);
+  line-height: 1;
+  font-weight: 400;
+}
+
+.quiet-inner p {
+  margin-top: 30px;
+  color: #888c87;
+  line-height: 1.9;
+}
+
+
+/* =========================================================
+   PROPOSAL
+========================================================= */
+
+.proposal {
+  min-height: 100svh;
+  padding: 15vh 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.proposal-inner {
+  width: 100%;
+  max-width: 850px;
+}
+
+.proposal .eyebrow {
+  color: #999b96;
+}
+
+.proposal h2 {
+  margin-top: 20px;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(65px, 16vw, 125px);
+  line-height: .88;
+  font-weight: 400;
+  color: #555955;
+}
+
+.proposal-text {
+  margin: 35px auto 0;
+  max-width: 480px;
+  font-size: 16px;
+  line-height: 2;
+  color: #858984;
+}
+
+.yes-button {
+  margin-top: 45px;
+  border: 0;
+  background: #a9c3c8;
+  color: white;
+  padding: 15px 42px;
+  border-radius: 50px;
+  font-size: 15px;
+  box-shadow: 0 15px 35px rgba(120,150,155,.25);
+  cursor: pointer;
+  transition: transform .3s ease;
+}
+
+.yes-button:active {
+  transform: scale(.96);
+}
+
+
+/* =========================================================
+   FINAL
+========================================================= */
+
+.final {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--cream);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 1.3s ease,
+    visibility 1.3s ease;
+  overflow: hidden;
+}
+
+.final.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.final-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.final-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: .22;
+  filter: blur(1px);
+  transform: scale(1.05);
+}
+
+.final-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(244,238,229,.72);
+}
+
+.final-content {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 25px;
+}
+
+.final-content-inner {
+  max-width: 750px;
+}
+
+.final-content h2 {
+  margin-top: 18px;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(65px, 15vw, 135px);
+  line-height: .88;
+  font-weight: 400;
+  color: #555955;
+}
+
+.final-content p {
+  margin-top: 30px;
+  font-size: 17px;
+  line-height: 1.9;
+  color: #7d827d;
+}
+
+.final-sign {
+  margin-top: 40px;
+  font-family: "Playfair Display", serif;
+  font-size: 20px;
+  color: #737873;
+}
+
+
+/* =========================================================
+   FLOATING PARTICLES
+========================================================= */
+
+.particle {
+  position: fixed;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0;
+  animation: floatUp 5s ease-out forwards;
+}
+
+@keyframes floatUp {
+
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(.5);
+  }
+
+  20% {
+    opacity: .7;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-90vh) scale(1.4);
+  }
+
+}
+
+
+/* =========================================================
+   SCROLL REVEAL
+========================================================= */
+
+.reveal {
+  opacity: 0;
+  transform:
+    translateY(55px)
+    scale(.97);
+  filter: blur(8px);
+
+  transition:
+    opacity 1.2s cubic-bezier(.2,.7,.2,1),
+    transform 1.2s cubic-bezier(.2,.7,.2,1),
+    filter 1.2s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform:
+    translateY(0)
+    scale(1);
+  filter: blur(0);
+}
+
+
+/* =========================================================
+   MOBILE IMAGE BEHAVIOR
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .hero-photo {
+    inset: 10px;
+    border-radius: 25px;
+  }
+
+  .hero-photo img {
+    object-fit: cover;
+  }
+
+  .photo-wrap img,
+  .memory-card img,
+  .cake-photo img,
+  .travel-item img {
+    object-fit: contain;
+    background: #e9e0d4;
+  }
+
+  .full-photo {
+    padding: 5vh 12px;
+  }
+
+  .full-photo-inner {
+    height: 82svh;
+    border-radius: 25px;
+  }
+
+  .full-photo-inner img {
+    object-fit: cover;
+  }
+
+  .full-caption {
+    left: 20px;
+    right: 20px;
+    bottom: 25px;
+  }
+
+  .story {
+    padding-top: 15vh;
+    padding-bottom: 15vh;
+  }
+
+  .memories {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .memory-stack {
+    gap: 75px;
+  }
+
+  .travel {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+}
+
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media (min-width: 701px) {
+
+  .hero {
+    padding-left: 8vw;
+    padding-bottom: 9vh;
+  }
+
+  .hero-photo {
+    inset: 20px;
+    border-radius: 40px;
+  }
+
+  .story {
+    padding-left: 10vw;
+    padding-right: 10vw;
+  }
+
+  .photo-moment {
+    padding-top: 12vh;
+    padding-bottom: 12vh;
+  }
+
+  .photo-wrap {
+    width: min(55vw, 600px);
+  }
+
+  .memory-stack {
+    max-width: 600px;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCE MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+
+}
+
+</style>
 </head>
+
+
 <body>
 
-  <!-- Particle Background Layer -->
-  <div id="sparkle-container"></div>
 
-  <!-- BGM Audio (เพลงซึ้งๆ สไตล์เกาหลี/อะคูสติก) -->
-  <audio id="bgm" loop preload="auto">
-    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-acoustic-guitar-112349.mp3" type="audio/mpeg">
-  </audio>
+<div id="loader">
+  <div class="loader-heart">for baby</div>
+</div>
 
-  <!-- Top Navigation -->
-  <header class="topbar">
-    <div class="logo">C & B 💖</div>
-    <button class="sound-btn" id="soundBtn">
-      <span class="icon">🎵</span> <span id="soundText">เปิดเพลงบรรยากาศ</span>
-    </button>
-  </header>
 
-  <!-- Progress Bar -->
-  <div class="progress-bar" id="progressBar"></div>
+<div class="page-glow">
+  <div class="glow one"></div>
+  <div class="glow two"></div>
+  <div class="glow three"></div>
+</div>
 
-  <main class="container">
 
-    <!-- HERO SECTION -->
-    <section class="hero">
-      <div class="hero-bg-wrapper">
-        <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571562/hokkaido002_uoo5wc.jpg" alt="Hokkaido Memory" loading="eager" class="hero-img">
-        <div class="hero-overlay"></div>
-      </div>
-      <div class="hero-content">
-        <span class="badge">A Little Story About Us</span>
-        <h1>เรื่องราวเล็กๆ<br>ของ <span class="highlight">"บลู"</span> กับเค้า</h1>
-        <p class="subtitle">บันทึกเดินทางความทรงจำที่เดินทางมาถึงวันสำคัญ...</p>
-      </div>
-      <div class="scroll-hint">
-        <span>เลื่อนลงช้าๆ นะครับ</span>
-        <div class="arrow">↓</div>
-      </div>
-    </section>
+<div class="progress" id="progress"></div>
 
-    <!-- INTRO TEXT -->
-    <section class="section text-center reveal">
-      <div class="card-soft">
-        <span class="eyebrow">ก่อนจะถึงคำถามสำคัญ...</span>
-        <h2 class="title-serif">มันเริ่มต้นจากเรื่องธรรมดาๆ</h2>
-        <p class="description">
-          สถานที่ที่เราเคยไป...<br>
-          เรื่องตลกๆ ที่เราเคยหัวเราะด้วยกัน...<br>
-          รอยยิ้มในวันธรรมดาที่ไม่มีอะไรพิเศษ<br>
-          แต่พอมี <strong>"บลู"</strong> อยู่ข้างๆ เรื่องธรรมดาเหล่านั้นกลับกลายเป็นความทรงจำที่ดีที่สุดของเค้าเลยนะ
-        </p>
-      </div>
-    </section>
 
-    <!-- BLUE READING (5 YEARS AGO) -->
-    <section class="section grid-2 reveal">
-      <div class="image-wrapper">
-        <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571579/sitincondo_l5uuk0.jpg" alt="Blue 5 years ago" loading="lazy">
-      </div>
-      <div class="text-wrapper">
-        <span class="eyebrow">เมื่อ 5 ปีก่อน...</span>
-        <h2>ตอนที่บลูอายุ 26</h2>
-        <p>
-          ตอนนั้นเรายังไม่รู้เลยว่า อนาคตจะมีเรื่องราวอีกมากมายรอเราอยู่ขนาดนี้<br>
-          ขอบคุณนะครับที่ก้าวเข้ามาในชีวิตของเค้า แล้วทำให้ทุกๆ วันมีความหมายขึ้นมา
-        </p>
-      </div>
-    </section>
+<header class="topbar">
+  <div class="logo">C & B</div>
+  <button class="sound" id="soundBtn">♪</button>
+</header>
 
-    <!-- SHADOW IN JAPAN -->
-    <section class="section full-banner reveal">
-      <div class="banner-wrapper">
-        <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571579/shadow_zr3fuu.jpg" alt="Shadow in Japan" loading="lazy">
-        <div class="banner-caption">
-          <span class="tag">Somewhere in Japan 🌸</span>
-          <h2>แค่เงาของสองเรา...<br>ที่เดินข้างกันไม่เคยห่าง</h2>
-        </div>
-      </div>
-    </section>
 
-    <!-- CAMPING TRIP -->
-    <section class="section grid-2 reverse reveal">
-      <div class="text-wrapper">
-        <span class="eyebrow">จุดเริ่มต้นของการเดินทาง</span>
-        <h2>แคมป์ปิ้งครั้งแรกของเรา</h2>
-        <p>
-          จำได้ไหม... ตอนนั้นเรากางเต็นท์กันแทบไม่เป็น อุปกรณ์ก็ไม่มีอะไรพร้อมเลย<br>
-          แต่แปลกมาก... แค่มีบลูอยู่ด้วยกันตรงนั้น มันกลับรู้สึกว่าเรามีทุกอย่างที่ต้องการแล้ว 😊
-        </p>
-      </div>
-      <div class="image-wrapper">
-        <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571573/s001v_vhnluw.jpg" alt="First Camping" loading="lazy">
-      </div>
-    </section>
+<main>
 
-    <!-- APEC -->
-    <section class="section full-banner reveal">
-      <div class="banner-wrapper">
-        <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571570/apex_lwqi1k.jpg" alt="APEC 2022" loading="lazy">
-        <div class="banner-caption">
-          <span class="tag">APEC 2022 ✨</span>
-          <h2>ในวันที่พิเศษ...<br>กับคนที่เป็นความพิเศษเสมอ</h2>
-        </div>
-      </div>
-    </section>
 
-    <!-- MEMORIES CAROUSEL / GRID -->
-    <section class="section memories-section reveal">
-      <div class="section-header text-center">
-        <span class="eyebrow">The Sweet Moments</span>
-        <h2>บทบันทึกความน่ารักของบลู 💖</h2>
-      </div>
-      <div class="memory-grid">
-        <div class="memory-card">
-          <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571581/nucket_shark_doll_aidk8k.jpg" alt="Shark Mission" loading="lazy">
-          <div class="card-caption">
-            <span class="date">วันธรรมดาๆ วันหนึ่ง</span>
-            <h3>ภารกิจตุ๊กตาฉลาม 🦈</h3>
-          </div>
-        </div>
-        <div class="memory-card">
-          <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571573/halloween_yl5uds.jpg" alt="Halloween" loading="lazy">
-          <div class="card-caption">
-            <span class="date">Halloween Night</span>
-            <h3>ความรั่วๆ ที่น่ารักที่สุด 🎃</h3>
-          </div>
-        </div>
-        <div class="memory-card">
-          <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571568/blulovebird_xsubqx.jpg" alt="Bird feeding" loading="lazy">
-          <div class="card-caption">
-            <span class="date">อีกหนึ่งมุมอบอุ่น</span>
-            <h3>ความสดใสของบลู 🦜</h3>
-          </div>
-        </div>
-      </div>
-    </section>
+<!-- ======================================================
+     HERO
+====================================================== -->
 
-    <!-- FLIP CAKE CARD -->
-    <section class="section cake-section reveal" id="cakeSection">
-      <div class="text-center">
-        <span class="eyebrow">ความทรงจำที่เค้าไม่มีวันลืม</span>
-        <h2>เค้กวันเกิดที่บลูทำให้เค้า 🎂</h2>
-        <p class="sub-p">บลูตั้งใจวาดสายรุ้งนี้ด้วยตัวเอง...</p>
-      </div>
+<section class="hero section">
 
-      <div class="cake-stage">
-        <div class="cake-card" id="cakeCard">
-          <div class="cake-face cake-front">
-            <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571569/hbdchamp001_mfdhel.jpg" alt="Birthday Cake Top" loading="lazy">
-            <div class="cake-badge">มองจากข้างบน ✨ (ลองแตะหรือเลื่อนดูสิ)</div>
-          </div>
-          <div class="cake-face cake-back">
-            <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571568/hbdchamp002_ucqoul.jpg" alt="Birthday Cake Side" loading="lazy">
-            <div class="cake-badge">สายรุ้งที่บลูวาดเองกับมือ 🌈</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="cake-message text-center id="cakeMessage">
-        <h3>"มันอาจไม่ได้สวยงามสมบูรณ์แบบเหมือนร้านดัง..."</h3>
-        <p>แต่นี่คือ **เค้กที่อร่อยที่สุดและมีความหมายที่สุด** ในชีวิตของเค้าเลยนะ 💖</p>
-      </div>
-    </section>
-
-    <!-- KHAO YAI -->
-    <section class="section full-banner reveal">
-      <div class="banner-wrapper">
-        <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571563/khaoyaiblu_y0svu1.jpg" alt="Khao Yai" loading="lazy">
-        <div class="banner-caption">
-          <span class="tag">Khao Yai Trip 🌿</span>
-          <h2>สดใสและน่ารักเสมอ...<br>ในสายตาของเค้า</h2>
-        </div>
-      </div>
-    </section>
-
-    <!-- TRAVEL GRID -->
-    <section class="section travel-section reveal">
-      <div class="section-header text-center">
-        <span class="eyebrow">Our Journeys</span>
-        <h2>ทุกๆ ที่ที่มีบลูไปกับเค้า ✈️</h2>
-      </div>
-
-      <div class="travel-grid">
-        <div class="travel-card">
-          <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571566/soultower_ajlfwt.jpg" alt="Seoul Tower" loading="lazy">
-          <div class="travel-info">
-            <h3>Seoul, South Korea 🇰🇷</h3>
-            <p>กุญแจคล้องใจที่เราเคยคล้องไว้ด้วยกัน...</p>
-          </div>
-        </div>
-        <div class="travel-card">
-          <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571586/hokkaido003_vvbrcw.jpg" alt="Hokkaido" loading="lazy">
-          <div class="travel-info">
-            <h3>Hokkaido, Japan ❄️</h3>
-            <p>ท่ามกลางอากาศติดลบ แต่มือของบลูอบอุ่นเสมอ</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- HOKKAIDO 001 -->
-    <section class="section full-banner reveal">
-      <div class="banner-wrapper">
-        <img src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571582/hokkaido001_ucgmay.jpg" alt="Hokkaido Ride" loading="lazy">
-        <div class="banner-caption">
-          <span class="tag">The Best Companion 🤍</span>
-          <h2>ไม่ว่าจะเดินทางไปไกลแค่ไหน...<br>จุดหมายที่ดีที่สุด คือการมีบลูอยู่ข้างๆ</h2>
-        </div>
-      </div>
-    </section>
-
-    <!-- QUIET MOMENT -->
-    <section class="section quiet-section text-center reveal">
-      <div class="card-soft">
-        <span class="eyebrow">Through All These Years</span>
-        <h2>ผ่านมารายปีแล้วนะ...</h2>
-        <p class="description">
-          จากวันแรกจนถึงวันนี้... ความรู้สึกของเค้าไม่เคยเปลี่ยนไปเลย<br>
-          และกลับยิ่งมั่นใจขึ้นทุกวัน ว่าคนเดียวที่เค้าอยากใช้ชีวิตที่เหลือด้วย...<br>
-          คือ <strong>"บลู"</strong> นะครับ
-        </p>
-        <div class="heart-pulse">💖</div>
-      </div>
-    </section>
-
-    <!-- PROPOSAL SECTION -->
-    <section class="proposal-section text-center" id="proposalSection">
-      <div class="proposal-card">
-        <span class="eyebrow">One Last Question</span>
-        <h2 class="proposal-title">แต่งงานกับเค้านะครับ? 💍✨</h2>
-        <p class="proposal-sub">Will you marry me, Blue?</p>
-
-        <div class="button-group">
-          <button class="btn btn-yes" id="yesBtn">
-            เเต่งครับ! 💖
-          </button>
-          <button class="btn btn-no" id="noBtn">
-            ไม่แต่ง 😜
-          </button>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- FINAL MODAL / SCREEN (HAPPY ENDING) -->
-  <div class="final-screen" id="finalScreen">
-    <div class="final-overlay"></div>
-    <div class="final-content">
-      <div class="heart-ring">💍✨</div>
-      <h2>ขอบคุณนะครับคนดี 🤍</h2>
-      <p class="final-p">
-        เค้าสัญญาว่าจะดูแลบลูให้ดีที่สุด<br>
-        จะทำให้บลูมีความสุขในทุกๆ วันต่อจากนี้เลยนะ!
-      </p>
-      <div class="signature">C & B · Forever & Always</div>
-      <button class="btn btn-replay" onclick="location.reload()">ย้อนดูความทรงจำอีกครั้ง 🌸</button>
-    </div>
+  <div class="hero-photo">
+    <img
+      src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571562/hokkaido002_uoo5wc.jpg"
+      alt="พี่กับเบบี้"
+    >
   </div>
 
-  <script src="script.js"></script>
+  <div class="hero-content reveal">
+
+    <div class="hero-small">
+      เรื่องของพี่กับเบบี้
+    </div>
+
+    <h1>
+      For<br>
+      Baby.
+    </h1>
+
+    <div class="hero-bottom">
+      เลื่อนลงช้า ๆ นะ
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     STORY
+====================================================== -->
+
+<section class="story section">
+
+  <div class="story-inner reveal">
+
+    <div class="eyebrow">
+      พี่อยากเล่าอะไรให้เบบี้ฟัง
+    </div>
+
+    <h2>
+      อยู่ ๆ ก็รู้สึกว่า<br>
+      เรามาไกลเหมือนกันนะ
+    </h2>
+
+    <p>
+      จากวันแรก ๆ ที่เราเพิ่งรู้จักกัน<br>
+      จนวันนี้มีเรื่องราวเต็มไปหมดเลย<br><br>
+
+      มีทั้งวันที่หัวเราะจนปวดท้อง<br>
+      วันที่เหนื่อย วันที่งอนกัน<br>
+      วันที่ไม่รู้จะไปไหนดี<br>
+      แล้วก็วันที่ไม่มีอะไรพิเศษเลย<br><br>
+
+      แต่แปลกดีนะ<br>
+      วันธรรมดาที่มีเบบี้อยู่ด้วย<br>
+      มันกลายเป็นวันที่พี่ชอบที่สุด
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     BLUE READING
+====================================================== -->
+
+<section class="photo-moment section">
+
+  <div class="photo-wrap reveal">
+
+    <img
+      src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571579/sitincondo_l5uuk0.jpg"
+      alt="เบบี้อ่านหนังสือ"
+    >
+
+    <div class="photo-label">
+      <span>เมื่อก่อน</span>
+      <strong>เบบี้ตอนอายุ 26</strong>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     LETTER
+====================================================== -->
+
+<section class="letter section">
+
+  <div class="letter-card reveal">
+
+    <div class="eyebrow">
+      พี่ยังจำได้
+    </div>
+
+    <h2>
+      ตอนนั้นพี่ยังไม่รู้เลยว่า<br>
+      เบบี้จะกลายเป็นคนสำคัญขนาดนี้
+    </h2>
+
+    <p>
+      ตอนเริ่มต้น เราก็ไม่ได้รู้หรอกว่า
+      อีกหลายปีข้างหน้าเราจะมีรูปด้วยกันเยอะขนาดนี้
+    </p>
+
+    <p>
+      ไม่รู้ว่าจะได้ไปเที่ยวด้วยกัน
+      จะได้เจอเรื่องอะไรอีกตั้งเยอะ
+      แล้วก็ไม่รู้ว่าในที่สุด
+      พี่จะกลายเป็นคนที่อยากอยู่ข้าง ๆ เบบี้ไปนาน ๆ
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     SHADOW
+====================================================== -->
+
+<section class="full-photo section reveal">
+
+  <div class="full-photo-inner">
+
+    <img
+      src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571579/shadow_zr3fuu.jpg"
+      alt="เงาของเราสองคน"
+    >
+
+    <div class="full-caption">
+
+      <div class="eyebrow">
+        Somewhere in Japan
+      </div>
+
+      <h2>
+        ไปไหนก็ได้<br>
+        ขอแค่มีเบบี้ไปด้วย
+      </h2>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     CAMPING
+====================================================== -->
+
+<section class="story section">
+
+  <div class="story-inner reveal">
+
+    <div class="eyebrow">
+      จำทริปแรก ๆ ได้ไหม
+    </div>
+
+    <h2>
+      ตอนนั้นเราก็ไม่ค่อยรู้อะไรเลย
+    </h2>
+
+    <p>
+      เต็นท์ก็แทบกางไม่เป็น<br>
+      ของก็มีไม่ครบ<br>
+      บางครั้งก็เหนื่อยจนอยากกลับบ้าน<br><br>
+
+      แต่พอมานั่งคิดตอนนี้<br>
+      พี่กลับจำเรื่องพวกนั้นได้เยอะที่สุดเลย
+    </p>
+
+  </div>
+
+</section>
+
+
+<section class="photo-moment section">
+
+  <div class="photo-wrap reveal">
+
+    <img
+      src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571573/s001v_vhnluw.jpg"
+      alt="ทริป camping"
+    >
+
+    <div class="photo-label">
+      <span>ตอนเราเริ่มต้น</span>
+      <strong>สองคนกับเต็นท์หนึ่งหลัง</strong>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     APEC
+====================================================== -->
+
+<section class="full-photo section reveal">
+
+  <div class="full-photo-inner">
+
+    <img
+      src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571570/apex_lwqi1k.jpg"
+      alt="APEC 2022"
+    >
+
+    <div class="full-caption">
+
+      <div class="eyebrow">
+        APEC 2022
+      </div>
+
+      <h2>
+        บางวันก็มีเรื่องใหญ่ ๆ<br>
+        เกิดขึ้นกับเรา
+      </h2>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     MEMORIES
+====================================================== -->
+
+<section class="memories section">
+
+  <div class="memories-title reveal">
+
+    <div class="eyebrow">
+      เรื่องเล็ก ๆ ที่พี่จำได้
+    </div>
+
+    <h2>
+      จริง ๆ แล้ว<br>
+      พี่จำได้เยอะกว่าที่เบบี้คิด
+    </h2>
+
+  </div>
+
+
+  <div class="memory-stack">
+
+
+    <div class="memory-card reveal">
+
+      <img
+        src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571581/nucket_shark_doll_aidk8k.jpg"
+        alt="ตุ๊กตาฉลาม"
+      >
+
+      <div class="memory-text">
+
+        <span>เรื่องฉลาม</span>
+
+        <h3>
+          เรื่องนี้พี่ยังจำได้อยู่เลย
+        </h3>
+
+      </div>
+
+    </div>
+
+
+    <div class="memory-card reveal">
+
+      <img
+        src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571573/halloween_yl5uds.jpg"
+        alt="Halloween"
+      >
+
+      <div class="memory-text">
+
+        <span>Halloween</span>
+
+        <h3>
+          เราสองคนก็แปลกดีเหมือนกันนะ
+        </h3>
+
+      </div>
+
+    </div>
+
+
+    <div class="memory-card reveal">
+
+      <img
+        src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571568/blulovebird_xsubqx.jpg"
+        alt="เบบี้กับนก"
+      >
+
+      <div class="memory-text">
+
+        <span>เบบี้ในแบบของเบบี้</span>
+
+        <h3>
+          พี่ชอบเวลาที่เบบี้เป็นตัวเองที่สุด
+        </h3>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     CAKE
+====================================================== -->
+
+<section class="cake section">
+
+  <div class="cake-inner reveal">
+
+    <div class="eyebrow">
+      อีกเรื่องหนึ่งที่พี่ชอบ
+    </div>
+
+    <h2>
+      เค้กวันเกิด<br>
+      ที่เบบี้ทำให้พี่
+    </h2>
+
+    <p>
+      จำได้ไหม<br>
+      เบบี้วาดสายรุ้งให้พี่ด้วย<br><br>
+
+      มันอาจจะไม่ได้เหมือนเค้กในร้าน<br>
+      แต่มันเป็นเค้กที่พี่จำได้ดีที่สุด
+    </p>
+
+    <div class="cake-photo">
+
+      <img
+        src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571569/hbdchamp001_mfdhel.jpg"
+        alt="เค้กวันเกิด"
+      >
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     KHAO YAI
+====================================================== -->
+
+<section class="full-photo section reveal">
+
+  <div class="full-photo-inner">
+
+    <img
+      src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571563/khaoyaiblu_y0svu1.jpg"
+      alt="เบบี้ที่เขาใหญ่"
+    >
+
+    <div class="full-caption">
+
+      <div class="eyebrow">
+        Khao Yai
+      </div>
+
+      <h2>
+        แล้วก็มีเบบี้<br>
+        ในทุก ๆ ที่ของความทรงจำ
+      </h2>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     TRAVEL
+====================================================== -->
+
+<section class="travel section">
+
+  <div class="travel-heading reveal">
+
+    <div class="eyebrow">
+      ที่ที่เราเคยไปด้วยกัน
+    </div>
+
+    <h2>
+      จากตรงนี้<br>
+      ไปด้วยกันอีกเยอะ ๆ นะ
+    </h2>
+
+  </div>
+
+
+  <div class="travel-item reveal">
+
+    <img
+      src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571566/soultower_ajlfwt.jpg"
+      alt="Seoul"
+    >
+
+    <div class="travel-caption">
+
+      <h3>Seoul.</h3>
+
+      <p>
+        เราเคยทิ้งกุญแจเล็ก ๆ ไว้ด้วยกัน
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <div class="travel-item reveal">
+
+    <img
+      src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571586/hokkaido003_vvbrcw.jpg"
+      alt="Hokkaido"
+    >
+
+    <div class="travel-caption">
+
+      <h3>Hokkaido.</h3>
+
+      <p>
+        หนาวแค่ไหนก็ไม่เป็นไร ถ้าเบบี้อยู่ข้าง ๆ
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     HOKKAIDO
+====================================================== -->
+
+<section class="full-photo section reveal">
+
+  <div class="full-photo-inner">
+
+    <img
+      src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571582/hokkaido001_ucgmay.jpg"
+      alt="Hokkaido"
+    >
+
+    <div class="full-caption">
+
+      <div class="eyebrow">
+        Hokkaido
+      </div>
+
+      <h2>
+        พี่ชอบทุกทริป<br>
+        ที่มีเบบี้อยู่ด้วย
+      </h2>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     QUIET
+====================================================== -->
+
+<section class="quiet section">
+
+  <div class="quiet-inner reveal">
+
+    <div class="eyebrow">
+      แล้วพี่ก็คิดเรื่องนี้มาสักพักแล้ว
+    </div>
+
+    <h2>
+      จริง ๆ แล้ว<br>
+      พี่ไม่อยากมีแค่<br>
+      ความทรงจำ
+    </h2>
+
+    <p>
+      พี่อยากมีวันข้างหน้ากับเบบี้ด้วย
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     PROPOSAL
+====================================================== -->
+
+<section class="proposal section">
+
+  <div class="proposal-inner reveal">
+
+    <div class="eyebrow">
+      พี่มีเรื่องอยากถามเบบี้
+    </div>
+
+    <h2>
+      เบบี้...
+    </h2>
+
+    <div class="proposal-text">
+
+      พี่อาจจะไม่ได้พูดเก่งที่สุด<br>
+      แล้วก็อาจจะไม่ได้โรแมนติกที่สุด<br><br>
+
+      แต่มีเรื่องหนึ่งที่พี่มั่นใจมากขึ้นทุกวัน
+
+    </div>
+
+    <h2 style="margin-top:45px;">
+      แต่งงาน<br>
+      กับพี่นะ
+    </h2>
+
+    <button class="yes-button" id="yesBtn">
+      แต่งงานกันนะ ♡
+    </button>
+
+  </div>
+
+</section>
+
+
+</main>
+
+
+<!-- ======================================================
+     FINAL
+====================================================== -->
+
+<div class="final" id="finalScreen">
+
+  <div class="final-bg">
+
+    <img
+      src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1788571562/hokkaido002_uoo5wc.jpg"
+      alt=""
+    >
+
+  </div>
+
+
+  <div class="final-content">
+
+    <div class="final-content-inner">
+
+      <div class="eyebrow">
+        ขอบคุณนะเบบี้
+      </div>
+
+      <h2>
+        ไปต่อด้วยกัน<br>
+        นะ
+      </h2>
+
+      <p>
+        จากวันนี้ไป<br>
+        พี่จะตั้งใจทำให้ทุกวันของเรา<br>
+        มีเรื่องดี ๆ ให้จำเพิ่มขึ้นอีกเยอะเลย
+      </p>
+
+      <div class="final-sign">
+        พี่ ♡ เบบี้
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+
+/* =========================================================
+   LOADER
+========================================================= */
+
+window.addEventListener("load", () => {
+
+  setTimeout(() => {
+
+    document
+      .getElementById("loader")
+      .classList.add("hide");
+
+  }, 1000);
+
+});
+
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+window.addEventListener("scroll", () => {
+
+  const scrollTop = window.scrollY;
+
+  const height =
+    document.documentElement.scrollHeight -
+    document.documentElement.clientHeight;
+
+  const percent =
+    height > 0
+      ? (scrollTop / height) * 100
+      : 0;
+
+  document
+    .getElementById("progress")
+    .style.width = percent + "%";
+
+});
+
+
+/* =========================================================
+   REVEAL
+========================================================= */
+
+const revealObserver =
+  new IntersectionObserver(
+
+    entries => {
+
+      entries.forEach(entry => {
+
+        if (entry.isIntersecting) {
+
+          entry.target
+            .classList
+            .add("visible");
+
+        }
+
+      });
+
+    },
+
+    {
+      threshold: 0.12,
+      rootMargin: "0px 0px -8% 0px"
+    }
+
+  );
+
+
+document
+  .querySelectorAll(".reveal")
+  .forEach(el => {
+
+    revealObserver.observe(el);
+
+  });
+
+
+/* =========================================================
+   SOFT SCROLL EFFECT
+========================================================= */
+
+let ticking = false;
+
+window.addEventListener("scroll", () => {
+
+  if (ticking) return;
+
+  ticking = true;
+
+  requestAnimationFrame(() => {
+
+    const cards =
+      document.querySelectorAll(
+        ".photo-wrap, .memory-card, .full-photo-inner"
+      );
+
+    cards.forEach(card => {
+
+      const rect =
+        card.getBoundingClientRect();
+
+      const center =
+        window.innerHeight / 2;
+
+      const distance =
+        (rect.top + rect.height / 2) -
+        center;
+
+      const movement =
+        Math.max(
+          -10,
+          Math.min(
+            10,
+            distance * -0.015
+          )
+        );
+
+      if (
+        rect.bottom > -200 &&
+        rect.top < window.innerHeight + 200
+      ) {
+
+        card.style.transform =
+          `translateY(${movement}px)`;
+
+      }
+
+    });
+
+    ticking = false;
+
+  });
+
+});
+
+
+/* =========================================================
+   FLOATING PARTICLES
+========================================================= */
+
+let particleTimer = null;
+
+function createParticle() {
+
+  const particle =
+    document.createElement("div");
+
+  particle.className = "particle";
+
+  const colors = [
+    "#d9c4c2",
+    "#bfd4d8",
+    "#cdd5c7"
+  ];
+
+  particle.style.background =
+    colors[
+      Math.floor(
+        Math.random() * colors.length
+      )
+    ];
+
+  particle.style.left =
+    Math.random() * 100 + "vw";
+
+  particle.style.bottom =
+    "-10px";
+
+  particle.style.animationDuration =
+    (4 + Math.random() * 3) + "s";
+
+  document.body.appendChild(particle);
+
+  setTimeout(() => {
+
+    particle.remove();
+
+  }, 7000);
+
+}
+
+function startParticles() {
+
+  if (particleTimer) return;
+
+  particleTimer =
+    setInterval(
+      createParticle,
+      1800
+    );
+
+}
+
+startParticles();
+
+
+/* =========================================================
+   YES
+========================================================= */
+
+const yesBtn =
+  document.getElementById("yesBtn");
+
+const finalScreen =
+  document.getElementById("finalScreen");
+
+yesBtn.addEventListener("click", () => {
+
+  finalScreen.classList.add("show");
+
+  document.body.classList.add("no-scroll");
+
+  for (let i = 0; i < 35; i++) {
+
+    setTimeout(() => {
+
+      createParticle();
+
+    }, i * 70);
+
+  }
+
+});
+
+
+/* =========================================================
+   SOUND BUTTON
+========================================================= */
+
+const soundBtn =
+  document.getElementById("soundBtn");
+
+let soundOn = false;
+
+soundBtn.addEventListener("click", () => {
+
+  soundOn = !soundOn;
+
+  soundBtn.textContent =
+    soundOn ? "♫" : "♪";
+
+});
+
+
+</script>
+
 </body>
 </html>
+```
