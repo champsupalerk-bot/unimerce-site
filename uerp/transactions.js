@@ -950,7 +950,7 @@ function applyFilters() {
                 String(item.item_name || '')
                     .toLowerCase()
                     .includes(search)
-                String(item.date || '')
+                String(formatDateFormatted(item.date, false) || '')
                     .toLowerCase()
                     .includes(search);
 
