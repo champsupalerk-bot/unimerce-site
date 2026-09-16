@@ -93,6 +93,37 @@
         .period-btn {
             transition: all 0.15s ease;
         }
+        .order-count-live {
+            font-size: 14px;
+            color: #d93025;
+        }
+        .order-count-live-icon {
+            color: #d93025;
+            animation: orderCountLivePulse 2.4s ease-in-out infinite;
+        }
+        @keyframes orderCountLivePulse {
+            0%, 100% {
+                opacity: 0.45;
+                transform: scale(0.9);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .transactions-grid {
+            height: calc(100vh - 270px);
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .transactions-grid thead th {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background-color: #f8fafc !important;
+            box-shadow: 0 1px 0 #dadce0;
+        }
         @media (max-width: 639px) {
             .mobile-item-name {
                 white-space: normal;
@@ -114,13 +145,16 @@
                 font-size: 15px;
                 line-height: 1.25;
             }
+            .transactions-grid {
+                height: calc(100vh - 305px);
+            }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-100">
     <!-- Dynamic Navigation Header Container -->
     <div id="headerContainer"></div>
-    <main class="max-w-[1000px] mx-auto px-2 sm:px-4 py-3 sm:py-5 w-full flex-grow space-y-2.5">
+    <main class="max-w-[1000px] mx-auto px-2 sm:px-4 py-3 sm:py-5 w-full flex-grow space-y-2.5 min-h-0">
         <!-- Top Header & Action Bar -->
         <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 min-w-0">
@@ -131,8 +165,9 @@
                         <span class="sm:hidden">Order Management</span>
                     </h1>
                 </div>
-                <span id="orderCountTop" class="px-2 py-0.5 bg-blue-50 text-google-blue border border-blue-100 rounded-full text-[10px] font-bold whitespace-nowrap">
-                    0 Orders
+                <span id="orderCountTop" class="px-2 py-0.5 bg-red-50 text-google-red border border-red-100 rounded-full text-[10px] font-bold whitespace-nowrap flex items-center gap-1">
+                    <i class="fa-solid fa-circle text-[6px] order-count-live-icon"></i>
+                    <span class="order-count-live">0</span> Orders
                 </span>
             </div>
             <div class="flex items-center gap-1.5">
@@ -218,24 +253,27 @@
             </div>
         </div>
         <!-- Main Transactions Table -->
-        <section class="google-card bg-white overflow-hidden">
-            <div class="w-full">
+        <section class="google-card bg-white overflow-hidden min-h-0">
+            <div class="transactions-grid w-full">
                 <table class="w-full text-left border-collapse table-fixed">
                     <thead>
                         <tr class="bg-slate-50 text-slate-500 font-semibold text-[11px] border-b border-google-border uppercase tracking-tight">
-                            <th class="p-2 w-[68px] sm:w-[95px] sortable" onclick="sortTable('date')">
+                            <th class="p-2 text-center w-[68px] sm:w-[95px] sortable" onclick="sortTable('date')">
                                 date <span id="sort_date" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
                             </th>
-                            <th class="p-2 text-center w-[82px] sm:w-[140px] sortable" onclick="sortTable('invoice_no')">
-                                order_no <span id="sort_invoice_no" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                            <th class="p-2 text-center w-[90px] sm:w-[140px] sortable" onclick="sortTable('invoice_no')">
+                                order_no <span id="sort_invoice_no" class="ml-0.5 text-[12px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
                             </th>
-                            <th class="p-2 sm:w-[120px] sortable" onclick="sortTable('item_code')">
+                            <th class="p-2 text-center sm:w-[120px] sortable" onclick="sortTable('item_code')">
                                 item_code <span id="sort_item_code" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
                             </th>
                             <th class="p-2 hidden sm:table-cell sortable" onclick="sortTable('item_name')">
                                 item_name <span id="sort_item_name" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
                             </th>
-                            <th class="p-2 text-right hidden sm:table-cell w-[120px] sortable" onclick="sortTable('sales_amt')">
+                            <th class="p-2 text-center w-[40px] sm:w-[60px] sortable" onclick="sortTable('qty')">
+                                qty <span id="sort_qty" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                            </th>
+                            <th class="p-2 text-center hidden sm:table-cell w-[120px] sortable" onclick="sortTable('sales_amt')">
                                 sales_amt <span id="sort_sales_amt" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
                             </th>
                             <th class="p-2 text-center hidden sm:table-cell w-[60px] sortable" onclick="sortTable('channel')">
@@ -259,4 +297,3 @@
     <script src="transactions.js"></script>
 </body>
 </html>
-
