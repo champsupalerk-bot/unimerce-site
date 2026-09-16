@@ -1,7 +1,6 @@
 const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmxlIiwicmVmIjoieHlnZG1zemVybW1pcmNtYnF3a2UiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc4MTY1Njk1MCwiZXhwIjoyMDk3MjMyOTUwfQ.Cq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-let allTransactions = [];
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);let allTransactions = [];
 let filteredTransactions = [];
 let filteredOrderGroups = [];
 let selectedRowIds = new Set();
