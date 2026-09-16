@@ -30,7 +30,7 @@
     <!-- Supabase JS Client CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Global Header & Layout Script -->
-    <script src="js/layoutuerp.js"></script>
+    <script src="layoutuerp.js"></script>
     <style>
         body {
             font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
@@ -214,14 +214,14 @@
                 <button type="button" onclick="setPeriod('YESTERDAY')" data-period="YESTERDAY" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
                     เมื่อวาน
                 </button>
-                <button type="button" onclick="setPeriod('THIS_MONTH')" data-period="THIS_MONTH" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
-                    เดือนนี้
-                </button>
-                <button type="button" onclick="setPeriod('LAST_MONTH')" data-period="LAST_MONTH" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
-                    เดือนที่แล้ว
+                <button type="button" onclick="setPeriod('THIS_WEEK')" data-period="THIS_WEEK" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
+                    สัปดาห์นี้
                 </button>
                 <button type="button" onclick="togglePeriodMenu()" class="px-2.5 py-1 rounded-md text-[11px] font-semibold border border-google-border bg-white text-slate-600 whitespace-nowrap">
                     Custom <i class="fa-solid fa-chevron-down text-[8px] ml-0.5"></i>
+                </button>
+                <button type="button" onclick="loadTwoYearsData()" class="px-2.5 py-1 rounded-md text-[11px] font-semibold border border-google-border bg-white text-slate-600 whitespace-nowrap hover:bg-slate-50">
+                    <i class="fa-solid fa-database text-[9px] mr-0.5"></i>2 ปี
                 </button>
             </div>
             <!-- Additional Period Dropdown -->
