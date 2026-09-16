@@ -1,5 +1,5 @@
 const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmxlIiwicmVmIjoieHlnZG1zemVy bW1pcmNtYnF3a2UiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc4MTY1Njk1MCwiZXhwIjoyMDk3MjMyOTUwfQ.Cq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmxlIiwicmVmIjoieHlnZG1zemVybW1pcmNtYnF3a2UiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc4MTY1Njk1MCwiZXhwIjoyMDk3MjMyOTUwfQ.Cq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 let allTransactions = [];
 let filteredTransactions = [];
