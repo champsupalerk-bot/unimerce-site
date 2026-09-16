@@ -485,6 +485,56 @@ async function fetchTransactionRange(startDate, endDate) {
     }));
 }
 
+async function loadTwoYearsData() {
+    try {
+        const now = new Date();
+
+        // ตั้งแต่วันที่ 1 มกราคมของปีก่อน
+        // จนถึงวันนี้
+        const startDate = new Date(
+            now.getFullYear() - 1,
+            0,
+            1
+        );
+
+        const endDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59,
+            999
+        );
+
+        updateStatus('กำลังโหลดข้อมูลย้อนหลัง 2 ปี...');
+
+        await loadTransactionsForRange(
+            startDate,
+            endDate,
+            false
+        );
+
+        // โหลดข้อมูลจาก Cache กลับเข้า allTransactions
+        allTransactions = await getAllCachedTransactions();
+
+        applyFilters();
+
+        setTimeout(() => {
+            document.getElementById('statusIndicator')
+                .classList.add('hidden');
+        }, 2000);
+
+    } catch (error) {
+        console.error('Error loading 2 years data:', error);
+        updateStatus('เกิดข้อผิดพลาดในการโหลดข้อมูลย้อนหลัง 2 ปี');
+
+        setTimeout(() => {
+            updateStatus('');
+        }, 5000);
+    }
+}
+
 async function loadTransactionsForRange(
     requestedStart,
     requestedEnd,
@@ -681,17 +731,22 @@ async function ensureCurrentPeriodData() {
 }
 
 function setPeriod(period, shouldApply = true) {
-    currentPeriod = period;
+    // กด period เดิมซ้ำ = ปิด date filter
+    if (currentPeriod === period) {
+        currentPeriod = 'ALL';
+    } else {
+        currentPeriod = period;
+    }
 
     document.getElementById('customDateContainer')
         .classList.toggle(
             'hidden',
-            period !== 'CUSTOM'
+            currentPeriod !== 'CUSTOM'
         );
 
     document.querySelectorAll('.period-btn').forEach(btn => {
         const active =
-            btn.dataset.period === period;
+            btn.dataset.period === currentPeriod;
 
         btn.classList.toggle(
             'bg-google-blue',
@@ -949,7 +1004,7 @@ function applyFilters() {
                     .includes(search) ||
                 String(item.item_name || '')
                     .toLowerCase()
-                    .includes(search)
+                    .includes(search) ||
                 String(formatDateFormatted(item.date, false) || '')
                     .toLowerCase()
                     .includes(search);
