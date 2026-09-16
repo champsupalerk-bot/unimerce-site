@@ -1,6 +1,8 @@
 const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);let allTransactions = [];
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+let allTransactions = [];
 let filteredTransactions = [];
 let filteredOrderGroups = [];
 let selectedRowIds = new Set();
@@ -10,6 +12,14 @@ let currentSortAsc = false;
 let currentPeriod = 'TODAY';
 let displayLimit = 25;
 const limitStep = 25;
+
+const TRANSACTION_CACHE_DB = 'uerp_transactions_cache_db';
+const TRANSACTION_CACHE_STORE = 'transactions';
+const TRANSACTION_CACHE_META = 'meta';
+const TRANSACTION_CACHE_VERSION = 1;
+const TRANSACTION_CACHE_TTL = 24 * 3600 * 1000;
+const INITIAL_CACHE_DAYS = 60;
+const FETCH_BATCH_SIZE = 1000;
 
 document.addEventListener('DOMContentLoaded', () => {
     setPeriod('TODAY', false);
@@ -69,57 +79,604 @@ function updateStatus(msg, isError = false) {
     statusText.innerText = msg;
 }
 
+function openTransactionCacheDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(
+            TRANSACTION_CACHE_DB,
+            TRANSACTION_CACHE_VERSION
+        );
+
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+
+            if (!db.objectStoreNames.contains(TRANSACTION_CACHE_STORE)) {
+                db.createObjectStore(
+                    TRANSACTION_CACHE_STORE,
+                    { keyPath: '_rowId' }
+                );
+            }
+
+            if (!db.objectStoreNames.contains(TRANSACTION_CACHE_META)) {
+                db.createObjectStore(
+                    TRANSACTION_CACHE_META,
+                    { keyPath: 'key' }
+                );
+            }
+        };
+
+        request.onsuccess = () => {
+            resolve(request.result);
+        };
+
+        request.onerror = () => {
+            reject(request.error);
+        };
+    });
+}
+
+async function clearTransactionCache() {
+    const db = await openTransactionCacheDB();
+
+    await new Promise((resolve, reject) => {
+        const tx = db.transaction(
+            [
+                TRANSACTION_CACHE_STORE,
+                TRANSACTION_CACHE_META
+            ],
+            'readwrite'
+        );
+
+        tx.objectStore(TRANSACTION_CACHE_STORE).clear();
+        tx.objectStore(TRANSACTION_CACHE_META).clear();
+
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+    });
+
+    db.close();
+}
+
+async function getTransactionCacheMeta() {
+    const db = await openTransactionCacheDB();
+
+    const meta = await new Promise((resolve, reject) => {
+        const tx = db.transaction(
+            TRANSACTION_CACHE_META,
+            'readonly'
+        );
+
+        const request =
+            tx.objectStore(TRANSACTION_CACHE_META)
+                .get('cache_info');
+
+        request.onsuccess = () => {
+            resolve(request.result || null);
+        };
+
+        request.onerror = () => {
+            reject(request.error);
+        };
+    });
+
+    db.close();
+
+    return meta;
+}
+
+async function saveTransactionCacheMeta(meta) {
+    const db = await openTransactionCacheDB();
+
+    await new Promise((resolve, reject) => {
+        const tx = db.transaction(
+            TRANSACTION_CACHE_META,
+            'readwrite'
+        );
+
+        tx.objectStore(TRANSACTION_CACHE_META)
+            .put({
+                key: 'cache_info',
+                ...meta
+            });
+
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+    });
+
+    db.close();
+}
+
+async function getAllCachedTransactions() {
+    const db = await openTransactionCacheDB();
+
+    const rows = await new Promise((resolve, reject) => {
+        const tx = db.transaction(
+            TRANSACTION_CACHE_STORE,
+            'readonly'
+        );
+
+        const request =
+            tx.objectStore(TRANSACTION_CACHE_STORE)
+                .getAll();
+
+        request.onsuccess = () => {
+            resolve(request.result || []);
+        };
+
+        request.onerror = () => {
+            reject(request.error);
+        };
+    });
+
+    db.close();
+
+    return rows;
+}
+
+async function saveTransactionsToCache(rows) {
+    if (!rows || rows.length === 0) return;
+
+    const db = await openTransactionCacheDB();
+
+    await new Promise((resolve, reject) => {
+        const tx = db.transaction(
+            TRANSACTION_CACHE_STORE,
+            'readwrite'
+        );
+
+        const store =
+            tx.objectStore(TRANSACTION_CACHE_STORE);
+
+        rows.forEach(row => {
+            store.put(row);
+        });
+
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+    });
+
+    db.close();
+}
+
+function getDateOnly(date) {
+    const d = new Date(date);
+
+    return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, '0'),
+        String(d.getDate()).padStart(2, '0')
+    ].join('-');
+}
+
+function getInitialCacheRange() {
+    const now = new Date();
+
+    const endDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        23,
+        59,
+        59
+    );
+
+    const startDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() - INITIAL_CACHE_DAYS + 1
+    );
+
+    return {
+        start: startDate,
+        end: endDate
+    };
+}
+
+function getCurrentPeriodRange() {
+    const now = new Date();
+
+    let startFilterDate = null;
+    let endFilterDate = null;
+
+    if (currentPeriod === 'TODAY') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59
+        );
+
+    } else if (currentPeriod === 'YESTERDAY') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 1
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 1,
+            23,
+            59,
+            59
+        );
+
+    } else if (currentPeriod === 'THIS_WEEK') {
+        const day = now.getDay() || 7;
+
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - day + 1
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59
+        );
+
+    } else if (currentPeriod === 'THIS_MONTH') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59
+        );
+
+    } else if (currentPeriod === 'LAST_MONTH') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            1
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            0,
+            23,
+            59,
+            59
+        );
+
+    } else if (currentPeriod === 'THIS_YEAR') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            0,
+            1
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59
+        );
+
+    } else if (currentPeriod === 'CUSTOM') {
+        const s = document.getElementById('startDate').value;
+        const e = document.getElementById('endDate').value;
+
+        if (s) {
+            startFilterDate = new Date(
+                s + 'T00:00:00'
+            );
+        }
+
+        if (e) {
+            endFilterDate = new Date(
+                e + 'T23:59:59'
+            );
+        }
+    }
+
+    return {
+        start: startFilterDate,
+        end: endFilterDate
+    };
+}
+
+function getMissingDateRanges(cachedMeta, requestedStart, requestedEnd) {
+    if (!requestedStart || !requestedEnd) {
+        return [];
+    }
+
+    if (
+        !cachedMeta ||
+        !cachedMeta.coveredStart ||
+        !cachedMeta.coveredEnd
+    ) {
+        return [
+            {
+                start: requestedStart,
+                end: requestedEnd
+            }
+        ];
+    }
+
+    const cachedStart =
+        new Date(cachedMeta.coveredStart);
+
+    const cachedEnd =
+        new Date(cachedMeta.coveredEnd);
+
+    const ranges = [];
+
+    if (requestedStart < cachedStart) {
+        const end =
+            new Date(cachedStart.getTime() - 1000);
+
+        ranges.push({
+            start: requestedStart,
+            end: end
+        });
+    }
+
+    if (requestedEnd > cachedEnd) {
+        const start =
+            new Date(cachedEnd.getTime() + 1000);
+
+        ranges.push({
+            start: start,
+            end: requestedEnd
+        });
+    }
+
+    return ranges;
+}
+
+async function fetchTransactionRange(startDate, endDate) {
+    if (!startDate || !endDate) return [];
+
+    const allRows = [];
+    let from = 0;
+
+    while (true) {
+        const to = from + FETCH_BATCH_SIZE - 1;
+
+        const { data, error } = await supabaseClient
+            .from('transactions')
+            .select('*')
+            .gte('date', startDate.toISOString())
+            .lte('date', endDate.toISOString())
+            .order('date', { ascending: false })
+            .range(from, to);
+
+        if (error) throw error;
+
+        const rows = data || [];
+
+        allRows.push(...rows);
+
+        if (rows.length < FETCH_BATCH_SIZE) {
+            break;
+        }
+
+        from += FETCH_BATCH_SIZE;
+    }
+
+    return allRows.map((row, idx) => ({
+        ...row,
+        _rowId:
+            row.id ||
+            `row_${row.date}_${row.invoice_no || ''}_${row.item_code || ''}_${idx}`
+    }));
+}
+
+async function loadTransactionsForRange(
+    requestedStart,
+    requestedEnd,
+    isManualRefresh = false
+) {
+    const nowTime = new Date().getTime();
+
+    if (isManualRefresh) {
+        await clearTransactionCache();
+    }
+
+    let cachedMeta =
+        await getTransactionCacheMeta();
+
+    if (
+        cachedMeta &&
+        cachedMeta.updatedAt &&
+        nowTime - Number(cachedMeta.updatedAt) >=
+        TRANSACTION_CACHE_TTL
+    ) {
+        await clearTransactionCache();
+        cachedMeta = null;
+    }
+
+    let missingRanges =
+        getMissingDateRanges(
+            cachedMeta,
+            requestedStart,
+            requestedEnd
+        );
+
+    if (!cachedMeta) {
+        missingRanges = [
+            {
+                start: requestedStart,
+                end: requestedEnd
+            }
+        ];
+    }
+
+    if (missingRanges.length > 0) {
+        updateStatus('กำลังโหลดข้อมูล...');
+
+        for (const range of missingRanges) {
+            const rows =
+                await fetchTransactionRange(
+                    range.start,
+                    range.end
+                );
+
+            await saveTransactionsToCache(rows);
+        }
+
+        const existingMeta =
+            await getTransactionCacheMeta();
+
+        let coveredStart =
+            existingMeta?.coveredStart
+                ? new Date(existingMeta.coveredStart)
+                : requestedStart;
+
+        let coveredEnd =
+            existingMeta?.coveredEnd
+                ? new Date(existingMeta.coveredEnd)
+                : requestedEnd;
+
+        if (requestedStart < coveredStart) {
+            coveredStart = requestedStart;
+        }
+
+        if (requestedEnd > coveredEnd) {
+            coveredEnd = requestedEnd;
+        }
+
+        await saveTransactionCacheMeta({
+            updatedAt: nowTime,
+            coveredStart: coveredStart.toISOString(),
+            coveredEnd: coveredEnd.toISOString()
+        });
+    }
+
+    allTransactions =
+        await getAllCachedTransactions();
+
+    document.getElementById('statusIndicator')
+        .classList.add('hidden');
+
+    applyFilters();
+}
+
 function forceRefreshData() {
-    localStorage.removeItem('uerp_orders_cache');
-    localStorage.removeItem('uerp_orders_cache_time');
     fetchTransactions(true);
 }
 
 async function fetchTransactions(isManualRefresh = false) {
-    const cacheKey = 'uerp_orders_cache';
-    const timeKey = 'uerp_orders_cache_time';
-    const cachedData = localStorage.getItem(cacheKey);
-    const cachedTime = localStorage.getItem(timeKey);
-    const nowTime = new Date().getTime();
-
-    if (
-        !isManualRefresh &&
-        cachedData &&
-        cachedTime &&
-        (nowTime - Number(cachedTime) < 12 * 3600 * 1000)
-    ) {
-        allTransactions = JSON.parse(cachedData);
-        document.getElementById('statusIndicator').classList.add('hidden');
-        applyFilters();
-        return;
-    }
-
-    updateStatus('กำลังโหลดข้อมูล...');
-
     try {
-        const { data, error } = await supabaseClient
-            .from('transactions')
-            .select('*')
-            .order('date', { ascending: false })
-            .limit(1000);
+        let requestedRange;
 
-        if (error) throw error;
+        if (isManualRefresh) {
+            requestedRange =
+                getCurrentPeriodRange();
 
-        allTransactions = (data || []).map((row, idx) => ({
-            ...row,
-            _rowId: row.id || `row_${idx}_${Date.now()}`
-        }));
+            if (
+                !requestedRange.start ||
+                !requestedRange.end
+            ) {
+                requestedRange =
+                    getInitialCacheRange();
+            }
 
-        localStorage.setItem(cacheKey, JSON.stringify(allTransactions));
-        localStorage.setItem(timeKey, nowTime.toString());
+        } else {
+            requestedRange =
+                getInitialCacheRange();
+        }
 
-        document.getElementById('statusIndicator').classList.add('hidden');
-
-        applyFilters();
+        await loadTransactionsForRange(
+            requestedRange.start,
+            requestedRange.end,
+            isManualRefresh
+        );
 
     } catch (err) {
         console.error("Supabase Query Error:", err);
-        updateStatus(`เกิดข้อผิดพลาด: ${err.message}`, true);
+        updateStatus(
+            `เกิดข้อผิดพลาด: ${err.message}`,
+            true
+        );
+    }
+}
+
+async function ensureCurrentPeriodData() {
+    const requestedRange =
+        getCurrentPeriodRange();
+
+    if (
+        !requestedRange.start ||
+        !requestedRange.end
+    ) {
+        return;
+    }
+
+    try {
+        const cachedMeta =
+            await getTransactionCacheMeta();
+
+        const nowTime =
+            new Date().getTime();
+
+        if (
+            cachedMeta &&
+            cachedMeta.updatedAt &&
+            nowTime - Number(cachedMeta.updatedAt) >=
+            TRANSACTION_CACHE_TTL
+        ) {
+            await loadTransactionsForRange(
+                requestedRange.start,
+                requestedRange.end,
+                false
+            );
+            return;
+        }
+
+        const missingRanges =
+            getMissingDateRanges(
+                cachedMeta,
+                requestedRange.start,
+                requestedRange.end
+            );
+
+        if (missingRanges.length > 0) {
+            await loadTransactionsForRange(
+                requestedRange.start,
+                requestedRange.end,
+                false
+            );
+        } else {
+            allTransactions =
+                await getAllCachedTransactions();
+
+            applyFilters();
+        }
+
+    } catch (err) {
+        console.error(
+            "Period Load Error:",
+            err
+        );
+
+        updateStatus(
+            `เกิดข้อผิดพลาด: ${err.message}`,
+            true
+        );
     }
 }
 
@@ -127,33 +684,67 @@ function setPeriod(period, shouldApply = true) {
     currentPeriod = period;
 
     document.getElementById('customDateContainer')
-        .classList.toggle('hidden', period !== 'CUSTOM');
+        .classList.toggle(
+            'hidden',
+            period !== 'CUSTOM'
+        );
 
     document.querySelectorAll('.period-btn').forEach(btn => {
-        const active = btn.dataset.period === period;
+        const active =
+            btn.dataset.period === period;
 
-        btn.classList.toggle('bg-google-blue', active);
-        btn.classList.toggle('text-white', active);
-        btn.classList.toggle('border-google-blue', active);
-        btn.classList.toggle('bg-white', !active);
-        btn.classList.toggle('text-slate-600', !active);
-        btn.classList.toggle('border-google-border', !active);
+        btn.classList.toggle(
+            'bg-google-blue',
+            active
+        );
+
+        btn.classList.toggle(
+            'text-white',
+            active
+        );
+
+        btn.classList.toggle(
+            'border-google-blue',
+            active
+        );
+
+        btn.classList.toggle(
+            'bg-white',
+            !active
+        );
+
+        btn.classList.toggle(
+            'text-slate-600',
+            !active
+        );
+
+        btn.classList.toggle(
+            'border-google-border',
+            !active
+        );
     });
 
-    if (shouldApply) applyFilters();
+    if (shouldApply) {
+        ensureCurrentPeriodData();
+    }
 }
 
 function togglePeriodMenu() {
-    document.getElementById('periodMenu').classList.toggle('hidden');
+    document.getElementById('periodMenu')
+        .classList.toggle('hidden');
 }
 
 function handleCustomPeriodChange() {
-    const period = document.getElementById('periodFilter').value;
+    const period =
+        document.getElementById('periodFilter').value;
 
     currentPeriod = period;
 
     document.getElementById('customDateContainer')
-        .classList.toggle('hidden', period !== 'CUSTOM');
+        .classList.toggle(
+            'hidden',
+            period !== 'CUSTOM'
+        );
 
     document.querySelectorAll('.period-btn').forEach(btn => {
         btn.classList.remove(
@@ -169,7 +760,23 @@ function handleCustomPeriodChange() {
         );
     });
 
-    applyFilters();
+    if (period === 'CUSTOM') {
+        const s =
+            document.getElementById('startDate').value;
+
+        const e =
+            document.getElementById('endDate').value;
+
+        if (s && e) {
+            ensureCurrentPeriodData();
+        } else {
+            applyFilters();
+        }
+
+        return;
+    }
+
+    ensureCurrentPeriodData();
 }
 
 function getUniqueOrderGroups(rows) {
@@ -280,8 +887,11 @@ function applyFilters() {
         );
 
     } else if (period === 'CUSTOM') {
-        const s = document.getElementById('startDate').value;
-        const e = document.getElementById('endDate').value;
+        const s =
+            document.getElementById('startDate').value;
+
+        const e =
+            document.getElementById('endDate').value;
 
         if (s) {
             startFilterDate = new Date(
@@ -311,80 +921,88 @@ function applyFilters() {
         }
     });
 
-    filteredTransactions = allTransactions.filter(item => {
-        if (
-            showPKOnly &&
-            !selectedRowIds.has(item._rowId)
-        ) {
-            return false;
-        }
-
-        const itemChannel =
-            String(item.channel || '');
-
-        const itemStatus =
-            String(item.status || 'PENDING');
-
-        const textMatch =
-            !search ||
-            String(item.invoice_no || '')
-                .toLowerCase()
-                .includes(search) ||
-            String(item.order_no || '')
-                .toLowerCase()
-                .includes(search) ||
-            String(item.item_code || '')
-                .toLowerCase()
-                .includes(search) ||
-            String(item.item_name || '')
-                .toLowerCase()
-                .includes(search);
-
-        const channelMatch =
-            channel === 'ALL' ||
-            itemChannel.toLowerCase() ===
-            channel.toLowerCase();
-
-        const statusMatch =
-            status === 'ALL' ||
-            itemStatus.toUpperCase() ===
-            status.toUpperCase();
-
-        let dateMatch = true;
-
-        if (startFilterDate || endFilterDate) {
-            const rowDate = new Date(item.date);
-
+    filteredTransactions =
+        allTransactions.filter(item => {
             if (
-                startFilterDate &&
-                rowDate < startFilterDate
+                showPKOnly &&
+                !selectedRowIds.has(item._rowId)
             ) {
-                dateMatch = false;
+                return false;
             }
 
-            if (
-                endFilterDate &&
-                rowDate > endFilterDate
-            ) {
-                dateMatch = false;
+            const itemChannel =
+                String(item.channel || '');
+
+            const itemStatus =
+                String(item.status || 'PENDING');
+
+            const textMatch =
+                !search ||
+                String(item.invoice_no || '')
+                    .toLowerCase()
+                    .includes(search) ||
+                String(item.order_no || '')
+                    .toLowerCase()
+                    .includes(search) ||
+                String(item.item_code || '')
+                    .toLowerCase()
+                    .includes(search) ||
+                String(item.item_name || '')
+                    .toLowerCase()
+                    .includes(search);
+                String(item.date || '')
+                    .toLowerCase()
+                    .includes(search);
+
+            const channelMatch =
+                channel === 'ALL' ||
+                itemChannel.toLowerCase() ===
+                channel.toLowerCase();
+
+            const statusMatch =
+                status === 'ALL' ||
+                itemStatus.toUpperCase() ===
+                status.toUpperCase();
+
+            let dateMatch = true;
+
+            if (startFilterDate || endFilterDate) {
+                const rowDate =
+                    new Date(item.date);
+
+                if (
+                    startFilterDate &&
+                    rowDate < startFilterDate
+                ) {
+                    dateMatch = false;
+                }
+
+                if (
+                    endFilterDate &&
+                    rowDate > endFilterDate
+                ) {
+                    dateMatch = false;
+                }
             }
-        }
 
-        item._isDuplicate =
-            invoiceCounts[item.invoice_no] > 1 ||
-            orderCounts[item.order_no] > 1;
+            item._isDuplicate =
+                invoiceCounts[item.invoice_no] > 1 ||
+                orderCounts[item.order_no] > 1;
 
-        return (
-            textMatch &&
-            channelMatch &&
-            statusMatch &&
-            dateMatch
-        );
-    });
+            return (
+                textMatch &&
+                channelMatch &&
+                statusMatch &&
+                dateMatch
+            );
+        });
 
     filteredTransactions.sort((a, b) => {
-        let valA = a[currentSortColumn] ?? '';
-        let valB = b[currentSortColumn] ?? '';
+        let valA =
+            a[currentSortColumn] ?? '';
+
+        let valB =
+            b[currentSortColumn] ?? '';
 
         if (
             currentSortColumn === 'sales_amt' ||
@@ -393,8 +1011,11 @@ function applyFilters() {
             valA = Number(valA) || 0;
             valB = Number(valB) || 0;
         } else {
-            valA = String(valA).toLowerCase();
-            valB = String(valB).toLowerCase();
+            valA =
+                String(valA).toLowerCase();
+
+            valB =
+                String(valB).toLowerCase();
         }
 
         if (valA < valB) {
@@ -411,7 +1032,9 @@ function applyFilters() {
     updateSortIcons();
 
     filteredOrderGroups =
-        getUniqueOrderGroups(filteredTransactions);
+        getUniqueOrderGroups(
+            filteredTransactions
+        );
 
     displayLimit = 25;
 
@@ -439,7 +1062,9 @@ function updateSortIcons() {
         'sales_amt'
     ].forEach(col => {
         const el =
-            document.getElementById(`sort_${col}`);
+            document.getElementById(
+                `sort_${col}`
+            );
 
         if (!el) return;
 
@@ -493,7 +1118,9 @@ function renderTable() {
     } else {
         pageData.forEach(row => {
             const isSelected =
-                selectedRowIds.has(row._rowId);
+                selectedRowIds.has(
+                    row._rowId
+                );
 
             const isDup =
                 row._isDuplicate;
@@ -517,12 +1144,16 @@ function renderTable() {
             }
 
             const currentStatus =
-                pendingStatusChanges[row._rowId] ||
+                pendingStatusChanges[
+                    row._rowId
+                ] ||
                 row.status ||
                 'PENDING';
 
             const orderNo =
-                String(row.order_no || '-');
+                String(
+                    row.order_no || '-'
+                );
 
             const orderPrefix =
                 orderNo.length > 3
@@ -706,7 +1337,9 @@ function handleStatusChange(rowId, newStatus) {
 
 function updatePendingChangesCount() {
     const count =
-        Object.keys(pendingStatusChanges).length;
+        Object.keys(
+            pendingStatusChanges
+        ).length;
 
     document.getElementById(
         'pendingChangesCount'
@@ -719,7 +1352,9 @@ function updatePendingChangesCount() {
 
 async function submitChanges() {
     const count =
-        Object.keys(pendingStatusChanges).length;
+        Object.keys(
+            pendingStatusChanges
+        ).length;
 
     if (count === 0) return;
 
@@ -729,7 +1364,9 @@ async function submitChanges() {
 
     try {
         const updatePromises =
-            Object.keys(pendingStatusChanges)
+            Object.keys(
+                pendingStatusChanges
+            )
                 .map(rowId => {
                     const item =
                         allTransactions.find(
@@ -786,9 +1423,8 @@ async function submitChanges() {
 
         pendingStatusChanges = {};
 
-        localStorage.setItem(
-            'uerp_orders_cache',
-            JSON.stringify(allTransactions)
+        await saveTransactionsToCache(
+            allTransactions
         );
 
         updateStatus(
@@ -818,7 +1454,9 @@ async function submitChanges() {
 
 function setupInfiniteScroll() {
     const grid =
-        document.querySelector('.transactions-grid');
+        document.querySelector(
+            '.transactions-grid'
+        );
 
     if (!grid) return;
 
