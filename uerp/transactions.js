@@ -309,6 +309,26 @@ function getCurrentPeriodRange() {
             59
         );
 
+    } else if (currentPeriod === 'DAY_BEFORE_YESTERDAY') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 2
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 2,
+            23,
+            59,
+            59
+        );
+
+
+
+
+
     } else if (currentPeriod === 'THIS_WEEK') {
         const day = now.getDay() || 7;
 
@@ -885,34 +905,56 @@ function applyFilters() {
             now.getMonth(),
             now.getDate()
         );
+} else if (period === 'YESTERDAY') {
+    startFilterDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() - 1
+    );
 
-    } else if (period === 'YESTERDAY') {
-        startFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() - 1
-        );
+    endFilterDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() - 1,
+        23,
+        59,
+        59
+    );
 
-        endFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() - 1,
-            23,
-            59,
-            59
-        );
+} else if (period === 'DAY_BEFORE_YESTERDAY') {
+    startFilterDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() - 2
+    );
 
-    } else if (period === 'THIS_WEEK') {
-        const day = now.getDay() || 7;
+    endFilterDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() - 2,
+        23,
+        59,
+        59
+    );
 
-        startFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() - day + 1
-        );
+} else if (period === 'THIS_WEEK') {
+    startFilterDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() - 6
+    );
 
-    } else if (period === 'THIS_MONTH') {
-        startFilterDate = new Date(
+    endFilterDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        23,
+        59,
+        59
+    );
+
+} else if (period === 'THIS_MONTH') {
+            startFilterDate = new Date(
             now.getFullYear(),
             now.getMonth(),
             1
