@@ -1157,3 +1157,27 @@ function resetForm() {
         renderCart();
     }
 }
+
+async function refreshProductCache() {
+    const refreshIcon = document.getElementById('refreshIcon');
+    
+    // เริ่มหมุนไอคอน
+    if (refreshIcon) refreshIcon.classList.add('fa-spin');
+
+    try {
+        if (typeof fetchAllBatches === 'function') {
+            cachedProducts = await fetchAllBatches(
+                '/products?select=item_code,name,pricec,pricea,priceb,priced,pricel,promotion_price'
+            );
+            alert(`อัปเดตข้อมูลสำเร็จ! ปัจจุบันมีสินค้าในระบบ ${cachedProducts.length.toLocaleString()} รายการ`);
+        } else {
+            console.warn('fetchAllBatches function is not defined.');
+        }
+    } catch (err) {
+        console.error('Refresh Cache Error:', err);
+        alert('เกิดข้อผิดพลาดในการดึงข้อมูลสินค้าใหม่ กรุณาลองใหม่อีกครั้ง');
+    } finally {
+        // หยุดหมุนไอคอน
+        if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+    }
+}
