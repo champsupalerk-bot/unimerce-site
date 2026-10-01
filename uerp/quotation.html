@@ -163,23 +163,35 @@
                 <i class="fa-solid fa-boxes-stacked text-blue-500"></i>
                 รายการสินค้า (Items Selection)
             </h2>
-            <!-- Product Search Box -->
+            <!-- Product Search Box & Reload Cache Button -->
             <div class="relative mb-5">
-                <div class="relative">
-                    <input
-                        type="text"
-                        id="prodSearchInput"
-                        oninput="searchProducts(this.value)"
-                        placeholder="พิมพ์รหัสสินค้า (Item_Code) หรือ รายละเอียด (Description)..."
-                        class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                    <i class="fa-solid fa-barcode absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+                <div class="flex gap-2">
+                    <div class="relative flex-1">
+                        <input
+                            type="text"
+                            id="prodSearchInput"
+                            oninput="searchProducts(this.value)"
+                            placeholder="พิมพ์รหัสสินค้า (Item_Code) หรือ รายละเอียด (Description)..."
+                            class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <i class="fa-solid fa-barcode absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+                    </div>
+                    <!-- ปุ่ม Reload Cache -->
+                    <button 
+                        type="button" 
+                        onclick="refreshProductCache()" 
+                        class="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 active:bg-slate-100 transition-colors shadow-sm whitespace-nowrap"
+                        title="ดึงข้อมูลสินค้าใหม่ล่าสุดจากระบบ">
+                        <i id="refreshIcon" class="fa-solid fa-rotate text-slate-500"></i>
+                        <span>อัปเดตข้อมูล</span>
+                    </button>
                 </div>
-                <!-- Dropdown Product Results -->
-                <div
-                    id="prodDropdown"
-                    class="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden">
-                </div>
-            </div>
+    <!-- Dropdown Product Results -->
+    <div
+        id="prodDropdown"
+        class="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden">
+    </div>
+</div>
+
             <!-- Cart Table -->
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
