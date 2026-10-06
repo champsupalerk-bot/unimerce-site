@@ -22,6 +22,7 @@ const INITIAL_CACHE_DAYS = 60;
 const FETCH_BATCH_SIZE = 1000;
 
 document.addEventListener('DOMContentLoaded', () => {
+    currentPeriod = 'ALL';
     setPeriod('TODAY', false);
     loadHeader();
     fetchTransactions();
@@ -1584,4 +1585,3 @@ function setupInfiniteScroll() {
         }
     });
 }
-    
