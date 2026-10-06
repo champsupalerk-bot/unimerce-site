@@ -1,25 +1,42 @@
-const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+// ============================================================
+// UNIMERCE - Transactions / Order Management
+// File: /uerp/transactions.js
+// ============================================================
+
+const SUPABASE_URL = 'https://YOUR_SUPABASE_URL.supabase.co';
+const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
 let allTransactions = [];
 let filteredTransactions = [];
 let filteredOrderGroups = [];
 let selectedRowIds = new Set();
 let pendingStatusChanges = {};
+
 let currentSortColumn = 'date';
-let currentSortAsc = false;
+let currentSortDirection = 'desc';
+
 let currentPeriod = 'TODAY';
-let displayLimit = 25;
-const limitStep = 25;
+let customStartDate = '';
+let customEndDate = '';
+
+let displayLimit = 100;
 
 const TRANSACTION_CACHE_DB = 'uerp_transactions_cache_db';
-const TRANSACTION_CACHE_STORE = 'transactions';
-const TRANSACTION_CACHE_META = 'meta';
 const TRANSACTION_CACHE_VERSION = 1;
-const TRANSACTION_CACHE_TTL = 24 * 3600 * 1000;
+const TRANSACTION_CACHE_STORE = 'transactions';
+const TRANSACTION_META_STORE = 'meta';
+const TRANSACTION_CACHE_TTL = 24 * 60 * 60 * 1000;
 const INITIAL_CACHE_DAYS = 60;
 const FETCH_BATCH_SIZE = 1000;
+
+// ============================================================
+// INITIALIZE
+// ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
     setPeriod('TODAY', false);
@@ -28,56 +45,77 @@ document.addEventListener('DOMContentLoaded', () => {
     setupInfiniteScroll();
 });
 
+// ============================================================
+// HEADER
+// ============================================================
+
 async function loadHeader() {
+    const header = document.getElementById('uerpHeader');
+    if (!header) return;
+
     try {
-        const res = await fetch('uerpheader.html');
-        if (!res.ok) throw new Error('Header file not found');
-        const html = await res.text();
-        const headerContainer = document.getElementById('headerContainer');
-        headerContainer.innerHTML = html;
-        const txTab = headerContainer.querySelector('[data-page="transactions"]');
-        if (txTab) txTab.classList.add('chrome-tab-active');
-        if (typeof window.initUerpLayout === 'function') {
-            window.__uerpLayoutInitialized = false;
-            window.initUerpLayout();
+        const response = await fetch('uerpheader.html');
+        if (response.ok) {
+            header.innerHTML = await response.text();
         }
     } catch (err) {
-        console.warn('Header load error:', err);
+        console.error('Header Load Error:', err);
     }
 }
 
-function formatDateFormatted(dateStr, isMobile = false) {
-    if (!dateStr) return '-';
-    const d = new Date(dateStr);
+// ============================================================
+// BASIC HELPERS
+// ============================================================
 
-    if (isNaN(d.getTime())) {
-        const raw = String(dateStr).substring(0, 10);
-        return isMobile ? raw.substring(2) : raw;
-    }
-
-    const iso = d.toISOString().split('T')[0];
-    return isMobile ? iso.substring(2) : iso;
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }
 
-function formatMoney(val) {
-    return '฿' + parseFloat(val || 0).toLocaleString('th-TH', {
+function formatMoney(value) {
+    const number = Number(value) || 0;
+    return number.toLocaleString('th-TH', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
 }
 
-function updateStatus(msg, isError = false) {
-    const statusIndicator = document.getElementById('statusIndicator');
-    const statusText = document.getElementById('statusText');
+function formatDate(value) {
+    if (!value) return '-';
 
-    statusIndicator.classList.remove('hidden');
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return String(value);
+    }
 
-    statusIndicator.className = isError
-        ? "p-2 bg-red-50 rounded-lg border border-red-200 text-xs text-google-red"
-        : "p-2 bg-blue-50 rounded-lg border border-blue-100 text-xs text-google-blue";
-
-    statusText.innerText = msg;
+    return date.toLocaleDateString('th-TH');
 }
+
+function normalizeText(value) {
+    return String(value ?? '').trim().toLowerCase();
+}
+
+function getRowId(row, index = 0) {
+    if (row._rowId) return row._rowId;
+    if (row.id !== undefined && row.id !== null) {
+        return String(row.id);
+    }
+
+    return [
+        row.date || '',
+        row.invoice_no || '',
+        row.item_code || '',
+        index
+    ].join('|');
+}
+
+// ============================================================
+// INDEXED DB
+// ============================================================
 
 function openTransactionCacheDB() {
     return new Promise((resolve, reject) => {
@@ -86,7 +124,7 @@ function openTransactionCacheDB() {
             TRANSACTION_CACHE_VERSION
         );
 
-        request.onupgradeneeded = (event) => {
+        request.onupgradeneeded = event => {
             const db = event.target.result;
 
             if (!db.objectStoreNames.contains(TRANSACTION_CACHE_STORE)) {
@@ -96,135 +134,53 @@ function openTransactionCacheDB() {
                 );
             }
 
-            if (!db.objectStoreNames.contains(TRANSACTION_CACHE_META)) {
+            if (!db.objectStoreNames.contains(TRANSACTION_META_STORE)) {
                 db.createObjectStore(
-                    TRANSACTION_CACHE_META,
+                    TRANSACTION_META_STORE,
                     { keyPath: 'key' }
                 );
             }
         };
 
-        request.onsuccess = () => {
-            resolve(request.result);
-        };
-
-        request.onerror = () => {
-            reject(request.error);
-        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
     });
 }
 
-async function clearTransactionCache() {
+async function getCachedTransactions() {
     const db = await openTransactionCacheDB();
 
-    await new Promise((resolve, reject) => {
-        const tx = db.transaction(
-            [
-                TRANSACTION_CACHE_STORE,
-                TRANSACTION_CACHE_META
-            ],
-            'readwrite'
-        );
-
-        tx.objectStore(TRANSACTION_CACHE_STORE).clear();
-        tx.objectStore(TRANSACTION_CACHE_META).clear();
-
-        tx.oncomplete = resolve;
-        tx.onerror = () => reject(tx.error);
-    });
-
-    db.close();
-}
-
-async function getTransactionCacheMeta() {
-    const db = await openTransactionCacheDB();
-
-    const meta = await new Promise((resolve, reject) => {
-        const tx = db.transaction(
-            TRANSACTION_CACHE_META,
-            'readonly'
-        );
-
-        const request =
-            tx.objectStore(TRANSACTION_CACHE_META)
-                .get('cache_info');
-
-        request.onsuccess = () => {
-            resolve(request.result || null);
-        };
-
-        request.onerror = () => {
-            reject(request.error);
-        };
-    });
-
-    db.close();
-
-    return meta;
-}
-
-async function saveTransactionCacheMeta(meta) {
-    const db = await openTransactionCacheDB();
-
-    await new Promise((resolve, reject) => {
-        const tx = db.transaction(
-            TRANSACTION_CACHE_META,
-            'readwrite'
-        );
-
-        tx.objectStore(TRANSACTION_CACHE_META)
-            .put({
-                key: 'cache_info',
-                ...meta
-            });
-
-        tx.oncomplete = resolve;
-        tx.onerror = () => reject(tx.error);
-    });
-
-    db.close();
-}
-
-async function getAllCachedTransactions() {
-    const db = await openTransactionCacheDB();
-
-    const rows = await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const tx = db.transaction(
             TRANSACTION_CACHE_STORE,
             'readonly'
         );
 
-        const request =
-            tx.objectStore(TRANSACTION_CACHE_STORE)
-                .getAll();
+        const store = tx.objectStore(
+            TRANSACTION_CACHE_STORE
+        );
 
-        request.onsuccess = () => {
-            resolve(request.result || []);
-        };
+        const request = store.getAll();
 
-        request.onerror = () => {
-            reject(request.error);
-        };
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
     });
-
-    db.close();
-
-    return rows;
 }
 
 async function saveTransactionsToCache(rows) {
-    if (!rows || rows.length === 0) return;
+    if (!Array.isArray(rows) || rows.length === 0) return;
 
     const db = await openTransactionCacheDB();
 
-    await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const tx = db.transaction(
             TRANSACTION_CACHE_STORE,
             'readwrite'
         );
 
-        const store =
-            tx.objectStore(TRANSACTION_CACHE_STORE);
+        const store = tx.objectStore(
+            TRANSACTION_CACHE_STORE
+        );
 
         rows.forEach(row => {
             store.put(row);
@@ -233,626 +189,287 @@ async function saveTransactionsToCache(rows) {
         tx.oncomplete = resolve;
         tx.onerror = () => reject(tx.error);
     });
-
-    db.close();
 }
 
-function getDateOnly(date) {
-    const d = new Date(date);
+async function clearTransactionCache() {
+    const db = await openTransactionCacheDB();
 
-    return [
-        d.getFullYear(),
-        String(d.getMonth() + 1).padStart(2, '0'),
-        String(d.getDate()).padStart(2, '0')
-    ].join('-');
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(
+            TRANSACTION_CACHE_STORE,
+            'readwrite'
+        );
+
+        tx.objectStore(
+            TRANSACTION_CACHE_STORE
+        ).clear();
+
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+    });
 }
 
-function getInitialCacheRange() {
+// ============================================================
+// DATE RANGE
+// ============================================================
+
+function getDateString(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+
+    return `${y}-${m}-${d}`;
+}
+
+function getPeriodRange(period) {
     const now = new Date();
 
-    const endDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        23,
-        59,
-        59
-    );
+    now.setHours(0, 0, 0, 0);
 
-    const startDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - INITIAL_CACHE_DAYS + 1
-    );
+    let start = new Date(now);
+    let end = new Date(now);
 
-    return {
-        start: startDate,
-        end: endDate
-    };
-}
-
-function getCurrentPeriodRange() {
-    const now = new Date();
-
-    let startFilterDate = null;
-    let endFilterDate = null;
-
-    if (currentPeriod === 'TODAY') {
-        startFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate()
-        );
-
-        endFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            23,
-            59,
-            59
-        );
-
-    } else if (currentPeriod === 'YESTERDAY') {
-        startFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() - 1
-        );
-
-        endFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() - 1,
-            23,
-            59,
-            59
-        );
-
-    } else if (currentPeriod === 'DAY_BEFORE_YESTERDAY') {
-        startFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() - 2
-        );
-
-        endFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() - 2,
-            23,
-            59,
-            59
-        );
-
-
-
-
-
-    } else if (currentPeriod === 'THIS_WEEK') {
-        const day = now.getDay() || 7;
-
-        startFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() - day + 1
-        );
-
-        endFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            23,
-            59,
-            59
-        );
-
-    } else if (currentPeriod === 'THIS_MONTH') {
-        startFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            1
-        );
-
-        endFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            23,
-            59,
-            59
-        );
-
-    } else if (currentPeriod === 'LAST_MONTH') {
-        startFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth() - 1,
-            1
-        );
-
-        endFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            0,
-            23,
-            59,
-            59
-        );
-
-    } else if (currentPeriod === 'THIS_YEAR') {
-        startFilterDate = new Date(
-            now.getFullYear(),
-            0,
-            1
-        );
-
-        endFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            23,
-            59,
-            59
-        );
-
-    } else if (currentPeriod === 'CUSTOM') {
-        const s = document.getElementById('startDate').value;
-        const e = document.getElementById('endDate').value;
-
-        if (s) {
-            startFilterDate = new Date(
-                s + 'T00:00:00'
-            );
+    if (period === 'TODAY') {
+        // already today
+    } else if (period === 'YESTERDAY') {
+        start.setDate(start.getDate() - 1);
+        end.setDate(end.getDate() - 1);
+    } else if (period === '7DAYS') {
+        start.setDate(start.getDate() - 6);
+    } else if (period === '30DAYS') {
+        start.setDate(start.getDate() - 29);
+    } else if (period === 'CUSTOM') {
+        if (customStartDate) {
+            start = new Date(`${customStartDate}T00:00:00`);
         }
 
-        if (e) {
-            endFilterDate = new Date(
-                e + 'T23:59:59'
-            );
+        if (customEndDate) {
+            end = new Date(`${customEndDate}T00:00:00`);
         }
     }
 
+    end.setHours(23, 59, 59, 999);
+
     return {
-        start: startFilterDate,
-        end: endFilterDate
+        start: getDateString(start),
+        end: getDateString(end)
     };
 }
 
-function getMissingDateRanges(cachedMeta, requestedStart, requestedEnd) {
-    if (!requestedStart || !requestedEnd) {
-        return [];
-    }
+// ============================================================
+// FETCH TRANSACTIONS
+// ============================================================
 
-    if (
-        !cachedMeta ||
-        !cachedMeta.coveredStart ||
-        !cachedMeta.coveredEnd
-    ) {
-        return [
-            {
-                start: requestedStart,
-                end: requestedEnd
-            }
-        ];
-    }
-
-    const cachedStart =
-        new Date(cachedMeta.coveredStart);
-
-    const cachedEnd =
-        new Date(cachedMeta.coveredEnd);
-
-    const ranges = [];
-
-    if (requestedStart < cachedStart) {
-        const end =
-            new Date(cachedStart.getTime() - 1000);
-
-        ranges.push({
-            start: requestedStart,
-            end: end
-        });
-    }
-
-    if (requestedEnd > cachedEnd) {
-        const start =
-            new Date(cachedEnd.getTime() + 1000);
-
-        ranges.push({
-            start: start,
-            end: requestedEnd
-        });
-    }
-
-    return ranges;
-}
-
-async function fetchTransactionRange(startDate, endDate) {
-    if (!startDate || !endDate) return [];
-
-    const allRows = [];
-    let from = 0;
+async function fetchTransactionsFromSupabase(startDate, endDate) {
+    let allRows = [];
+    let offset = 0;
 
     while (true) {
-        const to = from + FETCH_BATCH_SIZE - 1;
-
         const { data, error } = await supabaseClient
             .from('transactions')
             .select('*')
-            .gte('date', startDate.toISOString())
-            .lte('date', endDate.toISOString())
-            .order('date', { ascending: false })
-            .range(from, to);
+            .gte('date', startDate)
+            .lte('date', endDate)
+            .range(
+                offset,
+                offset + FETCH_BATCH_SIZE - 1
+            );
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
 
-        const rows = data || [];
-
-        allRows.push(...rows);
-
-        if (rows.length < FETCH_BATCH_SIZE) {
+        if (!data || data.length === 0) {
             break;
         }
 
-        from += FETCH_BATCH_SIZE;
+        allRows = allRows.concat(data);
+
+        if (data.length < FETCH_BATCH_SIZE) {
+            break;
+        }
+
+        offset += FETCH_BATCH_SIZE;
     }
 
-    return allRows.map((row, idx) => ({
+    return allRows;
+}
+
+async function loadTransactionsForRange(startDate, endDate) {
+    const rows = await fetchTransactionsFromSupabase(
+        startDate,
+        endDate
+    );
+
+    const prepared = rows.map((row, index) => ({
         ...row,
-        _rowId:
-            row.id ||
-            `row_${row.date}_${row.invoice_no || ''}_${row.item_code || ''}_${idx}`
+        _rowId: getRowId(row, index)
     }));
+
+    await saveTransactionsToCache(prepared);
+
+    return prepared;
 }
 
 async function loadTwoYearsData() {
+    const now = new Date();
+
+    const endDate = getDateString(now);
+
+    const start = new Date(now);
+    start.setFullYear(start.getFullYear() - 2);
+
+    const startDate = getDateString(start);
+
+    return loadTransactionsForRange(
+        startDate,
+        endDate
+    );
+}
+
+async function fetchTransactions() {
     try {
-        const now = new Date();
+        const cached = await getCachedTransactions();
 
-        // ตั้งแต่วันที่ 1 มกราคมของปีก่อน
-        // จนถึงวันนี้
-        const startDate = new Date(
-            now.getFullYear() - 1,
-            0,
-            1
-        );
+        if (cached.length > 0) {
+            allTransactions = cached.map((row, index) => ({
+                ...row,
+                _rowId: row._rowId || getRowId(row, index)
+            }));
 
-        const endDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            23,
-            59,
-            59,
-            999
-        );
+            applyFilters();
 
-        updateStatus('กำลังโหลดข้อมูลย้อนหลัง 2 ปี...');
-
-        await loadTransactionsForRange(
-            startDate,
-            endDate,
-            false
-        );
-
-        // โหลดข้อมูลจาก Cache กลับเข้า allTransactions
-        allTransactions = await getAllCachedTransactions();
-
-        applyFilters();
-
-        setTimeout(() => {
-            document.getElementById('statusIndicator')
-                .classList.add('hidden');
-        }, 2000);
-
-    } catch (error) {
-        console.error('Error loading 2 years data:', error);
-        updateStatus('เกิดข้อผิดพลาดในการโหลดข้อมูลย้อนหลัง 2 ปี');
-
-        setTimeout(() => {
-            updateStatus('');
-        }, 5000);
-    }
-}
-
-async function loadTransactionsForRange(
-    requestedStart,
-    requestedEnd,
-    isManualRefresh = false
-) {
-    const nowTime = new Date().getTime();
-
-    if (isManualRefresh) {
-        await clearTransactionCache();
-    }
-
-    let cachedMeta =
-        await getTransactionCacheMeta();
-
-    if (
-        cachedMeta &&
-        cachedMeta.updatedAt &&
-        nowTime - Number(cachedMeta.updatedAt) >=
-        TRANSACTION_CACHE_TTL
-    ) {
-        await clearTransactionCache();
-        cachedMeta = null;
-    }
-
-    let missingRanges =
-        getMissingDateRanges(
-            cachedMeta,
-            requestedStart,
-            requestedEnd
-        );
-
-    if (!cachedMeta) {
-        missingRanges = [
-            {
-                start: requestedStart,
-                end: requestedEnd
-            }
-        ];
-    }
-
-    if (missingRanges.length > 0) {
-        updateStatus('กำลังโหลดข้อมูล...');
-
-        for (const range of missingRanges) {
-            const rows =
-                await fetchTransactionRange(
-                    range.start,
-                    range.end
-                );
-
-            await saveTransactionsToCache(rows);
-        }
-
-        const existingMeta =
-            await getTransactionCacheMeta();
-
-        let coveredStart =
-            existingMeta?.coveredStart
-                ? new Date(existingMeta.coveredStart)
-                : requestedStart;
-
-        let coveredEnd =
-            existingMeta?.coveredEnd
-                ? new Date(existingMeta.coveredEnd)
-                : requestedEnd;
-
-        if (requestedStart < coveredStart) {
-            coveredStart = requestedStart;
-        }
-
-        if (requestedEnd > coveredEnd) {
-            coveredEnd = requestedEnd;
-        }
-
-        await saveTransactionCacheMeta({
-            updatedAt: nowTime,
-            coveredStart: coveredStart.toISOString(),
-            coveredEnd: coveredEnd.toISOString()
-        });
-    }
-
-    allTransactions =
-        await getAllCachedTransactions();
-
-    document.getElementById('statusIndicator')
-        .classList.add('hidden');
-
-    applyFilters();
-}
-
-function forceRefreshData() {
-    fetchTransactions(true);
-}
-
-async function fetchTransactions(isManualRefresh = false) {
-    try {
-        let requestedRange;
-
-        if (isManualRefresh) {
-            requestedRange =
-                getCurrentPeriodRange();
-
-            if (
-                !requestedRange.start ||
-                !requestedRange.end
-            ) {
-                requestedRange =
-                    getInitialCacheRange();
-            }
-
+            ensureCurrentPeriodData();
         } else {
-            requestedRange =
-                getInitialCacheRange();
+            allTransactions = await loadTwoYearsData();
+            applyFilters();
         }
-
-        await loadTransactionsForRange(
-            requestedRange.start,
-            requestedRange.end,
-            isManualRefresh
-        );
-
     } catch (err) {
-        console.error("Supabase Query Error:", err);
-        updateStatus(
-            `เกิดข้อผิดพลาด: ${err.message}`,
-            true
-        );
+        console.error('Fetch Transactions Error:', err);
+        alert('ไม่สามารถโหลดข้อมูลรายการได้');
     }
 }
 
 async function ensureCurrentPeriodData() {
-    const requestedRange =
-        getCurrentPeriodRange();
-
-    if (
-        !requestedRange.start ||
-        !requestedRange.end
-    ) {
-        return;
-    }
-
     try {
-        const cachedMeta =
-            await getTransactionCacheMeta();
+        const range = getPeriodRange(currentPeriod);
 
-        const nowTime =
-            new Date().getTime();
+        const freshRows = await fetchTransactionsFromSupabase(
+            range.start,
+            range.end
+        );
 
-        if (
-            cachedMeta &&
-            cachedMeta.updatedAt &&
-            nowTime - Number(cachedMeta.updatedAt) >=
-            TRANSACTION_CACHE_TTL
-        ) {
-            await loadTransactionsForRange(
-                requestedRange.start,
-                requestedRange.end,
-                false
-            );
-            return;
-        }
+        const prepared = freshRows.map((row, index) => ({
+            ...row,
+            _rowId: getRowId(row, index)
+        }));
 
-        const missingRanges =
-            getMissingDateRanges(
-                cachedMeta,
-                requestedRange.start,
-                requestedRange.end
-            );
+        const map = new Map(
+            allTransactions.map(row => [
+                row._rowId,
+                row
+            ])
+        );
 
-        if (missingRanges.length > 0) {
-            await loadTransactionsForRange(
-                requestedRange.start,
-                requestedRange.end,
-                false
-            );
-        } else {
-            allTransactions =
-                await getAllCachedTransactions();
+        prepared.forEach(row => {
+            map.set(row._rowId, row);
+        });
 
-            applyFilters();
-        }
+        allTransactions = Array.from(map.values());
 
+        await saveTransactionsToCache(prepared);
+
+        applyFilters();
     } catch (err) {
-        console.error(
-            "Period Load Error:",
-            err
-        );
-
-        updateStatus(
-            `เกิดข้อผิดพลาด: ${err.message}`,
-            true
-        );
+        console.error('Current Period Refresh Error:', err);
     }
 }
 
-function setPeriod(period, shouldApply = true) {
-    // กด period เดิมซ้ำ = ปิด date filter
-    if (currentPeriod === period) {
-        currentPeriod = 'ALL';
-    } else {
-        currentPeriod = period;
-    }
+async function forceRefreshData() {
+    try {
+        await clearTransactionCache();
 
-    document.getElementById('customDateContainer')
-        .classList.toggle(
-            'hidden',
-            currentPeriod !== 'CUSTOM'
-        );
+        allTransactions = [];
+        filteredTransactions = [];
+
+        await loadTwoYearsData();
+
+        const cached = await getCachedTransactions();
+
+        allTransactions = cached.map((row, index) => ({
+            ...row,
+            _rowId: row._rowId || getRowId(row, index)
+        }));
+
+        applyFilters();
+    } catch (err) {
+        console.error('Force Refresh Error:', err);
+        alert('ไม่สามารถ Refresh ข้อมูลได้');
+    }
+}
+
+// ============================================================
+// PERIOD
+// ============================================================
+
+function setPeriod(period, refresh = true) {
+    currentPeriod = period;
 
     document.querySelectorAll('.period-btn').forEach(btn => {
-        const active =
-            btn.dataset.period === currentPeriod;
-
         btn.classList.toggle(
-            'bg-google-blue',
-            active
-        );
-
-        btn.classList.toggle(
-            'text-white',
-            active
-        );
-
-        btn.classList.toggle(
-            'border-google-blue',
-            active
-        );
-
-        btn.classList.toggle(
-            'bg-white',
-            !active
-        );
-
-        btn.classList.toggle(
-            'text-slate-600',
-            !active
-        );
-
-        btn.classList.toggle(
-            'border-google-border',
-            !active
+            'active',
+            btn.dataset.period === period
         );
     });
 
-    if (shouldApply) {
+    if (refresh) {
+        applyFilters();
         ensureCurrentPeriodData();
     }
 }
 
-function togglePeriodMenu() {
-    document.getElementById('periodMenu')
-        .classList.toggle('hidden');
+function toggleCustomPeriodMenu() {
+    const menu = document.getElementById(
+        'customPeriodMenu'
+    );
+
+    if (menu) {
+        menu.classList.toggle('hidden');
+    }
 }
 
-function handleCustomPeriodChange() {
-    const period =
-        document.getElementById('periodFilter').value;
+function applyCustomPeriod() {
+    customStartDate =
+        document.getElementById('customStartDate')?.value || '';
 
-    currentPeriod = period;
+    customEndDate =
+        document.getElementById('customEndDate')?.value || '';
 
-    document.getElementById('customDateContainer')
-        .classList.toggle(
-            'hidden',
-            period !== 'CUSTOM'
-        );
-
-    document.querySelectorAll('.period-btn').forEach(btn => {
-        btn.classList.remove(
-            'bg-google-blue',
-            'text-white',
-            'border-google-blue'
-        );
-
-        btn.classList.add(
-            'bg-white',
-            'text-slate-600',
-            'border-google-border'
-        );
-    });
-
-    if (period === 'CUSTOM') {
-        const s =
-            document.getElementById('startDate').value;
-
-        const e =
-            document.getElementById('endDate').value;
-
-        if (s && e) {
-            ensureCurrentPeriodData();
-        } else {
-            applyFilters();
-        }
-
+    if (!customStartDate || !customEndDate) {
+        alert('กรุณาเลือกวันที่เริ่มต้นและวันที่สิ้นสุด');
         return;
     }
 
+    currentPeriod = 'CUSTOM';
+
+    document.querySelectorAll('.period-btn').forEach(btn => {
+        btn.classList.toggle(
+            'active',
+            btn.dataset.period === 'CUSTOM'
+        );
+    });
+
+    document.getElementById(
+        'customPeriodMenu'
+    )?.classList.add('hidden');
+
+    applyFilters();
     ensureCurrentPeriodData();
 }
+
+// ============================================================
+// ORDER GROUP
+// ============================================================
 
 function getUniqueOrderGroups(rows) {
     const groups = new Map();
@@ -871,327 +488,192 @@ function getUniqueOrderGroups(rows) {
         groups.get(orderNo).push(row);
     });
 
-    return Array.from(groups.entries()).map(([orderNo, items]) => ({
-        orderNo,
-        items
-    }));
+    return Array.from(groups.entries()).map(
+        ([orderNo, items]) => ({
+            orderNo,
+            items
+        })
+    );
 }
+
+// ============================================================
+// FILTER
+// ============================================================
 
 function applyFilters() {
     const search =
-        document.getElementById('searchInput').value
-            .toLowerCase()
-            .trim();
+        normalizeText(
+            document.getElementById('searchInput')?.value
+        );
 
     const channel =
-        document.getElementById('channelFilter').value;
+        document.getElementById('channelFilter')?.value || '';
 
     const status =
-        document.getElementById('statusFilter').value;
-
-    const period = currentPeriod;
+        document.getElementById('statusFilter')?.value || '';
 
     const showPKOnly =
-        document.getElementById('showPKToggle').checked;
+        document.getElementById('showPKToggle')?.checked || false;
 
-    const now = new Date();
+    const range = getPeriodRange(currentPeriod);
 
-    let startFilterDate = null;
-    let endFilterDate = null;
-
-    if (period === 'TODAY') {
-        startFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate()
-        );
-} else if (period === 'YESTERDAY') {
-    startFilterDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - 1
-    );
-
-    endFilterDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - 1,
-        23,
-        59,
-        59
-    );
-
-} else if (period === 'DAY_BEFORE_YESTERDAY') {
-    startFilterDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - 2
-    );
-
-    endFilterDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - 2,
-        23,
-        59,
-        59
-    );
-
-} else if (period === 'THIS_WEEK') {
-    startFilterDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - 6
-    );
-
-    endFilterDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        23,
-        59,
-        59
-    );
-
-} else if (period === 'THIS_MONTH') {
-            startFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            1
-        );
-
-    } else if (period === 'LAST_MONTH') {
-        startFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth() - 1,
-            1
-        );
-
-        endFilterDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            0,
-            23,
-            59,
-            59
-        );
-
-    } else if (period === 'THIS_YEAR') {
-        startFilterDate = new Date(
-            now.getFullYear(),
-            0,
-            1
-        );
-
-    } else if (period === 'CUSTOM') {
-        const s =
-            document.getElementById('startDate').value;
-
-        const e =
-            document.getElementById('endDate').value;
-
-        if (s) {
-            startFilterDate = new Date(
-                s + 'T00:00:00'
-            );
-        }
-
-        if (e) {
-            endFilterDate = new Date(
-                e + 'T23:59:59'
-            );
-        }
-    }
-
-    const invoiceCounts = {};
-    const orderCounts = {};
-
-    allTransactions.forEach(item => {
-        if (item.invoice_no) {
-            invoiceCounts[item.invoice_no] =
-                (invoiceCounts[item.invoice_no] || 0) + 1;
-        }
-
-        if (item.order_no) {
-            orderCounts[item.order_no] =
-                (orderCounts[item.order_no] || 0) + 1;
-        }
-    });
-
-    filteredTransactions =
-        allTransactions.filter(item => {
-            if (
-                showPKOnly &&
-                !selectedRowIds.has(item._rowId)
-            ) {
-                return false;
-            }
-
-            const itemChannel =
-                String(item.channel || '');
-
-            const itemStatus =
-                String(item.status || 'PENDING');
-
-            const textMatch =
-                !search ||
-                String(item.invoice_no || '')
-                    .toLowerCase()
-                    .includes(search) ||
-                String(item.order_no || '')
-                    .toLowerCase()
-                    .includes(search) ||
-                String(item.item_code || '')
-                    .toLowerCase()
-                    .includes(search) ||
-                String(item.item_name || '')
-                    .toLowerCase()
-                    .includes(search) ||
-                String(formatDateFormatted(item.date, false) || '')
-                    .toLowerCase()
-                    .includes(search);
-
-            const channelMatch =
-                channel === 'ALL' ||
-                itemChannel.toLowerCase() ===
-                channel.toLowerCase();
-
-            const statusMatch =
-                status === 'ALL' ||
-                itemStatus.toUpperCase() ===
-                status.toUpperCase();
-
-            let dateMatch = true;
-
-            if (startFilterDate || endFilterDate) {
-                const rowDate =
-                    new Date(item.date);
-
-                if (
-                    startFilterDate &&
-                    rowDate < startFilterDate
-                ) {
-                    dateMatch = false;
-                }
-
-                if (
-                    endFilterDate &&
-                    rowDate > endFilterDate
-                ) {
-                    dateMatch = false;
-                }
-            }
-
-            item._isDuplicate =
-                invoiceCounts[item.invoice_no] > 1 ||
-                orderCounts[item.order_no] > 1;
-
-            return (
-                textMatch &&
-                channelMatch &&
-                statusMatch &&
-                dateMatch
-            );
-        });
-
-    filteredTransactions.sort((a, b) => {
-        let valA =
-            a[currentSortColumn] ?? '';
-
-        let valB =
-            b[currentSortColumn] ?? '';
+    let rows = allTransactions.filter(row => {
+        const rowDate = String(row.date || '').slice(0, 10);
 
         if (
-            currentSortColumn === 'sales_amt' ||
-            currentSortColumn === 'qty'
+            rowDate < range.start ||
+            rowDate > range.end
         ) {
-            valA = Number(valA) || 0;
-            valB = Number(valB) || 0;
-        } else {
-            valA =
-                String(valA).toLowerCase();
-
-            valB =
-                String(valB).toLowerCase();
+            return false;
         }
 
-        if (valA < valB) {
-            return currentSortAsc ? -1 : 1;
+        if (
+            channel &&
+            String(row.channel || '') !== channel
+        ) {
+            return false;
         }
 
-        if (valA > valB) {
-            return currentSortAsc ? 1 : -1;
+        if (
+            status &&
+            String(row.status || '') !== status
+        ) {
+            return false;
         }
 
-        return 0;
+        if (search) {
+            const haystack = [
+                row.order_no,
+                row.invoice_no,
+                row.name,
+                row.customer_name,
+                row.item_code,
+                row.item_name,
+                row.channel,
+                row.tracking_number
+            ]
+                .map(normalizeText)
+                .join(' ');
+
+            if (!haystack.includes(search)) {
+                return false;
+            }
+        }
+
+        if (showPKOnly) {
+            if (!selectedRowIds.has(row._rowId)) {
+                return false;
+            }
+        }
+
+        return true;
     });
 
-    updateSortIcons();
+    rows.forEach(row => {
+        row._isDuplicate = false;
+    });
 
-    filteredOrderGroups =
-        getUniqueOrderGroups(
-            filteredTransactions
+    const orderCounts = new Map();
+
+    rows.forEach(row => {
+        const orderNo = String(
+            row.order_no ||
+            row.invoice_no ||
+            row._rowId
         );
 
-    displayLimit = 25;
+        orderCounts.set(
+            orderNo,
+            (orderCounts.get(orderNo) || 0) + 1
+        );
+    });
+
+    rows.forEach(row => {
+        const orderNo = String(
+            row.order_no ||
+            row.invoice_no ||
+            row._rowId
+        );
+
+        row._isDuplicate =
+            (orderCounts.get(orderNo) || 0) > 1;
+    });
+
+    rows.sort((a, b) => {
+        const av = a[currentSortColumn] ?? '';
+        const bv = b[currentSortColumn] ?? '';
+
+        if (currentSortColumn === 'date') {
+            const ad = new Date(av).getTime();
+            const bd = new Date(bv).getTime();
+
+            return currentSortDirection === 'asc'
+                ? ad - bd
+                : bd - ad;
+        }
+
+        const comparison =
+            String(av).localeCompare(
+                String(bv),
+                'th',
+                {
+                    numeric: true,
+                    sensitivity: 'base'
+                }
+            );
+
+        return currentSortDirection === 'asc'
+            ? comparison
+            : -comparison;
+    });
+
+    filteredTransactions = rows;
+    filteredOrderGroups = getUniqueOrderGroups(rows);
+
+    displayLimit = 100;
 
     renderTable();
+    updateSortIcons();
 }
+
+// ============================================================
+// SORT
+// ============================================================
 
 function sortTable(column) {
     if (currentSortColumn === column) {
-        currentSortAsc = !currentSortAsc;
+        currentSortDirection =
+            currentSortDirection === 'asc'
+                ? 'desc'
+                : 'asc';
     } else {
         currentSortColumn = column;
-        currentSortAsc = true;
+        currentSortDirection = 'asc';
     }
 
     applyFilters();
 }
 
+// ============================================================
+// SORT ICON
+// ============================================================
+
 function updateSortIcons() {
-    [
-        'date',
-        'invoice_no',
-        'item_code',
-        'item_name',
-        'qty',
-        'sales_amt'
-    ].forEach(col => {
-        const el =
-            document.getElementById(
-                `sort_${col}`
-            );
-
-        if (!el) return;
-
-        if (col === currentSortColumn) {
-            el.className =
-                "ml-0.5 text-[10px] text-google-blue font-bold";
-
-            el.innerHTML =
-                currentSortAsc
-                    ? `<i class="fa-solid fa-arrow-up-wide-short"></i>`
-                    : `<i class="fa-solid fa-arrow-down-wide-short"></i>`;
-
-        } else {
-            el.className =
-                "ml-0.5 text-[10px] text-slate-300";
-
-            el.innerHTML =
-                `<i class="fa-solid fa-arrow-down-wide-short"></i>`;
-        }
+    document.querySelectorAll('.sort-icon').forEach(icon => {
+        icon.className =
+            'sort-icon fa-solid fa-sort text-[9px] ml-1';
     });
 }
+
+// ============================================================
+// RENDER TABLE
+// ============================================================
 
 function renderTable() {
     const tbody =
         document.getElementById('txTableBody');
 
-    tbody.innerHTML = '';
-
-    const totalOrders =
-        filteredOrderGroups.length;
+    if (!tbody) return;
 
     const visibleGroups =
         filteredOrderGroups.slice(
@@ -1199,221 +681,134 @@ function renderTable() {
             displayLimit
         );
 
-    const pageData =
-        visibleGroups.flatMap(
-            group => group.items
-        );
+    const rowsToRender =
+        visibleGroups.flatMap(group => group.items);
 
-    if (pageData.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="8" class="p-6 text-center text-google-gray">
-                    ไม่พบรายการคำสั่งซื้อ
-                </td>
-            </tr>
-        `;
-    } else {
-        pageData.forEach(row => {
-            const isSelected =
-                selectedRowIds.has(
-                    row._rowId
-                );
+    tbody.innerHTML = rowsToRender.map(row => {
+        const orderNo = row.order_no || '-';
+        const invoiceNo = row.invoice_no || '-';
 
-            const isDup =
-                row._isDuplicate;
+        const isSelected =
+            selectedRowIds.has(row._rowId);
 
-            let channelBadgeClass =
-                "bg-slate-100 text-slate-700 border-slate-200";
+        const isDuplicate =
+            row._isDuplicate;
 
-            const ch =
-                String(row.channel || '')
-                    .toLowerCase();
+        const selectedClass =
+            isSelected
+                ? 'row-selected'
+                : '';
 
-            if (ch.includes('shopee')) {
-                channelBadgeClass =
-                    "bg-shopee text-white";
-            } else if (ch.includes('lazada')) {
-                channelBadgeClass =
-                    "bg-lazada text-white";
-            } else if (ch.includes('tiktok')) {
-                channelBadgeClass =
-                    "bg-tiktok text-white";
-            }
+        const duplicateClass =
+            isDuplicate
+                ? 'row-duplicate'
+                : '';
 
-            const currentStatus =
-                pendingStatusChanges[
-                    row._rowId
-                ] ||
-                row.status ||
-                'PENDING';
+        const channel =
+            row.channel || '-';
 
-            const orderNo =
-                String(
-                    row.order_no || '-'
-                );
+        const status =
+            row.status || '';
 
-            const orderPrefix =
-                orderNo.length > 3
-                    ? orderNo.slice(0, -3)
-                    : '';
-
-            const orderTail =
-                orderNo.length > 3
-                    ? orderNo.slice(-3)
-                    : orderNo;
-
-            const qty =
-                Number(row.qty) || 0;
-
-            const qtyClass =
-                qty > 1
-                    ? 'text-google-red'
-                    : 'text-slate-900';
-
-            const tr =
-                document.createElement('tr');
-
-            let rowBgClass =
-                "hover:bg-slate-50";
-
-            if (isDup) {
-                rowBgClass =
-                    "row-duplicate";
-            }
-
-            if (isSelected) {
-                rowBgClass =
-                    "row-selected";
-            }
-
-            tr.className =
-                `transition-colors border-b border-slate-100 cursor-pointer ${rowBgClass}`;
-
-            tr.onclick = (e) => {
-                if (
-                    e.target.tagName === 'SELECT' ||
-                    e.target.tagName === 'OPTION' ||
-                    e.target.tagName === 'INPUT'
-                ) {
-                    return;
-                }
-
-                toggleRowSelection(
-                    row._rowId
-                );
-            };
-
-            tr.innerHTML = `
-                <td class="p-2 align-top font-mono text-[11px] text-slate-600">
-                    <span class="sm:hidden block leading-tight">
-                    <span class="block text-[13px] font-semibold">
-                        ${formatDateFormatted(row.date, true).substring(0, 5)}
-                    </span>
-
-                    <span class="block text-[15px] font-bold">
-    ${(() => {
-        const day = parseInt(formatDateFormatted(row.date, true).substring(6), 10);
-        const suffix =
-            day % 100 >= 11 && day % 100 <= 13
-                ? 'th'
-                : day % 10 === 1
-                    ? 'st'
-                    : day % 10 === 2
-                        ? 'nd'
-                        : day % 10 === 3
-                            ? 'rd'
-                            : 'th';
-        return `${day}${suffix}`;
-    })()}
-</span>
-                </span>
-
-
-                
-                <span class="hidden sm:inline whitespace-nowrap">
-                        ${formatDateFormatted(row.date, false)}
-                    </span>
+        return `
+            <tr
+                class="${selectedClass} ${duplicateClass} border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition"
+                data-row-id="${escapeHtml(row._rowId)}"
+                onclick="handleTransactionRowClick(event, '${escapeHtml(row._rowId)}')"
+            >
+                <td class="px-3 py-2 whitespace-nowrap">
+                    ${formatDate(row.date)}
                 </td>
 
-                <td class="p-2 align-top">
-                    <div class="sm:hidden leading-tight w-[78px] overflow-hidden">
-                        <div class="mobile-order-main font-bold text-slate-900 font-mono truncate" title="${row.invoice_no || ''}">
-                            ${row.invoice_no || '-'}
-                        </div>
-                        <div class="text-[9px] text-google-gray font-mono truncate" title="${orderNo}">
-                            ${orderPrefix}
-                        </div>
-                        <div class="mobile-order-tail font-mono text-slate-900">
-                            ${orderTail}
-                        </div>
+                <td class="px-3 py-2 whitespace-nowrap">
+                    <div class="font-bold text-slate-900 font-mono">
+                        ${escapeHtml(invoiceNo)}
                     </div>
 
-                    <div class="hidden sm:block leading-tight">
-                        <div class="font-bold text-slate-900 font-mono">
-                            ${row.invoice_no || '-'}
-                        </div>
-                        <div class="text-[10px] text-google-gray font-mono">
-                            ${row.order_no || '-'}
-                        </div>
+                    <div
+                        class="order-number-clickable text-[10px] text-google-gray font-mono"
+                        title="สร้าง Shipping Label"
+                        onclick="handleOrderNumberClick(event, '${escapeHtml(orderNo)}')"
+                    >
+                        ${escapeHtml(orderNo)}
                     </div>
                 </td>
 
-                <td class="p-2 align-top sm:font-mono sm:font-bold sm:text-google-blue sm:max-w-[130px]">
-                    <div class="mobile-item-code font-mono font-bold text-google-blue sm:hidden">
-                        ${row.item_code || '-'}
-                    </div>
-
-                    <div class="mobile-item-name sm:hidden text-[15px] font-medium text-slate-800">
-                        ${row.item_name || '-'}
-                    </div>
-
-                    <div class="hidden sm:block truncate" title="${row.item_code || ''}">
-                        ${row.item_code || '-'}
-                    </div>
+                <td class="px-3 py-2 whitespace-nowrap font-mono text-xs">
+                    ${escapeHtml(row.item_code || '-')}
                 </td>
 
-                <td class="p-2 font-medium text-slate-800 hidden sm:table-cell max-w-[200px] truncate" title="${row.item_name || ''}">
-                    ${row.item_name || '-'}
+                <td class="px-3 py-2">
+                    ${escapeHtml(row.item_name || row.name || '-')}
                 </td>
 
-                <td class="p-2 text-right font-bold ${qtyClass} text-[14px] whitespace-nowrap">
-                    ${qty}
+                <td class="px-3 py-2 text-right whitespace-nowrap">
+                    ${Number(row.qty || 0).toLocaleString('th-TH')}
                 </td>
 
-                <td class="p-2 text-right font-bold text-slate-900 hidden sm:table-cell">
+                <td class="px-3 py-2 text-right whitespace-nowrap">
                     ${formatMoney(row.sales_amt)}
                 </td>
 
-                <td class="p-2 text-center hidden sm:table-cell">
-                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${channelBadgeClass}">
-                        ${row.channel || 'Direct'}
+                <td class="px-3 py-2 whitespace-nowrap">
+                    <span class="text-xs">
+                        ${escapeHtml(channel)}
                     </span>
                 </td>
 
-                <td class="p-2 text-center hidden sm:table-cell">
-                    <select onchange="handleStatusChange('${row._rowId}', this.value)" class="bg-white border border-google-border rounded px-1 py-0.5 text-[10px] font-semibold focus:outline-none focus:border-google-blue">
-                        <option value="PENDING" ${currentStatus === 'PENDING' ? 'selected' : ''}>PENDING</option>
-                        <option value="ACTIVE" ${currentStatus === 'ACTIVE' ? 'selected' : ''}>ACTIVE</option>
-                        <option value="VOID" ${currentStatus === 'VOID' ? 'selected' : ''}>VOID</option>
+                <td class="px-3 py-2 whitespace-nowrap">
+                    <select
+                        class="status-select status-${normalizeText(status).replace(/\s+/g, '-')}"
+                        onclick="event.stopPropagation()"
+                        onchange="handleStatusChange('${escapeHtml(row._rowId)}', this.value)"
+                    >
+                        ${getStatusOptions(status)}
                     </select>
                 </td>
-            `;
+            </tr>
+        `;
+    }).join('');
 
-            tbody.appendChild(tr);
-        });
+    const orderCount =
+        filteredOrderGroups.length;
+
+    const countEl =
+        document.getElementById('orderCountTop');
+
+    if (countEl) {
+        countEl.innerText =
+            `${orderCount.toLocaleString()} orders`;
     }
 
-    document.getElementById('orderCountTop').innerHTML = `
-        <i class="fa-solid fa-circle text-[6px] order-count-live-icon"></i>
-        <span class="order-count-live">${totalOrders.toLocaleString()}</span>
-        <span>Orders</span>
-    `;
+    const selectedCount =
+        document.getElementById('selectedCountText');
 
-    document.getElementById('selectedCountText').innerText =
-        selectedRowIds.size.toLocaleString();
-
-    updatePendingChangesCount();
+    if (selectedCount) {
+        selectedCount.innerText =
+            selectedRowIds.size.toLocaleString();
+    }
 }
+
+// ============================================================
+// MOBILE / ROW CLICK
+// ============================================================
+
+function handleTransactionRowClick(event, rowId) {
+    if (
+        event.target.tagName === 'SELECT' ||
+        event.target.tagName === 'OPTION' ||
+        event.target.tagName === 'INPUT' ||
+        event.target.closest('.order-number-clickable')
+    ) {
+        return;
+    }
+
+    toggleRowSelection(rowId);
+}
+
+// ============================================================
+// ROW SELECTION
+// ============================================================
 
 function toggleRowSelection(rowId) {
     if (selectedRowIds.has(rowId)) {
@@ -1422,100 +817,82 @@ function toggleRowSelection(rowId) {
         selectedRowIds.add(rowId);
     }
 
-    renderTable();
+    applyFilters();
+}
+
+// ============================================================
+// STATUS
+// ============================================================
+
+function getStatusOptions(currentStatus) {
+    const statuses = [
+        '',
+        'Pending',
+        'Processing',
+        'Shipped',
+        'Completed',
+        'Cancelled'
+    ];
+
+    return statuses.map(status => `
+        <option
+            value="${escapeHtml(status)}"
+            ${status === currentStatus ? 'selected' : ''}
+        >
+            ${status || '-'}
+        </option>
+    `).join('');
 }
 
 function handleStatusChange(rowId, newStatus) {
-    pendingStatusChanges[rowId] =
-        newStatus;
+    pendingStatusChanges[rowId] = newStatus;
 
-    updatePendingChangesCount();
-}
+    const row = allTransactions.find(
+        item => item._rowId === rowId
+    );
 
-function updatePendingChangesCount() {
-    const count =
-        Object.keys(
-            pendingStatusChanges
-        ).length;
+    if (row) {
+        row.status = newStatus;
+    }
 
-    document.getElementById(
-        'pendingChangesCount'
-    ).innerText = count;
-
-    document.getElementById(
-        'submitBtn'
-    ).disabled = count === 0;
+    applyFilters();
 }
 
 async function submitChanges() {
-    const count =
-        Object.keys(
-            pendingStatusChanges
-        ).length;
+    const changes =
+        Object.entries(pendingStatusChanges);
 
-    if (count === 0) return;
-
-    updateStatus(
-        `กำลังบันทึก ${count} รายการลง Supabase...`
-    );
+    if (changes.length === 0) {
+        return;
+    }
 
     try {
-        const updatePromises =
-            Object.keys(
-                pendingStatusChanges
-            )
-                .map(rowId => {
-                    const item =
-                        allTransactions.find(
-                            t => t._rowId === rowId
-                        );
+        for (const [rowId, status] of changes) {
+            const row = allTransactions.find(
+                item => item._rowId === rowId
+            );
 
-                    if (!item || !item.id) {
-                        return Promise.resolve();
-                    }
+            if (!row) continue;
 
-                    const newStatus =
-                        pendingStatusChanges[rowId];
-
-                    return supabaseClient
-                        .from('transactions')
-                        .update({
-                            status: newStatus
-                        })
-                        .eq('id', item.id);
+            let query = supabaseClient
+                .from('transactions')
+                .update({
+                    status
                 });
 
-        const results =
-            await Promise.all(
-                updatePromises
-            );
-
-        Object.keys(
-            pendingStatusChanges
-        ).forEach(
-            (rowId, index) => {
-                const item =
-                    allTransactions.find(
-                        t => t._rowId === rowId
-                    );
-
-                if (
-                    item &&
-                    !results[index]?.error
-                ) {
-                    item.status =
-                        pendingStatusChanges[rowId];
-                }
+            if (row.id !== undefined && row.id !== null) {
+                query = query.eq('id', row.id);
+            } else {
+                query = query
+                    .eq('invoice_no', row.invoice_no || '')
+                    .eq('item_code', row.item_code || '');
             }
-        );
 
-        const failedResult =
-            results.find(
-                result => result?.error
-            );
+            const { error } = await query;
 
-        if (failedResult?.error) {
-            throw failedResult.error;
+            if (error) {
+                throw error;
+            }
         }
 
         pendingStatusChanges = {};
@@ -1524,63 +901,520 @@ async function submitChanges() {
             allTransactions
         );
 
-        updateStatus(
-            'บันทึกเรียบร้อย!'
-        );
-
-        setTimeout(() => {
-            document.getElementById(
-                'statusIndicator'
-            ).classList.add('hidden');
-        }, 2000);
-
         applyFilters();
 
+        alert('บันทึกข้อมูลเรียบร้อยแล้ว');
     } catch (err) {
-        console.error(
-            "Submit Error:",
-            err
-        );
-
-        updateStatus(
-            `เกิดข้อผิดพลาด: ${err.message}`,
-            true
-        );
+        console.error('Save Status Error:', err);
+        alert('ไม่สามารถบันทึกข้อมูลได้');
     }
 }
 
+// ============================================================
+// INFINITE SCROLL
+// ============================================================
+
 function setupInfiniteScroll() {
-    const grid =
-        document.querySelector(
-            '.transactions-grid'
+    window.addEventListener('scroll', () => {
+        const nearBottom =
+            window.innerHeight +
+            window.scrollY >=
+            document.documentElement.scrollHeight - 500;
+
+        if (!nearBottom) return;
+
+        if (
+            displayLimit >=
+            filteredOrderGroups.length
+        ) {
+            return;
+        }
+
+        displayLimit += 100;
+        renderTable();
+    });
+}
+
+// ============================================================
+// SHIPPING LABEL
+// ============================================================
+
+let currentShippingOrderNo = '';
+
+function getTransactionsForOrder(orderNo) {
+    const target = String(orderNo || '').trim();
+
+    if (!target) {
+        return [];
+    }
+
+    return allTransactions.filter(row =>
+        String(row.order_no || '').trim() === target
+    );
+}
+
+function handleOrderNumberClick(event, orderNo) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const targetOrderNo =
+        String(orderNo || '').trim();
+
+    if (!targetOrderNo) {
+        return;
+    }
+
+    openShippingLabel(targetOrderNo);
+}
+
+function openShippingLabel(orderNo) {
+    const rows =
+        getTransactionsForOrder(orderNo);
+
+    if (!rows.length) {
+        alert('ไม่พบข้อมูล Order นี้');
+        return;
+    }
+
+    currentShippingOrderNo = orderNo;
+
+    renderShippingLabel(rows);
+
+    const modal =
+        document.getElementById(
+            'shippingLabelModal'
         );
 
-    if (!grid) return;
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+    }
+}
 
-    grid.addEventListener('scroll', () => {
-        if (
-            grid.scrollTop +
-            grid.clientHeight >=
-            grid.scrollHeight - 250
-        ) {
-            if (
-                displayLimit <
-                filteredOrderGroups.length
-            ) {
-                document.getElementById(
-                    'infiniteLoader'
-                ).classList.remove('hidden');
+function closeShippingLabelModal() {
+    const modal =
+        document.getElementById(
+            'shippingLabelModal'
+        );
 
-                setTimeout(() => {
-                    displayLimit += limitStep;
+    if (modal) {
+        modal.classList.add('hidden');
+    }
 
-                    renderTable();
+    document.body.classList.remove(
+        'overflow-hidden'
+    );
 
-                    document.getElementById(
-                        'infiniteLoader'
-                    ).classList.add('hidden');
-                }, 150);
-            }
-        }
+    currentShippingOrderNo = '';
+}
+
+// ============================================================
+// SHIPPING LABEL DATA
+// ============================================================
+
+function getShippingCustomer(rows) {
+    const first = rows[0] || {};
+
+    return {
+        name:
+            first.customer_name ||
+            first.name ||
+            '-',
+
+        phone:
+            first.phone ||
+            '-',
+
+        address:
+            first.customer_address ||
+            first.address ||
+            '-'
+    };
+}
+
+function getShippingTracking(rows) {
+    const tracking =
+        rows.find(row =>
+            String(
+                row.tracking_number || ''
+            ).trim()
+        );
+
+    return tracking
+        ? String(
+            tracking.tracking_number
+        ).trim()
+        : '';
+}
+
+function getShippingItems(rows) {
+    return rows.map(row => ({
+        itemCode:
+            row.item_code ||
+            '-',
+
+        itemName:
+            row.item_name ||
+            row.name ||
+            '-',
+
+        qty:
+            Number(row.qty || 0)
+    }));
+}
+
+// ============================================================
+// SHIPPING LABEL RENDER
+// ============================================================
+
+function renderShippingLabel(rows) {
+    const paper =
+        document.getElementById(
+            'shippingLabelPaper'
+        );
+
+    if (!paper) return;
+
+    const customer =
+        getShippingCustomer(rows);
+
+    const tracking =
+        getShippingTracking(rows);
+
+    const items =
+        getShippingItems(rows);
+
+    const orderNo =
+        String(
+            rows[0]?.order_no ||
+            currentShippingOrderNo ||
+            ''
+        );
+
+    const totalQty =
+        items.reduce(
+            (sum, item) => sum + item.qty,
+            0
+        );
+
+    paper.innerHTML = `
+        <div class="shipping-label-document">
+
+            <div class="shipping-label-header">
+                <div class="shipping-label-brand">
+                    <img
+                        src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1789458148/unimerce_logo.png"
+                        alt="UNIMERCE"
+                        class="shipping-label-logo"
+                    />
+
+                    <div>
+                        <div class="shipping-label-company">
+                            UNIMERCE
+                        </div>
+                        <div class="shipping-label-document-title">
+                            SHIPPING LABEL
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shipping-label-order-box">
+                    <div class="shipping-label-small-label">
+                        ORDER NO.
+                    </div>
+
+                    <div class="shipping-label-order-text">
+                        ${escapeHtml(orderNo)}
+                    </div>
+
+                    <svg
+                        id="shippingOrderBarcode"
+                        class="shipping-label-barcode"
+                    ></svg>
+                </div>
+            </div>
+
+            <div class="shipping-label-divider"></div>
+
+            <div class="shipping-label-recipient-section">
+
+                <div class="shipping-label-section-title">
+                    SHIP TO
+                </div>
+
+                <div class="shipping-label-recipient-name">
+                    ${escapeHtml(customer.name)}
+                </div>
+
+                <div class="shipping-label-recipient-phone">
+                    ${escapeHtml(customer.phone)}
+                </div>
+
+                <div class="shipping-label-recipient-address">
+                    ${escapeHtml(customer.address)}
+                </div>
+
+            </div>
+
+            <div class="shipping-label-divider"></div>
+
+            <div class="shipping-label-items-section">
+
+                <div class="shipping-label-section-title">
+                    ITEMS
+                </div>
+
+                <table class="shipping-label-items-table">
+
+                    <thead>
+                        <tr>
+                            <th>ITEM CODE</th>
+                            <th>ITEM</th>
+                            <th>QTY</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        ${items.map(item => `
+                            <tr>
+                                <td class="shipping-item-code">
+                                    ${escapeHtml(item.itemCode)}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(item.itemName)}
+                                </td>
+
+                                <td class="shipping-item-qty">
+                                    ${item.qty.toLocaleString('th-TH')}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="shipping-label-summary">
+                Total Qty:
+                <strong>${totalQty.toLocaleString('th-TH')}</strong>
+            </div>
+
+            <div class="shipping-label-footer">
+
+                <div class="shipping-label-tracking-area">
+                    ${
+                        tracking
+                            ? `
+                                <div class="shipping-label-section-title">
+                                    TRACKING NUMBER
+                                </div>
+
+                                <div class="shipping-label-tracking-text">
+                                    ${escapeHtml(tracking)}
+                                </div>
+
+                                <svg
+                                    id="shippingTrackingBarcode"
+                                    class="shipping-label-tracking-barcode"
+                                ></svg>
+                            `
+                            : `
+                                <div class="shipping-label-no-tracking">
+                                    No tracking number
+                                </div>
+                            `
+                    }
+                </div>
+
+                <div class="shipping-label-footer-brand">
+                    UNIMERCE
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+    requestAnimationFrame(() => {
+        generateShippingBarcodes(
+            orderNo,
+            tracking
+        );
     });
+}
+
+// ============================================================
+// SHIPPING BARCODE
+// ============================================================
+
+function generateShippingBarcodes(
+    orderNo,
+    tracking
+) {
+    if (
+        typeof JsBarcode === 'undefined'
+    ) {
+        console.error(
+            'JsBarcode is not loaded.'
+        );
+        return;
+    }
+
+    const orderBarcode =
+        document.getElementById(
+            'shippingOrderBarcode'
+        );
+
+    if (
+        orderBarcode &&
+        orderNo
+    ) {
+        try {
+            JsBarcode(
+                orderBarcode,
+                orderNo,
+                {
+                    format: 'CODE128',
+                    displayValue: false,
+                    margin: 0,
+                    height: 42,
+                    width: 1.5
+                }
+            );
+        } catch (err) {
+            console.error(
+                'Order Barcode Error:',
+                err
+            );
+        }
+    }
+
+    const trackingBarcode =
+        document.getElementById(
+            'shippingTrackingBarcode'
+        );
+
+    if (
+        trackingBarcode &&
+        tracking
+    ) {
+        try {
+            JsBarcode(
+                trackingBarcode,
+                tracking,
+                {
+                    format: 'CODE128',
+                    displayValue: false,
+                    margin: 0,
+                    height: 48,
+                    width: 1.5
+                }
+            );
+        } catch (err) {
+            console.error(
+                'Tracking Barcode Error:',
+                err
+            );
+        }
+    }
+}
+
+// ============================================================
+// SHIPPING LABEL PDF
+// ============================================================
+
+async function downloadShippingLabelPDF() {
+    const paper =
+        document.getElementById(
+            'shippingLabelPaper'
+        );
+
+    if (!paper) {
+        return;
+    }
+
+    const orderNo =
+        currentShippingOrderNo ||
+        'Shipping_Label';
+
+    try {
+        const canvas =
+            await html2canvas(
+                paper,
+                {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                }
+            );
+
+        const {
+            jsPDF
+        } = window.jspdf;
+
+        const pdf =
+            new jsPDF({
+                orientation: 'p',
+                unit: 'mm',
+                format: 'a5',
+                compress: true
+            });
+
+        const imgData =
+            canvas.toDataURL(
+                'image/jpeg',
+                0.86
+            );
+
+        const imgProps =
+            pdf.getImageProperties(
+                imgData
+            );
+
+        const pdfWidth =
+            pdf.internal.pageSize.getWidth();
+
+        const pdfHeight =
+            (
+                imgProps.height *
+                pdfWidth
+            ) /
+            imgProps.width;
+
+        const pageHeight =
+            pdf.internal.pageSize.getHeight();
+
+        const finalHeight =
+            Math.min(
+                pdfHeight,
+                pageHeight
+            );
+
+        pdf.addImage(
+            imgData,
+            'JPEG',
+            0,
+            0,
+            pdfWidth,
+            finalHeight,
+            undefined,
+            'FAST'
+        );
+
+        pdf.save(
+            `Shipping_Label_${orderNo}.pdf`
+        );
+    } catch (err) {
+        console.error(
+            'Shipping Label PDF Error:',
+            err
+        );
+
+        alert(
+            'ไม่สามารถสร้าง PDF ได้'
+        );
+    }
 }
