@@ -1,132 +1,339 @@
-body {
-    font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
-    touch-action: manipulation;
-}
-.google-card {
-    background: #ffffff;
-    border: 1px solid #dadce0;
-    border-radius: 12px;
-    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.05);
-}
-.google-select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg fill='%235f6368' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 6px center;
-    background-size: 16px;
-}
-.row-selected {
-    background-color: #e8f0fe !important;
-}
-.row-duplicate {
-    background-color: #fff7ed !important;
-}
-.row-selected.row-duplicate {
-    background-color: #fef08a !important;
-}
-th.sortable {
+/* ============================================================
+   SHIPPING LABEL
+   เพิ่มเฉพาะส่วน Shipping Label
+============================================================ */
+
+.order-number-clickable {
     cursor: pointer;
-    user-select: none;
+    transition: color 0.15s ease;
 }
-th.sortable:hover {
-    background-color: #f1f5f9;
+
+.order-number-clickable:hover {
+    color: #2563eb;
+    text-decoration: underline;
 }
-.rounded-checkbox {
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    border: 1.5px solid #94a3b8;
-    border-radius: 50%;
-    outline: none;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.2s ease;
+
+
+/* ============================================================
+   SHIPPING LABEL MODAL
+============================================================ */
+
+#shippingLabelModal {
+    font-family: Inter, "Noto Sans Thai", sans-serif;
 }
-.rounded-checkbox:checked {
-    background-color: #1a73e8;
-    border-color: #1a73e8;
+
+.shipping-label-paper {
+    width: 148mm;
+    min-width: 148mm;
+    height: 210mm;
+    min-height: 210mm;
+    box-sizing: border-box;
+    overflow: hidden;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
 }
-.rounded-checkbox:checked::after {
-    content: '';
-    position: absolute;
-    top: 2.5px;
-    left: 2.5px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: white;
+
+.shipping-label-document {
+    width: 148mm;
+    height: 210mm;
+    box-sizing: border-box;
+    padding: 12mm;
+    background: #fff;
+    color: #172033;
+    display: flex;
+    flex-direction: column;
 }
-.period-btn {
-    transition: all 0.15s ease;
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.shipping-label-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8mm;
 }
-.status-select {
-    appearance: none !important;
-    -webkit-appearance: none !important;
-    min-width: 72px;
-    padding: 4px 20px 4px 7px;
-    border: 0 !important;
-    border-radius: 7px;
-    font-size: 10px;
+
+.shipping-label-brand {
+    display: flex;
+    align-items: center;
+    gap: 4mm;
+}
+
+.shipping-label-logo {
+    width: 28mm;
+    max-height: 18mm;
+    object-fit: contain;
+}
+
+.shipping-label-company {
+    font-size: 18px;
     font-weight: 800;
-    line-height: 1.3;
+    letter-spacing: 0.04em;
+    color: #111827;
+}
+
+.shipping-label-document-title {
+    margin-top: 1mm;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: #64748b;
+}
+
+.shipping-label-order-box {
+    width: 48mm;
+    text-align: right;
+}
+
+.shipping-label-small-label {
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #64748b;
+}
+
+.shipping-label-order-text {
+    margin-top: 1mm;
+    font-family: monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: #111827;
+    word-break: break-all;
+}
+
+.shipping-label-barcode {
+    width: 48mm;
+    height: 13mm;
+    margin-top: 2mm;
+}
+
+
+/* ============================================================
+   DIVIDER
+============================================================ */
+
+.shipping-label-divider {
+    width: 100%;
+    height: 1px;
+    background: #e5e7eb;
+    margin: 7mm 0;
+}
+
+
+/* ============================================================
+   SECTION
+============================================================ */
+
+.shipping-label-section-title {
+    margin-bottom: 2mm;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: #64748b;
+}
+
+
+/* ============================================================
+   RECIPIENT
+============================================================ */
+
+.shipping-label-recipient-name {
+    font-size: 17px;
+    line-height: 1.35;
+    font-weight: 800;
+    color: #111827;
+}
+
+.shipping-label-recipient-phone {
+    margin-top: 1.5mm;
+    font-family: monospace;
+    font-size: 10px;
+    color: #475569;
+}
+
+.shipping-label-recipient-address {
+    margin-top: 2mm;
+    font-size: 10px;
+    line-height: 1.6;
+    color: #334155;
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+
+/* ============================================================
+   ITEMS
+============================================================ */
+
+.shipping-label-items-section {
+    flex: 0 0 auto;
+}
+
+.shipping-label-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.shipping-label-items-table th {
+    padding: 2.5mm 2mm;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-align: left;
+    color: #64748b;
+}
+
+.shipping-label-items-table td {
+    padding: 2.5mm 2mm;
+    border-bottom: 1px solid #eef2f7;
+    font-size: 9px;
+    line-height: 1.4;
+    vertical-align: top;
+    color: #334155;
+}
+
+.shipping-label-items-table th:first-child,
+.shipping-label-items-table td:first-child {
+    width: 28mm;
+}
+
+.shipping-label-items-table th:last-child,
+.shipping-label-items-table td:last-child {
+    width: 15mm;
+    text-align: right;
+}
+
+.shipping-item-code {
+    font-family: monospace;
+    font-size: 8px !important;
+    font-weight: 600;
+}
+
+.shipping-item-qty {
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   SUMMARY
+============================================================ */
+
+.shipping-label-summary {
+    margin-top: 4mm;
+    padding: 3mm 0;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: right;
+    font-size: 9px;
+    color: #64748b;
+}
+
+.shipping-label-summary strong {
+    margin-left: 2mm;
+    font-size: 12px;
+    color: #111827;
+}
+
+
+/* ============================================================
+   FOOTER / TRACKING
+============================================================ */
+
+.shipping-label-footer {
+    margin-top: auto;
+    padding-top: 7mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 6mm;
+}
+
+.shipping-label-tracking-area {
+    flex: 1;
+    min-width: 0;
+}
+
+.shipping-label-tracking-text {
+    margin-bottom: 2mm;
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: #111827;
+    word-break: break-all;
+}
+
+.shipping-label-tracking-barcode {
+    width: 75mm;
+    max-width: 100%;
+    height: 15mm;
+}
+
+.shipping-label-no-tracking {
+    padding: 4mm;
+    border: 1px dashed #cbd5e1;
+    font-size: 8px;
+    color: #94a3b8;
     text-align: center;
-    text-align-last: center;
-    cursor: pointer;
-    outline: none;
-    transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
-.status-select:focus {
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.18);
+
+.shipping-label-footer-brand {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #94a3b8;
 }
-.status-pending {
-    background-color: #fef3c7 !important;
-    color: #92400e !important;
-    box-shadow: inset 0 0 0 1px #fcd34d;
-}
-.status-pending:hover {
-    background-color: #fde68a !important;
-}
-.status-active {
-    background-color: #dcfce7 !important;
-    color: #166534 !important;
-    box-shadow: inset 0 0 0 1px #86efac;
-}
-.status-active:hover {
-    background-color: #bbf7d0 !important;
-}
-.status-void {
-    background-color: #fee2e2 !important;
-    color: #991b1b !important;
-    box-shadow: inset 0 0 0 1px #fca5a5;
-}
-.status-void:hover {
-    background-color: #fecaca !important;
-}
-#orderCountTop {
-    background-color: #dc2626 !important;
-    color: #ffffff !important;
-    border-color: #dc2626 !important;
-    box-shadow: 0 2px 5px rgba(220, 38, 38, 0.25);
-}
-@media (max-width: 639px) {
-    .mobile-item-name {
-        white-space: normal;
-        overflow-wrap: anywhere;
-        word-break: break-word;
-        line-height: 1.35;
+
+
+/* ============================================================
+   MOBILE - SHIPPING LABEL MODAL ONLY
+   ไม่แตะ mobile layout ของหน้า Transactions
+============================================================ */
+
+@media (max-width: 640px) {
+    #shippingLabelModal .p-4 {
+        padding: 8px;
     }
-    .mobile-order-tail {
-        font-size: 15px;
-        font-weight: 700;
-        line-height: 1.15;
-        letter-spacing: 0.2px;
+
+    #shippingLabelModal .bg-gray-100 {
+        padding: 8px;
     }
-    .mobile-order-main {
-        font-size: 11px;
-        line-height: 1.2;
+
+    .shipping-label-paper {
+        transform-origin: top center;
     }
-    .mobile-item-code {
-        font-size: 15px;
-        line-height: 1.25;
+
+    #shippingLabelModal .shipping-label-paper {
+        margin: 0 auto;
+    }
+}
+
+
+/* ============================================================
+   PRINT
+============================================================ */
+
+@media print {
+    body > *:not(#shippingLabelModal) {
+        display: none !important;
+    }
+
+    #shippingLabelModal {
+        position: static !important;
+        display: block !important;
+        background: #fff !important;
+    }
+
+    #shippingLabelModal > div:first-child,
+    #shippingLabelModal button {
+        display: none !important;
+    }
+
+    .shipping-label-paper {
+        box-shadow: none !important;
     }
 }
