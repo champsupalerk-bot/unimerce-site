@@ -1,121 +1,105 @@
-// ============================================================
-// UNIMERCE - Transactions / Order Management
-// File: /uerp/transactions.js
-// ============================================================
-
-const SUPABASE_URL = 'https://YOUR_SUPABASE_URL.supabase.co';
-const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
-
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
+const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmxlIiwicmVmIjoieHlnZG1zemVybm1pcmNtYnF3a2UiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc4MTY1Njk1MCwiZXhwIjoyMDk3MjMyOTUwfQ.CQ5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 let allTransactions = [];
 let filteredTransactions = [];
 let filteredOrderGroups = [];
 let selectedRowIds = new Set();
 let pendingStatusChanges = {};
-
 let currentSortColumn = 'date';
-let currentSortDirection = 'desc';
-
+let currentSortAsc = false;
 let currentPeriod = 'TODAY';
-let customStartDate = '';
-let customEndDate = '';
-
-let displayLimit = 100;
+let displayLimit = 25;
+const limitStep = 25;
 
 const TRANSACTION_CACHE_DB = 'uerp_transactions_cache_db';
-const TRANSACTION_CACHE_VERSION = 1;
 const TRANSACTION_CACHE_STORE = 'transactions';
-const TRANSACTION_META_STORE = 'meta';
-const TRANSACTION_CACHE_TTL = 24 * 60 * 60 * 1000;
+const TRANSACTION_CACHE_META = 'meta';
+const TRANSACTION_CACHE_VERSION = 1;
+const TRANSACTION_CACHE_TTL = 24 * 3600 * 1000;
 const INITIAL_CACHE_DAYS = 60;
 const FETCH_BATCH_SIZE = 1000;
 
-// ============================================================
-// INITIALIZE
-// ============================================================
+const SHIPPING_LABEL_LOGO =
+    'https://res.cloudinary.com/dzgaej1wo/image/upload/v1780642657/unimerce_home_btn_320_omzc5g.png';
+
+let shippingLabelLibrariesLoaded = false;
 
 document.addEventListener('DOMContentLoaded', () => {
+    currentPeriod = 'TODAY';
     setPeriod('TODAY', false);
+    currentPeriod = 'TODAY';
+
     loadHeader();
     fetchTransactions();
     setupInfiniteScroll();
 });
 
-// ============================================================
-// HEADER
-// ============================================================
-
 async function loadHeader() {
-    const header = document.getElementById('uerpHeader');
-    if (!header) return;
-
     try {
-        const response = await fetch('uerpheader.html');
-        if (response.ok) {
-            header.innerHTML = await response.text();
+        const res = await fetch('uerpheader.html');
+        if (!res.ok) throw new Error('Header file not found');
+
+        const html = await res.text();
+        const headerContainer = document.getElementById('headerContainer');
+
+        headerContainer.innerHTML = html;
+
+        const txTab = headerContainer.querySelector(
+            '[data-page="transactions"]'
+        );
+
+        if (txTab) {
+            txTab.classList.add('chrome-tab-active');
+        }
+
+        if (typeof window.initUerpLayout === 'function') {
+            window.__uerpLayoutInitialized = false;
+            window.initUerpLayout();
         }
     } catch (err) {
-        console.error('Header Load Error:', err);
+        console.warn('Header load error:', err);
     }
 }
 
-// ============================================================
-// BASIC HELPERS
-// ============================================================
+function formatDateFormatted(dateStr, isMobile = false) {
+    if (!dateStr) return '-';
 
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+    const d = new Date(dateStr);
+
+    if (isNaN(d.getTime())) {
+        const raw = String(dateStr).substring(0, 10);
+        return isMobile ? raw.substring(2) : raw;
+    }
+
+    const iso = d.toISOString().split('T')[0];
+
+    return isMobile ? iso.substring(2) : iso;
 }
 
-function formatMoney(value) {
-    const number = Number(value) || 0;
-    return number.toLocaleString('th-TH', {
+function formatMoney(val) {
+    return '฿' + parseFloat(val || 0).toLocaleString('th-TH', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
 }
 
-function formatDate(value) {
-    if (!value) return '-';
+function updateStatus(msg, isError = false) {
+    const statusIndicator =
+        document.getElementById('statusIndicator');
 
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-        return String(value);
-    }
+    const statusText =
+        document.getElementById('statusText');
 
-    return date.toLocaleDateString('th-TH');
+    statusIndicator.classList.remove('hidden');
+
+    statusIndicator.className = isError
+        ? "p-2 bg-red-50 rounded-lg border border-red-200 text-xs text-google-red"
+        : "p-2 bg-blue-50 rounded-lg border border-blue-100 text-xs text-google-blue";
+
+    statusText.innerText = msg;
 }
-
-function normalizeText(value) {
-    return String(value ?? '').trim().toLowerCase();
-}
-
-function getRowId(row, index = 0) {
-    if (row._rowId) return row._rowId;
-    if (row.id !== undefined && row.id !== null) {
-        return String(row.id);
-    }
-
-    return [
-        row.date || '',
-        row.invoice_no || '',
-        row.item_code || '',
-        index
-    ].join('|');
-}
-
-// ============================================================
-// INDEXED DB
-// ============================================================
 
 function openTransactionCacheDB() {
     return new Promise((resolve, reject) => {
@@ -124,63 +108,167 @@ function openTransactionCacheDB() {
             TRANSACTION_CACHE_VERSION
         );
 
-        request.onupgradeneeded = event => {
+        request.onupgradeneeded = (event) => {
             const db = event.target.result;
 
-            if (!db.objectStoreNames.contains(TRANSACTION_CACHE_STORE)) {
+            if (
+                !db.objectStoreNames.contains(
+                    TRANSACTION_CACHE_STORE
+                )
+            ) {
                 db.createObjectStore(
                     TRANSACTION_CACHE_STORE,
-                    { keyPath: '_rowId' }
+                    {
+                        keyPath: '_rowId'
+                    }
                 );
             }
 
-            if (!db.objectStoreNames.contains(TRANSACTION_META_STORE)) {
+            if (
+                !db.objectStoreNames.contains(
+                    TRANSACTION_CACHE_META
+                )
+            ) {
                 db.createObjectStore(
-                    TRANSACTION_META_STORE,
-                    { keyPath: 'key' }
+                    TRANSACTION_CACHE_META,
+                    {
+                        keyPath: 'key'
+                    }
                 );
             }
         };
 
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+            resolve(request.result);
+        };
+
+        request.onerror = () => {
+            reject(request.error);
+        };
     });
 }
 
-async function getCachedTransactions() {
+async function clearTransactionCache() {
     const db = await openTransactionCacheDB();
 
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
+        const tx = db.transaction(
+            [
+                TRANSACTION_CACHE_STORE,
+                TRANSACTION_CACHE_META
+            ],
+            'readwrite'
+        );
+
+        tx.objectStore(
+            TRANSACTION_CACHE_STORE
+        ).clear();
+
+        tx.objectStore(
+            TRANSACTION_CACHE_META
+        ).clear();
+
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+    });
+
+    db.close();
+}
+
+async function getTransactionCacheMeta() {
+    const db = await openTransactionCacheDB();
+
+    const meta = await new Promise((resolve, reject) => {
+        const tx = db.transaction(
+            TRANSACTION_CACHE_META,
+            'readonly'
+        );
+
+        const request =
+            tx.objectStore(
+                TRANSACTION_CACHE_META
+            ).get('cache_info');
+
+        request.onsuccess = () => {
+            resolve(request.result || null);
+        };
+
+        request.onerror = () => {
+            reject(request.error);
+        };
+    });
+
+    db.close();
+
+    return meta;
+}
+
+async function saveTransactionCacheMeta(meta) {
+    const db = await openTransactionCacheDB();
+
+    await new Promise((resolve, reject) => {
+        const tx = db.transaction(
+            TRANSACTION_CACHE_META,
+            'readwrite'
+        );
+
+        tx.objectStore(
+            TRANSACTION_CACHE_META
+        ).put({
+            key: 'cache_info',
+            ...meta
+        });
+
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+    });
+
+    db.close();
+}
+
+async function getAllCachedTransactions() {
+    const db = await openTransactionCacheDB();
+
+    const rows = await new Promise((resolve, reject) => {
         const tx = db.transaction(
             TRANSACTION_CACHE_STORE,
             'readonly'
         );
 
-        const store = tx.objectStore(
-            TRANSACTION_CACHE_STORE
-        );
+        const request =
+            tx.objectStore(
+                TRANSACTION_CACHE_STORE
+            ).getAll();
 
-        const request = store.getAll();
+        request.onsuccess = () => {
+            resolve(request.result || []);
+        };
 
-        request.onsuccess = () => resolve(request.result || []);
-        request.onerror = () => reject(request.error);
+        request.onerror = () => {
+            reject(request.error);
+        };
     });
+
+    db.close();
+
+    return rows;
 }
 
 async function saveTransactionsToCache(rows) {
-    if (!Array.isArray(rows) || rows.length === 0) return;
+    if (!rows || rows.length === 0) return;
 
     const db = await openTransactionCacheDB();
 
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
         const tx = db.transaction(
             TRANSACTION_CACHE_STORE,
             'readwrite'
         );
 
-        const store = tx.objectStore(
-            TRANSACTION_CACHE_STORE
-        );
+        const store =
+            tx.objectStore(
+                TRANSACTION_CACHE_STORE
+            );
 
         rows.forEach(row => {
             store.put(row);
@@ -189,306 +277,789 @@ async function saveTransactionsToCache(rows) {
         tx.oncomplete = resolve;
         tx.onerror = () => reject(tx.error);
     });
+
+    db.close();
 }
 
-async function clearTransactionCache() {
-    const db = await openTransactionCacheDB();
+function getDateOnly(date) {
+    const d = new Date(date);
 
-    return new Promise((resolve, reject) => {
-        const tx = db.transaction(
-            TRANSACTION_CACHE_STORE,
-            'readwrite'
-        );
-
-        tx.objectStore(
-            TRANSACTION_CACHE_STORE
-        ).clear();
-
-        tx.oncomplete = resolve;
-        tx.onerror = () => reject(tx.error);
-    });
+    return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, '0'),
+        String(d.getDate()).padStart(2, '0')
+    ].join('-');
 }
 
-// ============================================================
-// DATE RANGE
-// ============================================================
-
-function getDateString(date) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-
-    return `${y}-${m}-${d}`;
-}
-
-function getPeriodRange(period) {
+function getInitialCacheRange() {
     const now = new Date();
 
-    now.setHours(0, 0, 0, 0);
+    const endDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        23,
+        59,
+        59
+    );
 
-    let start = new Date(now);
-    let end = new Date(now);
-
-    if (period === 'TODAY') {
-        // already today
-    } else if (period === 'YESTERDAY') {
-        start.setDate(start.getDate() - 1);
-        end.setDate(end.getDate() - 1);
-    } else if (period === '7DAYS') {
-        start.setDate(start.getDate() - 6);
-    } else if (period === '30DAYS') {
-        start.setDate(start.getDate() - 29);
-    } else if (period === 'CUSTOM') {
-        if (customStartDate) {
-            start = new Date(`${customStartDate}T00:00:00`);
-        }
-
-        if (customEndDate) {
-            end = new Date(`${customEndDate}T00:00:00`);
-        }
-    }
-
-    end.setHours(23, 59, 59, 999);
+    const startDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() - INITIAL_CACHE_DAYS + 1
+    );
 
     return {
-        start: getDateString(start),
-        end: getDateString(end)
+        start: startDate,
+        end: endDate
     };
 }
 
-// ============================================================
-// FETCH TRANSACTIONS
-// ============================================================
+function getCurrentPeriodRange() {
+    const now = new Date();
 
-async function fetchTransactionsFromSupabase(startDate, endDate) {
-    let allRows = [];
-    let offset = 0;
+    let startFilterDate = null;
+    let endFilterDate = null;
 
-    while (true) {
-        const { data, error } = await supabaseClient
-            .from('transactions')
-            .select('*')
-            .gte('date', startDate)
-            .lte('date', endDate)
-            .range(
-                offset,
-                offset + FETCH_BATCH_SIZE - 1
+    if (currentPeriod === 'TODAY') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59
+        );
+
+    } else if (currentPeriod === 'YESTERDAY') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 1
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 1,
+            23,
+            59,
+            59
+        );
+
+    } else if (currentPeriod === 'DAY_BEFORE_YESTERDAY') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 2
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 2,
+            23,
+            59,
+            59
+        );
+
+    } else if (currentPeriod === 'THIS_WEEK') {
+        const day = now.getDay() || 7;
+
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - day + 1
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59
+        );
+
+    } else if (currentPeriod === 'THIS_MONTH') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59
+        );
+
+    } else if (currentPeriod === 'LAST_MONTH') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            1
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            0,
+            23,
+            59,
+            59
+        );
+
+    } else if (currentPeriod === 'THIS_YEAR') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            0,
+            1
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59
+        );
+
+    } else if (currentPeriod === 'CUSTOM') {
+        const s =
+            document.getElementById('startDate').value;
+
+        const e =
+            document.getElementById('endDate').value;
+
+        if (s) {
+            startFilterDate = new Date(
+                s + 'T00:00:00'
             );
-
-        if (error) {
-            throw error;
         }
 
-        if (!data || data.length === 0) {
-            break;
+        if (e) {
+            endFilterDate = new Date(
+                e + 'T23:59:59'
+            );
         }
-
-        allRows = allRows.concat(data);
-
-        if (data.length < FETCH_BATCH_SIZE) {
-            break;
-        }
-
-        offset += FETCH_BATCH_SIZE;
     }
 
-    return allRows;
+    return {
+        start: startFilterDate,
+        end: endFilterDate
+    };
 }
 
-async function loadTransactionsForRange(startDate, endDate) {
-    const rows = await fetchTransactionsFromSupabase(
-        startDate,
-        endDate
+function getMissingDateRanges(
+    cachedMeta,
+    requestedStart,
+    requestedEnd
+) {
+    if (!requestedStart || !requestedEnd) {
+        return [];
+    }
+
+    if (
+        !cachedMeta ||
+        !cachedMeta.coveredStart ||
+        !cachedMeta.coveredEnd
+    ) {
+        return [
+            {
+                start: requestedStart,
+                end: requestedEnd
+            }
+        ];
+    }
+
+    const cachedStart =
+        new Date(cachedMeta.coveredStart);
+
+    const cachedEnd =
+        new Date(cachedMeta.coveredEnd);
+
+    const ranges = [];
+
+    if (requestedStart < cachedStart) {
+        const end =
+            new Date(
+                cachedStart.getTime() - 1000
+            );
+
+        ranges.push({
+            start: requestedStart,
+            end: end
+        });
+    }
+
+    if (requestedEnd > cachedEnd) {
+        const start =
+            new Date(
+                cachedEnd.getTime() + 1000
+            );
+
+        ranges.push({
+            start: start,
+            end: requestedEnd
+        });
+    }
+
+    return ranges;
+}
+
+async function fetchTransactionRange(
+    startDate,
+    endDate
+) {
+    if (!startDate || !endDate) return [];
+
+    const allRows = [];
+    let from = 0;
+
+    while (true) {
+        const to =
+            from + FETCH_BATCH_SIZE - 1;
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from('transactions')
+            .select('*')
+            .gte(
+                'date',
+                startDate.toISOString()
+            )
+            .lte(
+                'date',
+                endDate.toISOString()
+            )
+            .order(
+                'date',
+                {
+                    ascending: false
+                }
+            )
+            .range(
+                from,
+                to
+            );
+
+        if (error) throw error;
+
+        const rows = data || [];
+
+        allRows.push(...rows);
+
+        if (
+            rows.length <
+            FETCH_BATCH_SIZE
+        ) {
+            break;
+        }
+
+        from += FETCH_BATCH_SIZE;
+    }
+
+    return allRows.map(
+        (row, idx) => ({
+            ...row,
+            _rowId:
+                row.id ||
+                `row_${row.date}_${row.invoice_no || ''}_${row.item_code || ''}_${idx}`
+        })
     );
-
-    const prepared = rows.map((row, index) => ({
-        ...row,
-        _rowId: getRowId(row, index)
-    }));
-
-    await saveTransactionsToCache(prepared);
-
-    return prepared;
 }
 
 async function loadTwoYearsData() {
-    const now = new Date();
+    try {
+        const now = new Date();
 
-    const endDate = getDateString(now);
+        const startDate = new Date(
+            now.getFullYear() - 1,
+            0,
+            1
+        );
 
-    const start = new Date(now);
-    start.setFullYear(start.getFullYear() - 2);
+        const endDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59,
+            999
+        );
 
-    const startDate = getDateString(start);
+        updateStatus(
+            'กำลังโหลดข้อมูลย้อนหลัง 2 ปี...'
+        );
 
-    return loadTransactionsForRange(
-        startDate,
-        endDate
-    );
+        await loadTransactionsForRange(
+            startDate,
+            endDate,
+            false
+        );
+
+        allTransactions =
+            await getAllCachedTransactions();
+
+        applyFilters();
+
+        setTimeout(() => {
+            document.getElementById(
+                'statusIndicator'
+            ).classList.add('hidden');
+        }, 2000);
+
+    } catch (error) {
+        console.error(
+            'Error loading 2 years data:',
+            error
+        );
+
+        updateStatus(
+            'เกิดข้อผิดพลาดในการโหลดข้อมูลย้อนหลัง 2 ปี'
+        );
+
+        setTimeout(() => {
+            updateStatus('');
+        }, 5000);
+    }
 }
 
-async function fetchTransactions() {
-    try {
-        const cached = await getCachedTransactions();
+async function loadTransactionsForRange(
+    requestedStart,
+    requestedEnd,
+    isManualRefresh = false
+) {
+    const nowTime =
+        new Date().getTime();
 
-        if (cached.length > 0) {
-            allTransactions = cached.map((row, index) => ({
-                ...row,
-                _rowId: row._rowId || getRowId(row, index)
-            }));
+    if (isManualRefresh) {
+        await clearTransactionCache();
+    }
 
-            applyFilters();
+    let cachedMeta =
+        await getTransactionCacheMeta();
 
-            ensureCurrentPeriodData();
-        } else {
-            allTransactions = await loadTwoYearsData();
-            applyFilters();
+    if (
+        cachedMeta &&
+        cachedMeta.updatedAt &&
+        nowTime -
+        Number(cachedMeta.updatedAt) >=
+        TRANSACTION_CACHE_TTL
+    ) {
+        await clearTransactionCache();
+        cachedMeta = null;
+    }
+
+    let missingRanges =
+        getMissingDateRanges(
+            cachedMeta,
+            requestedStart,
+            requestedEnd
+        );
+
+    if (!cachedMeta) {
+        missingRanges = [
+            {
+                start: requestedStart,
+                end: requestedEnd
+            }
+        ];
+    }
+
+    if (missingRanges.length > 0) {
+        updateStatus(
+            'กำลังโหลดข้อมูล...'
+        );
+
+        for (const range of missingRanges) {
+            const rows =
+                await fetchTransactionRange(
+                    range.start,
+                    range.end
+                );
+
+            await saveTransactionsToCache(
+                rows
+            );
         }
+
+        const existingMeta =
+            await getTransactionCacheMeta();
+
+        let coveredStart =
+            existingMeta?.coveredStart
+                ? new Date(
+                    existingMeta.coveredStart
+                )
+                : requestedStart;
+
+        let coveredEnd =
+            existingMeta?.coveredEnd
+                ? new Date(
+                    existingMeta.coveredEnd
+                )
+                : requestedEnd;
+
+        if (requestedStart < coveredStart) {
+            coveredStart =
+                requestedStart;
+        }
+
+        if (requestedEnd > coveredEnd) {
+            coveredEnd =
+                requestedEnd;
+        }
+
+        await saveTransactionCacheMeta({
+            updatedAt: nowTime,
+            coveredStart:
+                coveredStart.toISOString(),
+            coveredEnd:
+                coveredEnd.toISOString()
+        });
+    }
+
+    allTransactions =
+        await getAllCachedTransactions();
+
+    document.getElementById(
+        'statusIndicator'
+    ).classList.add('hidden');
+
+    applyFilters();
+}
+
+function forceRefreshData() {
+    fetchTransactions(true);
+}
+
+async function fetchTransactions(
+    isManualRefresh = false
+) {
+    try {
+        let requestedRange;
+
+        if (isManualRefresh) {
+            requestedRange =
+                getCurrentPeriodRange();
+
+            if (
+                !requestedRange.start ||
+                !requestedRange.end
+            ) {
+                requestedRange =
+                    getInitialCacheRange();
+            }
+
+            await loadTransactionsForRange(
+                requestedRange.start,
+                requestedRange.end,
+                true
+            );
+
+            return;
+        }
+
+        /*
+         * เปิดหน้าแรก = TODAY จริง ๆ
+         * ไม่โหลด INITIAL_CACHE_DAYS
+         */
+        requestedRange =
+            getCurrentPeriodRange();
+
+        if (
+            !requestedRange.start ||
+            !requestedRange.end
+        ) {
+            requestedRange =
+                getInitialCacheRange();
+        }
+
+        updateStatus(
+            'กำลังโหลดข้อมูลวันนี้...'
+        );
+
+        const rows =
+            await fetchTransactionRange(
+                requestedRange.start,
+                requestedRange.end
+            );
+
+        allTransactions = rows;
+
+        /*
+         * เก็บข้อมูลวันนี้ลง cache
+         * แต่ไม่ดึง cache เก่าทั้งหมดกลับมา
+         */
+        await saveTransactionsToCache(
+            rows
+        );
+
+        document.getElementById(
+            'statusIndicator'
+        ).classList.add('hidden');
+
+        applyFilters();
+
     } catch (err) {
-        console.error('Fetch Transactions Error:', err);
-        alert('ไม่สามารถโหลดข้อมูลรายการได้');
+        console.error(
+            "Supabase Query Error:",
+            err
+        );
+
+        updateStatus(
+            `เกิดข้อผิดพลาด: ${err.message}`,
+            true
+        );
     }
 }
 
 async function ensureCurrentPeriodData() {
+    const requestedRange =
+        getCurrentPeriodRange();
+
+    if (
+        !requestedRange.start ||
+        !requestedRange.end
+    ) {
+        return;
+    }
+
     try {
-        const range = getPeriodRange(currentPeriod);
+        const cachedMeta =
+            await getTransactionCacheMeta();
 
-        const freshRows = await fetchTransactionsFromSupabase(
-            range.start,
-            range.end
-        );
+        const nowTime =
+            new Date().getTime();
 
-        const prepared = freshRows.map((row, index) => ({
-            ...row,
-            _rowId: getRowId(row, index)
-        }));
+        if (
+            cachedMeta &&
+            cachedMeta.updatedAt &&
+            nowTime -
+            Number(cachedMeta.updatedAt) >=
+            TRANSACTION_CACHE_TTL
+        ) {
+            await loadTransactionsForRange(
+                requestedRange.start,
+                requestedRange.end,
+                false
+            );
 
-        const map = new Map(
-            allTransactions.map(row => [
-                row._rowId,
-                row
-            ])
-        );
+            return;
+        }
 
-        prepared.forEach(row => {
-            map.set(row._rowId, row);
-        });
+        const missingRanges =
+            getMissingDateRanges(
+                cachedMeta,
+                requestedRange.start,
+                requestedRange.end
+            );
 
-        allTransactions = Array.from(map.values());
+        if (
+            missingRanges.length > 0
+        ) {
+            await loadTransactionsForRange(
+                requestedRange.start,
+                requestedRange.end,
+                false
+            );
+        } else {
+            /*
+             * สำคัญ:
+             * ใช้ข้อมูลเฉพาะช่วงที่เลือก
+             * ไม่ดึง cache ทั้งหมดมา render
+             */
+            const rows =
+                await fetchTransactionRange(
+                    requestedRange.start,
+                    requestedRange.end
+                );
 
-        await saveTransactionsToCache(prepared);
+            allTransactions = rows;
 
-        applyFilters();
+            applyFilters();
+        }
+
     } catch (err) {
-        console.error('Current Period Refresh Error:', err);
+        console.error(
+            "Period Load Error:",
+            err
+        );
+
+        updateStatus(
+            `เกิดข้อผิดพลาด: ${err.message}`,
+            true
+        );
     }
 }
 
-async function forceRefreshData() {
-    try {
-        await clearTransactionCache();
-
-        allTransactions = [];
-        filteredTransactions = [];
-
-        await loadTwoYearsData();
-
-        const cached = await getCachedTransactions();
-
-        allTransactions = cached.map((row, index) => ({
-            ...row,
-            _rowId: row._rowId || getRowId(row, index)
-        }));
-
-        applyFilters();
-    } catch (err) {
-        console.error('Force Refresh Error:', err);
-        alert('ไม่สามารถ Refresh ข้อมูลได้');
+function setPeriod(
+    period,
+    shouldApply = true
+) {
+    /*
+     * ตอนเปิดหน้า TODAY ต้องไม่ toggle เป็น ALL
+     */
+    if (
+        shouldApply &&
+        currentPeriod === period
+    ) {
+        currentPeriod = 'ALL';
+    } else {
+        currentPeriod = period;
     }
-}
 
-// ============================================================
-// PERIOD
-// ============================================================
+    document.getElementById(
+        'customDateContainer'
+    ).classList.toggle(
+        'hidden',
+        currentPeriod !== 'CUSTOM'
+    );
 
-function setPeriod(period, refresh = true) {
-    currentPeriod = period;
+    document.querySelectorAll(
+        '.period-btn'
+    ).forEach(btn => {
+        const active =
+            btn.dataset.period ===
+            currentPeriod;
 
-    document.querySelectorAll('.period-btn').forEach(btn => {
         btn.classList.toggle(
-            'active',
-            btn.dataset.period === period
+            'bg-google-blue',
+            active
+        );
+
+        btn.classList.toggle(
+            'text-white',
+            active
+        );
+
+        btn.classList.toggle(
+            'border-google-blue',
+            active
+        );
+
+        btn.classList.toggle(
+            'bg-white',
+            !active
+        );
+
+        btn.classList.toggle(
+            'text-slate-600',
+            !active
+        );
+
+        btn.classList.toggle(
+            'border-google-border',
+            !active
         );
     });
 
-    if (refresh) {
-        applyFilters();
+    if (shouldApply) {
         ensureCurrentPeriodData();
     }
 }
 
-function toggleCustomPeriodMenu() {
-    const menu = document.getElementById(
-        'customPeriodMenu'
+function togglePeriodMenu() {
+    document.getElementById(
+        'periodMenu'
+    ).classList.toggle(
+        'hidden'
     );
-
-    if (menu) {
-        menu.classList.toggle('hidden');
-    }
 }
 
-function applyCustomPeriod() {
-    customStartDate =
-        document.getElementById('customStartDate')?.value || '';
+function handleCustomPeriodChange() {
+    const period =
+        document.getElementById(
+            'periodFilter'
+        ).value;
 
-    customEndDate =
-        document.getElementById('customEndDate')?.value || '';
+    currentPeriod = period;
 
-    if (!customStartDate || !customEndDate) {
-        alert('กรุณาเลือกวันที่เริ่มต้นและวันที่สิ้นสุด');
-        return;
-    }
+    document.getElementById(
+        'customDateContainer'
+    ).classList.toggle(
+        'hidden',
+        period !== 'CUSTOM'
+    );
 
-    currentPeriod = 'CUSTOM';
+    document.querySelectorAll(
+        '.period-btn'
+    ).forEach(btn => {
+        btn.classList.remove(
+            'bg-google-blue',
+            'text-white',
+            'border-google-blue'
+        );
 
-    document.querySelectorAll('.period-btn').forEach(btn => {
-        btn.classList.toggle(
-            'active',
-            btn.dataset.period === 'CUSTOM'
+        btn.classList.add(
+            'bg-white',
+            'text-slate-600',
+            'border-google-border'
         );
     });
 
-    document.getElementById(
-        'customPeriodMenu'
-    )?.classList.add('hidden');
+    if (period === 'CUSTOM') {
+        const s =
+            document.getElementById(
+                'startDate'
+            ).value;
 
-    applyFilters();
+        const e =
+            document.getElementById(
+                'endDate'
+            ).value;
+
+        if (s && e) {
+            ensureCurrentPeriodData();
+        } else {
+            applyFilters();
+        }
+
+        return;
+    }
+
     ensureCurrentPeriodData();
 }
-
-// ============================================================
-// ORDER GROUP
-// ============================================================
 
 function getUniqueOrderGroups(rows) {
     const groups = new Map();
 
     rows.forEach(row => {
-        const orderNo = String(
-            row.order_no ||
-            row.invoice_no ||
-            row._rowId
-        );
+        const orderNo =
+            String(
+                row.order_no ||
+                row.invoice_no ||
+                row._rowId
+            );
 
         if (!groups.has(orderNo)) {
-            groups.set(orderNo, []);
+            groups.set(
+                orderNo,
+                []
+            );
         }
 
         groups.get(orderNo).push(row);
     });
 
-    return Array.from(groups.entries()).map(
+    return Array.from(
+        groups.entries()
+    ).map(
         ([orderNo, items]) => ({
             orderNo,
             items
@@ -496,184 +1067,430 @@ function getUniqueOrderGroups(rows) {
     );
 }
 
-// ============================================================
-// FILTER
-// ============================================================
-
 function applyFilters() {
     const search =
-        normalizeText(
-            document.getElementById('searchInput')?.value
-        );
+        document.getElementById(
+            'searchInput'
+        ).value
+            .toLowerCase()
+            .trim();
 
     const channel =
-        document.getElementById('channelFilter')?.value || '';
+        document.getElementById(
+            'channelFilter'
+        ).value;
 
     const status =
-        document.getElementById('statusFilter')?.value || '';
+        document.getElementById(
+            'statusFilter'
+        ).value;
+
+    const period =
+        currentPeriod;
 
     const showPKOnly =
-        document.getElementById('showPKToggle')?.checked || false;
+        document.getElementById(
+            'showPKToggle'
+        ).checked;
 
-    const range = getPeriodRange(currentPeriod);
+    const now = new Date();
 
-    let rows = allTransactions.filter(row => {
-        const rowDate = String(row.date || '').slice(0, 10);
+    let startFilterDate = null;
+    let endFilterDate = null;
 
-        if (
-            rowDate < range.start ||
-            rowDate > range.end
-        ) {
-            return false;
+    if (period === 'TODAY') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59
+        );
+
+    } else if (
+        period === 'YESTERDAY'
+    ) {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 1
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 1,
+            23,
+            59,
+            59
+        );
+
+    } else if (
+        period === 'DAY_BEFORE_YESTERDAY'
+    ) {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 2
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 2,
+            23,
+            59,
+            59
+        );
+
+    } else if (
+        period === 'THIS_WEEK'
+    ) {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 6
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59
+        );
+
+    } else if (
+        period === 'THIS_MONTH'
+    ) {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1
+        );
+
+    } else if (
+        period === 'LAST_MONTH'
+    ) {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            1
+        );
+
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            0,
+            23,
+            59,
+            59
+        );
+
+    } else if (
+        period === 'THIS_YEAR'
+    ) {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            0,
+            1
+        );
+
+    } else if (
+        period === 'CUSTOM'
+    ) {
+        const s =
+            document.getElementById(
+                'startDate'
+            ).value;
+
+        const e =
+            document.getElementById(
+                'endDate'
+            ).value;
+
+        if (s) {
+            startFilterDate =
+                new Date(
+                    s + 'T00:00:00'
+                );
         }
 
-        if (
-            channel &&
-            String(row.channel || '') !== channel
-        ) {
-            return false;
+        if (e) {
+            endFilterDate =
+                new Date(
+                    e + 'T23:59:59'
+                );
+        }
+    }
+
+    const invoiceCounts = {};
+    const orderCounts = {};
+
+    allTransactions.forEach(item => {
+        if (item.invoice_no) {
+            invoiceCounts[
+                item.invoice_no
+            ] =
+                (
+                    invoiceCounts[
+                        item.invoice_no
+                    ] || 0
+                ) + 1;
         }
 
-        if (
-            status &&
-            String(row.status || '') !== status
-        ) {
-            return false;
+        if (item.order_no) {
+            orderCounts[
+                item.order_no
+            ] =
+                (
+                    orderCounts[
+                        item.order_no
+                    ] || 0
+                ) + 1;
         }
+    });
 
-        if (search) {
-            const haystack = [
-                row.order_no,
-                row.invoice_no,
-                row.name,
-                row.customer_name,
-                row.item_code,
-                row.item_name,
-                row.channel,
-                row.tracking_number
-            ]
-                .map(normalizeText)
-                .join(' ');
-
-            if (!haystack.includes(search)) {
+    filteredTransactions =
+        allTransactions.filter(item => {
+            if (
+                showPKOnly &&
+                !selectedRowIds.has(
+                    item._rowId
+                )
+            ) {
                 return false;
             }
-        }
 
-        if (showPKOnly) {
-            if (!selectedRowIds.has(row._rowId)) {
-                return false;
-            }
-        }
+            const itemChannel =
+                String(
+                    item.channel || ''
+                );
 
-        return true;
-    });
+            const itemStatus =
+                String(
+                    item.status ||
+                    'PENDING'
+                );
 
-    rows.forEach(row => {
-        row._isDuplicate = false;
-    });
+            const textMatch =
+                !search ||
+                String(
+                    item.invoice_no || ''
+                )
+                    .toLowerCase()
+                    .includes(search) ||
+                String(
+                    item.order_no || ''
+                )
+                    .toLowerCase()
+                    .includes(search) ||
+                String(
+                    item.item_code || ''
+                )
+                    .toLowerCase()
+                    .includes(search) ||
+                String(
+                    item.item_name || ''
+                )
+                    .toLowerCase()
+                    .includes(search) ||
+                String(
+                    formatDateFormatted(
+                        item.date,
+                        false
+                    ) || ''
+                )
+                    .toLowerCase()
+                    .includes(search);
 
-    const orderCounts = new Map();
+            const channelMatch =
+                channel === 'ALL' ||
+                itemChannel
+                    .toLowerCase() ===
+                channel.toLowerCase();
 
-    rows.forEach(row => {
-        const orderNo = String(
-            row.order_no ||
-            row.invoice_no ||
-            row._rowId
-        );
+            const statusMatch =
+                status === 'ALL' ||
+                itemStatus
+                    .toUpperCase() ===
+                status.toUpperCase();
 
-        orderCounts.set(
-            orderNo,
-            (orderCounts.get(orderNo) || 0) + 1
-        );
-    });
+            let dateMatch = true;
 
-    rows.forEach(row => {
-        const orderNo = String(
-            row.order_no ||
-            row.invoice_no ||
-            row._rowId
-        );
+            if (
+                startFilterDate ||
+                endFilterDate
+            ) {
+                const rowDate =
+                    new Date(item.date);
 
-        row._isDuplicate =
-            (orderCounts.get(orderNo) || 0) > 1;
-    });
-
-    rows.sort((a, b) => {
-        const av = a[currentSortColumn] ?? '';
-        const bv = b[currentSortColumn] ?? '';
-
-        if (currentSortColumn === 'date') {
-            const ad = new Date(av).getTime();
-            const bd = new Date(bv).getTime();
-
-            return currentSortDirection === 'asc'
-                ? ad - bd
-                : bd - ad;
-        }
-
-        const comparison =
-            String(av).localeCompare(
-                String(bv),
-                'th',
-                {
-                    numeric: true,
-                    sensitivity: 'base'
+                if (
+                    startFilterDate &&
+                    rowDate <
+                    startFilterDate
+                ) {
+                    dateMatch = false;
                 }
+
+                if (
+                    endFilterDate &&
+                    rowDate >
+                    endFilterDate
+                ) {
+                    dateMatch = false;
+                }
+            }
+
+            item._isDuplicate =
+                invoiceCounts[
+                    item.invoice_no
+                ] > 1 ||
+                orderCounts[
+                    item.order_no
+                ] > 1;
+
+            return (
+                textMatch &&
+                channelMatch &&
+                statusMatch &&
+                dateMatch
             );
+        });
 
-        return currentSortDirection === 'asc'
-            ? comparison
-            : -comparison;
-    });
+    filteredTransactions.sort(
+        (a, b) => {
+            let valA =
+                a[currentSortColumn] ??
+                '';
 
-    filteredTransactions = rows;
-    filteredOrderGroups = getUniqueOrderGroups(rows);
+            let valB =
+                b[currentSortColumn] ??
+                '';
 
-    displayLimit = 100;
+            if (
+                currentSortColumn ===
+                    'sales_amt' ||
+                currentSortColumn ===
+                    'qty'
+            ) {
+                valA =
+                    Number(valA) || 0;
+
+                valB =
+                    Number(valB) || 0;
+
+            } else {
+                valA =
+                    String(valA)
+                        .toLowerCase();
+
+                valB =
+                    String(valB)
+                        .toLowerCase();
+            }
+
+            if (valA < valB) {
+                return currentSortAsc
+                    ? -1
+                    : 1;
+            }
+
+            if (valA > valB) {
+                return currentSortAsc
+                    ? 1
+                    : -1;
+            }
+
+            return 0;
+        }
+    );
+
+    updateSortIcons();
+
+    filteredOrderGroups =
+        getUniqueOrderGroups(
+            filteredTransactions
+        );
+
+    displayLimit = 25;
 
     renderTable();
-    updateSortIcons();
 }
 
-// ============================================================
-// SORT
-// ============================================================
-
 function sortTable(column) {
-    if (currentSortColumn === column) {
-        currentSortDirection =
-            currentSortDirection === 'asc'
-                ? 'desc'
-                : 'asc';
+    if (
+        currentSortColumn ===
+        column
+    ) {
+        currentSortAsc =
+            !currentSortAsc;
     } else {
-        currentSortColumn = column;
-        currentSortDirection = 'asc';
+        currentSortColumn =
+            column;
+
+        currentSortAsc = true;
     }
 
     applyFilters();
 }
 
-// ============================================================
-// SORT ICON
-// ============================================================
-
 function updateSortIcons() {
-    document.querySelectorAll('.sort-icon').forEach(icon => {
-        icon.className =
-            'sort-icon fa-solid fa-sort text-[9px] ml-1';
+    [
+        'date',
+        'invoice_no',
+        'item_code',
+        'item_name',
+        'qty',
+        'sales_amt'
+    ].forEach(col => {
+        const el =
+            document.getElementById(
+                `sort_${col}`
+            );
+
+        if (!el) return;
+
+        if (
+            col ===
+            currentSortColumn
+        ) {
+            el.className =
+                "ml-0.5 text-[10px] text-google-blue font-bold";
+
+            el.innerHTML =
+                currentSortAsc
+                    ? `<i class="fa-solid fa-arrow-up-wide-short"></i>`
+                    : `<i class="fa-solid fa-arrow-down-wide-short"></i>`;
+
+        } else {
+            el.className =
+                "ml-0.5 text-[10px] text-slate-300";
+
+            el.innerHTML =
+                `<i class="fa-solid fa-arrow-down-wide-short"></i>`;
+        }
     });
 }
 
-// ============================================================
-// RENDER TABLE
-// ============================================================
-
 function renderTable() {
     const tbody =
-        document.getElementById('txTableBody');
+        document.getElementById(
+            'txTableBody'
+        );
 
-    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    const totalOrders =
+        filteredOrderGroups.length;
 
     const visibleGroups =
         filteredOrderGroups.slice(
@@ -681,218 +1498,449 @@ function renderTable() {
             displayLimit
         );
 
-    const rowsToRender =
-        visibleGroups.flatMap(group => group.items);
+    const pageData =
+        visibleGroups.flatMap(
+            group => group.items
+        );
 
-    tbody.innerHTML = rowsToRender.map(row => {
-        const orderNo = row.order_no || '-';
-        const invoiceNo = row.invoice_no || '-';
-
-        const isSelected =
-            selectedRowIds.has(row._rowId);
-
-        const isDuplicate =
-            row._isDuplicate;
-
-        const selectedClass =
-            isSelected
-                ? 'row-selected'
-                : '';
-
-        const duplicateClass =
-            isDuplicate
-                ? 'row-duplicate'
-                : '';
-
-        const channel =
-            row.channel || '-';
-
-        const status =
-            row.status || '';
-
-        return `
-            <tr
-                class="${selectedClass} ${duplicateClass} border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition"
-                data-row-id="${escapeHtml(row._rowId)}"
-                onclick="handleTransactionRowClick(event, '${escapeHtml(row._rowId)}')"
-            >
-                <td class="px-3 py-2 whitespace-nowrap">
-                    ${formatDate(row.date)}
-                </td>
-
-                <td class="px-3 py-2 whitespace-nowrap">
-                    <div class="font-bold text-slate-900 font-mono">
-                        ${escapeHtml(invoiceNo)}
-                    </div>
-
-                    <div
-                        class="order-number-clickable text-[10px] text-google-gray font-mono"
-                        title="สร้าง Shipping Label"
-                        onclick="handleOrderNumberClick(event, '${escapeHtml(orderNo)}')"
-                    >
-                        ${escapeHtml(orderNo)}
-                    </div>
-                </td>
-
-                <td class="px-3 py-2 whitespace-nowrap font-mono text-xs">
-                    ${escapeHtml(row.item_code || '-')}
-                </td>
-
-                <td class="px-3 py-2">
-                    ${escapeHtml(row.item_name || row.name || '-')}
-                </td>
-
-                <td class="px-3 py-2 text-right whitespace-nowrap">
-                    ${Number(row.qty || 0).toLocaleString('th-TH')}
-                </td>
-
-                <td class="px-3 py-2 text-right whitespace-nowrap">
-                    ${formatMoney(row.sales_amt)}
-                </td>
-
-                <td class="px-3 py-2 whitespace-nowrap">
-                    <span class="text-xs">
-                        ${escapeHtml(channel)}
-                    </span>
-                </td>
-
-                <td class="px-3 py-2 whitespace-nowrap">
-                    <select
-                        class="status-select status-${normalizeText(status).replace(/\s+/g, '-')}"
-                        onclick="event.stopPropagation()"
-                        onchange="handleStatusChange('${escapeHtml(row._rowId)}', this.value)"
-                    >
-                        ${getStatusOptions(status)}
-                    </select>
+    if (
+        pageData.length === 0
+    ) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="p-6 text-center text-google-gray">
+                    ไม่พบรายการคำสั่งซื้อ
                 </td>
             </tr>
         `;
-    }).join('');
+    } else {
+        pageData.forEach(row => {
+            const isSelected =
+                selectedRowIds.has(
+                    row._rowId
+                );
 
-    const orderCount =
-        filteredOrderGroups.length;
+            const isDup =
+                row._isDuplicate;
 
-    const countEl =
-        document.getElementById('orderCountTop');
+            let channelBadgeClass =
+                "bg-slate-100 text-slate-700 border-slate-200";
 
-    if (countEl) {
-        countEl.innerText =
-            `${orderCount.toLocaleString()} orders`;
+            const ch =
+                String(
+                    row.channel || ''
+                ).toLowerCase();
+
+            if (
+                ch.includes('shopee')
+            ) {
+                channelBadgeClass =
+                    "bg-shopee text-white";
+
+            } else if (
+                ch.includes('lazada')
+            ) {
+                channelBadgeClass =
+                    "bg-lazada text-white";
+
+            } else if (
+                ch.includes('tiktok')
+            ) {
+                channelBadgeClass =
+                    "bg-tiktok text-white";
+            }
+
+            const currentStatus =
+                pendingStatusChanges[
+                    row._rowId
+                ] ||
+                row.status ||
+                'PENDING';
+
+            const orderNo =
+                String(
+                    row.order_no || '-'
+                );
+
+            const orderPrefix =
+                orderNo.length > 3
+                    ? orderNo.slice(
+                        0,
+                        -3
+                    )
+                    : '';
+
+            const orderTail =
+                orderNo.length > 3
+                    ? orderNo.slice(-3)
+                    : orderNo;
+
+            const qty =
+                Number(row.qty) || 0;
+
+            const qtyClass =
+                qty > 1
+                    ? 'text-google-red'
+                    : 'text-slate-900';
+
+            const tr =
+                document.createElement(
+                    'tr'
+                );
+
+            let rowBgClass =
+                "hover:bg-slate-50";
+
+            if (isDup) {
+                rowBgClass =
+                    "row-duplicate";
+            }
+
+            if (isSelected) {
+                rowBgClass =
+                    "row-selected";
+            }
+
+            tr.className =
+                `transition-colors border-b border-slate-100 cursor-pointer ${rowBgClass}`;
+
+            tr.onclick = (e) => {
+                if (
+                    e.target.tagName ===
+                        'SELECT' ||
+                    e.target.tagName ===
+                        'OPTION' ||
+                    e.target.tagName ===
+                        'INPUT' ||
+                    e.target.closest(
+                        '.shipping-order-link'
+                    )
+                ) {
+                    return;
+                }
+
+                toggleRowSelection(
+                    row._rowId
+                );
+            };
+
+            const safeOrderNo =
+                String(
+                    row.order_no || ''
+                )
+                    .replace(
+                        /\\/g,
+                        '\\\\'
+                    )
+                    .replace(
+                        /'/g,
+                        "\\'"
+                    );
+
+            tr.innerHTML = `
+                <td class="p-2 align-top font-mono text-[11px] text-slate-600">
+                    <span class="sm:hidden block leading-tight">
+                        <span class="block text-[13px] font-semibold">
+                            ${formatDateFormatted(row.date, true).substring(0, 5)}
+                        </span>
+
+                        <span class="block text-[15px] font-bold">
+                            ${(() => {
+                                const day =
+                                    parseInt(
+                                        formatDateFormatted(
+                                            row.date,
+                                            true
+                                        ).substring(6),
+                                        10
+                                    );
+
+                                const suffix =
+                                    day % 100 >= 11 &&
+                                    day % 100 <= 13
+                                        ? 'th'
+                                        : day % 10 === 1
+                                            ? 'st'
+                                            : day % 10 === 2
+                                                ? 'nd'
+                                                : day % 10 === 3
+                                                    ? 'rd'
+                                                    : 'th';
+
+                                return `${day}${suffix}`;
+                            })()}
+                        </span>
+                    </span>
+
+                    <span class="hidden sm:inline whitespace-nowrap">
+                        ${formatDateFormatted(row.date, false)}
+                    </span>
+                </td>
+
+                <td class="p-2 align-top">
+                    <div class="sm:hidden leading-tight w-[78px] overflow-hidden">
+
+                        <div
+                            class="mobile-order-main font-bold text-slate-900 font-mono truncate"
+                            title="${row.invoice_no || ''}"
+                        >
+                            ${row.invoice_no || '-'}
+                        </div>
+
+                        <div
+                            class="text-[9px] text-google-gray font-mono truncate shipping-order-link cursor-pointer hover:text-google-blue hover:underline"
+                            title="${orderNo}"
+                            onclick="event.stopPropagation(); openShippingLabel('${safeOrderNo}')"
+                        >
+                            ${orderPrefix}
+                        </div>
+
+                        <div
+                            class="mobile-order-tail font-mono text-slate-900 shipping-order-link cursor-pointer hover:text-google-blue"
+                            onclick="event.stopPropagation(); openShippingLabel('${safeOrderNo}')"
+                        >
+                            ${orderTail}
+                        </div>
+
+                    </div>
+
+                    <div class="hidden sm:block leading-tight">
+
+                        <div class="font-bold text-slate-900 font-mono">
+                            ${row.invoice_no || '-'}
+                        </div>
+
+                        <div
+                            class="text-[10px] text-google-gray font-mono shipping-order-link cursor-pointer hover:text-google-blue hover:underline"
+                            title="Generate Shipping Label"
+                            onclick="event.stopPropagation(); openShippingLabel('${safeOrderNo}')"
+                        >
+                            ${row.order_no || '-'}
+                        </div>
+
+                    </div>
+                </td>
+
+                <td class="p-2 align-top sm:font-mono sm:font-bold sm:text-google-blue sm:max-w-[130px]">
+
+                    <div class="mobile-item-code font-mono font-bold text-google-blue sm:hidden">
+                        ${row.item_code || '-'}
+                    </div>
+
+                    <div class="mobile-item-name sm:hidden text-[15px] font-medium text-slate-800">
+                        ${row.item_name || '-'}
+                    </div>
+
+                    <div
+                        class="hidden sm:block truncate"
+                        title="${row.item_code || ''}"
+                    >
+                        ${row.item_code || '-'}
+                    </div>
+
+                </td>
+
+                <td
+                    class="p-2 font-medium text-slate-800 hidden sm:table-cell max-w-[200px] truncate"
+                    title="${row.item_name || ''}"
+                >
+                    ${row.item_name || '-'}
+                </td>
+
+                <td class="p-2 text-right font-bold ${qtyClass} text-[14px] whitespace-nowrap">
+                    ${qty}
+                </td>
+
+                <td class="p-2 text-right font-bold text-slate-900 hidden sm:table-cell">
+                    ${formatMoney(row.sales_amt)}
+                </td>
+
+                <td class="p-2 text-center hidden sm:table-cell">
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${channelBadgeClass}">
+                        ${row.channel || 'Direct'}
+                    </span>
+                </td>
+
+                <td class="p-2 text-center hidden sm:table-cell">
+                    <select
+                        onchange="handleStatusChange('${row._rowId}', this.value)"
+                        class="bg-white border border-google-border rounded px-1 py-0.5 text-[10px] font-semibold focus:outline-none focus:border-google-blue"
+                    >
+                        <option
+                            value="PENDING"
+                            ${currentStatus === 'PENDING' ? 'selected' : ''}
+                        >
+                            PENDING
+                        </option>
+
+                        <option
+                            value="ACTIVE"
+                            ${currentStatus === 'ACTIVE' ? 'selected' : ''}
+                        >
+                            ACTIVE
+                        </option>
+
+                        <option
+                            value="VOID"
+                            ${currentStatus === 'VOID' ? 'selected' : ''}
+                        >
+                            VOID
+                        </option>
+                    </select>
+                </td>
+            `;
+
+            tbody.appendChild(tr);
+        });
     }
 
-    const selectedCount =
-        document.getElementById('selectedCountText');
+    document.getElementById(
+        'orderCountTop'
+    ).innerHTML = `
+        <i class="fa-solid fa-circle text-[6px] order-count-live-icon"></i>
+        <span class="order-count-live">
+            ${totalOrders.toLocaleString()}
+        </span>
+        <span>Orders</span>
+    `;
 
-    if (selectedCount) {
-        selectedCount.innerText =
-            selectedRowIds.size.toLocaleString();
-    }
+    document.getElementById(
+        'selectedCountText'
+    ).innerText =
+        selectedRowIds.size.toLocaleString();
+
+    updatePendingChangesCount();
 }
-
-// ============================================================
-// MOBILE / ROW CLICK
-// ============================================================
-
-function handleTransactionRowClick(event, rowId) {
-    if (
-        event.target.tagName === 'SELECT' ||
-        event.target.tagName === 'OPTION' ||
-        event.target.tagName === 'INPUT' ||
-        event.target.closest('.order-number-clickable')
-    ) {
-        return;
-    }
-
-    toggleRowSelection(rowId);
-}
-
-// ============================================================
-// ROW SELECTION
-// ============================================================
 
 function toggleRowSelection(rowId) {
-    if (selectedRowIds.has(rowId)) {
-        selectedRowIds.delete(rowId);
+    if (
+        selectedRowIds.has(rowId)
+    ) {
+        selectedRowIds.delete(
+            rowId
+        );
     } else {
-        selectedRowIds.add(rowId);
+        selectedRowIds.add(
+            rowId
+        );
     }
 
-    applyFilters();
+    renderTable();
 }
 
-// ============================================================
-// STATUS
-// ============================================================
+function handleStatusChange(
+    rowId,
+    newStatus
+) {
+    pendingStatusChanges[
+        rowId
+    ] = newStatus;
 
-function getStatusOptions(currentStatus) {
-    const statuses = [
-        '',
-        'Pending',
-        'Processing',
-        'Shipped',
-        'Completed',
-        'Cancelled'
-    ];
-
-    return statuses.map(status => `
-        <option
-            value="${escapeHtml(status)}"
-            ${status === currentStatus ? 'selected' : ''}
-        >
-            ${status || '-'}
-        </option>
-    `).join('');
+    updatePendingChangesCount();
 }
 
-function handleStatusChange(rowId, newStatus) {
-    pendingStatusChanges[rowId] = newStatus;
+function updatePendingChangesCount() {
+    const count =
+        Object.keys(
+            pendingStatusChanges
+        ).length;
 
-    const row = allTransactions.find(
-        item => item._rowId === rowId
-    );
+    document.getElementById(
+        'pendingChangesCount'
+    ).innerText = count;
 
-    if (row) {
-        row.status = newStatus;
-    }
-
-    applyFilters();
+    document.getElementById(
+        'submitBtn'
+    ).disabled =
+        count === 0;
 }
 
 async function submitChanges() {
-    const changes =
-        Object.entries(pendingStatusChanges);
+    const count =
+        Object.keys(
+            pendingStatusChanges
+        ).length;
 
-    if (changes.length === 0) {
-        return;
-    }
+    if (count === 0) return;
+
+    updateStatus(
+        `กำลังบันทึก ${count} รายการลง Supabase...`
+    );
 
     try {
-        for (const [rowId, status] of changes) {
-            const row = allTransactions.find(
-                item => item._rowId === rowId
+        const updatePromises =
+            Object.keys(
+                pendingStatusChanges
+            ).map(rowId => {
+                const item =
+                    allTransactions.find(
+                        t =>
+                            t._rowId ===
+                            rowId
+                    );
+
+                if (
+                    !item ||
+                    !item.id
+                ) {
+                    return Promise.resolve();
+                }
+
+                const newStatus =
+                    pendingStatusChanges[
+                        rowId
+                    ];
+
+                return supabaseClient
+                    .from('transactions')
+                    .update({
+                        status:
+                            newStatus
+                    })
+                    .eq(
+                        'id',
+                        item.id
+                    );
+            });
+
+        const results =
+            await Promise.all(
+                updatePromises
             );
 
-            if (!row) continue;
+        Object.keys(
+            pendingStatusChanges
+        ).forEach(
+            (rowId, index) => {
+                const item =
+                    allTransactions.find(
+                        t =>
+                            t._rowId ===
+                            rowId
+                    );
 
-            let query = supabaseClient
-                .from('transactions')
-                .update({
-                    status
-                });
-
-            if (row.id !== undefined && row.id !== null) {
-                query = query.eq('id', row.id);
-            } else {
-                query = query
-                    .eq('invoice_no', row.invoice_no || '')
-                    .eq('item_code', row.item_code || '');
+                if (
+                    item &&
+                    !results[index]?.error
+                ) {
+                    item.status =
+                        pendingStatusChanges[
+                            rowId
+                        ];
+                }
             }
+        );
 
-            const { error } = await query;
+        const failedResult =
+            results.find(
+                result =>
+                    result?.error
+            );
 
-            if (error) {
-                throw error;
-            }
+        if (
+            failedResult?.error
+        ) {
+            throw failedResult.error;
         }
 
         pendingStatusChanges = {};
@@ -901,143 +1949,232 @@ async function submitChanges() {
             allTransactions
         );
 
+        updateStatus(
+            'บันทึกเรียบร้อย!'
+        );
+
+        setTimeout(() => {
+            document.getElementById(
+                'statusIndicator'
+            ).classList.add(
+                'hidden'
+            );
+        }, 2000);
+
         applyFilters();
 
-        alert('บันทึกข้อมูลเรียบร้อยแล้ว');
     } catch (err) {
-        console.error('Save Status Error:', err);
-        alert('ไม่สามารถบันทึกข้อมูลได้');
+        console.error(
+            "Submit Error:",
+            err
+        );
+
+        updateStatus(
+            `เกิดข้อผิดพลาด: ${err.message}`,
+            true
+        );
     }
 }
-
-// ============================================================
-// INFINITE SCROLL
-// ============================================================
 
 function setupInfiniteScroll() {
-    window.addEventListener('scroll', () => {
-        const nearBottom =
-            window.innerHeight +
-            window.scrollY >=
-            document.documentElement.scrollHeight - 500;
+    const grid =
+        document.querySelector(
+            '.transactions-grid'
+        );
 
-        if (!nearBottom) return;
+    if (!grid) return;
 
-        if (
-            displayLimit >=
-            filteredOrderGroups.length
-        ) {
-            return;
+    grid.addEventListener(
+        'scroll',
+        () => {
+            if (
+                grid.scrollTop +
+                grid.clientHeight >=
+                grid.scrollHeight -
+                250
+            ) {
+                if (
+                    displayLimit <
+                    filteredOrderGroups.length
+                ) {
+                    document.getElementById(
+                        'infiniteLoader'
+                    ).classList.remove(
+                        'hidden'
+                    );
+
+                    setTimeout(() => {
+                        displayLimit +=
+                            limitStep;
+
+                        renderTable();
+
+                        document.getElementById(
+                            'infiniteLoader'
+                        ).classList.add(
+                            'hidden'
+                        );
+                    }, 150);
+                }
+            }
         }
-
-        displayLimit += 100;
-        renderTable();
-    });
-}
-
-// ============================================================
-// SHIPPING LABEL
-// ============================================================
-
-let currentShippingOrderNo = '';
-
-function getTransactionsForOrder(orderNo) {
-    const target = String(orderNo || '').trim();
-
-    if (!target) {
-        return [];
-    }
-
-    return allTransactions.filter(row =>
-        String(row.order_no || '').trim() === target
     );
 }
 
-function handleOrderNumberClick(event, orderNo) {
-    event.preventDefault();
-    event.stopPropagation();
 
-    const targetOrderNo =
-        String(orderNo || '').trim();
+/* =========================================================
+   SHIPPING LABEL
+   ========================================================= */
 
-    if (!targetOrderNo) {
+async function loadShippingLabelLibraries() {
+    if (
+        shippingLabelLibrariesLoaded
+    ) {
         return;
     }
 
-    openShippingLabel(targetOrderNo);
-}
+    const loadScript = (
+        src,
+        check
+    ) => {
+        return new Promise(
+            (resolve, reject) => {
+                if (
+                    check &&
+                    check()
+                ) {
+                    resolve();
+                    return;
+                }
 
-function openShippingLabel(orderNo) {
-    const rows =
-        getTransactionsForOrder(orderNo);
+                const script =
+                    document.createElement(
+                        'script'
+                    );
 
-    if (!rows.length) {
-        alert('ไม่พบข้อมูล Order นี้');
-        return;
-    }
+                script.src = src;
 
-    currentShippingOrderNo = orderNo;
+                script.onload = () => {
+                    resolve();
+                };
 
-    renderShippingLabel(rows);
+                script.onerror = () => {
+                    reject(
+                        new Error(
+                            `Failed to load ${src}`
+                        )
+                    );
+                };
 
-    const modal =
-        document.getElementById(
-            'shippingLabelModal'
+                document.head.appendChild(
+                    script
+                );
+            }
         );
-
-    if (modal) {
-        modal.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
-    }
-}
-
-function closeShippingLabelModal() {
-    const modal =
-        document.getElementById(
-            'shippingLabelModal'
-        );
-
-    if (modal) {
-        modal.classList.add('hidden');
-    }
-
-    document.body.classList.remove(
-        'overflow-hidden'
-    );
-
-    currentShippingOrderNo = '';
-}
-
-// ============================================================
-// SHIPPING LABEL DATA
-// ============================================================
-
-function getShippingCustomer(rows) {
-    const first = rows[0] || {};
-
-    return {
-        name:
-            first.customer_name ||
-            first.name ||
-            '-',
-
-        phone:
-            first.phone ||
-            '-',
-
-        address:
-            first.customer_address ||
-            first.address ||
-            '-'
     };
+
+    await loadScript(
+        'https://cdnjs.cloudflare.com/ajax/libs/JsBarcode/3.11.6/JsBarcode.all.min.js',
+        () =>
+            typeof window.JsBarcode ===
+            'function'
+    );
+
+    await loadScript(
+        'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+        () =>
+            typeof window.html2canvas ===
+            'function'
+    );
+
+    await loadScript(
+        'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+        () =>
+            window.jspdf &&
+            window.jspdf.jsPDF
+    );
+
+    shippingLabelLibrariesLoaded =
+        true;
 }
 
-function getShippingTracking(rows) {
-    const tracking =
-        rows.find(row =>
+function getOrderTransactions(
+    orderNo
+) {
+    const target =
+        String(
+            orderNo || ''
+        ).trim();
+
+    return allTransactions.filter(
+        row =>
             String(
-                row.tracking_number || ''
-            ).trim()
+                row.order_no || ''
+            ).trim() === target
+    );
+}
+
+function escapeShippingHtml(
+    value
+) {
+    return String(
+        value ?? ''
+    )
+        .replace(
+            /&/g,
+            '&amp;'
+        )
+        .replace(
+            /</g,
+            '&lt;'
+        )
+        .replace(
+            />/g,
+            '&gt;'
+        )
+        .replace(
+            /"/g,
+            '&quot;'
+        )
+        .replace(
+            /'/g,
+            '&#039;'
+        );
+}
+
+function getShippingCustomer(
+    row
+) {
+    return (
+        row.customer_name ||
+        row.name ||
+        '-'
+    );
+}
+
+function getShippingAddress(
+    row
+) {
+    return (
+        row.customer_address ||
+        row.address ||
+        '-'
+    );
+}
+
+function getShippingPhone(
+    row
+) {
+    return row.phone || '-';
+}
+
+function getShippingTracking(
+    rows
+) {
+    const tracking =
+        rows.find(
+            row =>
+                row.tracking_number
         );
 
     return tracking
@@ -1047,309 +2184,655 @@ function getShippingTracking(rows) {
         : '';
 }
 
-function getShippingItems(rows) {
-    return rows.map(row => ({
-        itemCode:
-            row.item_code ||
-            '-',
+function getShippingItems(
+    rows
+) {
+    const grouped =
+        new Map();
 
-        itemName:
-            row.item_name ||
-            row.name ||
-            '-',
+    rows.forEach(row => {
+        const key =
+            String(
+                row.item_code || ''
+            ) +
+            '|' +
+            String(
+                row.item_name || ''
+            );
 
-        qty:
-            Number(row.qty || 0)
-    }));
+        if (
+            !grouped.has(key)
+        ) {
+            grouped.set(
+                key,
+                {
+                    item_code:
+                        row.item_code ||
+                        '',
+                    item_name:
+                        row.item_name ||
+                        '',
+                    qty: 0
+                }
+            );
+        }
+
+        grouped.get(key).qty +=
+            Number(row.qty) || 0;
+    });
+
+    return Array.from(
+        grouped.values()
+    );
 }
 
-// ============================================================
-// SHIPPING LABEL RENDER
-// ============================================================
-
-function renderShippingLabel(rows) {
-    const paper =
-        document.getElementById(
-            'shippingLabelPaper'
+async function openShippingLabel(
+    orderNo
+) {
+    const rows =
+        getOrderTransactions(
+            orderNo
         );
 
-    if (!paper) return;
+    if (!rows.length) {
+        alert(
+            'ไม่พบข้อมูล Order นี้'
+        );
 
-    const customer =
-        getShippingCustomer(rows);
+        return;
+    }
 
-    const tracking =
-        getShippingTracking(rows);
+    try {
+        await loadShippingLabelLibraries();
+
+        createShippingLabelModal(
+            rows,
+            String(orderNo)
+        );
+
+    } catch (err) {
+        console.error(
+            'Shipping label library error:',
+            err
+        );
+
+        alert(
+            'ไม่สามารถโหลดระบบสร้าง Shipping Label ได้'
+        );
+    }
+}
+
+function createShippingLabelModal(
+    rows,
+    orderNo
+) {
+    const oldModal =
+        document.getElementById(
+            'shippingLabelModal'
+        );
+
+    if (oldModal) {
+        oldModal.remove();
+    }
+
+    const firstRow =
+        rows[0];
+
+    const trackingNumber =
+        getShippingTracking(
+            rows
+        );
 
     const items =
-        getShippingItems(rows);
-
-    const orderNo =
-        String(
-            rows[0]?.order_no ||
-            currentShippingOrderNo ||
-            ''
+        getShippingItems(
+            rows
         );
 
-    const totalQty =
-        items.reduce(
-            (sum, item) => sum + item.qty,
-            0
-        );
+    const itemRows =
+        items.map(
+            item => `
+                <tr>
+                    <td style="
+                        padding:5px 6px;
+                        border-bottom:1px solid #e5e7eb;
+                        font-family:monospace;
+                        font-size:10px;
+                        width:75px;
+                    ">
+                        ${escapeShippingHtml(
+                            item.item_code ||
+                            '-'
+                        )}
+                    </td>
 
-    paper.innerHTML = `
-        <div class="shipping-label-document">
+                    <td style="
+                        padding:5px 6px;
+                        border-bottom:1px solid #e5e7eb;
+                        font-size:10px;
+                    ">
+                        ${escapeShippingHtml(
+                            item.item_name ||
+                            '-'
+                        )}
+                    </td>
 
-            <div class="shipping-label-header">
-                <div class="shipping-label-brand">
-                    <img
-                        src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1789458148/unimerce_logo.png"
-                        alt="UNIMERCE"
-                        class="shipping-label-logo"
-                    />
+                    <td style="
+                        padding:5px 6px;
+                        border-bottom:1px solid #e5e7eb;
+                        text-align:right;
+                        font-size:11px;
+                        font-weight:700;
+                        width:45px;
+                    ">
+                        ${item.qty}
+                    </td>
+                </tr>
+            `
+        ).join('');
 
-                    <div>
-                        <div class="shipping-label-company">
-                            UNIMERCE
-                        </div>
-                        <div class="shipping-label-document-title">
-                            SHIPPING LABEL
-                        </div>
-                    </div>
-                </div>
-
-                <div class="shipping-label-order-box">
-                    <div class="shipping-label-small-label">
-                        ORDER NO.
-                    </div>
-
-                    <div class="shipping-label-order-text">
-                        ${escapeHtml(orderNo)}
+    const trackingBarcode =
+        trackingNumber
+            ? `
+                <div style="
+                    flex:1;
+                    text-align:center;
+                    min-width:0;
+                ">
+                    <div style="
+                        font-size:8px;
+                        color:#64748b;
+                        margin-bottom:2px;
+                    ">
+                        TRACKING NUMBER
                     </div>
 
                     <svg
-                        id="shippingOrderBarcode"
-                        class="shipping-label-barcode"
+                        id="shippingTrackingBarcode"
+                        style="
+                            width:100%;
+                            height:42px;
+                        "
                     ></svg>
+
+                    <div style="
+                        font-family:monospace;
+                        font-size:9px;
+                        margin-top:1px;
+                        word-break:break-all;
+                    ">
+                        ${escapeShippingHtml(
+                            trackingNumber
+                        )}
+                    </div>
                 </div>
+            `
+            : '';
+
+    const modal =
+        document.createElement(
+            'div'
+        );
+
+    modal.id =
+        'shippingLabelModal';
+
+    modal.innerHTML = `
+        <div style="
+            position:fixed;
+            inset:0;
+            z-index:99999;
+            background:rgba(15,23,42,.65);
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            overflow:auto;
+            padding:20px;
+        ">
+
+            <div style="
+                width:100%;
+                max-width:620px;
+                display:flex;
+                justify-content:flex-end;
+                gap:8px;
+                margin-bottom:12px;
+            ">
+
+                <button
+                    id="shippingLabelPdfBtn"
+                    style="
+                        background:#2563eb;
+                        color:white;
+                        border:0;
+                        border-radius:6px;
+                        padding:8px 14px;
+                        font-size:12px;
+                        font-weight:700;
+                        cursor:pointer;
+                    "
+                >
+                    <i class="fa-solid fa-file-pdf"></i>
+                    Save PDF
+                </button>
+
+                <button
+                    id="shippingLabelCloseBtn"
+                    style="
+                        background:white;
+                        color:#334155;
+                        border:0;
+                        border-radius:6px;
+                        padding:8px 14px;
+                        font-size:12px;
+                        font-weight:700;
+                        cursor:pointer;
+                    "
+                >
+                    Close
+                </button>
+
             </div>
 
-            <div class="shipping-label-divider"></div>
+            <div
+                id="shippingLabelDocument"
+                data-order-no="${escapeShippingHtml(orderNo)}"
+                style="
+                    width:148mm;
+                    min-height:210mm;
+                    box-sizing:border-box;
+                    background:white;
+                    color:#111827;
+                    padding:10mm;
+                    font-family:Arial,'Noto Sans Thai',sans-serif;
+                    display:flex;
+                    flex-direction:column;
+                "
+            >
 
-            <div class="shipping-label-recipient-section">
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:flex-start;
+                    border-bottom:2px solid #111827;
+                    padding-bottom:6mm;
+                    margin-bottom:5mm;
+                ">
 
-                <div class="shipping-label-section-title">
-                    SHIP TO
+                    <div>
+                        <img
+                            src="${SHIPPING_LABEL_LOGO}"
+                            crossorigin="anonymous"
+                            style="
+                                width:105px;
+                                height:auto;
+                                object-fit:contain;
+                            "
+                        >
+                    </div>
+
+                    <div style="
+                        text-align:right;
+                    ">
+                        <div style="
+                            font-size:18px;
+                            font-weight:800;
+                            letter-spacing:.5px;
+                        ">
+                            SHIPPING LABEL
+                        </div>
+
+                        <div style="
+                            font-size:10px;
+                            color:#64748b;
+                            margin-top:2px;
+                        ">
+                            UNIMERCE CO., LTD.
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="shipping-label-recipient-name">
-                    ${escapeHtml(customer.name)}
+                <div style="
+                    display:flex;
+                    gap:6mm;
+                    margin-bottom:5mm;
+                ">
+
+                    <div style="flex:1;">
+
+                        <div style="
+                            font-size:8px;
+                            color:#64748b;
+                            margin-bottom:2px;
+                        ">
+                            RECIPIENT
+                        </div>
+
+                        <div style="
+                            font-size:13px;
+                            font-weight:800;
+                        ">
+                            ${escapeShippingHtml(
+                                getShippingCustomer(
+                                    firstRow
+                                )
+                            )}
+                        </div>
+
+                        <div style="
+                            font-size:10px;
+                            margin-top:2px;
+                        ">
+                            ${escapeShippingHtml(
+                                getShippingPhone(
+                                    firstRow
+                                )
+                            )}
+                        </div>
+
+                        <div style="
+                            font-size:10px;
+                            line-height:1.5;
+                            margin-top:4px;
+                        ">
+                            ${escapeShippingHtml(
+                                getShippingAddress(
+                                    firstRow
+                                )
+                            )}
+                        </div>
+
+                    </div>
+
+                    <div style="
+                        width:42mm;
+                        text-align:right;
+                    ">
+
+                        <div style="
+                            font-size:8px;
+                            color:#64748b;
+                            margin-bottom:2px;
+                        ">
+                            ORDER NO.
+                        </div>
+
+                        <div style="
+                            font-size:15px;
+                            font-weight:800;
+                            font-family:monospace;
+                            word-break:break-all;
+                        ">
+                            ${escapeShippingHtml(
+                                orderNo
+                            )}
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <div class="shipping-label-recipient-phone">
-                    ${escapeHtml(customer.phone)}
-                </div>
+                <div style="
+                    border:1px solid #cbd5e1;
+                    border-radius:4px;
+                    padding:4mm;
+                    margin-bottom:5mm;
+                ">
 
-                <div class="shipping-label-recipient-address">
-                    ${escapeHtml(customer.address)}
-                </div>
+                    <div style="
+                        font-size:8px;
+                        color:#64748b;
+                        margin-bottom:2px;
+                    ">
+                        ITEMS
+                    </div>
 
-            </div>
+                    <table style="
+                        width:100%;
+                        border-collapse:collapse;
+                    ">
 
-            <div class="shipping-label-divider"></div>
-
-            <div class="shipping-label-items-section">
-
-                <div class="shipping-label-section-title">
-                    ITEMS
-                </div>
-
-                <table class="shipping-label-items-table">
-
-                    <thead>
-                        <tr>
-                            <th>ITEM CODE</th>
-                            <th>ITEM</th>
-                            <th>QTY</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        ${items.map(item => `
+                        <thead>
                             <tr>
-                                <td class="shipping-item-code">
-                                    ${escapeHtml(item.itemCode)}
-                                </td>
+                                <th style="
+                                    text-align:left;
+                                    padding:4px 6px;
+                                    background:#f8fafc;
+                                    font-size:8px;
+                                ">
+                                    CODE
+                                </th>
 
-                                <td>
-                                    ${escapeHtml(item.itemName)}
-                                </td>
+                                <th style="
+                                    text-align:left;
+                                    padding:4px 6px;
+                                    background:#f8fafc;
+                                    font-size:8px;
+                                ">
+                                    ITEM
+                                </th>
 
-                                <td class="shipping-item-qty">
-                                    ${item.qty.toLocaleString('th-TH')}
-                                </td>
+                                <th style="
+                                    text-align:right;
+                                    padding:4px 6px;
+                                    background:#f8fafc;
+                                    font-size:8px;
+                                ">
+                                    QTY
+                                </th>
                             </tr>
-                        `).join('')}
-                    </tbody>
+                        </thead>
 
-                </table>
+                        <tbody>
+                            ${itemRows}
+                        </tbody>
 
-            </div>
+                    </table>
 
-            <div class="shipping-label-summary">
-                Total Qty:
-                <strong>${totalQty.toLocaleString('th-TH')}</strong>
-            </div>
-
-            <div class="shipping-label-footer">
-
-                <div class="shipping-label-tracking-area">
-                    ${
-                        tracking
-                            ? `
-                                <div class="shipping-label-section-title">
-                                    TRACKING NUMBER
-                                </div>
-
-                                <div class="shipping-label-tracking-text">
-                                    ${escapeHtml(tracking)}
-                                </div>
-
-                                <svg
-                                    id="shippingTrackingBarcode"
-                                    class="shipping-label-tracking-barcode"
-                                ></svg>
-                            `
-                            : `
-                                <div class="shipping-label-no-tracking">
-                                    No tracking number
-                                </div>
-                            `
-                    }
                 </div>
 
-                <div class="shipping-label-footer-brand">
-                    UNIMERCE
+                <div style="
+                    border-top:1px solid #cbd5e1;
+                    border-bottom:1px solid #cbd5e1;
+                    padding:5mm 0;
+                    margin-bottom:5mm;
+                ">
+
+                    <div style="
+                        display:flex;
+                        gap:8mm;
+                        align-items:flex-start;
+                    ">
+
+                        <div style="
+                            flex:1;
+                            text-align:center;
+                        ">
+
+                            <div style="
+                                font-size:8px;
+                                color:#64748b;
+                                margin-bottom:2px;
+                            ">
+                                ORDER NO.
+                            </div>
+
+                            <svg
+                                id="shippingOrderBarcode"
+                                style="
+                                    width:100%;
+                                    height:42px;
+                                "
+                            ></svg>
+
+                            <div style="
+                                font-family:monospace;
+                                font-size:9px;
+                                margin-top:1px;
+                                word-break:break-all;
+                            ">
+                                ${escapeShippingHtml(
+                                    orderNo
+                                )}
+                            </div>
+
+                        </div>
+
+                        ${trackingBarcode}
+
+                    </div>
+
+                </div>
+
+                <div style="
+                    text-align:center;
+                    font-size:8px;
+                    color:#94a3b8;
+                    margin-top:auto;
+                    padding-top:15mm;
+                ">
+                    UNIMERCE CO., LTD.
                 </div>
 
             </div>
-
         </div>
     `;
 
-    requestAnimationFrame(() => {
-        generateShippingBarcodes(
-            orderNo,
-            tracking
+    document.body.appendChild(
+        modal
+    );
+
+    JsBarcode(
+        '#shippingOrderBarcode',
+        orderNo,
+        {
+            format: 'CODE128',
+            displayValue: false,
+            margin: 0,
+            height: 42
+        }
+    );
+
+    if (trackingNumber) {
+        JsBarcode(
+            '#shippingTrackingBarcode',
+            trackingNumber,
+            {
+                format: 'CODE128',
+                displayValue: false,
+                margin: 0,
+                height: 42
+            }
         );
-    });
+    }
+
+    document.getElementById(
+        'shippingLabelCloseBtn'
+    ).onclick = () => {
+        modal.remove();
+    };
+
+    modal.addEventListener(
+        'click',
+        e => {
+            if (
+                e.target ===
+                modal.firstElementChild
+            ) {
+                modal.remove();
+            }
+        }
+    );
+
+    document.getElementById(
+        'shippingLabelPdfBtn'
+    ).onclick = () => {
+        saveShippingLabelPdf();
+    };
 }
 
-// ============================================================
-// SHIPPING BARCODE
-// ============================================================
-
-function generateShippingBarcodes(
-    orderNo,
-    tracking
-) {
-    if (
-        typeof JsBarcode === 'undefined'
-    ) {
-        console.error(
-            'JsBarcode is not loaded.'
+async function saveShippingLabelPdf() {
+    const documentElement =
+        document.getElementById(
+            'shippingLabelDocument'
         );
+
+    const button =
+        document.getElementById(
+            'shippingLabelPdfBtn'
+        );
+
+    if (
+        !documentElement ||
+        !window.jspdf
+    ) {
         return;
     }
-
-    const orderBarcode =
-        document.getElementById(
-            'shippingOrderBarcode'
-        );
-
-    if (
-        orderBarcode &&
-        orderNo
-    ) {
-        try {
-            JsBarcode(
-                orderBarcode,
-                orderNo,
-                {
-                    format: 'CODE128',
-                    displayValue: false,
-                    margin: 0,
-                    height: 42,
-                    width: 1.5
-                }
-            );
-        } catch (err) {
-            console.error(
-                'Order Barcode Error:',
-                err
-            );
-        }
-    }
-
-    const trackingBarcode =
-        document.getElementById(
-            'shippingTrackingBarcode'
-        );
-
-    if (
-        trackingBarcode &&
-        tracking
-    ) {
-        try {
-            JsBarcode(
-                trackingBarcode,
-                tracking,
-                {
-                    format: 'CODE128',
-                    displayValue: false,
-                    margin: 0,
-                    height: 48,
-                    width: 1.5
-                }
-            );
-        } catch (err) {
-            console.error(
-                'Tracking Barcode Error:',
-                err
-            );
-        }
-    }
-}
-
-// ============================================================
-// SHIPPING LABEL PDF
-// ============================================================
-
-async function downloadShippingLabelPDF() {
-    const paper =
-        document.getElementById(
-            'shippingLabelPaper'
-        );
-
-    if (!paper) {
-        return;
-    }
-
-    const orderNo =
-        currentShippingOrderNo ||
-        'Shipping_Label';
 
     try {
+        button.disabled = true;
+
+        button.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Creating PDF...';
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    300
+                )
+        );
+
         const canvas =
             await html2canvas(
-                paper,
+                documentElement,
                 {
-                    scale: 2,
+                    scale: 1.25,
                     useCORS: true,
-                    logging: false,
-                    backgroundColor: '#ffffff'
+                    allowTaint: false,
+                    backgroundColor:
+                        '#ffffff',
+                    logging: false
                 }
             );
+
+        /*
+         * ลดขนาดภาพก่อนใส่ PDF
+         * เป้าหมาย image payload ประมาณ < 180 KB
+         * เพื่อให้ PDF มีโอกาสอยู่ต่ำกว่า 200 KB
+         */
+        let quality = 0.65;
+
+        let imageData =
+            canvas.toDataURL(
+                'image/jpeg',
+                quality
+            );
+
+        let estimatedSize =
+            Math.ceil(
+                imageData.length * 0.75
+            );
+
+        while (
+            estimatedSize >
+                180 * 1024 &&
+            quality > 0.30
+        ) {
+            quality -= 0.05;
+
+            imageData =
+                canvas.toDataURL(
+                    'image/jpeg',
+                    quality
+                );
+
+            estimatedSize =
+                Math.ceil(
+                    imageData.length *
+                    0.75
+                );
+        }
 
         const {
             jsPDF
@@ -1357,64 +2840,63 @@ async function downloadShippingLabelPDF() {
 
         const pdf =
             new jsPDF({
-                orientation: 'p',
+                orientation:
+                    'portrait',
                 unit: 'mm',
                 format: 'a5',
                 compress: true
             });
 
-        const imgData =
-            canvas.toDataURL(
-                'image/jpeg',
-                0.86
-            );
-
-        const imgProps =
-            pdf.getImageProperties(
-                imgData
-            );
-
-        const pdfWidth =
+        const pageWidth =
             pdf.internal.pageSize.getWidth();
-
-        const pdfHeight =
-            (
-                imgProps.height *
-                pdfWidth
-            ) /
-            imgProps.width;
 
         const pageHeight =
             pdf.internal.pageSize.getHeight();
 
-        const finalHeight =
-            Math.min(
-                pdfHeight,
-                pageHeight
-            );
-
         pdf.addImage(
-            imgData,
+            imageData,
             'JPEG',
             0,
             0,
-            pdfWidth,
-            finalHeight,
+            pageWidth,
+            pageHeight,
             undefined,
             'FAST'
         );
 
+        const savedOrderNo =
+            documentElement
+                .dataset
+                .orderNo ||
+            'shipping-label';
+
+        const safeFileName =
+            String(
+                savedOrderNo
+            )
+                .replace(
+                    /[\\/:*?"<>|]/g,
+                    '_'
+                );
+
         pdf.save(
-            `Shipping_Label_${orderNo}.pdf`
+            `${safeFileName}.pdf`
         );
+
     } catch (err) {
         console.error(
-            'Shipping Label PDF Error:',
+            'Shipping PDF Error:',
             err
         );
 
         alert(
             'ไม่สามารถสร้าง PDF ได้'
         );
+
+    } finally {
+        button.disabled = false;
+
+        button.innerHTML =
+            '<i class="fa-solid fa-file-pdf"></i> Save PDF';
     }
 }
