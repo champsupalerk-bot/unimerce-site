@@ -1,6 +1,6 @@
-        const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
-        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
-        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z3Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 let allTransactions = [];
 let filteredTransactions = [];
@@ -17,8 +17,10 @@ const TRANSACTION_CACHE_DB = 'uerp_transactions_cache_db';
 const TRANSACTION_CACHE_STORE = 'transactions';
 const TRANSACTION_CACHE_META = 'meta';
 const TRANSACTION_CACHE_VERSION = 1;
+
 const TRANSACTION_CACHE_TTL = 24 * 3600 * 1000;
-const INITIAL_CACHE_DAYS = 60;
+const RECENT_DAYS = 60;
+const INITIAL_CACHE_YEARS = 2;
 const FETCH_BATCH_SIZE = 1000;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -32,16 +34,31 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadHeader() {
     try {
         const res = await fetch('uerpheader.html');
-        if (!res.ok) throw new Error('Header file not found');
+
+        if (!res.ok) {
+            throw new Error('Header file not found');
+        }
+
         const html = await res.text();
-        const headerContainer = document.getElementById('headerContainer');
+        const headerContainer =
+            document.getElementById('headerContainer');
+
         headerContainer.innerHTML = html;
-        const txTab = headerContainer.querySelector('[data-page="transactions"]');
-        if (txTab) txTab.classList.add('chrome-tab-active');
+
+        const txTab =
+            headerContainer.querySelector(
+                '[data-page="transactions"]'
+            );
+
+        if (txTab) {
+            txTab.classList.add('chrome-tab-active');
+        }
+
         if (typeof window.initUerpLayout === 'function') {
             window.__uerpLayoutInitialized = false;
             window.initUerpLayout();
         }
+
     } catch (err) {
         console.warn('Header load error:', err);
     }
@@ -49,6 +66,7 @@ async function loadHeader() {
 
 function formatDateFormatted(dateStr, isMobile = false) {
     if (!dateStr) return '-';
+
     const d = new Date(dateStr);
 
     if (isNaN(d.getTime())) {
@@ -57,6 +75,7 @@ function formatDateFormatted(dateStr, isMobile = false) {
     }
 
     const iso = d.toISOString().split('T')[0];
+
     return isMobile ? iso.substring(2) : iso;
 }
 
@@ -68,8 +87,11 @@ function formatMoney(val) {
 }
 
 function updateStatus(msg, isError = false) {
-    const statusIndicator = document.getElementById('statusIndicator');
-    const statusText = document.getElementById('statusText');
+    const statusIndicator =
+        document.getElementById('statusIndicator');
+
+    const statusText =
+        document.getElementById('statusText');
 
     statusIndicator.classList.remove('hidden');
 
@@ -90,14 +112,22 @@ function openTransactionCacheDB() {
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
 
-            if (!db.objectStoreNames.contains(TRANSACTION_CACHE_STORE)) {
+            if (
+                !db.objectStoreNames.contains(
+                    TRANSACTION_CACHE_STORE
+                )
+            ) {
                 db.createObjectStore(
                     TRANSACTION_CACHE_STORE,
                     { keyPath: '_rowId' }
                 );
             }
 
-            if (!db.objectStoreNames.contains(TRANSACTION_CACHE_META)) {
+            if (
+                !db.objectStoreNames.contains(
+                    TRANSACTION_CACHE_META
+                )
+            ) {
                 db.createObjectStore(
                     TRANSACTION_CACHE_META,
                     { keyPath: 'key' }
@@ -127,8 +157,13 @@ async function clearTransactionCache() {
             'readwrite'
         );
 
-        tx.objectStore(TRANSACTION_CACHE_STORE).clear();
-        tx.objectStore(TRANSACTION_CACHE_META).clear();
+        tx.objectStore(
+            TRANSACTION_CACHE_STORE
+        ).clear();
+
+        tx.objectStore(
+            TRANSACTION_CACHE_META
+        ).clear();
 
         tx.oncomplete = resolve;
         tx.onerror = () => reject(tx.error);
@@ -147,8 +182,9 @@ async function getTransactionCacheMeta() {
         );
 
         const request =
-            tx.objectStore(TRANSACTION_CACHE_META)
-                .get('cache_info');
+            tx.objectStore(
+                TRANSACTION_CACHE_META
+            ).get('cache_info');
 
         request.onsuccess = () => {
             resolve(request.result || null);
@@ -173,11 +209,12 @@ async function saveTransactionCacheMeta(meta) {
             'readwrite'
         );
 
-        tx.objectStore(TRANSACTION_CACHE_META)
-            .put({
-                key: 'cache_info',
-                ...meta
-            });
+        tx.objectStore(
+            TRANSACTION_CACHE_META
+        ).put({
+            key: 'cache_info',
+            ...meta
+        });
 
         tx.oncomplete = resolve;
         tx.onerror = () => reject(tx.error);
@@ -196,8 +233,9 @@ async function getAllCachedTransactions() {
         );
 
         const request =
-            tx.objectStore(TRANSACTION_CACHE_STORE)
-                .getAll();
+            tx.objectStore(
+                TRANSACTION_CACHE_STORE
+            ).getAll();
 
         request.onsuccess = () => {
             resolve(request.result || []);
@@ -225,7 +263,9 @@ async function saveTransactionsToCache(rows) {
         );
 
         const store =
-            tx.objectStore(TRANSACTION_CACHE_STORE);
+            tx.objectStore(
+                TRANSACTION_CACHE_STORE
+            );
 
         rows.forEach(row => {
             store.put(row);
@@ -248,6 +288,31 @@ function getDateOnly(date) {
     ].join('-');
 }
 
+function getRecentCacheRange() {
+    const now = new Date();
+
+    const endDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        23,
+        59,
+        59,
+        999
+    );
+
+    const startDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() - RECENT_DAYS + 1
+    );
+
+    return {
+        start: startDate,
+        end: endDate
+    };
+}
+
 function getInitialCacheRange() {
     const now = new Date();
 
@@ -257,13 +322,14 @@ function getInitialCacheRange() {
         now.getDate(),
         23,
         59,
-        59
+        59,
+        999
     );
 
     const startDate = new Date(
-        now.getFullYear(),
+        now.getFullYear() - INITIAL_CACHE_YEARS,
         now.getMonth(),
-        now.getDate() - INITIAL_CACHE_DAYS + 1
+        now.getDate()
     );
 
     return {
@@ -325,10 +391,6 @@ function getCurrentPeriodRange() {
             59,
             59
         );
-
-
-
-
 
     } else if (currentPeriod === 'THIS_WEEK') {
         const day = now.getDay() || 7;
@@ -397,8 +459,11 @@ function getCurrentPeriodRange() {
         );
 
     } else if (currentPeriod === 'CUSTOM') {
-        const s = document.getElementById('startDate').value;
-        const e = document.getElementById('endDate').value;
+        const s =
+            document.getElementById('startDate').value;
+
+        const e =
+            document.getElementById('endDate').value;
 
         if (s) {
             startFilterDate = new Date(
@@ -419,7 +484,11 @@ function getCurrentPeriodRange() {
     };
 }
 
-function getMissingDateRanges(cachedMeta, requestedStart, requestedEnd) {
+function getMissingDateRanges(
+    cachedMeta,
+    requestedStart,
+    requestedEnd
+) {
     if (!requestedStart || !requestedEnd) {
         return [];
     }
@@ -446,21 +515,19 @@ function getMissingDateRanges(cachedMeta, requestedStart, requestedEnd) {
     const ranges = [];
 
     if (requestedStart < cachedStart) {
-        const end =
-            new Date(cachedStart.getTime() - 1000);
-
         ranges.push({
             start: requestedStart,
-            end: end
+            end: new Date(
+                cachedStart.getTime() - 1000
+            )
         });
     }
 
     if (requestedEnd > cachedEnd) {
-        const start =
-            new Date(cachedEnd.getTime() + 1000);
-
         ranges.push({
-            start: start,
+            start: new Date(
+                cachedEnd.getTime() + 1000
+            ),
             end: requestedEnd
         });
     }
@@ -468,24 +535,44 @@ function getMissingDateRanges(cachedMeta, requestedStart, requestedEnd) {
     return ranges;
 }
 
-async function fetchTransactionRange(startDate, endDate) {
-    if (!startDate || !endDate) return [];
+async function fetchTransactionRange(
+    startDate,
+    endDate
+) {
+    if (!startDate || !endDate) {
+        return [];
+    }
 
     const allRows = [];
     let from = 0;
 
     while (true) {
-        const to = from + FETCH_BATCH_SIZE - 1;
+        const to =
+            from + FETCH_BATCH_SIZE - 1;
 
-        const { data, error } = await supabaseClient
+        const {
+            data,
+            error
+        } = await supabaseClient
             .from('transactions')
             .select('*')
-            .gte('date', startDate.toISOString())
-            .lte('date', endDate.toISOString())
-            .order('date', { ascending: false })
+            .gte(
+                'date',
+                startDate.toISOString()
+            )
+            .lte(
+                'date',
+                endDate.toISOString()
+            )
+            .order(
+                'date',
+                { ascending: false }
+            )
             .range(from, to);
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
 
         const rows = data || [];
 
@@ -506,52 +593,116 @@ async function fetchTransactionRange(startDate, endDate) {
     }));
 }
 
+async function refreshRecentData(force = false) {
+    const nowTime = Date.now();
+
+    const meta =
+        await getTransactionCacheMeta();
+
+    const recentRange =
+        getRecentCacheRange();
+
+    const lastRecentSync =
+        meta?.recentUpdatedAt
+            ? Number(meta.recentUpdatedAt)
+            : 0;
+
+    const shouldRefresh =
+        force ||
+        !lastRecentSync ||
+        nowTime - lastRecentSync >=
+        TRANSACTION_CACHE_TTL;
+
+    if (!shouldRefresh) {
+        return false;
+    }
+
+    updateStatus(
+        force
+            ? 'กำลัง Force Refresh ข้อมูลล่าสุด...'
+            : 'กำลังอัปเดตข้อมูลล่าสุด...'
+    );
+
+    const rows =
+        await fetchTransactionRange(
+            recentRange.start,
+            recentRange.end
+        );
+
+    await saveTransactionsToCache(rows);
+
+    const currentMeta =
+        await getTransactionCacheMeta();
+
+    let coveredStart =
+        currentMeta?.coveredStart
+            ? new Date(currentMeta.coveredStart)
+            : recentRange.start;
+
+    let coveredEnd =
+        currentMeta?.coveredEnd
+            ? new Date(currentMeta.coveredEnd)
+            : recentRange.end;
+
+    if (recentRange.start < coveredStart) {
+        coveredStart = recentRange.start;
+    }
+
+    if (recentRange.end > coveredEnd) {
+        coveredEnd = recentRange.end;
+    }
+
+    await saveTransactionCacheMeta({
+        updatedAt: nowTime,
+        recentUpdatedAt: nowTime,
+        coveredStart: coveredStart.toISOString(),
+        coveredEnd: coveredEnd.toISOString()
+    });
+
+    return true;
+}
+
 async function loadTwoYearsData() {
     try {
-        const now = new Date();
+        const range =
+            getInitialCacheRange();
 
-        // ตั้งแต่วันที่ 1 มกราคมของปีก่อน
-        // จนถึงวันนี้
-        const startDate = new Date(
-            now.getFullYear() - 1,
-            0,
-            1
+        updateStatus(
+            'กำลังโหลดข้อมูลย้อนหลัง 2 ปี...'
         );
-
-        const endDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            23,
-            59,
-            59,
-            999
-        );
-
-        updateStatus('กำลังโหลดข้อมูลย้อนหลัง 2 ปี...');
 
         await loadTransactionsForRange(
-            startDate,
-            endDate,
+            range.start,
+            range.end,
             false
         );
 
-        // โหลดข้อมูลจาก Cache กลับเข้า allTransactions
-        allTransactions = await getAllCachedTransactions();
+        allTransactions =
+            await getAllCachedTransactions();
 
         applyFilters();
 
         setTimeout(() => {
-            document.getElementById('statusIndicator')
-                .classList.add('hidden');
+            document.getElementById(
+                'statusIndicator'
+            ).classList.add('hidden');
         }, 2000);
 
     } catch (error) {
-        console.error('Error loading 2 years data:', error);
-        updateStatus('เกิดข้อผิดพลาดในการโหลดข้อมูลย้อนหลัง 2 ปี');
+        console.error(
+            'Error loading 2 years data:',
+            error
+        );
+
+        updateStatus(
+            'เกิดข้อผิดพลาดในการโหลดข้อมูลย้อนหลัง 2 ปี',
+            true
+        );
 
         setTimeout(() => {
-            updateStatus('');
+            document.getElementById(
+                'statusIndicator'
+            ).classList.add('hidden');
         }, 5000);
     }
 }
@@ -561,128 +712,203 @@ async function loadTransactionsForRange(
     requestedEnd,
     isManualRefresh = false
 ) {
-    const nowTime = new Date().getTime();
-
-    if (isManualRefresh) {
-        await clearTransactionCache();
-    }
+    const nowTime = Date.now();
 
     let cachedMeta =
         await getTransactionCacheMeta();
 
-    if (
-        cachedMeta &&
-        cachedMeta.updatedAt &&
-        nowTime - Number(cachedMeta.updatedAt) >=
-        TRANSACTION_CACHE_TTL
-    ) {
-        await clearTransactionCache();
-        cachedMeta = null;
-    }
-
-    let missingRanges =
-        getMissingDateRanges(
-            cachedMeta,
-            requestedStart,
-            requestedEnd
-        );
+    /*
+     * ห้าม clear cache ตอน Refresh
+     * เพราะถ้า Supabase/API มีปัญหา
+     * Cache เดิมต้องยังอยู่
+     */
 
     if (!cachedMeta) {
-        missingRanges = [
-            {
-                start: requestedStart,
-                end: requestedEnd
-            }
-        ];
-    }
+        const rows =
+            await fetchTransactionRange(
+                requestedStart,
+                requestedEnd
+            );
 
-    if (missingRanges.length > 0) {
-        updateStatus('กำลังโหลดข้อมูล...');
-
-        for (const range of missingRanges) {
-            const rows =
-                await fetchTransactionRange(
-                    range.start,
-                    range.end
-                );
-
-            await saveTransactionsToCache(rows);
-        }
-
-        const existingMeta =
-            await getTransactionCacheMeta();
-
-        let coveredStart =
-            existingMeta?.coveredStart
-                ? new Date(existingMeta.coveredStart)
-                : requestedStart;
-
-        let coveredEnd =
-            existingMeta?.coveredEnd
-                ? new Date(existingMeta.coveredEnd)
-                : requestedEnd;
-
-        if (requestedStart < coveredStart) {
-            coveredStart = requestedStart;
-        }
-
-        if (requestedEnd > coveredEnd) {
-            coveredEnd = requestedEnd;
-        }
+        await saveTransactionsToCache(rows);
 
         await saveTransactionCacheMeta({
             updatedAt: nowTime,
-            coveredStart: coveredStart.toISOString(),
-            coveredEnd: coveredEnd.toISOString()
+            recentUpdatedAt: nowTime,
+            coveredStart:
+                requestedStart.toISOString(),
+            coveredEnd:
+                requestedEnd.toISOString()
         });
+
+    } else {
+        const missingRanges =
+            getMissingDateRanges(
+                cachedMeta,
+                requestedStart,
+                requestedEnd
+            );
+
+        if (missingRanges.length > 0) {
+            updateStatus(
+                'กำลังโหลดข้อมูลที่ยังไม่มีใน Cache...'
+            );
+
+            for (const range of missingRanges) {
+                const rows =
+                    await fetchTransactionRange(
+                        range.start,
+                        range.end
+                    );
+
+                await saveTransactionsToCache(
+                    rows
+                );
+            }
+
+            cachedMeta =
+                await getTransactionCacheMeta();
+
+            let coveredStart =
+                cachedMeta?.coveredStart
+                    ? new Date(
+                        cachedMeta.coveredStart
+                    )
+                    : requestedStart;
+
+            let coveredEnd =
+                cachedMeta?.coveredEnd
+                    ? new Date(
+                        cachedMeta.coveredEnd
+                    )
+                    : requestedEnd;
+
+            if (requestedStart < coveredStart) {
+                coveredStart = requestedStart;
+            }
+
+            if (requestedEnd > coveredEnd) {
+                coveredEnd = requestedEnd;
+            }
+
+            await saveTransactionCacheMeta({
+                updatedAt: nowTime,
+                recentUpdatedAt:
+                    cachedMeta?.recentUpdatedAt ||
+                    nowTime,
+                coveredStart:
+                    coveredStart.toISOString(),
+                coveredEnd:
+                    coveredEnd.toISOString()
+            });
+        }
     }
 
     allTransactions =
         await getAllCachedTransactions();
 
-    document.getElementById('statusIndicator')
-        .classList.add('hidden');
-
     applyFilters();
+
+    document.getElementById(
+        'statusIndicator'
+    ).classList.add('hidden');
 }
 
 function forceRefreshData() {
     fetchTransactions(true);
 }
 
-async function fetchTransactions(isManualRefresh = false) {
+async function fetchTransactions(
+    isManualRefresh = false
+) {
     try {
-        let requestedRange;
+        const cachedRows =
+            await getAllCachedTransactions();
 
-        if (isManualRefresh) {
-            requestedRange =
-                getCurrentPeriodRange();
+        /*
+         * ไม่มี Cache เลย:
+         * โหลดย้อนหลัง 2 ปีครั้งแรก
+         */
+        if (cachedRows.length === 0) {
+            const initialRange =
+                getInitialCacheRange();
 
-            if (
-                !requestedRange.start ||
-                !requestedRange.end
-            ) {
-                requestedRange =
-                    getInitialCacheRange();
+            await loadTransactionsForRange(
+                initialRange.start,
+                initialRange.end,
+                false
+            );
+
+            /*
+             * หลังโหลดครั้งแรก
+             * อัปเดต Recent 60 วันในรอบเดียว
+             */
+            const meta =
+                await getTransactionCacheMeta();
+
+            if (!meta?.recentUpdatedAt) {
+                await refreshRecentData(false);
+                allTransactions =
+                    await getAllCachedTransactions();
+                applyFilters();
             }
 
-        } else {
-            requestedRange =
-                getInitialCacheRange();
+            return;
         }
 
-        await loadTransactionsForRange(
-            requestedRange.start,
-            requestedRange.end,
+        /*
+         * มี Cache แล้ว:
+         * ไม่โหลด 2 ปีใหม่
+         * Refresh เฉพาะ Recent 60 วัน
+         */
+        await refreshRecentData(
             isManualRefresh
         );
 
+        allTransactions =
+            await getAllCachedTransactions();
+
+        applyFilters();
+
+        if (!isManualRefresh) {
+            setTimeout(() => {
+                document.getElementById(
+                    'statusIndicator'
+                ).classList.add('hidden');
+            }, 500);
+        }
+
     } catch (err) {
-        console.error("Supabase Query Error:", err);
-        updateStatus(
-            `เกิดข้อผิดพลาด: ${err.message}`,
-            true
+        console.error(
+            "Supabase Query Error:",
+            err
         );
+
+        /*
+         * สำคัญ:
+         * ถ้า Supabase พัง แต่มี Cache อยู่
+         * ให้ใช้ Cache ต่อได้
+         */
+        const cachedRows =
+            await getAllCachedTransactions()
+                .catch(() => []);
+
+        if (cachedRows.length > 0) {
+            allTransactions =
+                cachedRows;
+
+            applyFilters();
+
+            updateStatus(
+                `อัปเดตข้อมูลไม่สำเร็จ ใช้ Cache เดิม (${cachedRows.length.toLocaleString()} รายการ)`,
+                true
+            );
+        } else {
+            updateStatus(
+                `เกิดข้อผิดพลาด: ${err.message}`,
+                true
+            );
+        }
     }
 }
 
@@ -701,23 +927,6 @@ async function ensureCurrentPeriodData() {
         const cachedMeta =
             await getTransactionCacheMeta();
 
-        const nowTime =
-            new Date().getTime();
-
-        if (
-            cachedMeta &&
-            cachedMeta.updatedAt &&
-            nowTime - Number(cachedMeta.updatedAt) >=
-            TRANSACTION_CACHE_TTL
-        ) {
-            await loadTransactionsForRange(
-                requestedRange.start,
-                requestedRange.end,
-                false
-            );
-            return;
-        }
-
         const missingRanges =
             getMissingDateRanges(
                 cachedMeta,
@@ -725,24 +934,39 @@ async function ensureCurrentPeriodData() {
                 requestedRange.end
             );
 
+        /*
+         * ถ้าเลือกช่วงวันที่ที่ยังไม่มีใน Cache
+         * โหลดเฉพาะช่วงที่ขาด
+         */
         if (missingRanges.length > 0) {
             await loadTransactionsForRange(
                 requestedRange.start,
                 requestedRange.end,
                 false
             );
-        } else {
-            allTransactions =
-                await getAllCachedTransactions();
 
-            applyFilters();
+            return;
         }
+
+        allTransactions =
+            await getAllCachedTransactions();
+
+        applyFilters();
 
     } catch (err) {
         console.error(
             "Period Load Error:",
             err
         );
+
+        /*
+         * ไม่ล้าง Cache เมื่อเกิด Error
+         */
+        allTransactions =
+            await getAllCachedTransactions()
+                .catch(() => allTransactions);
+
+        applyFilters();
 
         updateStatus(
             `เกิดข้อผิดพลาด: ${err.message}`,
@@ -751,21 +975,26 @@ async function ensureCurrentPeriodData() {
     }
 }
 
-function setPeriod(period, shouldApply = true) {
-    // กด period เดิมซ้ำ = ปิด date filter
+function setPeriod(
+    period,
+    shouldApply = true
+) {
     if (currentPeriod === period) {
         currentPeriod = 'ALL';
     } else {
         currentPeriod = period;
     }
 
-    document.getElementById('customDateContainer')
-        .classList.toggle(
-            'hidden',
-            currentPeriod !== 'CUSTOM'
-        );
+    document.getElementById(
+        'customDateContainer'
+    ).classList.toggle(
+        'hidden',
+        currentPeriod !== 'CUSTOM'
+    );
 
-    document.querySelectorAll('.period-btn').forEach(btn => {
+    document.querySelectorAll(
+        '.period-btn'
+    ).forEach(btn => {
         const active =
             btn.dataset.period === currentPeriod;
 
@@ -806,23 +1035,29 @@ function setPeriod(period, shouldApply = true) {
 }
 
 function togglePeriodMenu() {
-    document.getElementById('periodMenu')
-        .classList.toggle('hidden');
+    document.getElementById(
+        'periodMenu'
+    ).classList.toggle('hidden');
 }
 
 function handleCustomPeriodChange() {
     const period =
-        document.getElementById('periodFilter').value;
+        document.getElementById(
+            'periodFilter'
+        ).value;
 
     currentPeriod = period;
 
-    document.getElementById('customDateContainer')
-        .classList.toggle(
-            'hidden',
-            period !== 'CUSTOM'
-        );
+    document.getElementById(
+        'customDateContainer'
+    ).classList.toggle(
+        'hidden',
+        period !== 'CUSTOM'
+    );
 
-    document.querySelectorAll('.period-btn').forEach(btn => {
+    document.querySelectorAll(
+        '.period-btn'
+    ).forEach(btn => {
         btn.classList.remove(
             'bg-google-blue',
             'text-white',
@@ -838,10 +1073,14 @@ function handleCustomPeriodChange() {
 
     if (period === 'CUSTOM') {
         const s =
-            document.getElementById('startDate').value;
+            document.getElementById(
+                'startDate'
+            ).value;
 
         const e =
-            document.getElementById('endDate').value;
+            document.getElementById(
+                'endDate'
+            ).value;
 
         if (s && e) {
             ensureCurrentPeriodData();
@@ -859,11 +1098,12 @@ function getUniqueOrderGroups(rows) {
     const groups = new Map();
 
     rows.forEach(row => {
-        const orderNo = String(
-            row.order_no ||
-            row.invoice_no ||
-            row._rowId
-        );
+        const orderNo =
+            String(
+                row.order_no ||
+                row.invoice_no ||
+                row._rowId
+            );
 
         if (!groups.has(orderNo)) {
             groups.set(orderNo, []);
@@ -872,7 +1112,9 @@ function getUniqueOrderGroups(rows) {
         groups.get(orderNo).push(row);
     });
 
-    return Array.from(groups.entries()).map(([orderNo, items]) => ({
+    return Array.from(
+        groups.entries()
+    ).map(([orderNo, items]) => ({
         orderNo,
         items
     }));
@@ -880,20 +1122,29 @@ function getUniqueOrderGroups(rows) {
 
 function applyFilters() {
     const search =
-        document.getElementById('searchInput').value
+        document.getElementById(
+            'searchInput'
+        ).value
             .toLowerCase()
             .trim();
 
     const channel =
-        document.getElementById('channelFilter').value;
+        document.getElementById(
+            'channelFilter'
+        ).value;
 
     const status =
-        document.getElementById('statusFilter').value;
+        document.getElementById(
+            'statusFilter'
+        ).value;
 
-    const period = currentPeriod;
+    const period =
+        currentPeriod;
 
     const showPKOnly =
-        document.getElementById('showPKToggle').checked;
+        document.getElementById(
+            'showPKToggle'
+        ).checked;
 
     const now = new Date();
 
@@ -906,56 +1157,59 @@ function applyFilters() {
             now.getMonth(),
             now.getDate()
         );
-} else if (period === 'YESTERDAY') {
-    startFilterDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - 1
-    );
 
-    endFilterDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - 1,
-        23,
-        59,
-        59
-    );
+    } else if (period === 'YESTERDAY') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 1
+        );
 
-} else if (period === 'DAY_BEFORE_YESTERDAY') {
-    startFilterDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - 2
-    );
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 1,
+            23,
+            59,
+            59
+        );
 
-    endFilterDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - 2,
-        23,
-        59,
-        59
-    );
+    } else if (
+        period === 'DAY_BEFORE_YESTERDAY'
+    ) {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 2
+        );
 
-} else if (period === 'THIS_WEEK') {
-    startFilterDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - 6
-    );
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 2,
+            23,
+            59,
+            59
+        );
 
-    endFilterDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        23,
-        59,
-        59
-    );
+    } else if (period === 'THIS_WEEK') {
+        startFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - 6
+        );
 
-} else if (period === 'THIS_MONTH') {
-            startFilterDate = new Date(
+        endFilterDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59
+        );
+
+    } else if (period === 'THIS_MONTH') {
+        startFilterDate = new Date(
             now.getFullYear(),
             now.getMonth(),
             1
@@ -986,10 +1240,14 @@ function applyFilters() {
 
     } else if (period === 'CUSTOM') {
         const s =
-            document.getElementById('startDate').value;
+            document.getElementById(
+                'startDate'
+            ).value;
 
         const e =
-            document.getElementById('endDate').value;
+            document.getElementById(
+                'endDate'
+            ).value;
 
         if (s) {
             startFilterDate = new Date(
@@ -1023,32 +1281,51 @@ function applyFilters() {
         allTransactions.filter(item => {
             if (
                 showPKOnly &&
-                !selectedRowIds.has(item._rowId)
+                !selectedRowIds.has(
+                    item._rowId
+                )
             ) {
                 return false;
             }
 
             const itemChannel =
-                String(item.channel || '');
+                String(
+                    item.channel || ''
+                );
 
             const itemStatus =
-                String(item.status || 'PENDING');
+                String(
+                    item.status || 'PENDING'
+                );
 
             const textMatch =
                 !search ||
-                String(item.invoice_no || '')
+                String(
+                    item.invoice_no || ''
+                )
                     .toLowerCase()
                     .includes(search) ||
-                String(item.order_no || '')
+                String(
+                    item.order_no || ''
+                )
                     .toLowerCase()
                     .includes(search) ||
-                String(item.item_code || '')
+                String(
+                    item.item_code || ''
+                )
                     .toLowerCase()
                     .includes(search) ||
-                String(item.item_name || '')
+                String(
+                    item.item_name || ''
+                )
                     .toLowerCase()
                     .includes(search) ||
-                String(formatDateFormatted(item.date, false) || '')
+                String(
+                    formatDateFormatted(
+                        item.date,
+                        false
+                    ) || ''
+                )
                     .toLowerCase()
                     .includes(search);
 
@@ -1064,7 +1341,10 @@ function applyFilters() {
 
             let dateMatch = true;
 
-            if (startFilterDate || endFilterDate) {
+            if (
+                startFilterDate ||
+                endFilterDate
+            ) {
                 const rowDate =
                     new Date(item.date);
 
@@ -1084,8 +1364,12 @@ function applyFilters() {
             }
 
             item._isDuplicate =
-                invoiceCounts[item.invoice_no] > 1 ||
-                orderCounts[item.order_no] > 1;
+                invoiceCounts[
+                    item.invoice_no
+                ] > 1 ||
+                orderCounts[
+                    item.order_no
+                ] > 1;
 
             return (
                 textMatch &&
@@ -1106,8 +1390,11 @@ function applyFilters() {
             currentSortColumn === 'sales_amt' ||
             currentSortColumn === 'qty'
         ) {
-            valA = Number(valA) || 0;
-            valB = Number(valB) || 0;
+            valA =
+                Number(valA) || 0;
+
+            valB =
+                Number(valB) || 0;
         } else {
             valA =
                 String(valA).toLowerCase();
@@ -1117,11 +1404,15 @@ function applyFilters() {
         }
 
         if (valA < valB) {
-            return currentSortAsc ? -1 : 1;
+            return currentSortAsc
+                ? -1
+                : 1;
         }
 
         if (valA > valB) {
-            return currentSortAsc ? 1 : -1;
+            return currentSortAsc
+                ? 1
+                : -1;
         }
 
         return 0;
@@ -1140,8 +1431,11 @@ function applyFilters() {
 }
 
 function sortTable(column) {
-    if (currentSortColumn === column) {
-        currentSortAsc = !currentSortAsc;
+    if (
+        currentSortColumn === column
+    ) {
+        currentSortAsc =
+            !currentSortAsc;
     } else {
         currentSortColumn = column;
         currentSortAsc = true;
@@ -1166,7 +1460,9 @@ function updateSortIcons() {
 
         if (!el) return;
 
-        if (col === currentSortColumn) {
+        if (
+            col === currentSortColumn
+        ) {
             el.className =
                 "ml-0.5 text-[10px] text-google-blue font-bold";
 
@@ -1187,7 +1483,9 @@ function updateSortIcons() {
 
 function renderTable() {
     const tbody =
-        document.getElementById('txTableBody');
+        document.getElementById(
+            'txTableBody'
+        );
 
     tbody.innerHTML = '';
 
@@ -1227,16 +1525,21 @@ function renderTable() {
                 "bg-slate-100 text-slate-700 border-slate-200";
 
             const ch =
-                String(row.channel || '')
-                    .toLowerCase();
+                String(
+                    row.channel || ''
+                ).toLowerCase();
 
             if (ch.includes('shopee')) {
                 channelBadgeClass =
                     "bg-shopee text-white";
-            } else if (ch.includes('lazada')) {
+            } else if (
+                ch.includes('lazada')
+            ) {
                 channelBadgeClass =
                     "bg-lazada text-white";
-            } else if (ch.includes('tiktok')) {
+            } else if (
+                ch.includes('tiktok')
+            ) {
                 channelBadgeClass =
                     "bg-tiktok text-white";
             }
@@ -1307,57 +1610,75 @@ function renderTable() {
             tr.innerHTML = `
                 <td class="p-2 align-top font-mono text-[11px] text-slate-600">
                     <span class="sm:hidden block leading-tight">
-                    <span class="block text-[13px] font-semibold">
-                        ${formatDateFormatted(row.date, true).substring(0, 5)}
+                        <span class="block text-[13px] font-semibold">
+                            ${formatDateFormatted(row.date, true).substring(0, 5)}
+                        </span>
+
+                        <span class="block text-[15px] font-bold">
+                            ${(() => {
+                                const day =
+                                    parseInt(
+                                        formatDateFormatted(
+                                            row.date,
+                                            true
+                                        ).substring(6),
+                                        10
+                                    );
+
+                                const suffix =
+                                    day % 100 >= 11 &&
+                                    day % 100 <= 13
+                                        ? 'th'
+                                        : day % 10 === 1
+                                            ? 'st'
+                                            : day % 10 === 2
+                                                ? 'nd'
+                                                : day % 10 === 3
+                                                    ? 'rd'
+                                                    : 'th';
+
+                                return `${day}${suffix}`;
+                            })()}
+                        </span>
                     </span>
 
-                    <span class="block text-[15px] font-bold">
-    ${(() => {
-        const day = parseInt(formatDateFormatted(row.date, true).substring(6), 10);
-        const suffix =
-            day % 100 >= 11 && day % 100 <= 13
-                ? 'th'
-                : day % 10 === 1
-                    ? 'st'
-                    : day % 10 === 2
-                        ? 'nd'
-                        : day % 10 === 3
-                            ? 'rd'
-                            : 'th';
-        return `${day}${suffix}`;
-    })()}
-</span>
-                </span>
-
-
-                
-                <span class="hidden sm:inline whitespace-nowrap">
+                    <span class="hidden sm:inline whitespace-nowrap">
                         ${formatDateFormatted(row.date, false)}
                     </span>
                 </td>
 
                 <td class="p-2 align-top">
                     <div class="sm:hidden leading-tight w-[78px] overflow-hidden">
-                        <div class="mobile-order-main font-bold text-slate-900 font-mono truncate"
-                             title="${row.invoice_no || ''}"
-                             onclick="event.stopPropagation(); window.open('/uerp/shipping-label.html?invoice_no=${encodeURIComponent(row.invoice_no || '')}', '_blank')"
-                             style="cursor: pointer;">
+                        <div
+                            class="mobile-order-main font-bold text-slate-900 font-mono truncate"
+                            title="${row.invoice_no || ''}"
+                            onclick="event.stopPropagation(); window.open('/uerp/shipping-label.html?invoice_no=${encodeURIComponent(row.invoice_no || '')}', '_blank')"
+                            style="cursor: pointer;"
+                        >
                             ${row.invoice_no || '-'}
                         </div>
-                        <div class="text-[9px] text-google-gray font-mono truncate" title="${orderNo}">
+
+                        <div
+                            class="text-[9px] text-google-gray font-mono truncate"
+                            title="${orderNo}"
+                        >
                             ${orderPrefix}
                         </div>
+
                         <div class="mobile-order-tail font-mono text-slate-900">
                             ${orderTail}
                         </div>
                     </div>
 
                     <div class="hidden sm:block leading-tight">
-                        <div class="font-bold text-slate-900 font-mono"
-                             onclick="event.stopPropagation(); window.open('/uerp/shipping-label.html?invoice_no=${encodeURIComponent(row.invoice_no || '')}', '_blank')"
-                             style="cursor: pointer;">
+                        <div
+                            class="font-bold text-slate-900 font-mono"
+                            onclick="event.stopPropagation(); window.open('/uerp/shipping-label.html?invoice_no=${encodeURIComponent(row.invoice_no || '')}', '_blank')"
+                            style="cursor: pointer;"
+                        >
                             ${row.invoice_no || '-'}
                         </div>
+
                         <div class="text-[10px] text-google-gray font-mono">
                             ${row.order_no || '-'}
                         </div>
@@ -1373,12 +1694,18 @@ function renderTable() {
                         ${row.item_name || '-'}
                     </div>
 
-                    <div class="hidden sm:block truncate" title="${row.item_code || ''}">
+                    <div
+                        class="hidden sm:block truncate"
+                        title="${row.item_code || ''}"
+                    >
                         ${row.item_code || '-'}
                     </div>
                 </td>
 
-                <td class="p-2 font-medium text-slate-800 hidden sm:table-cell max-w-[200px] truncate" title="${row.item_name || ''}">
+                <td
+                    class="p-2 font-medium text-slate-800 hidden sm:table-cell max-w-[200px] truncate"
+                    title="${row.item_name || ''}"
+                >
                     ${row.item_name || '-'}
                 </td>
 
@@ -1397,10 +1724,30 @@ function renderTable() {
                 </td>
 
                 <td class="p-2 text-center hidden sm:table-cell">
-                    <select onchange="handleStatusChange('${row._rowId}', this.value)" class="bg-white border border-google-border rounded px-1 py-0.5 text-[10px] font-semibold focus:outline-none focus:border-google-blue">
-                        <option value="PENDING" ${currentStatus === 'PENDING' ? 'selected' : ''}>PENDING</option>
-                        <option value="ACTIVE" ${currentStatus === 'ACTIVE' ? 'selected' : ''}>ACTIVE</option>
-                        <option value="VOID" ${currentStatus === 'VOID' ? 'selected' : ''}>VOID</option>
+                    <select
+                        onchange="handleStatusChange('${row._rowId}', this.value)"
+                        class="bg-white border border-google-border rounded px-1 py-0.5 text-[10px] font-semibold focus:outline-none focus:border-google-blue"
+                    >
+                        <option
+                            value="PENDING"
+                            ${currentStatus === 'PENDING' ? 'selected' : ''}
+                        >
+                            PENDING
+                        </option>
+
+                        <option
+                            value="ACTIVE"
+                            ${currentStatus === 'ACTIVE' ? 'selected' : ''}
+                        >
+                            ACTIVE
+                        </option>
+
+                        <option
+                            value="VOID"
+                            ${currentStatus === 'VOID' ? 'selected' : ''}
+                        >
+                            VOID
+                        </option>
                     </select>
                 </td>
             `;
@@ -1409,20 +1756,28 @@ function renderTable() {
         });
     }
 
-    document.getElementById('orderCountTop').innerHTML = `
+    document.getElementById(
+        'orderCountTop'
+    ).innerHTML = `
         <i class="fa-solid fa-circle text-[6px] order-count-live-icon"></i>
-        <span class="order-count-live">${totalOrders.toLocaleString()}</span>
+        <span class="order-count-live">
+            ${totalOrders.toLocaleString()}
+        </span>
         <span>Orders</span>
     `;
 
-    document.getElementById('selectedCountText').innerText =
+    document.getElementById(
+        'selectedCountText'
+    ).innerText =
         selectedRowIds.size.toLocaleString();
 
     updatePendingChangesCount();
 }
 
 function toggleRowSelection(rowId) {
-    if (selectedRowIds.has(rowId)) {
+    if (
+        selectedRowIds.has(rowId)
+    ) {
         selectedRowIds.delete(rowId);
     } else {
         selectedRowIds.add(rowId);
@@ -1431,7 +1786,10 @@ function toggleRowSelection(rowId) {
     renderTable();
 }
 
-function handleStatusChange(rowId, newStatus) {
+function handleStatusChange(
+    rowId,
+    newStatus
+) {
     pendingStatusChanges[rowId] =
         newStatus;
 
@@ -1450,7 +1808,8 @@ function updatePendingChangesCount() {
 
     document.getElementById(
         'submitBtn'
-    ).disabled = count === 0;
+    ).disabled =
+        count === 0;
 }
 
 async function submitChanges() {
@@ -1469,27 +1828,32 @@ async function submitChanges() {
         const updatePromises =
             Object.keys(
                 pendingStatusChanges
-            )
-                .map(rowId => {
-                    const item =
-                        allTransactions.find(
-                            t => t._rowId === rowId
-                        );
+            ).map(rowId => {
+                const item =
+                    allTransactions.find(
+                        t =>
+                            t._rowId === rowId
+                    );
 
-                    if (!item || !item.id) {
-                        return Promise.resolve();
-                    }
+                if (
+                    !item ||
+                    !item.id
+                ) {
+                    return Promise.resolve();
+                }
 
-                    const newStatus =
-                        pendingStatusChanges[rowId];
+                const newStatus =
+                    pendingStatusChanges[
+                        rowId
+                    ];
 
-                    return supabaseClient
-                        .from('transactions')
-                        .update({
-                            status: newStatus
-                        })
-                        .eq('id', item.id);
-                });
+                return supabaseClient
+                    .from('transactions')
+                    .update({
+                        status: newStatus
+                    })
+                    .eq('id', item.id);
+            });
 
         const results =
             await Promise.all(
@@ -1502,7 +1866,8 @@ async function submitChanges() {
             (rowId, index) => {
                 const item =
                     allTransactions.find(
-                        t => t._rowId === rowId
+                        t =>
+                            t._rowId === rowId
                     );
 
                 if (
@@ -1510,14 +1875,17 @@ async function submitChanges() {
                     !results[index]?.error
                 ) {
                     item.status =
-                        pendingStatusChanges[rowId];
+                        pendingStatusChanges[
+                            rowId
+                        ];
                 }
             }
         );
 
         const failedResult =
             results.find(
-                result => result?.error
+                result =>
+                    result?.error
             );
 
         if (failedResult?.error) {
@@ -1563,30 +1931,38 @@ function setupInfiniteScroll() {
 
     if (!grid) return;
 
-    grid.addEventListener('scroll', () => {
-        if (
-            grid.scrollTop +
-            grid.clientHeight >=
-            grid.scrollHeight - 250
-        ) {
+    grid.addEventListener(
+        'scroll',
+        () => {
             if (
-                displayLimit <
-                filteredOrderGroups.length
+                grid.scrollTop +
+                grid.clientHeight >=
+                grid.scrollHeight - 250
             ) {
-                document.getElementById(
-                    'infiniteLoader'
-                ).classList.remove('hidden');
-
-                setTimeout(() => {
-                    displayLimit += limitStep;
-
-                    renderTable();
-
+                if (
+                    displayLimit <
+                    filteredOrderGroups.length
+                ) {
                     document.getElementById(
                         'infiniteLoader'
-                    ).classList.add('hidden');
-                }, 150);
+                    ).classList.remove(
+                        'hidden'
+                    );
+
+                    setTimeout(() => {
+                        displayLimit +=
+                            limitStep;
+
+                        renderTable();
+
+                        document.getElementById(
+                            'infiniteLoader'
+                        ).classList.add(
+                            'hidden'
+                        );
+                    }, 150);
+                }
             }
         }
-    });
+    );
 }
