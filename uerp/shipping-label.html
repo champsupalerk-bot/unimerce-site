@@ -1,1742 +1,413 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>UNIMERCE Shipping Label</title>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            background: #eef1f5;
-            color: #111827;
-            font-family:
-                "Noto Sans Thai",
-                "Segoe UI",
-                Arial,
-                sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-        }
-
-        button,
-        input,
-        textarea {
-            font: inherit;
-        }
-
-        .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: #ffffff;
-            border-bottom: 1px solid #d9dee7;
-            padding: 12px 16px;
-        }
-
-        .topbar-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-
-        .page-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .page-subtitle {
-            font-size: 11px;
-            color: #6b7280;
-            margin-top: 2px;
-        }
-
-        .actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            border: 1px solid #cfd5df;
-            background: #fff;
-            color: #374151;
-            border-radius: 7px;
-            padding: 7px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background: #f8fafc;
-        }
-
-        .btn-primary {
-            background: #1a73e8;
-            color: #fff;
-            border-color: #1a73e8;
-        }
-
-        .btn-primary:hover {
-            background: #1769d1;
-        }
-
-        .btn-dark {
-            background: #111827;
-            color: #fff;
-            border-color: #111827;
-        }
-
-        .status {
-            max-width: 1100px;
-            margin: 12px auto 0;
-            padding: 9px 12px;
-            border-radius: 7px;
-            background: #eef6ff;
-            border: 1px solid #cfe4ff;
-            color: #185abc;
-            font-size: 12px;
-        }
-
-        .status.error {
-            background: #fff1f2;
-            border-color: #fecdd3;
-            color: #be123c;
-        }
-
-        .status.hidden {
-            display: none;
-        }
-
-        .workspace {
-            max-width: 1100px;
-            margin: 20px auto 40px;
-            display: grid;
-            grid-template-columns: 330px 1fr;
-            gap: 24px;
-            align-items: start;
-        }
-
-        .editor {
-            background: #ffffff;
-            border: 1px solid #d9dee7;
-            border-radius: 10px;
-            padding: 16px;
-        }
-
-        .editor-title {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 14px;
-        }
-
-        .field {
-            margin-bottom: 11px;
-        }
-
-        .field label {
-            display: block;
-            font-size: 11px;
-            font-weight: 700;
-            color: #4b5563;
-            margin-bottom: 5px;
-        }
-
-        .field input,
-        .field textarea {
-            width: 100%;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            padding: 7px 8px;
-            font-size: 12px;
-            color: #111827;
-            outline: none;
-            background: #fff;
-        }
-
-        .field textarea {
-            resize: vertical;
-            min-height: 65px;
-        }
-
-        .field input:focus,
-        .field textarea:focus {
-            border-color: #1a73e8;
-            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.08);
-        }
-
-        .hint {
-            font-size: 10px;
-            color: #9ca3af;
-            line-height: 1.45;
-            margin-top: 4px;
-        }
-
-        .paper-wrap {
-            display: flex;
-            justify-content: center;
-        }
-
-        /*
-         * A5 portrait:
-         * 148 x 210 mm
-         *
-         * Label width:
-         * 107 mm
-         */
-        .a5-paper {
-            width: 148mm;
-            height: 210mm;
-            background: #fff;
-            box-shadow: 0 5px 25px rgba(15, 23, 42, 0.15);
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding-top: 8mm;
-        }
-
-        .shipping-label {
-            width: 107mm;
-            min-height: 185mm;
-            background: #fff;
-            color: #111827;
-            padding: 5mm 5mm 4mm;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .label-header {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5mm;
-            padding-bottom: 3mm;
-            border-bottom: 1.2px solid #111827;
-        }
-
-        .brand-area {
-            min-width: 0;
-        }
-
-        .logo {
-            width: 35mm;
-            height: auto;
-            display: block;
-            object-fit: contain;
-            object-position: left center;
-            margin-bottom: 2mm;
-        }
-
-        .warehouse {
-            font-size: 8.2px;
-            line-height: 1.45;
-            color: #374151;
-        }
-
-        .tracking-area {
-            text-align: right;
-            min-width: 0;
-        }
-
-        .label-caption {
-            font-size: 7.5px;
-            font-weight: 800;
-            letter-spacing: 0.7px;
-            color: #6b7280;
-            margin-bottom: 0.8mm;
-        }
-
-        .tracking-number {
-            font-family: "Courier New", monospace;
-            font-size: 16px;
-            line-height: 1.1;
-            font-weight: 800;
-            word-break: break-all;
-            margin-bottom: 1.5mm;
-        }
-
-        .barcode-box {
-            display: flex;
-            justify-content: flex-end;
-            overflow: hidden;
-        }
-
-        .barcode-box svg {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .section {
-            margin-top: 3.5mm;
-        }
-
-        .section-title {
-            font-size: 8px;
-            font-weight: 800;
-            letter-spacing: 0.8px;
-            color: #6b7280;
-            padding-bottom: 1.2mm;
-            border-bottom: 0.7px solid #cbd5e1;
-            margin-bottom: 2mm;
-        }
-
-        .customer-grid {
-            display: grid;
-            grid-template-columns: 26mm 1fr;
-            column-gap: 2.5mm;
-            row-gap: 1.4mm;
-            font-size: 8.3px;
-            line-height: 1.4;
-        }
-
-        .customer-label {
-            color: #6b7280;
-            font-weight: 700;
-        }
-
-        .customer-value {
-            min-width: 0;
-            word-break: break-word;
-            overflow-wrap: anywhere;
-        }
-
-        .order-section {
-            margin-top: 4mm;
-            padding-top: 3mm;
-            border-top: 1px solid #111827;
-        }
-
-        .order-number {
-            font-family: "Courier New", monospace;
-            font-size: 16px;
-            line-height: 1.25;
-            font-weight: 800;
-            word-break: break-all;
-            overflow-wrap: anywhere;
-            margin-bottom: 2.5mm;
-        }
-
-        .order-barcode {
-            justify-content: center;
-        }
-
-        .items-section {
-            margin-top: 4mm;
-        }
-
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-            font-size: 8px;
-        }
-
-        .items-table th {
-            text-align: left;
-            color: #6b7280;
-            font-size: 7px;
-            font-weight: 800;
-            padding: 1.4mm 1mm;
-            border-bottom: 0.8px solid #9ca3af;
-        }
-
-        .items-table td {
-            padding: 1.8mm 1mm;
-            vertical-align: top;
-            border-bottom: 0.5px solid #e5e7eb;
-            line-height: 1.35;
-        }
-
-        .items-table th:nth-child(1),
-        .items-table td:nth-child(1) {
-            width: 23mm;
-        }
-
-        .items-table th:nth-child(2),
-        .items-table td:nth-child(2) {
-            width: auto;
-        }
-
-        .items-table th:nth-child(3),
-        .items-table td:nth-child(3) {
-            width: 11mm;
-            text-align: right;
-        }
-
-        .item-code {
-            font-family: "Courier New", monospace;
-            font-weight: 700;
-            word-break: break-all;
-        }
-
-        .item-name {
-            word-break: break-word;
-            overflow-wrap: anywhere;
-        }
-
-        .qty {
-            font-weight: 800;
-            font-size: 9px;
-        }
-
-        .remark-section {
-            margin-top: 4mm;
-        }
-
-        .remark-box {
-            min-height: 13mm;
-            border: 0.8px solid #9ca3af;
-            padding: 2mm;
-            font-size: 8.5px;
-            line-height: 1.4;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-
-        .label-footer {
-            margin-top: auto;
-            padding-top: 3mm;
-            border-top: 0.7px solid #d1d5db;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 4mm;
-        }
-
-        .invoice-ref {
-            font-family: "Courier New", monospace;
-            font-size: 7.5px;
-            color: #6b7280;
-        }
-
-        .website {
-            font-size: 8px;
-            font-weight: 700;
-            color: #374151;
-            white-space: nowrap;
-        }
-
-        .empty-message {
-            text-align: center;
-            padding: 35px 15px;
-            color: #6b7280;
-            font-size: 13px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        @media (max-width: 800px) {
-            .workspace {
-                grid-template-columns: 1fr;
-                margin: 12px;
-            }
-
-            .editor {
-                order: 1;
-            }
-
-            .paper-wrap {
-                order: 2;
-                overflow-x: auto;
-                justify-content: flex-start;
-                padding-bottom: 20px;
-            }
-
-            .a5-paper {
-                flex-shrink: 0;
-            }
-
-            .topbar-inner {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .actions {
-                width: 100%;
-            }
-
-            .actions .btn {
-                flex: 1;
-            }
-        }
-
-        @media print {
-            html,
-            body {
-                background: #fff;
-            }
-
-            .topbar,
-            .status,
-            .editor {
-                display: none !important;
-            }
-
-            .workspace {
-                display: block;
-                margin: 0;
-            }
-
-            .paper-wrap {
-                display: block;
-            }
-
-            .a5-paper {
-                box-shadow: none;
-                margin: 0;
-            }
-
-            @page {
-                size: A5 portrait;
-                margin: 0;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="/favicon.ico?v=99">
+<title>UNIMERCE | Shipping Label</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="/layoutuerp.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="/barcode-label-engine.js"></script>
+<style>
+*{box-sizing:border-box;font-family:"Kanit",Arial,sans-serif}
+html,body{margin:0;padding:0;background:#fff;color:#111827}
+body{padding-top:80px;overflow-x:hidden}
+.container{max-width:1000px;margin:0 auto;padding:0 16px}
+.page-top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:20px 0 14px}
+.page-title{font-size:22px;font-weight:600;color:#111827;line-height:1.3}
+.page-subtitle{font-size:13px;color:#777;margin-top:2px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid #d1d5db;background:#fff;color:#374151;border-radius:7px;padding:8px 14px;font-size:13px;font-weight:500;cursor:pointer}
+.btn:hover{background:#f8fafc}
+.btn-primary{background:#1a73e8;color:#fff;border-color:#1a73e8}
+.btn-primary:hover{background:#1769d1}
+.btn-dark{background:#111827;color:#fff;border-color:#111827}
+.status{padding:9px 12px;border-radius:7px;background:#eef6ff;border:1px solid #cfe4ff;color:#185abc;font-size:13px;margin-bottom:14px}
+.status.error{background:#fff1f2;border-color:#fecdd3;color:#be123c}
+.hidden{display:none!important}
+.workspace{display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start;padding-bottom:40px}
+.editor{border:1px solid #e1e5eb;border-radius:10px;padding:16px;background:#fff}
+.editor-title{font-size:15px;font-weight:600;margin-bottom:14px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:600;color:#4b5563;margin-bottom:5px}
+.field input,.field textarea{width:100%;border:1px solid #d1d5db;border-radius:6px;padding:8px 9px;font-size:13px;color:#111827;outline:none;background:#fff}
+.field textarea{resize:vertical;min-height:70px}
+.field input:focus,.field textarea:focus{border-color:#1a73e8;box-shadow:0 0 0 2px rgba(26,115,232,.08)}
+.hint{font-size:11px;color:#9ca3af;line-height:1.5;margin-top:6px}
+.paper-wrap{display:flex;justify-content:center;align-items:flex-start}
+.sticker-paper{width:100mm;height:150mm;background:#fff;box-shadow:0 4px 20px rgba(15,23,42,.15);display:flex;justify-content:center;align-items:flex-start;flex-shrink:0}
+.shipping-label{width:100mm;height:150mm;background:#fff;color:#111827;padding:2.5mm 2.7mm 2mm;display:flex;flex-direction:column;overflow:hidden}
+.label-header{display:grid;grid-template-columns:54% 46%;gap:2mm;padding-bottom:2mm;border-bottom:1px solid #111827;flex-shrink:0}
+.brand-area{min-width:0}
+.logo{width:38mm;height:9mm;object-fit:contain;object-position:left center;display:block;margin-bottom:1.2mm}
+.warehouse{font-size:7.2px;line-height:1.35;color:#374151;padding-right:1mm}
+.tracking-area{text-align:right;min-width:0;padding-top:.5mm}
+.label-caption{font-size:7px;font-weight:700;letter-spacing:.5px;color:#6b7280;margin-bottom:.4mm}
+.tracking-number{font-family:"Courier New",monospace;font-size:16px;line-height:1.05;font-weight:800;word-break:break-all;overflow-wrap:anywhere;margin-bottom:1mm}
+.barcode-box{display:flex;justify-content:flex-end;overflow:hidden;min-height:0}
+.barcode-box svg{max-width:100%;height:auto;display:block}
+.section{margin-top:2.2mm;flex-shrink:0}
+.section-title{font-size:7.5px;font-weight:700;letter-spacing:.5px;color:#6b7280;padding-bottom:.7mm;border-bottom:.6px solid #cbd5e1;margin-bottom:1.2mm}
+.customer-grid{display:grid;grid-template-columns:23mm 1fr;column-gap:2mm;row-gap:.7mm;font-size:10.2px;line-height:1.25}
+.customer-label{color:#6b7280;font-weight:600;font-size:7.5px;padding-top:.4mm}
+.customer-value{min-width:0;word-break:break-word;overflow-wrap:anywhere;font-weight:500}
+.customer-address{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.customer-name{font-size:11.5px;font-weight:600}
+.order-section{margin-top:2.2mm;padding-top:1.8mm;border-top:1px solid #111827;flex-shrink:0}
+.order-title-row{display:flex;justify-content:flex-start;align-items:center}
+.order-number{font-family:"Courier New",monospace;font-size:16px;line-height:1.15;font-weight:800;word-break:break-all;overflow-wrap:anywhere;margin-bottom:1.3mm;text-align:left}
+.order-barcode{justify-content:flex-start}
+.order-barcode svg{max-width:82mm}
+.items-section{margin-top:2.3mm;flex-shrink:0;min-height:0}
+.items-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:9px}
+.items-table th{font-size:7px;color:#6b7280;font-weight:700;text-align:left;padding:.8mm .7mm;border-bottom:.7px solid #9ca3af}
+.items-table td{padding:1mm .7mm;vertical-align:top;border-bottom:.4px solid #e5e7eb;line-height:1.25}
+.items-table th:nth-child(1),.items-table td:nth-child(1){width:21mm}
+.items-table th:nth-child(2),.items-table td:nth-child(2){width:auto}
+.items-table th:nth-child(3),.items-table td:nth-child(3){width:10mm;text-align:right}
+.item-code{font-family:"Courier New",monospace;font-weight:700;font-size:8.5px;word-break:break-all}
+.item-name{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;word-break:break-word}
+.qty{font-weight:800;font-size:10px}
+.items-table.compact{font-size:8px}
+.items-table.compact td{padding:.7mm .6mm}
+.items-table.compact .item-name{-webkit-line-clamp:1}
+.remark-section{margin-top:2mm;flex-shrink:0}
+.remark-box{min-height:8mm;max-height:13mm;border:.7px solid #9ca3af;padding:1.4mm;font-size:9px;line-height:1.25;white-space:pre-wrap;word-break:break-word;overflow:hidden}
+.label-footer{margin-top:auto;padding-top:1.8mm;border-top:.6px solid #d1d5db;display:flex;justify-content:space-between;align-items:flex-end;gap:3mm;flex-shrink:0}
+.invoice-ref{font-family:"Courier New",monospace;font-size:7.5px;color:#6b7280}
+.website{font-size:11px;font-weight:700;color:#111827;white-space:nowrap}
+.empty-message{text-align:center;padding:30px 15px;color:#6b7280;font-size:13px}
+@media(max-width:800px){
+body{padding-top:70px}
+.container{padding:0 12px}
+.page-top{align-items:flex-start;flex-direction:column}
+.actions{width:100%}
+.actions .btn{flex:1}
+.workspace{grid-template-columns:1fr;gap:18px}
+.editor{order:1}
+.paper-wrap{order:2;overflow-x:auto;justify-content:flex-start;padding-bottom:20px}
+}
+@media print{
+html,body{background:#fff}
+body{padding-top:0}
+#headerContainer,.page-top,.status,.editor{display:none!important}
+.container{max-width:none;padding:0;margin:0}
+.workspace{display:block;padding:0;margin:0}
+.paper-wrap{display:block}
+.sticker-paper{box-shadow:none;margin:0}
+@page{size:100mm 150mm;margin:0}
+}
+</style>
 </head>
-
 <body>
-
-<div class="topbar">
-    <div class="topbar-inner">
-
-        <div>
-            <div class="page-title">
-                UNIMERCE Shipping Label
-            </div>
-
-            <div class="page-subtitle">
-                A5 Portrait · Label Width 107 mm
-            </div>
-        </div>
-
-        <div class="actions">
-            <button class="btn" onclick="window.print()">
-                Print
-            </button>
-
-            <button class="btn btn-primary" onclick="generatePDF()">
-                Generate PDF
-            </button>
-
-            <button class="btn btn-dark" onclick="generateJPEG()">
-                Generate JPEG
-            </button>
-        </div>
-
-    </div>
+<div id="headerContainer"></div>
+<main class="container">
+<div class="page-top">
+<div>
+<div class="page-title">UNIMERCE Shipping Label</div>
+<div class="page-subtitle">Shipping Label · 100 × 150 mm</div>
 </div>
-
+<div class="actions">
+<button class="btn" onclick="window.print()">Print</button>
+<button class="btn btn-primary" onclick="generatePDF()">Generate PDF</button>
+<button class="btn btn-dark" onclick="generateJPEG()">Generate JPEG</button>
+</div>
+</div>
 <div id="status" class="status hidden"></div>
-
 <div class="workspace">
-
-    <div class="editor">
-
-        <div class="editor-title">
-            Shipping Information
-        </div>
-
-        <div class="field">
-            <label>Customer Code</label>
-            <input id="customerCode">
-        </div>
-
-        <div class="field">
-            <label>Customer Name</label>
-            <input id="customerName">
-        </div>
-
-        <div class="field">
-            <label>Customer Address</label>
-            <textarea id="customerAddress"></textarea>
-        </div>
-
-        <div class="field">
-            <label>Tax ID</label>
-            <input id="taxId">
-        </div>
-
-        <div class="field">
-            <label>Phone</label>
-            <input id="phone">
-        </div>
-
-        <div class="field">
-            <label>Email</label>
-            <input id="email">
-        </div>
-
-        <div class="field">
-            <label>Remark</label>
-            <textarea
-                id="remark"
-                placeholder="หมายเหตุสำหรับการจัดส่ง..."
-            ></textarea>
-        </div>
-
-        <div class="hint">
-            ข้อมูลลูกค้าสามารถแก้ไขได้ก่อน Generate PDF/JPEG
-            โดยจะยังไม่บันทึกกลับเข้า Supabase
-        </div>
-
-    </div>
-
-    <div class="paper-wrap">
-
-        <div class="a5-paper">
-
-            <div id="shippingLabel" class="shipping-label">
-
-                <div class="empty-message">
-                    กำลังโหลดข้อมูล...
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
+<div class="editor">
+<div class="editor-title">Shipping Information</div>
+<div class="field">
+<label>Customer Code</label>
+<input id="customerCode">
 </div>
-
-
+<div class="field">
+<label>Customer Name</label>
+<input id="customerName">
+</div>
+<div class="field">
+<label>Customer Address</label>
+<textarea id="customerAddress"></textarea>
+</div>
+<div class="field">
+<label>Tax ID</label>
+<input id="taxId">
+</div>
+<div class="field">
+<label>Phone</label>
+<input id="phone">
+</div>
+<div class="field">
+<label>Email</label>
+<input id="email">
+</div>
+<div class="field">
+<label>Remark</label>
+<textarea id="remark" placeholder="หมายเหตุสำหรับการจัดส่ง..."></textarea>
+</div>
+<div class="hint">ข้อมูลลูกค้าสามารถแก้ไขได้ก่อน Generate PDF/JPEG โดยจะยังไม่บันทึกกลับเข้า Supabase</div>
+</div>
+<div class="paper-wrap">
+<div class="sticker-paper">
+<div id="shippingLabel" class="shipping-label">
+<div class="empty-message">กำลังโหลดข้อมูล...</div>
+</div>
+</div>
+</div>
+</div>
+</main>
 <script>
-
-const supabaseUrl =
-    "https://xygdmszernmircmbqwke.supabase.co";
-
-const supabaseKey =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
-
-const supabaseClient =
-    supabase.createClient(
-        supabaseUrl,
-        supabaseKey
-    );
-
-
-const warehouseText =
-    "UNIMERCE คลังสินค้า 425 ปากซอยลาดพร้าววังหิน55(ไม่เข้าซอย) ถนนลาดพร้าววังหิน แขวงลาดพร้าว เขตลาดพร้าว กรุงเทพ 10230, โทร 0812568704";
-
-
-let invoiceNo = "";
-let transactionRows = [];
-
-
-/* -------------------------------------------------------
-   Helpers
-------------------------------------------------------- */
-
-function escapeHtml(value) {
-
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+const supabaseUrl="https://xygdmszernmircmbqwke.supabase.co";
+const supabaseKey="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
+const supabaseClient=supabase.createClient(supabaseUrl,supabaseKey);
+const warehouseText="UNIMERCE คลังสินค้า 425 ปากซอยลาดพร้าววังหิน55(ไม่เข้าซอย) ถนนลาดพร้าววังหิน แขวงลาดพร้าว เขตลาดพร้าว กรุงเทพ 10230, โทร 0812568704";
+let invoiceNo="";
+let transactionRows=[];
+function loadHeader(){
+fetch("uerpheader.html").then(res=>{
+if(!res.ok)throw new Error("Header file not found");
+return res.text();
+}).then(html=>{
+const headerContainer=document.getElementById("headerContainer");
+headerContainer.innerHTML=html;
+if(typeof window.initUerpLayout==="function"){
+window.__uerpLayoutInitialized=false;
+window.initUerpLayout();
 }
-
-
-function getUrlInvoiceNo() {
-
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
-
-    return (
-        params.get("invoice_no") ||
-        ""
-    ).trim();
+}).catch(err=>console.warn("Header load error:",err));
 }
-
-
-function showStatus(message, isError = false) {
-
-    const el =
-        document.getElementById("status");
-
-    el.textContent = message;
-
-    el.classList.remove(
-        "hidden",
-        "error"
-    );
-
-    if (isError) {
-        el.classList.add("error");
-    }
+function escapeHtml(value){
+return String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
 }
-
-
-function hideStatus() {
-
-    document
-        .getElementById("status")
-        .classList.add("hidden");
+function getUrlInvoiceNo(){
+const params=new URLSearchParams(window.location.search);
+return(params.get("invoice_no")||"").trim();
 }
-
-
-function firstValue(rows, fields) {
-
-    for (const field of fields) {
-
-        const row =
-            rows.find(
-                item =>
-                    item[field] !== null &&
-                    item[field] !== undefined &&
-                    String(item[field]).trim() !== ""
-            );
-
-        if (row) {
-            return String(row[field]);
-        }
-    }
-
-    return "";
+function showStatus(message,isError=false){
+const el=document.getElementById("status");
+el.textContent=message;
+el.classList.remove("hidden","error");
+if(isError)el.classList.add("error");
 }
-
-
-function formatQty(value) {
-
-    const num =
-        Number(value);
-
-    if (Number.isNaN(num)) {
-        return value || "";
-    }
-
-    return Number.isInteger(num)
-        ? num.toString()
-        : num.toLocaleString(
-            "en-US",
-            {
-                maximumFractionDigits: 3
-            }
-        );
+function hideStatus(){
+document.getElementById("status").classList.add("hidden");
 }
-
-
-/* -------------------------------------------------------
-   Load transaction
-------------------------------------------------------- */
-
-async function loadTransaction() {
-
-    invoiceNo =
-        getUrlInvoiceNo();
-
-    if (!invoiceNo) {
-
-        showStatus(
-            "ไม่พบ invoice_no ใน URL",
-            true
-        );
-
-        document.getElementById(
-            "shippingLabel"
-        ).innerHTML = `
-            <div class="empty-message">
-                ไม่พบ Invoice No.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    showStatus(
-        `กำลังโหลด Invoice ${invoiceNo}...`
-    );
-
-
-    try {
-
-        const {
-            data,
-            error
-        } = await supabaseClient
-            .from("transactions")
-            .select(`
-                date,
-                invoice_no,
-                name,
-                address,
-                order_no,
-                tracking_number,
-                item_code,
-                item_name,
-                qty,
-                channel,
-                remark,
-                customer_code,
-                customer_name,
-                customer_address,
-                tax_id,
-                phone,
-                email,
-                delivery_method
-            `)
-            .eq(
-                "invoice_no",
-                invoiceNo
-            )
-            .order(
-                "invoice_item_id",
-                {
-                    ascending: true
-                }
-            );
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        transactionRows =
-            data || [];
-
-
-        if (
-            transactionRows.length === 0
-        ) {
-
-            showStatus(
-                `ไม่พบข้อมูล Invoice ${invoiceNo}`,
-                true
-            );
-
-            document.getElementById(
-                "shippingLabel"
-            ).innerHTML = `
-                <div class="empty-message">
-                    ไม่พบข้อมูลรายการ
-                    <br>
-                    Invoice No. ${escapeHtml(invoiceNo)}
-                </div>
-            `;
-
-            return;
-        }
-
-
-        fillCustomerFields();
-
-        renderLabel();
-
-        hideStatus();
-
-    } catch (error) {
-
-        console.error(
-            "Shipping Label Error:",
-            error
-        );
-
-        showStatus(
-            `เกิดข้อผิดพลาด: ${error.message}`,
-            true
-        );
-    }
+function firstValue(rows,fields){
+for(const field of fields){
+const row=rows.find(item=>item[field]!==null&&item[field]!==undefined&&String(item[field]).trim()!=="");
+if(row)return String(row[field]);
 }
-
-
-/* -------------------------------------------------------
-   Customer fields
-------------------------------------------------------- */
-
-function fillCustomerFields() {
-
-    const code =
-        firstValue(
-            transactionRows,
-            ["customer_code"]
-        );
-
-    const name =
-        firstValue(
-            transactionRows,
-            [
-                "customer_name",
-                "name"
-            ]
-        );
-
-    const address =
-        firstValue(
-            transactionRows,
-            [
-                "customer_address",
-                "address"
-            ]
-        );
-
-    const taxId =
-        firstValue(
-            transactionRows,
-            ["tax_id"]
-        );
-
-    const phone =
-        firstValue(
-            transactionRows,
-            ["phone"]
-        );
-
-    const email =
-        firstValue(
-            transactionRows,
-            ["email"]
-        );
-
-    const remark =
-        firstValue(
-            transactionRows,
-            ["remark"]
-        );
-
-
-    document.getElementById(
-        "customerCode"
-    ).value = code;
-
-    document.getElementById(
-        "customerName"
-    ).value = name;
-
-    document.getElementById(
-        "customerAddress"
-    ).value = address;
-
-    document.getElementById(
-        "taxId"
-    ).value = taxId;
-
-    document.getElementById(
-        "phone"
-    ).value = phone;
-
-    document.getElementById(
-        "email"
-    ).value = email;
-
-    document.getElementById(
-        "remark"
-    ).value = remark;
+return "";
 }
-
-
-/* -------------------------------------------------------
-   Render label
-------------------------------------------------------- */
-
-function renderLabel() {
-
-    const customerCode =
-        document.getElementById(
-            "customerCode"
-        ).value.trim();
-
-    const customerName =
-        document.getElementById(
-            "customerName"
-        ).value.trim();
-
-    const customerAddress =
-        document.getElementById(
-            "customerAddress"
-        ).value.trim();
-
-    const taxId =
-        document.getElementById(
-            "taxId"
-        ).value.trim();
-
-    const phone =
-        document.getElementById(
-            "phone"
-        ).value.trim();
-
-    const email =
-        document.getElementById(
-            "email"
-        ).value.trim();
-
-    const remark =
-        document.getElementById(
-            "remark"
-        ).value.trim();
-
-
-    const trackingNumber =
-        firstValue(
-            transactionRows,
-            ["tracking_number"]
-        );
-
-    const orderNo =
-        firstValue(
-            transactionRows,
-            ["order_no"]
-        );
-
-
-    let itemsHtml = "";
-
-
-    transactionRows.forEach(
-        row => {
-
-            itemsHtml += `
-                <tr>
-                    <td>
-                        <span class="item-code">
-                            ${escapeHtml(
-                                row.item_code || "-"
-                            )}
-                        </span>
-                    </td>
-
-                    <td>
-                        <span class="item-name">
-                            ${escapeHtml(
-                                row.item_name || "-"
-                            )}
-                        </span>
-                    </td>
-
-                    <td>
-                        <span class="qty">
-                            ${escapeHtml(
-                                formatQty(row.qty)
-                            )}
-                        </span>
-                    </td>
-                </tr>
-            `;
-        }
-    );
-
-
-    const label =
-        document.getElementById(
-            "shippingLabel"
-        );
-
-
-    label.innerHTML = `
-
-        <div class="label-header">
-
-            <div class="brand-area">
-
-                <img
-                    id="labelLogo"
-                    class="logo"
-                    crossorigin="anonymous"
-                    src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1780642657/unimerce_home_btn_320_omzc5g.png"
-                    alt="UNIMERCE"
-                >
-
-                <div class="warehouse">
-                    ${escapeHtml(
-                        warehouseText
-                    )}
-                </div>
-
-            </div>
-
-
-            <div class="tracking-area">
-
-                <div class="label-caption">
-                    TRACKING NO.
-                </div>
-
-                <div class="tracking-number">
-                    ${escapeHtml(
-                        trackingNumber || "-"
-                    )}
-                </div>
-
-                ${
-                    trackingNumber
-                        ? `
-                            <div class="barcode-box">
-                                <svg
-                                    id="trackingBarcode"
-                                ></svg>
-                            </div>
-                        `
-                        : ""
-                }
-
-            </div>
-
-        </div>
-
-
-        <div class="section">
-
-            <div class="section-title">
-                SHIP TO
-            </div>
-
-            <div class="customer-grid">
-
-                <div class="customer-label">
-                    CUSTOMER CODE
-                </div>
-
-                <div class="customer-value">
-                    ${escapeHtml(
-                        customerCode || "-"
-                    )}
-                </div>
-
-
-                <div class="customer-label">
-                    NAME
-                </div>
-
-                <div class="customer-value">
-                    ${escapeHtml(
-                        customerName || "-"
-                    )}
-                </div>
-
-
-                <div class="customer-label">
-                    ADDRESS
-                </div>
-
-                <div class="customer-value">
-                    ${escapeHtml(
-                        customerAddress || "-"
-                    )}
-                </div>
-
-
-                ${
-                    taxId
-                        ? `
-                            <div class="customer-label">
-                                TAX ID
-                            </div>
-
-                            <div class="customer-value">
-                                ${escapeHtml(taxId)}
-                            </div>
-                        `
-                        : ""
-                }
-
-
-                ${
-                    phone
-                        ? `
-                            <div class="customer-label">
-                                TEL
-                            </div>
-
-                            <div class="customer-value">
-                                ${escapeHtml(phone)}
-                            </div>
-                        `
-                        : ""
-                }
-
-
-                ${
-                    email
-                        ? `
-                            <div class="customer-label">
-                                EMAIL
-                            </div>
-
-                            <div class="customer-value">
-                                ${escapeHtml(email)}
-                            </div>
-                        `
-                        : ""
-                }
-
-            </div>
-
-        </div>
-
-
-        <div class="order-section">
-
-            <div class="section-title">
-                ORDER NO.
-            </div>
-
-            <div class="order-number">
-                ${escapeHtml(
-                    orderNo || "-"
-                )}
-            </div>
-
-            ${
-                orderNo
-                    ? `
-                        <div class="barcode-box order-barcode">
-                            <svg
-                                id="orderBarcode"
-                            ></svg>
-                        </div>
-                    `
-                    : ""
-            }
-
-        </div>
-
-
-        <div class="items-section">
-
-            <div class="section-title">
-                ITEMS
-            </div>
-
-            <table class="items-table">
-
-                <thead>
-
-                    <tr>
-                        <th>
-                            ITEM CODE
-                        </th>
-
-                        <th>
-                            DESCRIPTION
-                        </th>
-
-                        <th>
-                            QTY
-                        </th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-                    ${itemsHtml}
-                </tbody>
-
-            </table>
-
-        </div>
-
-
-        <div class="remark-section">
-
-            <div class="section-title">
-                REMARK
-            </div>
-
-            <div class="remark-box">
-                ${escapeHtml(
-                    remark || "-"
-                )}
-            </div>
-
-        </div>
-
-
-        <div class="label-footer">
-
-            <div class="invoice-ref">
-                Invoice No. :
-                ${escapeHtml(invoiceNo)}
-            </div>
-
-            <div class="website">
-                www.unimercegroup.com
-            </div>
-
-        </div>
-    `;
-
-
-    generateBarcodes();
+function formatQty(value){
+const num=Number(value);
+if(Number.isNaN(num))return value||"";
+return Number.isInteger(num)?num.toString():num.toLocaleString("en-US",{maximumFractionDigits:3});
 }
-
-
-/* -------------------------------------------------------
-   Barcode
-------------------------------------------------------- */
-
-function generateBarcodes() {
-
-    const tracking =
-        firstValue(
-            transactionRows,
-            ["tracking_number"]
-        );
-
-    const orderNo =
-        firstValue(
-            transactionRows,
-            ["order_no"]
-        );
-
-
-    if (
-        tracking &&
-        document.getElementById(
-            "trackingBarcode"
-        )
-    ) {
-
-        try {
-
-            JsBarcode(
-                "#trackingBarcode",
-                tracking,
-                {
-                    format: "CODE128",
-                    width: 1.35,
-                    height: 32,
-                    displayValue: false,
-                    margin: 2,
-                    background: "#ffffff",
-                    lineColor: "#111827"
-                }
-            );
-
-        } catch (error) {
-
-            console.warn(
-                "Tracking barcode error:",
-                error
-            );
-        }
-    }
-
-
-    if (
-        orderNo &&
-        document.getElementById(
-            "orderBarcode"
-        )
-    ) {
-
-        try {
-
-            JsBarcode(
-                "#orderBarcode",
-                orderNo,
-                {
-                    format: "CODE128",
-                    width: 1.25,
-                    height: 34,
-                    displayValue: false,
-                    margin: 3,
-                    background: "#ffffff",
-                    lineColor: "#111827"
-                }
-            );
-
-        } catch (error) {
-
-            console.warn(
-                "Order barcode error:",
-                error
-            );
-        }
-    }
+function loadTransaction(){
+invoiceNo=getUrlInvoiceNo();
+if(!invoiceNo){
+showStatus("ไม่พบ invoice_no ใน URL",true);
+document.getElementById("shippingLabel").innerHTML='<div class="empty-message">ไม่พบ Invoice No.</div>';
+return;
 }
-
-
-/* -------------------------------------------------------
-   Live editing
-------------------------------------------------------- */
-
-[
-    "customerCode",
-    "customerName",
-    "customerAddress",
-    "taxId",
-    "phone",
-    "email",
-    "remark"
-].forEach(id => {
-
-    document
-        .getElementById(id)
-        .addEventListener(
-            "input",
-            renderLabel
-        );
-
+showStatus(`กำลังโหลด Invoice ${invoiceNo}...`);
+supabaseClient.from("transactions").select(`
+date,
+invoice_no,
+name,
+address,
+order_no,
+tracking_number,
+item_code,
+item_name,
+qty,
+channel,
+remark,
+customer_code,
+customer_name,
+customer_address,
+tax_id,
+phone,
+email,
+delivery_method
+`).eq("invoice_no",invoiceNo).order("invoice_item_id",{ascending:true}).then(({data,error})=>{
+if(error)throw error;
+transactionRows=data||[];
+if(transactionRows.length===0){
+showStatus(`ไม่พบข้อมูล Invoice ${invoiceNo}`,true);
+document.getElementById("shippingLabel").innerHTML=`<div class="empty-message">ไม่พบข้อมูลรายการ<br>Invoice No. ${escapeHtml(invoiceNo)}</div>`;
+return;
+}
+fillCustomerFields();
+renderLabel();
+hideStatus();
+}).catch(error=>{
+console.error("Shipping Label Error:",error);
+showStatus(`เกิดข้อผิดพลาด: ${error.message}`,true);
 });
-
-
-/* -------------------------------------------------------
-   Canvas capture
-------------------------------------------------------- */
-
-async function captureLabel(scale = 2) {
-
-    const label =
-        document.getElementById(
-            "shippingLabel"
-        );
-
-
-    await document.fonts.ready;
-
-
-    return await html2canvas(
-        label,
-        {
-            scale: scale,
-            useCORS: true,
-            allowTaint: false,
-            backgroundColor: "#ffffff",
-            logging: false
-        }
-    );
 }
-
-
-/* -------------------------------------------------------
-   JPEG
-------------------------------------------------------- */
-
-async function generateJPEG() {
-
-    try {
-
-        showStatus(
-            "กำลังสร้าง JPEG..."
-        );
-
-
-        const canvas =
-            await captureLabel(2);
-
-
-        let quality = 0.78;
-
-        let dataUrl =
-            canvas.toDataURL(
-                "image/jpeg",
-                quality
-            );
-
-
-        /*
-         * ลดคุณภาพลงถ้าไฟล์ใหญ่กว่า
-         * 200 KB
-         */
-        while (
-            dataUrl.length > 200 * 1024 * 1.37 &&
-            quality > 0.45
-        ) {
-
-            quality -= 0.05;
-
-            dataUrl =
-                canvas.toDataURL(
-                    "image/jpeg",
-                    quality
-                );
-        }
-
-
-        const link =
-            document.createElement("a");
-
-        link.href = dataUrl;
-
-        link.download =
-            `UNIMERCE_${invoiceNo}.jpg`;
-
-        document.body.appendChild(link);
-
-        link.click();
-
-        link.remove();
-
-
-        hideStatus();
-
-    } catch (error) {
-
-        console.error(
-            "JPEG Error:",
-            error
-        );
-
-        showStatus(
-            `สร้าง JPEG ไม่สำเร็จ: ${error.message}`,
-            true
-        );
-    }
+function fillCustomerFields(){
+document.getElementById("customerCode").value=firstValue(transactionRows,["customer_code"]);
+document.getElementById("customerName").value=firstValue(transactionRows,["customer_name","name"]);
+document.getElementById("customerAddress").value=firstValue(transactionRows,["customer_address","address"]);
+document.getElementById("taxId").value=firstValue(transactionRows,["tax_id"]);
+document.getElementById("phone").value=firstValue(transactionRows,["phone"]);
+document.getElementById("email").value=firstValue(transactionRows,["email"]);
+document.getElementById("remark").value=firstValue(transactionRows,["remark"]);
 }
-
-
-/* -------------------------------------------------------
-   PDF
-------------------------------------------------------- */
-
-async function generatePDF() {
-
-    try {
-
-        showStatus(
-            "กำลังสร้าง PDF..."
-        );
-
-
-        const canvas =
-            await captureLabel(2);
-
-
-        let quality = 0.72;
-
-        let imageData =
-            canvas.toDataURL(
-                "image/jpeg",
-                quality
-            );
-
-
-        const {
-            jsPDF
-        } = window.jspdf;
-
-
-        /*
-         * A5 Portrait
-         * 148 x 210 mm
-         */
-        const pdf =
-            new jsPDF({
-                orientation: "portrait",
-                unit: "mm",
-                format: "a5",
-                compress: true
-            });
-
-
-        /*
-         * Label = 107 mm
-         * Center horizontally on A5
-         */
-        const labelWidth = 107;
-
-        const labelHeight =
-            labelWidth *
-            (canvas.height / canvas.width);
-
-
-        const x =
-            (148 - labelWidth) / 2;
-
-        const y = 8;
-
-
-        pdf.addImage(
-            imageData,
-            "JPEG",
-            x,
-            y,
-            labelWidth,
-            labelHeight,
-            undefined,
-            "FAST"
-        );
-
-
-        /*
-         * jsPDF output
-         */
-        let blob =
-            pdf.output(
-                "blob"
-            );
-
-
-        /*
-         * ถ้าเกิน 200 KB
-         * ลด JPEG quality แล้วสร้างใหม่
-         */
-        while (
-            blob.size > 200 * 1024 &&
-            quality > 0.40
-        ) {
-
-            quality -= 0.06;
-
-            imageData =
-                canvas.toDataURL(
-                    "image/jpeg",
-                    quality
-                );
-
-
-            const retryPdf =
-                new jsPDF({
-                    orientation: "portrait",
-                    unit: "mm",
-                    format: "a5",
-                    compress: true
-                });
-
-
-            retryPdf.addImage(
-                imageData,
-                "JPEG",
-                x,
-                y,
-                labelWidth,
-                labelHeight,
-                undefined,
-                "FAST"
-            );
-
-
-            blob =
-                retryPdf.output(
-                    "blob"
-                );
-
-
-            if (
-                blob.size <= 200 * 1024
-            ) {
-
-                saveBlob(
-                    blob,
-                    `UNIMERCE_${invoiceNo}.pdf`
-                );
-
-                hideStatus();
-
-                return;
-            }
-        }
-
-
-        /*
-         * ถ้าลด quality แล้ว
-         * ยังเกิน 200 KB ก็ยัง Generate ให้
-         * แต่แจ้งขนาดจริง
-         */
-        saveBlob(
-            blob,
-            `UNIMERCE_${invoiceNo}.pdf`
-        );
-
-
-        const sizeKB =
-            Math.round(
-                blob.size / 1024
-            );
-
-
-        if (sizeKB > 200) {
-
-            showStatus(
-                `สร้าง PDF แล้ว ขนาด ${sizeKB} KB`,
-                false
-            );
-
-        } else {
-
-            hideStatus();
-        }
-
-    } catch (error) {
-
-        console.error(
-            "PDF Error:",
-            error
-        );
-
-        showStatus(
-            `สร้าง PDF ไม่สำเร็จ: ${error.message}`,
-            true
-        );
-    }
+function renderLabel(){
+const customerCode=document.getElementById("customerCode").value.trim();
+const customerName=document.getElementById("customerName").value.trim();
+const customerAddress=document.getElementById("customerAddress").value.trim();
+const taxId=document.getElementById("taxId").value.trim();
+const phone=document.getElementById("phone").value.trim();
+const email=document.getElementById("email").value.trim();
+const remark=document.getElementById("remark").value.trim();
+const trackingNumber=firstValue(transactionRows,["tracking_number"]);
+const orderNo=firstValue(transactionRows,["order_no"]);
+let itemsHtml="";
+transactionRows.forEach(row=>{
+itemsHtml+=`<tr><td><span class="item-code">${escapeHtml(row.item_code||"-")}</span></td><td><span class="item-name">${escapeHtml(row.item_name||"-")}</span></td><td><span class="qty">${escapeHtml(formatQty(row.qty))}</span></td></tr>`;
+});
+const compactClass=transactionRows.length>6?"compact":"";
+const label=document.getElementById("shippingLabel");
+label.innerHTML=`
+<div class="label-header">
+<div class="brand-area">
+<img id="labelLogo" class="logo" crossorigin="anonymous" src="https://res.cloudinary.com/dzgaej1wo/image/upload/v1787898744/ULOGO_CLEAR_800_iyninb.png" alt="UNIMERCE">
+<div class="warehouse">${escapeHtml(warehouseText)}</div>
+</div>
+<div class="tracking-area">
+<div class="label-caption">TRACKING NO.</div>
+<div class="tracking-number">${escapeHtml(trackingNumber||"-")}</div>
+${trackingNumber?`<div class="barcode-box"><svg id="trackingBarcode"></svg></div>`:""}
+</div>
+</div>
+<div class="section">
+<div class="section-title">SHIP TO</div>
+<div class="customer-grid">
+<div class="customer-label">CUSTOMER CODE</div>
+<div class="customer-value">${escapeHtml(customerCode||"-")}</div>
+<div class="customer-label">NAME</div>
+<div class="customer-value customer-name">${escapeHtml(customerName||"-")}</div>
+<div class="customer-label">ADDRESS</div>
+<div class="customer-value customer-address">${escapeHtml(customerAddress||"-")}</div>
+${taxId?`<div class="customer-label">TAX ID</div><div class="customer-value">${escapeHtml(taxId)}</div>`:""}
+${phone?`<div class="customer-label">TEL</div><div class="customer-value">${escapeHtml(phone)}</div>`:""}
+${email?`<div class="customer-label">EMAIL</div><div class="customer-value">${escapeHtml(email)}</div>`:""}
+</div>
+</div>
+<div class="order-section">
+<div class="section-title">ORDER NO.</div>
+<div class="order-number">${escapeHtml(orderNo||"-")}</div>
+${orderNo?`<div class="barcode-box order-barcode"><svg id="orderBarcode"></svg></div>`:""}
+</div>
+<div class="items-section">
+<div class="section-title">ITEMS</div>
+<table class="items-table ${compactClass}">
+<thead><tr><th>ITEM CODE</th><th>DESCRIPTION</th><th>QTY</th></tr></thead>
+<tbody>${itemsHtml}</tbody>
+</table>
+</div>
+<div class="remark-section">
+<div class="section-title">REMARK</div>
+<div class="remark-box">${escapeHtml(remark||"-")}</div>
+</div>
+<div class="label-footer">
+<div class="invoice-ref">Invoice No. : ${escapeHtml(invoiceNo)}</div>
+<div class="website">www.unimercegroup.com</div>
+</div>`;
+generateBarcodes();
 }
-
-
-/* -------------------------------------------------------
-   Save blob
-------------------------------------------------------- */
-
-function saveBlob(
-    blob,
-    filename
-) {
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-
-    const link =
-        document.createElement("a");
-
-    link.href = url;
-
-    link.download = filename;
-
-    document.body.appendChild(link);
-
-    link.click();
-
-    link.remove();
-
-
-    setTimeout(
-        () => URL.revokeObjectURL(url),
-        1000
-    );
+function generateBarcodes(){
+const tracking=firstValue(transactionRows,["tracking_number"]);
+const orderNo=firstValue(transactionRows,["order_no"]);
+if(tracking&&document.getElementById("trackingBarcode")){
+try{
+JsBarcode("#trackingBarcode",tracking,{format:"CODE128",width:1.25,height:30,displayValue:false,margin:1,background:"#ffffff",lineColor:"#111827"});
+}catch(error){console.warn("Tracking barcode error:",error);}
 }
-
-
-/* -------------------------------------------------------
-   Initial
-------------------------------------------------------- */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        loadTransaction();
-
-    }
-);
-
+if(orderNo&&document.getElementById("orderBarcode")){
+try{
+JsBarcode("#orderBarcode",orderNo,{format:"CODE128",width:1.15,height:30,displayValue:false,margin:1,background:"#ffffff",lineColor:"#111827"});
+}catch(error){console.warn("Order barcode error:",error);}
+}
+}
+["customerCode","customerName","customerAddress","taxId","phone","email","remark"].forEach(id=>{
+document.getElementById(id).addEventListener("input",renderLabel);
+});
+async function captureLabel(scale=3){
+const label=document.getElementById("shippingLabel");
+await document.fonts.ready;
+await new Promise(resolve=>setTimeout(resolve,150));
+return await html2canvas(label,{scale:scale,useCORS:true,allowTaint:false,backgroundColor:"#ffffff",logging:false});
+}
+function saveBlob(blob,filename){
+const url=URL.createObjectURL(blob);
+const link=document.createElement("a");
+link.href=url;
+link.download=filename;
+document.body.appendChild(link);
+link.click();
+link.remove();
+setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+async function generateJPEG(){
+try{
+showStatus("กำลังสร้าง JPEG...");
+const canvas=await captureLabel(3);
+let quality=.9;
+let dataUrl=canvas.toDataURL("image/jpeg",quality);
+while(dataUrl.length>200*1024*1.37&&quality>.55){
+quality-=.03;
+dataUrl=canvas.toDataURL("image/jpeg",quality);
+}
+const blob=await fetch(dataUrl).then(r=>r.blob());
+saveBlob(blob,`UNIMERCE_${invoiceNo}.jpg`);
+showStatus(`สร้าง JPEG แล้ว ขนาด ${Math.round(blob.size/1024)} KB`);
+setTimeout(hideStatus,2000);
+}catch(error){
+console.error("JPEG Error:",error);
+showStatus(`สร้าง JPEG ไม่สำเร็จ: ${error.message}`,true);
+}
+}
+async function generatePDF(){
+try{
+showStatus("กำลังสร้าง PDF...");
+const canvas=await captureLabel(3);
+const{jsPDF}=window.jspdf;
+let quality=.9;
+let imageData=canvas.toDataURL("image/jpeg",quality);
+let pdf=new jsPDF({orientation:"portrait",unit:"mm",format:[100,150],compress:true});
+pdf.addImage(imageData,"JPEG",0,0,100,150,undefined,"FAST");
+let blob=pdf.output("blob");
+while(blob.size>200*1024&&quality>.55){
+quality-=.03;
+imageData=canvas.toDataURL("image/jpeg",quality);
+pdf=new jsPDF({orientation:"portrait",unit:"mm",format:[100,150],compress:true});
+pdf.addImage(imageData,"JPEG",0,0,100,150,undefined,"FAST");
+blob=pdf.output("blob");
+}
+saveBlob(blob,`UNIMERCE_${invoiceNo}.pdf`);
+const sizeKB=Math.round(blob.size/1024);
+showStatus(`สร้าง PDF แล้ว ขนาด ${sizeKB} KB`);
+setTimeout(hideStatus,2500);
+}catch(error){
+console.error("PDF Error:",error);
+showStatus(`สร้าง PDF ไม่สำเร็จ: ${error.message}`,true);
+}
+}
+document.addEventListener("DOMContentLoaded",()=>{
+loadHeader();
+loadTransaction();
+});
 </script>
-
 </body>
 </html>
