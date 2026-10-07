@@ -1,5 +1,5 @@
 const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taWJxdy5zZXAiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc4MTY1Njk1MCwiZXhwIjoyMDk3MjMyOTUwfQ.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 let allTransactions = [];
@@ -1338,7 +1338,10 @@ function renderTable() {
 
                 <td class="p-2 align-top">
                     <div class="sm:hidden leading-tight w-[78px] overflow-hidden">
-                        <div class="mobile-order-main font-bold text-slate-900 font-mono truncate" title="${row.invoice_no || ''}">
+                        <div class="mobile-order-main font-bold text-slate-900 font-mono truncate"
+                             title="${row.invoice_no || ''}"
+                             onclick="event.stopPropagation(); window.open('/uerp/shipping-label.html?invoice_no=${encodeURIComponent(row.invoice_no || '')}', '_blank')"
+                             style="cursor: pointer;">
                             ${row.invoice_no || '-'}
                         </div>
                         <div class="text-[9px] text-google-gray font-mono truncate" title="${orderNo}">
@@ -1350,7 +1353,9 @@ function renderTable() {
                     </div>
 
                     <div class="hidden sm:block leading-tight">
-                        <div class="font-bold text-slate-900 font-mono">
+                        <div class="font-bold text-slate-900 font-mono"
+                             onclick="event.stopPropagation(); window.open('/uerp/shipping-label.html?invoice_no=${encodeURIComponent(row.invoice_no || '')}', '_blank')"
+                             style="cursor: pointer;">
                             ${row.invoice_no || '-'}
                         </div>
                         <div class="text-[10px] text-google-gray font-mono">
