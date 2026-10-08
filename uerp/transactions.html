@@ -1,302 +1,298 @@
 <!DOCTYPE html>
 <html lang="th" class="h-full bg-slate-100 text-slate-800">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UERP - Order Management | Unimerce Co., Ltd.</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'google-blue': '#1a73e8',
-                        'google-blueHover': '#1557b0',
-                        'google-red': '#d93025',
-                        'google-gray': '#5f6368',
-                        'google-border': '#dadce0',
-                        'shopee': '#ee4d2d',
-                        'lazada': '#0f146d',
-                        'tiktok': '#000000'
-                    }
-                }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>UERP - Order Management | Unimerce Co., Ltd.</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                'google-blue': '#1a73e8',
+                'google-blueHover': '#1557b0',
+                'google-red': '#d93025',
+                'google-gray': '#5f6368',
+                'google-border': '#dadce0',
+                'shopee': '#ee4d2d',
+                'lazada': '#0f146d',
+                'tiktok': '#000000'
             }
         }
-    </script>
-    <!-- Google Fonts & FontAwesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Supabase JS Client CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Global Header & Layout Script -->
-    <script src="layoutuerp.js"></script>
-    <style>
-        body {
-            font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
-            touch-action: manipulation;
-        }
-        .google-card {
-            background: #ffffff;
-            border: 1px solid #dadce0;
-            border-radius: 12px;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.05);
-        }
-        .google-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;utf8,<svg fill='%235f6368' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-            background-repeat: no-repeat;
-            background-position: right 6px center;
-            background-size: 16px;
-        }
-        .row-selected {
-            background-color: #e8f0fe !important;
-        }
-        .row-duplicate {
-            background-color: #fff7ed !important;
-        }
-        .row-selected.row-duplicate {
-            background-color: #fef08a !important;
-        }
-        th.sortable {
-            cursor: pointer;
-            user-select: none;
-        }
-        th.sortable:hover {
-            background-color: #f1f5f9;
-        }
-        .rounded-checkbox {
-            appearance: none;
-            width: 14px;
-            height: 14px;
-            border: 1.5px solid #94a3b8;
-            border-radius: 50%;
-            outline: none;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-        .rounded-checkbox:checked {
-            background-color: #1a73e8;
-            border-color: #1a73e8;
-        }
-        .rounded-checkbox:checked::after {
-            content: '';
-            position: absolute;
-            top: 2.5px;
-            left: 2.5px;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: white;
-        }
-        .period-btn {
-            transition: all 0.15s ease;
-        }
-        .order-count-live {
-            font-size: 14px;
-            color: #d93025;
-        }
-        .order-count-live-icon {
-            color: #d93025;
-            animation: orderCountLivePulse 2.4s ease-in-out infinite;
-        }
-        @keyframes orderCountLivePulse {
-            0%, 100% {
-                opacity: 0.45;
-                transform: scale(0.9);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        .transactions-grid {
-            height: calc(100vh - 270px);
-            min-height: 0;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-        .transactions-grid thead th {
-            position: sticky;
-            top: 0;
-            z-index: 20;
-            background-color: #f8fafc !important;
-            box-shadow: 0 1px 0 #dadce0;
-        }
-        @media (max-width: 639px) {
-            .mobile-item-name {
-                white-space: normal;
-                overflow-wrap: anywhere;
-                word-break: break-word;
-                line-height: 1.35;
-            }
-            .mobile-order-tail {
-                font-size: 15px;
-                font-weight: 700;
-                line-height: 1.15;
-                letter-spacing: 0.2px;
-            }
-            .mobile-order-main {
-                font-size: 11px;
-                line-height: 1.2;
-            }
-            .mobile-item-code {
-                font-size: 15px;
-                line-height: 1.25;
-            }
-            .transactions-grid {
-                height: calc(100vh - 305px);
-            }
-        }
-    </style>
+    }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="layoutuerp.js"></script>
+<script src="config.js"></script>
+<style>
+body {
+    font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+    touch-action: manipulation;
+}
+.google-card {
+    background: #ffffff;
+    border: 1px solid #dadce0;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.05);
+}
+.google-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%235f6368' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    background-size: 16px;
+}
+.row-selected {
+    background-color: #e8f0fe !important;
+}
+.row-duplicate {
+    background-color: #fff7ed !important;
+}
+.row-selected.row-duplicate {
+    background-color: #fef08a !important;
+}
+th.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+th.sortable:hover {
+    background-color: #f1f5f9;
+}
+.rounded-checkbox {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid #94a3b8;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+.rounded-checkbox:checked {
+    background-color: #1a73e8;
+    border-color: #1a73e8;
+}
+.rounded-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    top: 2.5px;
+    left: 2.5px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+}
+.period-btn {
+    transition: all 0.15s ease;
+}
+.order-count-live {
+    font-size: 14px;
+    color: #d93025;
+}
+.order-count-live-icon {
+    color: #d93025;
+    animation: orderCountLivePulse 2.4s ease-in-out infinite;
+}
+@keyframes orderCountLivePulse {
+    0%, 100% {
+        opacity: 0.45;
+        transform: scale(0.9);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+.transactions-grid {
+    height: calc(100vh - 270px);
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.transactions-grid thead th {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: #f8fafc !important;
+    box-shadow: 0 1px 0 #dadce0;
+}
+@media (max-width: 639px) {
+    .mobile-item-name {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        line-height: 1.35;
+    }
+    .mobile-order-tail {
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: 0.2px;
+    }
+    .mobile-order-main {
+        font-size: 11px;
+        line-height: 1.2;
+    }
+    .mobile-item-code {
+        font-size: 15px;
+        line-height: 1.25;
+    }
+    .transactions-grid {
+        height: calc(100vh - 305px);
+    }
+}
+</style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-100">
-    <!-- Dynamic Navigation Header Container -->
-    <div id="headerContainer"></div>
-    <main class="max-w-[1000px] mx-auto px-2 sm:px-4 py-3 sm:py-5 w-full flex-grow space-y-2.5 min-h-0">
-        <!-- Top Header & Action Bar -->
-        <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2 min-w-0">
-                <div>
-                    <h1 class="text-sm sm:text-lg font-bold text-slate-900 flex items-center gap-1.5">
-                        <i class="fa-solid fa-boxes-packing text-google-blue"></i>
-                        <span class="hidden sm:inline">รายการจัดการคำสั่งซื้อ (Order Management)</span>
-                        <span class="sm:hidden">Order Management</span>
-                    </h1>
-                </div>
-                <span id="orderCountTop" class="px-2 py-0.5 bg-red-50 text-google-red border border-red-100 rounded-full text-[10px] font-bold whitespace-nowrap flex items-center gap-1">
-                    <i class="fa-solid fa-circle text-[6px] order-count-live-icon"></i>
-                    <span class="order-count-live">0</span> Orders
-                </span>
+<div id="headerContainer"></div>
+
+<main class="max-w-[1000px] mx-auto px-2 sm:px-4 py-3 sm:py-5 w-full flex-grow space-y-2.5 min-h-0">
+    <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0">
+            <div>
+                <h1 class="text-sm sm:text-lg font-bold text-slate-900 flex items-center gap-1.5">
+                    <i class="fa-solid fa-boxes-packing text-google-blue"></i>
+                    <span class="hidden sm:inline">รายการจัดการคำสั่งซื้อ (Order Management)</span>
+                    <span class="sm:hidden">Order Management</span>
+                </h1>
             </div>
-            <div class="flex items-center gap-1.5">
-                <button id="submitBtn" onclick="submitChanges()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm flex items-center gap-1.5 transition disabled:opacity-40">
-                    <i class="fa-solid fa-floppy-disk text-[11px]"></i> <span>บันทึก</span> (<span id="pendingChangesCount">0</span>)
-                </button>
-                <button onclick="forceRefreshData()" class="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-lg transition">
-                    <i id="refreshIcon" class="fa-solid fa-rotate-right text-[11px]"></i>
-                </button>
-            </div>
+            <span id="orderCountTop" class="px-2 py-0.5 bg-red-50 text-google-red border border-red-100 rounded-full text-[10px] font-bold whitespace-nowrap flex items-center gap-1">
+                <i class="fa-solid fa-circle text-[6px] order-count-live-icon"></i>
+                <span class="order-count-live">0</span> Orders
+            </span>
         </div>
-        <!-- Minimal Sub-header Toolbar -->
-        <div class="google-card p-2 sm:p-3 bg-white space-y-2">
-            <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
-                <label class="flex items-center gap-1.5 text-xs text-slate-600 font-medium cursor-pointer select-none">
-                    <input type="checkbox" id="showPKToggle" onchange="applyFilters()" class="rounded-checkbox">
-                    <span>showPK (<span id="selectedCountText" class="font-bold text-slate-900">0</span>)</span>
-                </label>
-                <div class="flex items-center gap-1.5">
-                    <select id="channelFilter" onchange="applyFilters()" class="google-select bg-slate-50 border border-google-border rounded-md px-2 py-1 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
-                        <option value="ALL" selected>ช่องทางทั้งหมด</option>
-                        <option value="Shopee">Shopee</option>
-                        <option value="Lazada">Lazada</option>
-                        <option value="TikTok">TikTok</option>
-                    </select>
-                    <select id="statusFilter" onchange="applyFilters()" class="google-select bg-slate-50 border border-google-border rounded-md px-2 py-1 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
-                        <option value="ALL" selected>สถานะทั้งหมด</option>
-                        <option value="PENDING">PENDING</option>
-                        <option value="ACTIVE">ACTIVE</option>
-                        <option value="VOID">VOID</option>
-                    </select>
-                </div>
-            </div>
-            <!-- Search -->
-            <div class="relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[11px]"></i>
-                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="ค้นหา Invoice, Order No, Item..." class="w-full pl-7 pr-2.5 py-1.5 border border-google-border rounded-md text-xs focus:outline-none focus:border-google-blue">
-            </div>
-            <!-- Quick Period Buttons -->
-            <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5">
-                <button type="button" onclick="setPeriod('TODAY')" data-period="TODAY" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
-                    วันนี้
-                </button>
-                <button type="button" onclick="setPeriod('YESTERDAY')" data-period="YESTERDAY" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
-                    เมื่อวาน
-                </button>
-                <button type="button" onclick="setPeriod('DAY_BEFORE_YESTERDAY')" data-period="DAY_BEFORE_YESTERDAY" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
-                    เมื่อวานซืน
-                </button>
-                <button type="button" onclick="setPeriod('THIS_WEEK')" data-period="THIS_WEEK" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
-                    สัปดาห์นี้
-                </button>
-                <button type="button" onclick="togglePeriodMenu()" class="px-2.5 py-1 rounded-md text-[11px] font-semibold border border-google-border bg-white text-slate-600 whitespace-nowrap">
-                    Custom <i class="fa-solid fa-chevron-down text-[8px] ml-0.5"></i>
-                </button>
-                <button type="button" onclick="loadTwoYearsData()" class="px-2.5 py-1 rounded-md text-[11px] font-semibold border border-google-border bg-white text-slate-600 whitespace-nowrap hover:bg-slate-50">
-                    <i class="fa-solid fa-database text-[9px] mr-0.5"></i>2 ปี
-                </button>
-            </div>
-            <!-- Additional Period Dropdown -->
-            <div id="periodMenu" class="hidden">
-                <select id="periodFilter" onchange="handleCustomPeriodChange()" class="google-select w-full bg-slate-50 border border-google-border rounded-md px-2 py-1.5 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
-                    <option value="ALL">ทั้งหมด</option>
-                    <option value="THIS_WEEK">สัปดาห์นี้</option>
-                    <option value="THIS_YEAR">ปีนี้</option>
-                    <option value="CUSTOM">กำหนดวันที่เอง</option>
+        <div class="flex items-center gap-1.5">
+            <button id="submitBtn" onclick="submitChanges()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm flex items-center gap-1.5 transition disabled:opacity-40">
+                <i class="fa-solid fa-floppy-disk text-[11px]"></i>
+                <span>บันทึก</span> (<span id="pendingChangesCount">0</span>)
+            </button>
+            <button onclick="forceRefreshData()" class="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-lg transition">
+                <i id="refreshIcon" class="fa-solid fa-rotate-right text-[11px]"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="google-card p-2 sm:p-3 bg-white space-y-2">
+        <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
+            <label class="flex items-center gap-1.5 text-xs text-slate-600 font-medium cursor-pointer select-none">
+                <input type="checkbox" id="showPKToggle" onchange="applyFilters()" class="rounded-checkbox">
+                <span>showPK (<span id="selectedCountText" class="font-bold text-slate-900">0</span>)</span>
+            </label>
+            <div class="flex items-center gap-1.5">
+                <select id="channelFilter" onchange="applyFilters()" class="google-select bg-slate-50 border border-google-border rounded-md px-2 py-1 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
+                    <option value="ALL" selected>ช่องทางทั้งหมด</option>
+                    <option value="Shopee">Shopee</option>
+                    <option value="Lazada">Lazada</option>
+                    <option value="TikTok">TikTok</option>
+                </select>
+                <select id="statusFilter" onchange="applyFilters()" class="google-select bg-slate-50 border border-google-border rounded-md px-2 py-1 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
+                    <option value="ALL" selected>สถานะทั้งหมด</option>
+                    <option value="PENDING">PENDING</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="VOID">VOID</option>
                 </select>
             </div>
-            <!-- Custom Date Range -->
-            <div id="customDateContainer" class="hidden flex items-center gap-2 pt-1 text-xs text-slate-600">
-                <div class="flex-1 flex items-center gap-1.5 bg-slate-50 border border-google-border rounded-md px-2 py-1.5">
-                    <span class="text-[10px] text-slate-500">จาก</span>
-                    <input type="date" id="startDate" onchange="applyFilters()" class="min-w-0 flex-1 bg-transparent text-[11px] outline-none">
-                </div>
-                <span class="text-slate-400">→</span>
-                <div class="flex-1 flex items-center gap-1.5 bg-slate-50 border border-google-border rounded-md px-2 py-1.5">
-                    <span class="text-[10px] text-slate-500">ถึง</span>
-                    <input type="date" id="endDate" onchange="applyFilters()" class="min-w-0 flex-1 bg-transparent text-[11px] outline-none">
-                </div>
+        </div>
+
+        <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[11px]"></i>
+            <input type="text" id="searchInput" oninput="applyFilters()" placeholder="ค้นหา Invoice, Order No, Item..." class="w-full pl-7 pr-2.5 py-1.5 border border-google-border rounded-md text-xs focus:outline-none focus:border-google-blue">
+        </div>
+
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5">
+            <button type="button" onclick="setPeriod('TODAY')" data-period="TODAY" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
+                วันนี้
+            </button>
+            <button type="button" onclick="setPeriod('YESTERDAY')" data-period="YESTERDAY" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
+                เมื่อวาน
+            </button>
+            <button type="button" onclick="setPeriod('DAY_BEFORE_YESTERDAY')" data-period="DAY_BEFORE_YESTERDAY" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
+                เมื่อวานซืน
+            </button>
+            <button type="button" onclick="setPeriod('THIS_WEEK')" data-period="THIS_WEEK" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
+                สัปดาห์นี้
+            </button>
+            <button type="button" onclick="togglePeriodMenu()" class="px-2.5 py-1 rounded-md text-[11px] font-semibold border border-google-border bg-white text-slate-600 whitespace-nowrap">
+                Custom <i class="fa-solid fa-chevron-down text-[8px] ml-0.5"></i>
+            </button>
+        </div>
+
+        <div id="periodMenu" class="hidden">
+            <select id="periodFilter" onchange="handleCustomPeriodChange()" class="google-select w-full bg-slate-50 border border-google-border rounded-md px-2 py-1.5 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
+                <option value="ALL">ทั้งหมด</option>
+                <option value="THIS_WEEK">สัปดาห์นี้</option>
+                <option value="THIS_YEAR">ปีนี้</option>
+                <option value="CUSTOM">กำหนดวันที่เอง</option>
+            </select>
+        </div>
+
+        <div id="customDateContainer" class="hidden flex items-center gap-2 pt-1 text-xs text-slate-600">
+            <div class="flex-1 flex items-center gap-1.5 bg-slate-50 border border-google-border rounded-md px-2 py-1.5">
+                <span class="text-[10px] text-slate-500">จาก</span>
+                <input type="date" id="startDate" onchange="applyFilters()" class="min-w-0 flex-1 bg-transparent text-[11px] outline-none">
+            </div>
+            <span class="text-slate-400">→</span>
+            <div class="flex-1 flex items-center gap-1.5 bg-slate-50 border border-google-border rounded-md px-2 py-1.5">
+                <span class="text-[10px] text-slate-500">ถึง</span>
+                <input type="date" id="endDate" onchange="applyFilters()" class="min-w-0 flex-1 bg-transparent text-[11px] outline-none">
             </div>
         </div>
-        <div id="statusIndicator" class="hidden p-2 bg-blue-50 rounded-lg border border-blue-100 text-xs text-google-blue">
-            <div class="flex items-center gap-2">
-                <i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
-                <span id="statusText" class="font-medium text-[11px]">กำลังโหลดข้อมูล...</span>
+    </div>
+
+    <div id="statusIndicator" class="hidden p-2 bg-blue-50 rounded-lg border border-blue-100 text-xs text-google-blue">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
+            <span id="statusText" class="font-medium text-[11px]">กำลังโหลดข้อมูล...</span>
+        </div>
+    </div>
+
+    <section class="google-card bg-white overflow-hidden min-h-0">
+        <div class="transactions-grid w-full">
+            <table class="w-full text-left border-collapse table-fixed">
+                <thead>
+                    <tr class="bg-slate-50 text-slate-500 font-semibold text-[11px] border-b border-google-border uppercase tracking-tight">
+                        <th class="p-2 text-center w-[68px] sm:w-[95px] sortable" onclick="sortTable('date')">
+                            date <span id="sort_date" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                        </th>
+                        <th class="p-2 text-center w-[90px] sm:w-[140px] sortable" onclick="sortTable('invoice_no')">
+                            order_no <span id="sort_invoice_no" class="ml-0.5 text-[12px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                        </th>
+                        <th class="p-2 text-center sm:w-[120px] sortable" onclick="sortTable('item_code')">
+                            item_code <span id="sort_item_code" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                        </th>
+                        <th class="p-2 hidden sm:table-cell sortable" onclick="sortTable('item_name')">
+                            item_name <span id="sort_item_name" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                        </th>
+                        <th class="p-2 text-center w-[40px] sm:w-[60px] sortable" onclick="sortTable('qty')">
+                            qty <span id="sort_qty" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                        </th>
+                        <th class="p-2 text-center hidden sm:table-cell w-[120px] sortable" onclick="sortTable('sales_amt')">
+                            sales_amt <span id="sort_sales_amt" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
+                        </th>
+                        <th class="p-2 text-center hidden sm:table-cell w-[60px] sortable" onclick="sortTable('channel')">
+                            ch
+                        </th>
+                        <th class="p-2 text-center hidden sm:table-cell w-[90px]">
+                            status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="txTableBody" class="divide-y divide-slate-100 text-xs text-slate-700"></tbody>
+            </table>
+        </div>
+        <div class="p-2.5 border-t border-google-border bg-slate-50 flex items-center justify-end text-[11px] text-google-gray">
+            <div id="infiniteLoader" class="hidden text-google-blue flex items-center gap-1 font-medium">
+                <i class="fa-solid fa-circle-notch animate-spin"></i> กำลังโหลด...
             </div>
         </div>
-        <!-- Main Transactions Table -->
-        <section class="google-card bg-white overflow-hidden min-h-0">
-            <div class="transactions-grid w-full">
-                <table class="w-full text-left border-collapse table-fixed">
-                    <thead>
-                        <tr class="bg-slate-50 text-slate-500 font-semibold text-[11px] border-b border-google-border uppercase tracking-tight">
-                            <th class="p-2 text-center w-[68px] sm:w-[95px] sortable" onclick="sortTable('date')">
-                                date <span id="sort_date" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                            </th>
-                            <th class="p-2 text-center w-[90px] sm:w-[140px] sortable" onclick="sortTable('invoice_no')">
-                                order_no <span id="sort_invoice_no" class="ml-0.5 text-[12px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                            </th>
-                            <th class="p-2 text-center sm:w-[120px] sortable" onclick="sortTable('item_code')">
-                                item_code <span id="sort_item_code" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                            </th>
-                            <th class="p-2 hidden sm:table-cell sortable" onclick="sortTable('item_name')">
-                                item_name <span id="sort_item_name" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                            </th>
-                            <th class="p-2 text-center w-[40px] sm:w-[60px] sortable" onclick="sortTable('qty')">
-                                qty <span id="sort_qty" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                            </th>
-                            <th class="p-2 text-center hidden sm:table-cell w-[120px] sortable" onclick="sortTable('sales_amt')">
-                                sales_amt <span id="sort_sales_amt" class="ml-0.5 text-[10px] text-slate-300"><i class="fa-solid fa-arrow-down-wide-short"></i></span>
-                            </th>
-                            <th class="p-2 text-center hidden sm:table-cell w-[60px] sortable" onclick="sortTable('channel')">
-                                ch
-                            </th>
-                            <th class="p-2 text-center hidden sm:table-cell w-[90px]">
-                                status
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody id="txTableBody" class="divide-y divide-slate-100 text-xs text-slate-700"></tbody>
-                </table>
-            </div>
-            <div class="p-2.5 border-t border-google-border bg-slate-50 flex items-center justify-end text-[11px] text-google-gray">
-                <div id="infiniteLoader" class="hidden text-google-blue flex items-center gap-1 font-medium">
-                    <i class="fa-solid fa-circle-notch animate-spin"></i> กำลังโหลด...
-                </div>
-            </div>
-        </section>
-    </main>
-    <script src="transactions.js"></script>
+    </section>
+</main>
+
+<script src="transactions.js"></script>
 </body>
 </html>
