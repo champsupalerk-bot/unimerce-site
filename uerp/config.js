@@ -3,7 +3,7 @@
  * Setup: ฝังไฟล์นี้ไว้ใน Header ของ Layout เพื่อใช้งานร่วมกันทุกหน้า
  */
 window.SUPABASE_URL = "https://xygdmszernmircmbqwke.supabase.co";
-window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
+window.SUPABASE_ANON_KEY = "sb_publishable_4Rj3PUJnjqKNvx18hLzbng_ZhOVJHBp";
 
 // ฟังก์ชันศูนย์กลางสำหรับยิงดึงข้อมูล (ดึงสิทธิ์และ URL จากด้านบนอัตโนมัติ)
 window.supabaseFetch = async function(endpoint) {
