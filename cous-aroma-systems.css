@@ -981,3 +981,21 @@ img{
   }
 
 }
+
+/* MAINTENANCE IMAGE */
+
+.maintenance-image {
+  display: block;
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  margin: 40px auto 0;
+  border-radius: 16px;
+}
+
+@media (max-width: 900px) {
+  .maintenance-image {
+    max-width: 100%;
+    margin-top: 30px;
+  }
+}
