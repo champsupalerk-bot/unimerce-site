@@ -982,21 +982,53 @@ img{
 
 }
 
-/* MAINTENANCE IMAGE */
+
+/* MAINTENANCE LAYOUT */
+
+.maintenance-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+  align-items: center;
+  gap: 40px;
+}
+
+.maintenance-content {
+  min-width: 0;
+}
+
+.maintenance-content .cta {
+  width: 100%;
+}
+
+.maintenance-image-wrapper {
+  width: 100%;
+  min-width: 0;
+}
+
 .maintenance-image {
   display: block;
   width: 100%;
-  max-width: 450px; /* ปรับขนาดความกว้างสูงสุดให้เหมาะกับภาพทรงสูง */
+  max-width: 450px;
   height: auto;
-  margin: 40px auto 0;
+  margin: 0 auto;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* เพิ่มเงาละมุนให้ดูหรูหราเข้ากับธีม */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 @media (max-width: 900px) {
+  .maintenance-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .maintenance-image-wrapper {
+    width: 100%;
+  }
+
   .maintenance-image {
-    max-width: 100%; /* แสดงผลเต็มความกว้างจอเมื่อดูในมือถือ */
-    margin-top: 24px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
     border-radius: 12px;
   }
 }
