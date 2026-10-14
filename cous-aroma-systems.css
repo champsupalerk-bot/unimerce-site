@@ -983,19 +983,20 @@ img{
 }
 
 /* MAINTENANCE IMAGE */
-
 .maintenance-image {
   display: block;
   width: 100%;
-  max-width: 500px;
+  max-width: 450px; /* ปรับขนาดความกว้างสูงสุดให้เหมาะกับภาพทรงสูง */
   height: auto;
   margin: 40px auto 0;
   border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* เพิ่มเงาละมุนให้ดูหรูหราเข้ากับธีม */
 }
 
 @media (max-width: 900px) {
   .maintenance-image {
-    max-width: 100%;
-    margin-top: 30px;
+    max-width: 100%; /* แสดงผลเต็มความกว้างจอเมื่อดูในมือถือ */
+    margin-top: 24px;
+    border-radius: 12px;
   }
 }
