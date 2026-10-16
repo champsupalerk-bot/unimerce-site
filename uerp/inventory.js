@@ -123,8 +123,7 @@ const CACHE_KEY =
 const CACHE_TIME_KEY =
   "uerp_itemmaster_cache_timestamp";
 
-const ONE_DAY_MS =
-  1 * 60 * 60 * 1000;
+const ONE_DAY_MS = 0;
 
 /* =========================
    LOAD DATA
@@ -1382,6 +1381,6 @@ window.addEventListener(
         }
       );
 
-    loadTable();
+    loadTable(true);
   }
 );
