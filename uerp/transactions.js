@@ -56,13 +56,29 @@ function parseTransactionDate(dateStr) {
 
     const raw = String(dateStr);
 
+    // ถ้าเป็นวันที่อย่างเดียว ให้ใช้วันที่ตามข้อความโดยตรง
     if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
         const [year, month, day] = raw.split('-').map(Number);
         return new Date(year, month - 1, day);
     }
 
-    const d = new Date(raw);
-    return isNaN(d.getTime()) ? null : d;
+    // Timestamp ให้แปลงเป็นวันตามเขตเวลาไทย
+    const date = new Date(raw);
+    if (isNaN(date.getTime())) return null;
+
+    const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Bangkok',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).formatToParts(date);
+
+    const values = {};
+    parts.forEach(part => {
+        if (part.type !== 'literal') values[part.type] = Number(part.value);
+    });
+
+    return new Date(values.year, values.month - 1, values.day);
 }
 
 function formatDateFormatted(dateStr, isMobile = false) {
