@@ -1,8 +1,8 @@
 
-const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
-const supabaseKey = "sb_publishable_4Rj3PUJnjqKNvx18hLzbng_ZhOVJHBp";
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-
+const supabaseClient = supabase.createClient(
+    window.SUPABASE_URL,
+    window.SUPABASE_ANON_KEY
+);
 let allTransactions = [];
 let filteredTransactions = [];
 let filteredOrderGroups = [];
