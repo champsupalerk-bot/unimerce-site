@@ -76,7 +76,7 @@ tbody tr:last-child td{border-bottom:0}
 </head>
 
 <body>
-<div id="headerContainer"></div>
+<div id="uerp-header-container"></div>
 
 <main class="page-wrap">
   <div class="toolbar mb-5">
@@ -155,7 +155,7 @@ tbody tr:last-child td{border-bottom:0}
    Load layout engine after header injection.
 ========================= */
 async function loadUerpHeader() {
-  const container = document.getElementById('headerContainer');
+const container = document.getElementById('uerp-header-container');
   if (!container) return;
 
   try {
