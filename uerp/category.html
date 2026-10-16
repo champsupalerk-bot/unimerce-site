@@ -1,37 +1,45 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th" class="h-full bg-slate-50 text-slate-800">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UERP - Category Analysis | Unimerce Co., Ltd.</title>
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
 <script>
-tailwind = {
-  config: {
-    theme: {
-      extend: {
-        colors: {
-          google: {
-            blue: '#1a73e8',
-            blueHover: '#1557b0',
-            red: '#d93025',
-            gray: '#5f6368',
-            lightGray: '#f1f3f4',
-            border: '#dadce0'
-          }
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        google: {
+          blue: '#1a73e8',
+          blueHover: '#1557b0',
+          red: '#d93025',
+          redHover: '#b31b12',
+          gray: '#5f6368',
+          lightGray: '#f1f3f4',
+          border: '#dadce0'
         }
       }
     }
   }
 };
 </script>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- FontAwesome Icons: ใช้เวอร์ชันเดียวกับ GPM Dashboard -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 
 <style>
 :root{--uerp-blue:#2f5ea8;--uerp-bg:#f3f4f6;--uerp-border:#e5e7eb;--uerp-text:#1f2937;--uerp-muted:#6b7280}
-
 .page-wrap,
 .page-wrap *,
 #errorBox,
@@ -39,25 +47,12 @@ tailwind = {
 #categoryTable * {
   box-sizing: border-box;
 }
-
-body{
-  margin:0;
-  background:var(--uerp-bg);
-  color:var(--uerp-text);
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:14px;
-}
-
-/* จำกัดสไตล์ของ Category ไม่ให้กระทบ Shared UERP Header */
-.page-wrap button,
-.page-wrap select{
-  font:inherit;
-}
-
+body{margin:0;background:var(--uerp-bg);color:var(--uerp-text);font-family:'Inter','Noto Sans Thai',system-ui,-apple-system,sans-serif;font-size:14px}
+button,select{font:inherit}
 .page-wrap{width:100%;max-width:1000px;margin:0 auto;padding:20px 16px}
 .page-title{font-size:23px;font-weight:700;letter-spacing:-.3px;color:#111827}
 .page-subtitle{font-size:12px;color:var(--uerp-muted);margin-top:4px}
-.page-wrap .card{background:#fff;border:1px solid var(--uerp-border);border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.card{background:#fff;border:1px solid var(--uerp-border);border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
 .toolbar{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .field-label{display:block;font-size:11px;font-weight:700;color:#6b7280;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
 .control{height:38px;border:1px solid #d1d5db;border-radius:7px;background:#fff;padding:0 11px;color:#111827;min-width:170px;outline:none}
@@ -72,78 +67,29 @@ body{
 .chart-wrap{height:380px;position:relative;margin-top:12px}
 .chart-head{display:flex;justify-content:space-between;align-items:start;gap:12px;flex-wrap:wrap}
 .small-select{height:33px;border:1px solid #d1d5db;border-radius:6px;background:#fff;padding:0 9px;font-size:12px;max-width:100%}
-
-#categoryTable{
-  border-collapse:separate;
-  border-spacing:0;
-  width:100%;
-  font-size:12px;
-  white-space:nowrap;
-}
-
-#categoryTable thead th{
-  position:sticky;
-  top:0;
-  z-index:2;
-  background:#f8fafc;
-  color:#4b5563;
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.03em;
-  font-weight:700;
-}
-
-#categoryTable th,
-#categoryTable td{
-  padding:10px 12px;
-  border-bottom:1px solid #eef0f3;
-  text-align:right;
-}
-
-#categoryTable th:first-child,
-#categoryTable td:first-child{
-  text-align:left;
-  position:sticky;
-  left:0;
-  z-index:1;
-}
-
-#categoryTable thead th:first-child{z-index:3;background:#f8fafc}
-#categoryTable tbody td:first-child{background:#fff;font-weight:600;color:#374151}
-#categoryTable tbody tr:hover td{background:#f9fafb}
-#categoryTable tbody tr:hover td:first-child{background:#f9fafb}
-#categoryTable tbody tr:last-child td{border-bottom:0}
-#categoryTable .total-row td{background:#eff6ff!important;font-weight:700;color:#1e3a8a;border-top:1px solid #dbeafe}
-
 .table-scroll{overflow:auto;max-height:65vh;border-radius:8px;border:1px solid #e5e7eb}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:12px;white-space:nowrap}
+thead th{position:sticky;top:0;z-index:2;background:#f8fafc;color:#4b5563;font-size:11px;text-transform:uppercase;letter-spacing:.03em;font-weight:700}
+th,td{padding:10px 12px;border-bottom:1px solid #eef0f3;text-align:right}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;z-index:1}
+thead th:first-child{z-index:3;background:#f8fafc}
+tbody td:first-child{background:#fff;font-weight:600;color:#374151}
+tbody tr:hover td{background:#f9fafb}
+tbody tr:hover td:first-child{background:#f9fafb}
+tbody tr:last-child td{border-bottom:0}
+.total-row td{background:#eff6ff!important;font-weight:700;color:#1e3a8a;border-top:1px solid #dbeafe}
 .sort-btn{display:inline-flex;align-items:center;gap:5px;background:transparent;border:0;padding:0;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;text-align:inherit}
 .sort-btn:hover{color:var(--uerp-blue)}
 .sort-icon{font-size:10px;color:#9ca3af}
 .sort-btn[aria-sort="ascending"] .sort-icon,.sort-btn[aria-sort="descending"] .sort-icon{color:var(--uerp-blue)}
 .status{font-size:11px;color:#9ca3af}
 .error{color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:7px;padding:10px 12px;font-size:12px}
-
-@media(max-width:900px){
-  .page-wrap{padding:13px}
-  .chart-wrap{height:330px}
-}
-
-@media(max-width:520px){
-  .page-title{font-size:20px}
-  .control{min-width:0;width:100%}
-  .toolbar-field{width:100%}
-  .toolbar .btn{flex:1}
-  .chart-card{padding:14px}
-  .chart-wrap{height:300px}
-  #categoryTable th,
-  #categoryTable td{padding:9px 10px}
-}
+@media(max-width:900px){.page-wrap{padding:13px}.chart-wrap{height:330px}}
+@media(max-width:520px){.page-title{font-size:20px}.control{min-width:0;width:100%}.toolbar-field{width:100%}.toolbar .btn{flex:1}.chart-card{padding:14px}.chart-wrap{height:300px}th,td{padding:9px 10px}}
 </style>
 </head>
 
 <body class="min-h-screen flex flex-col bg-slate-50">
-
-<!-- Shared UERP Header: ใช้โครงสร้างเดียวกับ GPM Dashboard -->
 <div id="uerp-header-container" class="mb-2"></div>
 
 <main class="page-wrap flex-grow">
@@ -217,11 +163,9 @@ body{
 </main>
 
 <script src="/uerp/config.js"></script>
+
+<!-- ===== START HEAD001: SHARED UERP HEADER ===== -->
 <script>
-/* =========================
-   LOAD SHARED UERP HEADER
-   Same loading structure as GPM Dashboard.
-========================= */
 async function loadUerpHeader() {
   const headerPath = '/uerp/uerpheader.html';
   const scriptPath = '/uerp/layoutuerp.js';
@@ -235,14 +179,15 @@ async function loadUerpHeader() {
   try {
     console.log(`Loading header: ${headerPath}`);
 
-    const response = await fetch(headerPath);
-    console.log(`Header status: ${response.status}`);
+    const res = await fetch(headerPath);
+    console.log(`Header status: ${res.status}`);
 
-    if (!response.ok) {
-      throw new Error(`Header not found: ${response.status}`);
+    if (!res.ok) {
+      throw new Error(`Header not found: ${res.status}`);
     }
 
-    container.innerHTML = await response.text();
+    const html = await res.text();
+    container.innerHTML = html;
     console.log('UERP Header Loaded');
 
     const script = document.createElement('script');
@@ -252,8 +197,8 @@ async function loadUerpHeader() {
     script.onload = () => {
       console.log('layoutuerp.js loaded');
 
-      if (typeof window.initUerpLayout === 'function') {
-        window.initUerpLayout();
+      if (typeof initUerpLayout === 'function') {
+        initUerpLayout();
       } else {
         console.error('Error: initUerpLayout() is not defined in layoutuerp.js');
       }
@@ -264,8 +209,8 @@ async function loadUerpHeader() {
     };
 
     document.body.appendChild(script);
-  } catch (error) {
-    console.error('UERP HEADER ERROR:', error);
+  } catch (e) {
+    console.error('UERP HEADER ERROR:', e);
   }
 }
 
@@ -274,7 +219,10 @@ if (document.readyState === 'loading') {
 } else {
   loadUerpHeader();
 }
+</script>
+<!-- ===== END HEAD001 ===== -->
 
+<script>
 /* =========================
    CATEGORY ANALYSIS
 ========================= */
