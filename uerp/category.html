@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UERP - Category Analysis | Unimerce Co., Ltd.</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--uerp-blue:#2f5ea8;--uerp-bg:#f3f4f6;--uerp-border:#e5e7eb;--uerp-text:#1f2937;--uerp-muted:#6b7280}
+*{box-sizing:border-box}
+body{margin:0;background:var(--uerp-bg);color:var(--uerp-text);font-family:Arial,Helvetica,sans-serif;font-size:14px}
+button,select{font:inherit}
+.page-wrap{max-width:1600px;margin:0 auto;padding:20px}
+.page-title{font-size:23px;font-weight:700;letter-spacing:-.3px;color:#111827}
+.page-subtitle{font-size:12px;color:var(--uerp-muted);margin-top:4px}
+.card{background:#fff;border:1px solid var(--uerp-border);border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.toolbar{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.field-label{display:block;font-size:11px;font-weight:700;color:#6b7280;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.control{height:38px;border:1px solid #d1d5db;border-radius:7px;background:#fff;padding:0 11px;color:#111827;min-width:170px;outline:none}
+.control:focus{border-color:var(--uerp-blue);box-shadow:0 0 0 2px rgba(47,94,168,.12)}
+.btn{height:38px;padding:0 13px;border:1px solid #d1d5db;border-radius:7px;background:#fff;color:#374151;font-weight:600;cursor:pointer}
+.btn:hover{background:#f9fafb}.btn-primary{background:var(--uerp-blue);border-color:var(--uerp-blue);color:#fff}.btn-primary:hover{background:#264f91}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{padding:17px 18px;min-width:0}.kpi-label{font-size:12px;color:#6b7280;font-weight:600}.kpi-value{font-size:25px;font-weight:700;color:#111827;margin-top:8px;overflow-wrap:anywhere}.kpi-foot{font-size:11px;color:#9ca3af;margin-top:5px}
+.section-title{font-size:15px;font-weight:700;color:#111827}.section-note{font-size:11px;color:#9ca3af;margin-top:4px}
+.chart-card{padding:18px;min-width:0}.chart-wrap{height:310px;position:relative;margin-top:12px}
+.chart-head{display:flex;justify-content:space-between;align-items:start;gap:12px;flex-wrap:wrap}
+.small-select{height:33px;border:1px solid #d1d5db;border-radius:6px;background:#fff;padding:0 9px;font-size:12px;max-width:100%}
+.table-scroll{overflow:auto;max-height:65vh;border-radius:8px;border:1px solid #e5e7eb}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:12px;white-space:nowrap}
+thead th{position:sticky;top:0;z-index:2;background:#f8fafc;color:#4b5563;font-size:11px;text-transform:uppercase;letter-spacing:.03em;font-weight:700}
+th,td{padding:11px 13px;border-bottom:1px solid #eef0f3;text-align:right}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;z-index:1}
+thead th:first-child{z-index:3;background:#f8fafc}tbody td:first-child{background:#fff;font-weight:600;color:#374151}tbody tr:hover td{background:#f9fafb}tbody tr:hover td:first-child{background:#f9fafb}tbody tr:last-child td{border-bottom:0}.total-row td{background:#eff6ff!important;font-weight:700;color:#1e3a8a;border-top:1px solid #dbeafe}
+.category-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px}.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#4b5563}.legend-dot{width:8px;height:8px;border-radius:50%;flex:0 0 8px}
+.status{font-size:11px;color:#9ca3af}.error{color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:7px;padding:10px 12px;font-size:12px}
+@media(max-width:900px){.page-wrap{padding:13px}.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.chart-wrap{height:280px}}
+@media(max-width:520px){.page-title{font-size:20px}.kpi{padding:13px}.kpi-value{font-size:21px}.control{min-width:0;width:100%}.toolbar-field{width:100%}.toolbar .btn{flex:1}.chart-card{padding:14px}}
+</style>
+</head>
+<body>
+<div id="headerContainer"></div>
+<main class="page-wrap">
+  <div class="toolbar mb-5">
+    <div>
+      <div class="page-title"><i class="fa-solid fa-chart-pie mr-2" style="color:var(--uerp-blue)"></i>Category Analysis</div>
+      <div class="page-subtitle">Sales and GPM breakdown by main category</div>
+    </div>
+    <div class="flex items-end gap-2 flex-wrap">
+      <div class="toolbar-field">
+        <label class="field-label" for="periodSelect">Period</label>
+        <select id="periodSelect" class="control">
+          <option value="this_month">This Month</option>
+          <option value="last_month">Last Month</option>
+          <option value="last_3_months">Last 3 Months</option>
+          <option value="this_year">This Year</option>
+          <option value="last_year">Last Year</option>
+        </select>
+      </div>
+      <button id="btnRefresh" class="btn btn-primary" type="button"><i class="fa-solid fa-rotate mr-2"></i>Refresh</button>
+    </div>
+  </div>
+
+  <div id="errorBox" class="error mb-4" hidden></div>
+  <div class="kpi-grid mb-4">
+    <div class="card kpi"><div class="kpi-label">Total Sales</div><div class="kpi-value" id="kpiSales">—</div><div class="kpi-foot" id="periodLabelSales">Selected period</div></div>
+    <div class="card kpi"><div class="kpi-label">Total GPM</div><div class="kpi-value" id="kpiGpm">—</div><div class="kpi-foot">Sum of active transaction GPM</div></div>
+    <div class="card kpi"><div class="kpi-label">GPM % of Sales</div><div class="kpi-value" id="kpiMargin">—</div><div class="kpi-foot">Total GPM ÷ Total Sales</div></div>
+    <div class="card kpi"><div class="kpi-label">Quantity</div><div class="kpi-value" id="kpiQty">—</div><div class="kpi-foot">Total quantity in selected period</div></div>
+  </div>
+
+  <div class="card chart-card mb-4">
+    <div class="chart-head">
+      <div><div class="section-title">Category Contribution</div><div class="section-note" id="chartPeriodNote">Share by main category</div></div>
+      <div><label class="field-label" for="chartMetric">Chart Metric</label><select id="chartMetric" class="small-select"><option value="sales_amt">Sales Amount</option><option value="gpm">GPM</option></select></div>
+    </div>
+    <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+    <div id="categoryLegend" class="category-legend"></div>
+  </div>
+
+  <div class="card p-4 md:p-5">
+    <div class="chart-head mb-4">
+      <div><div class="section-title">Monthly Category Breakdown</div><div class="section-note">Months are rows; main categories are columns</div></div>
+      <div><label class="field-label" for="tableMetric">Table Metric</label><select id="tableMetric" class="small-select"><option value="sales_amt">Sales Amount</option><option value="gpm">GPM</option></select></div>
+    </div>
+    <div id="tableSummary" class="text-xs text-gray-500 mb-3"></div>
+    <div class="table-scroll"><table id="categoryTable"><thead></thead><tbody></tbody></table></div>
+    <div class="flex items-center justify-between gap-3 flex-wrap mt-3"><span id="execLog" class="status">Connecting...</span><span class="status">Source: view_category_sales</span></div>
+  </div>
+</main>
+
+<script src="/uerp/config.js"></script>
+<script src="/uerp/layoutuerp.js"></script>
+<script>
+/* =========================
+   LOAD SHARED UERP HEADER
+========================= */
+fetch('/uerp/uerpheader.html')
+  .then(res => { if (!res.ok) throw new Error('Header not found'); return res.text(); })
+  .then(html => {
+    const el = document.getElementById('headerContainer');
+    if (el) {
+      el.innerHTML = html;
+      if (typeof window.initUerpLayout === 'function') {
+        window.__uerpLayoutInitialized = false;
+        window.initUerpLayout();
+      }
+    }
+  })
+  .catch(err => console.error('Error loading UERP header:', err));
+
+const CACHE_KEY = 'uerp_category_view_cache_v1';
+const CACHE_TIME_KEY = 'uerp_category_view_cache_time_v1';
+const CACHE_TTL = 60 * 60 * 1000;
+let allData = [];
+let categoryChart = null;
+const money = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+const number = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
+const monthFmt = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' });
+const chartColors = ['#2f5ea8','#2a75a0','#56a3a6','#e0a458','#7b83c7','#d16b70','#68a36b','#9b7bb5','#7d8795','#d58a55','#4f9b8f','#b4a24c','#5276a5','#c16e9c','#6e9bcb'];
+const $ = id => document.getElementById(id);
+const asNum = v => { const n = Number(v); return Number.isFinite(n) ? n : 0; };
+const moneyText = v => money.format(asNum(v));
+const monthKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`;
+function parseMonth(value) {
+  if (!value) return null;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  return new Date(d.getUTCFullYear(), d.getUTCMonth(), 1);
+}
+function getPeriodRange(period) {
+  const now = new Date();
+  const current = new Date(now.getFullYear(), now.getMonth(), 1);
+  let start, end;
+  if (period === 'this_month') { start = current; end = current; }
+  else if (period === 'last_month') { start = new Date(now.getFullYear(), now.getMonth()-1, 1); end = start; }
+  else if (period === 'last_3_months') { start = new Date(now.getFullYear(), now.getMonth()-2, 1); end = current; }
+  else if (period === 'this_year') { start = new Date(now.getFullYear(), 0, 1); end = current; }
+  else { start = new Date(now.getFullYear()-1, 0, 1); end = new Date(now.getFullYear()-1, 11, 1); }
+  const months = [];
+  for (let d = new Date(start); d <= end; d = new Date(d.getFullYear(), d.getMonth()+1, 1)) months.push(new Date(d));
+  return { start, end, months };
+}
+function currentRows() {
+  const range = getPeriodRange($('periodSelect').value);
+  return allData.filter(row => {
+    const d = parseMonth(row.month);
+    return d && d >= range.start && d <= range.end;
+  });
+}
+async function fetchAllRows() {
+  if (typeof window.supabaseFetch !== 'function') {
+    throw new Error('window.supabaseFetch is not defined. Check /uerp/config.js.');
+  }
+  const batchSize = 1000;
+  let offset = 0;
+  let rows = [];
+  while (true) {
+    const batch = await window.supabaseFetch('view_category_sales', { limit: batchSize, offset });
+    if (!Array.isArray(batch)) throw new Error('Supabase did not return an array for view_category_sales.');
+    rows = rows.concat(batch);
+    if (batch.length < batchSize) break;
+    offset += batchSize;
+  }
+  return rows;
+}
+async function loadData(force = false) {
+  const btn = $('btnRefresh');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-rotate fa-spin mr-2"></i>Loading';
+  $('errorBox').hidden = true;
+  $('execLog').textContent = 'Loading category data...';
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    const cachedTime = Number(localStorage.getItem(CACHE_TIME_KEY) || 0);
+    if (!force && cached && Date.now() - cachedTime < CACHE_TTL) {
+      allData = JSON.parse(cached);
+      $('execLog').textContent = `${allData.length.toLocaleString()} rows (Cache)`;
+    } else {
+      allData = await fetchAllRows();
+      localStorage.setItem(CACHE_KEY, JSON.stringify(allData));
+      localStorage.setItem(CACHE_TIME_KEY, String(Date.now()));
+      $('execLog').textContent = `${allData.length.toLocaleString()} rows (Live)`;
+    }
+    renderAll();
+  } catch (err) {
+    console.error('Category page load error:', err);
+    if (!allData.length) {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        try { allData = JSON.parse(cached); $('execLog').textContent = `${allData.length.toLocaleString()} rows (Offline cache)`; renderAll(); }
+        catch (_) { showError(err.message); }
+      } else showError(err.message);
+    } else showError(err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-rotate mr-2"></i>Refresh';
+  }
+}
+function showError(message) {
+  $('errorBox').hidden = false;
+  $('errorBox').textContent = `Unable to load category data: ${message}`;
+  $('execLog').textContent = 'Load failed';
+}
+function getTotals(rows) {
+  return rows.reduce((t, r) => {
+    t.sales += asNum(r.sales_amt); t.gpm += asNum(r.gpm); t.qty += asNum(r.qty); return t;
+  }, {sales:0,gpm:0,qty:0});
+}
+function renderAll() {
+  const rows = currentRows();
+  const totals = getTotals(rows);
+  $('kpiSales').textContent = moneyText(totals.sales);
+  $('kpiGpm').textContent = moneyText(totals.gpm);
+  $('kpiMargin').textContent = totals.sales ? `${(totals.gpm / totals.sales * 100).toFixed(1)}%` : '0.0%';
+  $('kpiQty').textContent = number.format(totals.qty);
+  const periodText = $('periodSelect').selectedOptions[0].textContent;
+  $('periodLabelSales').textContent = periodText;
+  $('chartPeriodNote').textContent = `${periodText} · Contribution by main category`;
+  renderChart(rows);
+  renderTable(rows);
+}
+function renderChart(rows) {
+  const metric = $('chartMetric').value;
+  const totals = new Map();
+  rows.forEach(r => {
+    const category = String(r.maincategory || 'Uncategorized').trim() || 'Uncategorized';
+    totals.set(category, (totals.get(category) || 0) + asNum(r[metric]));
+  });
+  const sorted = [...totals.entries()].sort((a,b) => b[1] - a[1]);
+  const labels = sorted.map(x => x[0]);
+  const values = sorted.map(x => x[1]);
+  if (categoryChart) categoryChart.destroy();
+  categoryChart = new Chart($('categoryChart'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: values, backgroundColor: labels.map((_,i) => chartColors[i % chartColors.length]), borderColor: '#ffffff', borderWidth: 2, hoverOffset: 6 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '62%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: context => `${context.label}: ${moneyText(context.raw)} (${values.reduce((a,b)=>a+b,0) ? (context.raw / values.reduce((a,b)=>a+b,0) * 100).toFixed(1) : '0.0'}%)` } }
+      }
+    }
+  });
+  const total = values.reduce((a,b) => a+b, 0);
+  $('categoryLegend').innerHTML = sorted.map(([label,value],i) => `<div class="legend-item"><span class="legend-dot" style="background:${chartColors[i % chartColors.length]}"></span><span>${escapeHtml(label)}: <strong>${moneyText(value)}</strong>${total ? ` (${(value/total*100).toFixed(1)}%)` : ''}</span></div>`).join('') || '<span class="text-xs text-gray-400">No category data for this period.</span>';
+}
+function renderTable(rows) {
+  const range = getPeriodRange($('periodSelect').value);
+  const metric = $('tableMetric').value;
+  const categories = [...new Set(allData.map(r => String(r.maincategory || 'Uncategorized').trim() || 'Uncategorized'))].sort((a,b) => a.localeCompare(b));
+  const valueMap = new Map();
+  rows.forEach(r => {
+    const d = parseMonth(r.month);
+    if (!d) return;
+    const key = `${monthKey(d)}|||${String(r.maincategory || 'Uncategorized').trim() || 'Uncategorized'}`;
+    valueMap.set(key, (valueMap.get(key) || 0) + asNum(r[metric]));
+  });
+  const thead = $('categoryTable').querySelector('thead');
+  const tbody = $('categoryTable').querySelector('tbody');
+  thead.innerHTML = `<tr><th>Month</th>${categories.map(c => `<th>${escapeHtml(c)}</th>`).join('')}<th>Total</th></tr>`;
+  let columnTotals = categories.map(() => 0);
+  let grandTotal = 0;
+  tbody.innerHTML = range.months.map(month => {
+    const keyMonth = monthKey(month);
+    let rowTotal = 0;
+    const cells = categories.map((category,i) => {
+      const value = valueMap.get(`${keyMonth}|||${category}`) || 0;
+      columnTotals[i] += value; rowTotal += value;
+      return `<td>${value ? moneyText(value) : '—'}</td>`;
+    }).join('');
+    grandTotal += rowTotal;
+    return `<tr><td>${monthFmt.format(month)}</td>${cells}<td class="font-semibold">${rowTotal ? moneyText(rowTotal) : '—'}</td></tr>`;
+  }).join('');
+  tbody.insertAdjacentHTML('beforeend', `<tr class="total-row"><td>Total</td>${columnTotals.map(v => `<td>${v ? moneyText(v) : '—'}</td>`).join('')}<td>${grandTotal ? moneyText(grandTotal) : '—'}</td></tr>`);
+  $('tableSummary').textContent = `${range.months.length} month(s) · ${categories.length} categories · Values: ${metric === 'gpm' ? 'GPM' : 'Sales Amount'}`;
+}
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+$('periodSelect').addEventListener('change', renderAll);
+$('chartMetric').addEventListener('change', () => renderChart(currentRows()));
+$('tableMetric').addEventListener('change', () => renderTable(currentRows()));
+$('btnRefresh').addEventListener('click', () => loadData(true));
+window.addEventListener('load', () => loadData(false));
+</script>
+</body>
+</html>
