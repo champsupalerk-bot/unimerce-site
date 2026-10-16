@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -5,10 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UERP - Sales Report</title>
 
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // ขยายสีให้รองรับ Class สี Google ใน uerpheader.html
         tailwind.config = {
             theme: {
                 extend: {
@@ -19,31 +18,24 @@
                     }
                 }
             }
-        }
+        };
     </script>
 
-    <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase JS SDK (v2) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Global Header/Layout Script -->
     <script src="js/layoutuerp.js"></script>
 </head>
+
 <body class="bg-slate-100 min-h-screen text-slate-800 font-sans">
 
-    <!-- Header Placeholder (จะถูกเติมด้วย uerpheader.html แบบ Dynamic) -->
     <div id="headerContainer"></div>
 
-    <!-- Container จำกัดความกว้างไม่เกิน 1000px -->
     <main class="max-w-[1000px] mx-auto p-3 sm:p-6">
-        
-        <!-- Controls Header Panel -->
+
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-3 sm:p-4 mb-4 space-y-3">
-            
-            <!-- Row 1: Period Picker, Metric Dropdown & Refresh Button -->
+
             <div class="flex items-center justify-between gap-2">
-                
-                <!-- Dropdown เลือกสลับ Metric (Qty / Sales Amt) -->
+
                 <div class="flex items-center gap-1.5 flex-1 min-w-0">
                     <label class="text-[10px] sm:text-xs font-semibold text-slate-500 whitespace-nowrap">มุมมอง:</label>
                     <select id="metricSelector" class="bg-slate-50 border border-slate-200 text-slate-800 text-[10px] sm:text-xs font-bold rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 block w-full p-2 cursor-pointer transition truncate">
@@ -52,7 +44,6 @@
                     </select>
                 </div>
 
-                <!-- Period Picker & Refresh Button -->
                 <div class="flex items-center gap-1.5 flex-1 min-w-0 justify-end">
                     <label class="text-[10px] sm:text-xs font-semibold text-slate-500 whitespace-nowrap">ช่วงเวลา:</label>
                     <select id="periodSelector" class="bg-slate-50 border border-slate-200 text-slate-800 text-[10px] sm:text-xs font-bold rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 block w-full sm:w-auto p-2 cursor-pointer transition truncate">
@@ -62,98 +53,98 @@
                         <option value="this_year">ปีนี้</option>
                         <option value="last_year">ปีที่แล้ว</option>
                     </select>
-                    <!-- ปุ่ม Manual Refresh Cache -->
-                    <button onclick="forceRefreshData()" title="รีเฟรชข้อมูลจากเซิร์ฟเวอร์" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs px-2.5 py-2 rounded-lg transition flex items-center justify-center shrink-0">
+
+                    <button id="btnForceRefresh" onclick="forceRefreshData()" title="ล้าง Cache และดึงข้อมูลใหม่จาก Supabase" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs px-2.5 py-2 rounded-lg transition flex items-center justify-center shrink-0">
                         <i id="refreshIcon" class="fa-solid fa-rotate"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Row 2: Search Bar & Mini Logger Status -->
             <div class="flex flex-col sm:flex-row gap-2 items-center justify-between">
                 <div class="relative w-full">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
                         <i class="fa-solid fa-magnifying-glass text-xs"></i>
                     </div>
-                    <input type="text" id="searchInput" placeholder="ค้นหา รหัสสินค้า หรือ ชื่อสินค้า..." 
-                        class="bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 block w-full pl-8 p-2.5 transition placeholder:text-slate-400">
+                    <input type="text" id="searchInput" placeholder="ค้นหา รหัสสินค้า หรือ ชื่อสินค้า..." class="bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 block w-full pl-8 p-2.5 transition placeholder:text-slate-400">
                 </div>
-                <!-- Mini Logger Display -->
+
                 <div id="miniLogger" class="text-[11px] text-slate-400 italic whitespace-nowrap w-full sm:w-auto text-left sm:text-right px-1">
-                    พร้อมใช้งาน (Cache)
+                    พร้อมใช้งาน
                 </div>
             </div>
-
         </div>
 
-        <!-- Status Panel -->
-        <div id="statusIndicator" class="hidden p-3 bg-blue-50/80 rounded-xl border border-blue-100 flex items-center gap-3 mb-4 backdrop-blur-sm">
+        <div id="statusIndicator" class="hidden p-3 bg-blue-50/80 rounded-xl border border-blue-100 items-center gap-3 mb-4 backdrop-blur-sm">
             <i class="fa-solid fa-circle-notch animate-spin text-blue-600"></i>
             <span id="statusText" class="text-xs font-medium text-blue-700">กำลังดึงข้อมูล...</span>
         </div>
 
-        <!-- Report Table Box -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
-            
-            <!-- Summary Bar -->
+
             <div class="bg-slate-900 text-white p-3 px-4 flex justify-between items-center text-xs font-semibold tracking-wide">
                 <span id="summaryTitle">สรุปยอดขาย</span>
                 <span id="summaryTotal" class="text-amber-400 font-bold bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">รวมทั้งสิ้น: 0</span>
             </div>
 
-            <!-- Fixed Height Inner Scroll Container -->
             <div class="max-h-[60vh] sm:max-h-[65vh] overflow-y-auto overflow-x-auto relative divide-y divide-slate-100">
                 <table class="w-full text-left text-xs text-slate-600 border-collapse">
-                    <thead id="tableHeader" class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200 cursor-pointer select-none sticky top-0 z-10 shadow-sm">
-                        <!-- Dynamic Header -->
-                    </thead>
-                    <tbody id="tableBody" class="divide-y divide-slate-100 bg-white">
-                        <!-- Dynamic Data Rows -->
-                    </tbody>
+                    <thead id="tableHeader" class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200 cursor-pointer select-none sticky top-0 z-10 shadow-sm"></thead>
+                    <tbody id="tableBody" class="divide-y divide-slate-100 bg-white"></tbody>
                 </table>
             </div>
-
         </div>
 
     </main>
 
     <script>
-        // Supabase API Credentials
+        /* =========================
+           SUPABASE
+        ========================= */
         const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
-        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5Z2Rtc3plcm5taXJjbWJxd2tlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NTY5NTAsImV4cCI6MjA5NzIzMjk1MH0.Qcq5h2TignXwhsyOe8IYcMYvlayyTjH66tTiPznVOOY";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // State Management
+        /* =========================
+           GLOBAL STATE
+        ========================= */
         let rawTransactionsData = [];
         let processedData = [];
-        let currentSortColumn = 'metric_val'; 
-        let currentSortOrder = 'DESC';        
+        let currentSortColumn = 'metric_val';
+        let currentSortOrder = 'DESC';
+
+        const CACHE_PREFIX = 'uerp_sales_cache_';
+        const CACHE_TIME_PREFIX = 'uerp_sales_time_';
+        const CACHE_TTL = 24 * 60 * 60 * 1000;
+        const PAGE_SIZE = 1000;
+
+        let loadSequence = 0;
+        let activeLoadPromise = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             loadHeader();
             initApp();
         });
 
-        // ดึง uerpheader.html เข้ามาใส่ใน #headerContainer
+        /* =========================
+           HEADER
+        ========================= */
         async function loadHeader() {
             try {
-                // ปรับพาธของไฟล์ uerpheader.html ตามโครงสร้างไดเรกทอรีจริง
                 const res = await fetch('uerpheader.html');
                 if (!res.ok) throw new Error('Header load failed');
+
                 const html = await res.text();
-                
-                const headerContainer = document.getElementById('headerContainer');
-                headerContainer.innerHTML = html;
+                const container = document.getElementById('headerContainer');
 
-                // ไฮไลต์ Tab "Sales"
-                const salesTab = headerContainer.querySelector('[data-page="sales"]');
-                if (salesTab) {
-                    salesTab.classList.add('chrome-tab-active');
-                }
+                if (!container) return;
 
-                // เรียกฟังก์ชันจาก layoutuerp.js หากต้องการ Re-init
+                container.innerHTML = html;
+
+                const salesTab = container.querySelector('[data-page="sales"]');
+                if (salesTab) salesTab.classList.add('chrome-tab-active');
+
                 if (typeof window.initUerpLayout === 'function') {
-                    window.__uerpLayoutInitialized = false; // รีเซ็ตสถานะเพื่อให้ init ซ้ำได้
+                    window.__uerpLayoutInitialized = false;
                     window.initUerpLayout();
                 }
             } catch (err) {
@@ -161,144 +152,286 @@
             }
         }
 
+        /* =========================
+           INIT
+        ========================= */
         function initApp() {
-            document.getElementById('periodSelector').addEventListener('change', () => loadSalesData(false));
-            document.getElementById('metricSelector').addEventListener('change', renderReport);
-            document.getElementById('searchInput').addEventListener('input', renderReport);
+            document.getElementById('periodSelector')
+                .addEventListener('change', () => loadSalesData(false));
+
+            document.getElementById('metricSelector')
+                .addEventListener('change', renderReport);
+
+            document.getElementById('searchInput')
+                .addEventListener('input', renderReport);
+
             window.addEventListener('resize', renderReport);
 
             loadSalesData(false);
         }
 
-        // อัปเดต Mini Logger
-        function updateLog(msg) {
+        function updateLog(message) {
             const logger = document.getElementById('miniLogger');
-            if (logger) logger.innerText = msg;
+            if (logger) logger.innerText = message;
         }
 
-        // ฟังก์ชันกด Refresh แมนนวล
-        function forceRefreshData() {
-            const period = document.getElementById('periodSelector').value;
-            localStorage.removeItem(`uerp_sales_cache_${period}`);
-            localStorage.removeItem(`uerp_sales_time_${period}`);
-            loadSalesData(true);
+        function setLoading(show, message = 'กำลังดึงข้อมูล...') {
+            const indicator = document.getElementById('statusIndicator');
+
+            if (!indicator) return;
+
+            if (show) {
+                indicator.className = 'p-3 bg-blue-50/80 rounded-xl border border-blue-100 flex items-center gap-3 mb-4 backdrop-blur-sm';
+                indicator.innerHTML = `
+                    <i class="fa-solid fa-circle-notch animate-spin text-blue-600"></i>
+                    <span id="statusText" class="text-xs font-medium text-blue-700">${escapeHtml(message)}</span>
+                `;
+            } else {
+                indicator.classList.add('hidden');
+            }
         }
 
-        // ดึงข้อมูลจาก Supabase แบบแบ่งบล็อกทีละ 1,000 แถว พร้อม Cache วันละครั้ง
-        async function loadSalesData(isManualRefresh = false) {
-            const period = document.getElementById('periodSelector').value;
-            const cacheKey = `uerp_sales_cache_${period}`;
-            const timeKey = `uerp_sales_time_${period}`;
-            
-            const cachedData = localStorage.getItem(cacheKey);
-            const cachedTime = localStorage.getItem(timeKey);
-            const nowTime = new Date().getTime();
-            const oneDayMs = 24 * 60 * 60 * 1000; // 1 วัน
-
-            // ตรวจสอบ Cache (หากยังมีอายุไม่เกิน 1 วัน และไม่ได้กดปุ่มรีเฟรช ให้ใช้ Cache)
-            if (!isManualRefresh && cachedData && cachedTime && (nowTime - Number(cachedTime) < oneDayMs)) {
-                rawTransactionsData = JSON.parse(cachedData);
-                updateLog(`โหลดจาก Cache สำเร็จ (${rawTransactionsData.length.toLocaleString()} รายการ)`);
-                aggregateData();
-                renderReport();
-                return;
+        /* =========================
+           FORCE REFRESH
+           CLEAR ALL SALES CACHE
+        ========================= */
+        async function forceRefreshData() {
+            if (activeLoadPromise) {
+                loadSequence++;
             }
 
-            const statusIndicator = document.getElementById('statusIndicator');
-            statusIndicator.classList.remove('hidden');
-            statusIndicator.className = "p-3 bg-blue-50/80 rounded-xl border border-blue-100 flex items-center gap-3 mb-4 backdrop-blur-sm";
-            statusIndicator.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin text-blue-600"></i><span id="statusText" class="text-xs font-medium text-blue-700">กำลังเชื่อมต่อเซิร์ฟเวอร์...</span>`;
+            const icon = document.getElementById('refreshIcon');
+            const button = document.getElementById('btnForceRefresh');
+
+            if (icon) icon.classList.add('fa-spin');
+            if (button) button.disabled = true;
 
             try {
-                const dateRange = calculateDateRange(period);
-                let allRows = [];
-                let page = 0;
-                let pageSize = 1000;
-                let fetchMore = true;
-
-                updateLog(`เริ่มดึงข้อมูลจาก Supabase...`);
-
-                while (fetchMore) {
-                    const from = page * pageSize;
-                    const to = from + pageSize - 1;
-
-                    updateLog(`กำลังดึงชุดข้อมูลแถวที่ ${from.toLocaleString()} ถึง ${to.toLocaleString()}...`);
-
-                    const { data, error } = await supabaseClient
-                        .from('transactions')
-                        .select('item_code, item_name, qty, sales_amt, date')
-                        .gte('date', dateRange.start)
-                        .lte('date', dateRange.end)
-                        .range(from, to);
-
-                    if (error) throw error;
-
-                    if (data && data.length > 0) {
-                        allRows = allRows.concat(data);
-                        page++;
-                        // หน่วงเวลาเล็กน้อย 150ms เพื่อไม่ให้ยิงรัวชน Rate Limit ของ Supabase
-                        await new Promise(resolve => setTimeout(resolve, 150));
-                        
-                        if (data.length < pageSize) {
-                            fetchMore = false; // ถ้าดึงมาไม่เต็มหน้า แสดงว่าหมดแล้ว
-                        }
-                    } else {
-                        fetchMore = false;
+                // ล้าง Cache ของทุกรอบเวลา
+                Object.keys(localStorage).forEach(key => {
+                    if (
+                        key.startsWith(CACHE_PREFIX) ||
+                        key.startsWith(CACHE_TIME_PREFIX)
+                    ) {
+                        localStorage.removeItem(key);
                     }
-                }
+                });
 
-                rawTransactionsData = allRows;
-
-                // บันทึกลง Cache
-                localStorage.setItem(cacheKey, JSON.stringify(rawTransactionsData));
-                localStorage.setItem(timeKey, nowTime.toString());
-
-                statusIndicator.classList.add('hidden');
-                updateLog(`ดึงข้อมูลครบถ้วน: ${rawTransactionsData.length.toLocaleString()} รายการ`);
-
-                aggregateData();
-                renderReport();
-
-            } catch (err) {
-                console.error("Error loading sales data:", err);
-                statusIndicator.className = "p-3 bg-red-50/80 rounded-xl border border-red-100 flex items-center gap-2 mb-4 text-red-700 text-xs font-medium";
-                statusIndicator.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500"></i> เกิดข้อผิดพลาด: ${err.message}`;
-                updateLog(`เกิดข้อผิดพลาดในการโหลดข้อมูล`);
+                // โหลดรอบปัจจุบันใหม่จาก Supabase โดยตรง
+                await loadSalesData(true);
+            } finally {
+                if (icon) icon.classList.remove('fa-spin');
+                if (button) button.disabled = false;
             }
         }
 
-        // รวมยอดข้อมูล Group By สินค้า
+        /* =========================
+           FETCH TRANSACTIONS
+           BATCH 1000 ROWS
+        ========================= */
+        async function fetchTransactionsFromSupabase(period, requestId) {
+            const dateRange = calculateDateRange(period);
+            const allRows = [];
+            let offset = 0;
+
+            updateLog('เริ่มดึงข้อมูลจาก Supabase...');
+
+            while (true) {
+                if (requestId !== loadSequence) return null;
+
+                const from = offset;
+                const to = offset + PAGE_SIZE - 1;
+
+                updateLog(
+                    `กำลังดึงข้อมูลแถว ${from.toLocaleString()} - ${to.toLocaleString()}...`
+                );
+
+                const { data, error } = await supabaseClient
+                    .from('transactions')
+                    .select('invoice_item_id, item_code, item_name, qty, sales_amt, date')
+                    .gte('date', dateRange.start)
+                    .lte('date', dateRange.end)
+                    .order('date', { ascending: false })
+                    .order('invoice_item_id', { ascending: true })
+                    .range(from, to);
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) break;
+
+                allRows.push(...data);
+                offset += data.length;
+
+                updateLog(
+                    `ดึงข้อมูลแล้ว ${allRows.length.toLocaleString()} รายการ...`
+                );
+
+                if (data.length < PAGE_SIZE) break;
+            }
+
+            // ป้องกันรายการซ้ำด้วย Primary Key
+            const uniqueRows = new Map();
+
+            allRows.forEach((row, index) => {
+                const key = row.invoice_item_id != null
+                    ? String(row.invoice_item_id)
+                    : `${row.date}|${row.item_code}|${row.item_name}|${row.qty}|${row.sales_amt}|${index}`;
+
+                uniqueRows.set(key, row);
+            });
+
+            return Array.from(uniqueRows.values());
+        }
+
+        /* =========================
+           LOAD SALES DATA
+        ========================= */
+        async function loadSalesData(forceRefresh = false) {
+            const requestId = ++loadSequence;
+            const period = document.getElementById('periodSelector').value;
+            const cacheKey = CACHE_PREFIX + period;
+            const timeKey = CACHE_TIME_PREFIX + period;
+
+            if (!forceRefresh) {
+                const cachedData = localStorage.getItem(cacheKey);
+                const cachedTime = Number(localStorage.getItem(timeKey) || 0);
+
+                if (
+                    cachedData &&
+                    cachedTime &&
+                    Date.now() - cachedTime < CACHE_TTL
+                ) {
+                    try {
+                        const parsed = JSON.parse(cachedData);
+
+                        if (Array.isArray(parsed)) {
+                            rawTransactionsData = parsed;
+                            updateLog(`Cache: ${parsed.length.toLocaleString()} รายการ`);
+                            renderReport();
+                            return;
+                        }
+                    } catch (error) {
+                        localStorage.removeItem(cacheKey);
+                        localStorage.removeItem(timeKey);
+                    }
+                }
+            }
+
+            setLoading(true, 'กำลังเชื่อมต่อ Supabase...');
+            updateLog('กำลังโหลดข้อมูล...');
+
+            const promise = (async () => {
+                try {
+                    const rows = await fetchTransactionsFromSupabase(period, requestId);
+
+                    if (requestId !== loadSequence || rows === null) return;
+
+                    rawTransactionsData = rows;
+
+                    // เก็บ Cache เฉพาะข้อมูลที่โหลดสำเร็จ
+                    try {
+                        localStorage.setItem(cacheKey, JSON.stringify(rows));
+                        localStorage.setItem(timeKey, String(Date.now()));
+                    } catch (cacheError) {
+                        console.warn('Cannot save sales cache:', cacheError);
+                    }
+
+                    updateLog(`Supabase: ${rows.length.toLocaleString()} รายการ`);
+                    renderReport();
+                    setLoading(false);
+                } catch (error) {
+                    if (requestId !== loadSequence) return;
+
+                    console.error('Error loading sales data:', error);
+
+                    const indicator = document.getElementById('statusIndicator');
+                    indicator.className = 'p-3 bg-red-50/80 rounded-xl border border-red-100 flex items-center gap-2 mb-4 text-red-700 text-xs font-medium';
+                    indicator.innerHTML = `
+                        <i class="fa-solid fa-triangle-exclamation text-red-500"></i>
+                        <span>โหลดข้อมูลไม่สำเร็จ: ${escapeHtml(error.message || 'Unknown error')}</span>
+                    `;
+
+                    updateLog('เกิดข้อผิดพลาดในการโหลดข้อมูล');
+                }
+            })();
+
+            activeLoadPromise = promise;
+
+            try {
+                await promise;
+            } finally {
+                if (activeLoadPromise === promise) {
+                    activeLoadPromise = null;
+                }
+            }
+        }
+
+        /* =========================
+           NUMBER PARSER
+        ========================= */
+        function toNumber(value) {
+            if (typeof value === 'number') {
+                return Number.isFinite(value) ? value : 0;
+            }
+
+            if (value === null || value === undefined) return 0;
+
+            const normalized = String(value)
+                .replace(/,/g, '')
+                .replace(/[฿$]/g, '')
+                .trim();
+
+            if (!normalized || normalized === '-') return 0;
+
+            const number = Number(normalized);
+            return Number.isFinite(number) ? number : 0;
+        }
+
+        /* =========================
+           AGGREGATE DATA
+        ========================= */
         function aggregateData() {
-            const metric = document.getElementById('metricSelector').value;
-            const itemMap = {};
+            const itemMap = new Map();
 
             rawTransactionsData.forEach(item => {
-                const code = item.item_code || 'UNSPECIFIED';
-                const name = item.item_name || 'ไม่ระบุชื่อสินค้า';
-                const key = `${code}___${name}`;
+                const code = String(item.item_code || 'UNSPECIFIED').trim();
+                const name = String(item.item_name || 'ไม่ระบุชื่อสินค้า').trim();
 
-                if (!itemMap[key]) {
-                    itemMap[key] = {
+                // รวมสินค้าด้วยรหัสสินค้า
+                // หากชื่อสินค้าไม่ตรงกัน จะยังไม่แยกเป็นคนละสินค้า
+                const key = code;
+
+                if (!itemMap.has(key)) {
+                    itemMap.set(key, {
                         item_code: code,
                         item_name: name,
                         qty: 0,
                         sales_amt: 0,
                         metric_val: 0
-                    };
+                    });
                 }
 
-                const qty = Number(item.qty || 0);
-                const sales = Number(item.sales_amt || 0);
+                const target = itemMap.get(key);
+                target.qty += toNumber(item.qty);
+                target.sales_amt += toNumber(item.sales_amt);
 
-                itemMap[key].qty += qty;
-                itemMap[key].sales_amt += sales;
-                itemMap[key].metric_val += (metric === 'qty') ? qty : sales;
+                if (!target.item_name || target.item_name === 'ไม่ระบุชื่อสินค้า') {
+                    target.item_name = name;
+                }
             });
 
-            processedData = Object.values(itemMap);
+            processedData = Array.from(itemMap.values());
+
+            processedData.forEach(item => {
+                item.metric_val = document.getElementById('metricSelector').value === 'qty'
+                    ? item.qty
+                    : item.sales_amt;
+            });
         }
 
-        // เรนเดอร์ส่วนตารางและหัวตาราง
+        /* =========================
+           RENDER REPORT
+        ========================= */
         function renderReport() {
             aggregateData();
 
@@ -307,30 +440,39 @@
             const isMobile = window.innerWidth < 768;
 
             let filteredData = processedData;
+
             if (searchTerm) {
-                filteredData = processedData.filter(item => 
-                    item.item_code.toLowerCase().includes(searchTerm) || 
-                    item.item_name.toLowerCase().includes(searchTerm)
+                filteredData = processedData.filter(item =>
+                    String(item.item_code).toLowerCase().includes(searchTerm) ||
+                    String(item.item_name).toLowerCase().includes(searchTerm)
                 );
             }
 
             filteredData.sort((a, b) => {
-                let valA = a[currentSortColumn];
-                let valB = b[currentSortColumn];
+                const valA = a[currentSortColumn];
+                const valB = b[currentSortColumn];
 
-                if (typeof valA === 'string') {
-                    return currentSortOrder === 'ASC' 
-                        ? valA.localeCompare(valB, 'th') 
-                        : valB.localeCompare(valA, 'th');
-                } else {
-                    return currentSortOrder === 'ASC' ? valA - valB : valB - valA;
+                if (typeof valA === 'string' || typeof valB === 'string') {
+                    const aText = String(valA ?? '');
+                    const bText = String(valB ?? '');
+
+                    return currentSortOrder === 'ASC'
+                        ? aText.localeCompare(bText, 'th')
+                        : bText.localeCompare(aText, 'th');
                 }
+
+                return currentSortOrder === 'ASC'
+                    ? toNumber(valA) - toNumber(valB)
+                    : toNumber(valB) - toNumber(valA);
             });
 
             renderHeader(isMobile, metric);
             renderBody(filteredData, isMobile, metric);
         }
 
+        /* =========================
+           TABLE HEADER
+        ========================= */
         function renderHeader(isMobile, metric) {
             const header = document.getElementById('tableHeader');
             const metricLabel = metric === 'qty' ? 'จำนวน (ชิ้น)' : 'ยอดขาย (บาท)';
@@ -355,29 +497,33 @@
             }
         }
 
+        /* =========================
+           TABLE BODY & TOTAL
+        ========================= */
         function renderBody(data, isMobile, metric) {
             const body = document.getElementById('tableBody');
             const summaryTitle = document.getElementById('summaryTitle');
             const summaryTotal = document.getElementById('summaryTotal');
 
             if (data.length === 0) {
-                body.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-400">ไม่พบข้อมูลตรงตามเงื่อนไข</td></tr>`;
-                summaryTotal.innerText = `รวมทั้งสิ้น: 0`;
+                body.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-400">ไม่พบข้อมูลตรงตามเงื่อนไข</td></tr>';
+                summaryTitle.innerText = 'จำนวนรายการสินค้าทั้งหมด: 0 รายการ';
+                summaryTotal.innerText = 'รวมทั้งสิ้น: 0';
                 return;
             }
 
             let totalQtySum = 0;
             let totalSalesSum = 0;
-
             let html = '';
+
             data.forEach(item => {
-                totalQtySum += item.qty || 0;
-                totalSalesSum += item.sales_amt || 0;
+                totalQtySum += toNumber(item.qty);
+                totalSalesSum += toNumber(item.sales_amt);
 
                 if (isMobile) {
-                    const displayVal = metric === 'qty' 
-                        ? `${item.qty.toLocaleString()} ชิ้น`
-                        : `฿${item.sales_amt.toLocaleString('th-TH', {minimumFractionDigits: 0})}`;
+                    const displayVal = metric === 'qty'
+                        ? `${toNumber(item.qty).toLocaleString('th-TH')} ชิ้น`
+                        : `฿${toNumber(item.sales_amt).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
                     html += `
                         <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100">
@@ -391,8 +537,8 @@
                         <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100">
                             <td class="p-3 font-mono text-slate-500">${escapeHtml(item.item_code)}</td>
                             <td class="p-3 font-semibold text-slate-800">${escapeHtml(item.item_name)}</td>
-                            <td class="p-3 text-right font-semibold text-slate-700">${item.qty.toLocaleString()}</td>
-                            <td class="p-3 text-right font-bold text-blue-600">฿${item.sales_amt.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
+                            <td class="p-3 text-right font-semibold text-slate-700">${toNumber(item.qty).toLocaleString('th-TH')}</td>
+                            <td class="p-3 text-right font-bold text-blue-600">฿${toNumber(item.sales_amt).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                         </tr>
                     `;
                 }
@@ -400,12 +546,16 @@
 
             body.innerHTML = html;
 
-            summaryTitle.innerText = `จำนวนรายการสินค้าทั้งหมด: ${data.length} รายการ`;
-            summaryTotal.innerText = metric === 'qty' 
-                ? `ยอดรวม: ${totalQtySum.toLocaleString()} ชิ้น`
-                : `ยอดขายรวม: ฿${totalSalesSum.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
+            summaryTitle.innerText = `จำนวนรายการสินค้าทั้งหมด: ${data.length.toLocaleString()} รายการ`;
+
+            summaryTotal.innerText = metric === 'qty'
+                ? `ยอดรวม: ${totalQtySum.toLocaleString('th-TH')} ชิ้น`
+                : `ยอดขายรวม: ฿${totalSalesSum.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
 
+        /* =========================
+           SORT
+        ========================= */
         function sortTable(column) {
             if (currentSortColumn === column) {
                 currentSortOrder = currentSortOrder === 'DESC' ? 'ASC' : 'DESC';
@@ -413,61 +563,78 @@
                 currentSortColumn = column;
                 currentSortOrder = 'DESC';
             }
+
             renderReport();
         }
 
         function getSortIcon(column) {
-            if (currentSortColumn !== column) return '<i class="fa-solid fa-sort text-slate-300 ml-1"></i>';
-            return currentSortOrder === 'DESC' 
-                ? '<i class="fa-solid fa-sort-down text-blue-600 ml-1"></i>' 
+            if (currentSortColumn !== column) {
+                return '<i class="fa-solid fa-sort text-slate-300 ml-1"></i>';
+            }
+
+            return currentSortOrder === 'DESC'
+                ? '<i class="fa-solid fa-sort-down text-blue-600 ml-1"></i>'
                 : '<i class="fa-solid fa-sort-up text-blue-600 ml-1"></i>';
         }
 
+        /* =========================
+           DATE RANGE
+        ========================= */
         function calculateDateRange(period) {
             const now = new Date();
             const year = now.getFullYear();
             const month = now.getMonth();
 
-            let start, end;
+            let start;
+            let end;
 
             switch (period) {
                 case 'this_month':
                     start = new Date(year, month, 1, 0, 0, 0, 0);
-                    end = new Date(year, month + 1, 0, 23, 59, 59, 999);
+                    end = new Date(year, month + 1, 1, 0, 0, 0, 0);
                     break;
 
                 case 'last_month':
                     start = new Date(year, month - 1, 1, 0, 0, 0, 0);
-                    end = new Date(year, month, 0, 23, 59, 59, 999);
+                    end = new Date(year, month, 1, 0, 0, 0, 0);
                     break;
 
                 case 'last_3_months':
                     start = new Date(year, month - 2, 1, 0, 0, 0, 0);
-                    end = new Date(year, month + 1, 0, 23, 59, 59, 999);
+                    end = new Date(year, month + 1, 1, 0, 0, 0, 0);
                     break;
 
                 case 'this_year':
                     start = new Date(year, 0, 1, 0, 0, 0, 0);
-                    end = new Date(year, 11, 31, 23, 59, 59, 999);
+                    end = new Date(year + 1, 0, 1, 0, 0, 0, 0);
                     break;
 
                 case 'last_year':
                     start = new Date(year - 1, 0, 1, 0, 0, 0, 0);
-                    end = new Date(year - 1, 11, 31, 23, 59, 59, 999);
+                    end = new Date(year, 0, 1, 0, 0, 0, 0);
                     break;
+
+                default:
+                    throw new Error('ไม่รู้จักช่วงเวลาที่เลือก');
             }
 
+            // ใช้ช่วง [start, end) เพื่อไม่ให้ขอบเขตเวลาซ้อนกัน
+            // Query ใช้ .lt(end) แทน .lte(end)
             return {
                 start: start.toISOString(),
                 end: end.toISOString()
             };
         }
 
-        function escapeHtml(text) {
+        /* =========================
+           HTML ESCAPE
+        ========================= */
+        function escapeHtml(value) {
             const div = document.createElement('div');
-            div.innerText = text || '';
+            div.textContent = value == null ? '' : String(value);
             return div.innerHTML;
         }
     </script>
 </body>
 </html>
+```
