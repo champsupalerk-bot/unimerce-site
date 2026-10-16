@@ -31,7 +31,7 @@ function openBarcodeGenModal(productName, productCode, productLocation, event) {
       width: 2.3,   
       height: 65,   
       displayValue: true, 
-      fontSize: 20, 
+      fontSize: 30, 
       fontOptions: "", 
       margin: 0
     });
