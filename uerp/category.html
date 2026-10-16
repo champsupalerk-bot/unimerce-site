@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +32,13 @@ tailwind = {
 
 <style>
 :root{--uerp-blue:#2f5ea8;--uerp-bg:#f3f4f6;--uerp-border:#e5e7eb;--uerp-text:#1f2937;--uerp-muted:#6b7280}
-*{box-sizing:border-box}
+.page-wrap,
+.page-wrap *,
+#errorBox,
+#categoryTable,
+#categoryTable * {
+  box-sizing: border-box;
+}
 body{margin:0;background:var(--uerp-bg);color:var(--uerp-text);font-family:Arial,Helvetica,sans-serif;font-size:14px}
 button,select{font:inherit}
 .page-wrap{width:100%;max-width:1000px;margin:0 auto;padding:20px 16px}
