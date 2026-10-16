@@ -181,34 +181,46 @@ async function fetchAllFromSupabaseInBatches() {
 /* =========================
    LOAD TABLE
 ========================= */
-async function loadTable(forceRefresh = false) {
+async function loadTable(
+  forceRefresh = false
+) {
+
   try {
-    if (typeof window.supabaseFetch !== 'function') {
+
+    if (
+      typeof window.supabaseFetch !==
+      'function'
+    ) {
       throw new Error(
         "window.supabaseFetch is not defined. Check config.js path."
       );
     }
 
-    updateLog("Connecting to Supabase...");
+    const now =
+      Date.now();
 
-    // Fetch live data every time the page opens
-    rawData = await fetchAllFromSupabaseInBatches();
+    const cachedTime =
+      localStorage.getItem(
+        CACHE_TIME_KEY
+      );
 
-    updateLog(
-      `${rawData.length.toLocaleString()} rows (Live)`
-    );
+    const cachedData =
+      localStorage.getItem(
+        CACHE_KEY
+      );
 
-    applyAll();
-
-  } catch (e) {
-    console.error("Supabase Connection Error:", e);
-
-    updateLog("Fetch Failed!");
-
-    document.getElementById("table-body").innerHTML =
-      '<tr><td colspan="3" style="text-align:center;padding:20px;">Failed to load data from Supabase.</td></tr>';
-  }
-}
+    const isCacheValid =
+      cachedTime &&
+      cachedData &&
+      (
+        now -
+        parseInt(
+          cachedTime,
+          10
+        )
+        <
+        ONE_DAY_MS
+      );
 
     /* =========================
        USE CACHE
@@ -316,21 +328,39 @@ async function loadTable(forceRefresh = false) {
 /* =========================
    FORCE REFRESH
 ========================= */
-async function forceRefreshData() {
-  const icon = document.querySelector("#btnRefresh i");
+function forceRefreshData() {
+
+  const icon =
+    document.querySelector(
+      "#btnRefresh i"
+    );
 
   if (icon) {
-    icon.classList.add("fa-spin");
+    icon.classList.add(
+      "fa-spin"
+    );
   }
 
-  try {
-    await loadTable(true);
-  } finally {
-    if (icon) {
-      icon.classList.remove("fa-spin");
-    }
-  }
+  localStorage.removeItem(
+    CACHE_KEY
+  );
+
+  localStorage.removeItem(
+    CACHE_TIME_KEY
+  );
+
+  loadTable(true)
+    .finally(() => {
+
+      if (icon) {
+        icon.classList.remove(
+          "fa-spin"
+        );
+      }
+
+    });
 }
+
 /* =========================
    APPLY ALL FILTERS
 ========================= */
