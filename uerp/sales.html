@@ -21,7 +21,10 @@
     </script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Core Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
     <script src="js/layoutuerp.js"></script>
 </head>
 
@@ -98,14 +101,28 @@
     <script>
         /* =========================
            SUPABASE
+           ใช้ค่าจาก config.js
         ========================= */
-        const supabaseUrl = "https://xygdmszernmircmbqwke.supabase.co";
-        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
-        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        if (
+            !window.SUPABASE_URL ||
+            !window.SUPABASE_ANON_KEY ||
+            typeof supabase === 'undefined'
+        ) {
+            throw new Error(
+                'Supabase configuration missing. ตรวจสอบ config.js และ Supabase JS'
+            );
+        }
+
+        const supabaseClient = supabase.createClient(
+            window.SUPABASE_URL,
+            window.SUPABASE_ANON_KEY
+        );
 
         /* =========================
            GLOBAL STATE
         ========================= */
+
         let rawTransactionsData = [];
         let processedData = [];
         let currentSortColumn = 'metric_val';
@@ -127,6 +144,7 @@
         /* =========================
            HEADER
         ========================= */
+
         async function loadHeader() {
             try {
                 const res = await fetch('uerpheader.html');
@@ -154,6 +172,7 @@
         /* =========================
            INIT
         ========================= */
+
         function initApp() {
             document.getElementById('periodSelector')
                 .addEventListener('change', () => loadSalesData(false));
@@ -194,6 +213,7 @@
            FORCE REFRESH
            CLEAR ALL SALES CACHE
         ========================= */
+
         async function forceRefreshData() {
             if (activeLoadPromise) {
                 loadSequence++;
@@ -206,7 +226,6 @@
             if (button) button.disabled = true;
 
             try {
-                // ล้าง Cache ของทุกรอบเวลา
                 Object.keys(localStorage).forEach(key => {
                     if (
                         key.startsWith(CACHE_PREFIX) ||
@@ -216,7 +235,6 @@
                     }
                 });
 
-                // โหลดรอบปัจจุบันใหม่จาก Supabase โดยตรง
                 await loadSalesData(true);
             } finally {
                 if (icon) icon.classList.remove('fa-spin');
@@ -228,6 +246,7 @@
            FETCH TRANSACTIONS
            BATCH 1000 ROWS
         ========================= */
+
         async function fetchTransactionsFromSupabase(period, requestId) {
             const dateRange = calculateDateRange(period);
             const allRows = [];
@@ -249,7 +268,7 @@
                     .from('transactions')
                     .select('invoice_item_id, item_code, item_name, qty, sales_amt, date')
                     .gte('date', dateRange.start)
-                    .lte('date', dateRange.end)
+                    .lt('date', dateRange.end)
                     .order('date', { ascending: false })
                     .order('invoice_item_id', { ascending: true })
                     .range(from, to);
@@ -268,7 +287,6 @@
                 if (data.length < PAGE_SIZE) break;
             }
 
-            // ป้องกันรายการซ้ำด้วย Primary Key
             const uniqueRows = new Map();
 
             allRows.forEach((row, index) => {
@@ -285,6 +303,7 @@
         /* =========================
            LOAD SALES DATA
         ========================= */
+
         async function loadSalesData(forceRefresh = false) {
             const requestId = ++loadSequence;
             const period = document.getElementById('periodSelector').value;
@@ -327,7 +346,6 @@
 
                     rawTransactionsData = rows;
 
-                    // เก็บ Cache เฉพาะข้อมูลที่โหลดสำเร็จ
                     try {
                         localStorage.setItem(cacheKey, JSON.stringify(rows));
                         localStorage.setItem(timeKey, String(Date.now()));
@@ -344,11 +362,14 @@
                     console.error('Error loading sales data:', error);
 
                     const indicator = document.getElementById('statusIndicator');
-                    indicator.className = 'p-3 bg-red-50/80 rounded-xl border border-red-100 flex items-center gap-2 mb-4 text-red-700 text-xs font-medium';
-                    indicator.innerHTML = `
-                        <i class="fa-solid fa-triangle-exclamation text-red-500"></i>
-                        <span>โหลดข้อมูลไม่สำเร็จ: ${escapeHtml(error.message || 'Unknown error')}</span>
-                    `;
+
+                    if (indicator) {
+                        indicator.className = 'p-3 bg-red-50/80 rounded-xl border border-red-100 flex items-center gap-2 mb-4 text-red-700 text-xs font-medium';
+                        indicator.innerHTML = `
+                            <i class="fa-solid fa-triangle-exclamation text-red-500"></i>
+                            <span>โหลดข้อมูลไม่สำเร็จ: ${escapeHtml(error.message || 'Unknown error')}</span>
+                        `;
+                    }
 
                     updateLog('เกิดข้อผิดพลาดในการโหลดข้อมูล');
                 }
@@ -368,6 +389,7 @@
         /* =========================
            NUMBER PARSER
         ========================= */
+
         function toNumber(value) {
             if (typeof value === 'number') {
                 return Number.isFinite(value) ? value : 0;
@@ -389,15 +411,13 @@
         /* =========================
            AGGREGATE DATA
         ========================= */
+
         function aggregateData() {
             const itemMap = new Map();
 
             rawTransactionsData.forEach(item => {
                 const code = String(item.item_code || 'UNSPECIFIED').trim();
                 const name = String(item.item_name || 'ไม่ระบุชื่อสินค้า').trim();
-
-                // รวมสินค้าด้วยรหัสสินค้า
-                // หากชื่อสินค้าไม่ตรงกัน จะยังไม่แยกเป็นคนละสินค้า
                 const key = code;
 
                 if (!itemMap.has(key)) {
@@ -431,6 +451,7 @@
         /* =========================
            RENDER REPORT
         ========================= */
+
         function renderReport() {
             aggregateData();
 
@@ -472,6 +493,7 @@
         /* =========================
            TABLE HEADER
         ========================= */
+
         function renderHeader(isMobile, metric) {
             const header = document.getElementById('tableHeader');
             const metricLabel = metric === 'qty' ? 'จำนวน (ชิ้น)' : 'ยอดขาย (บาท)';
@@ -499,6 +521,7 @@
         /* =========================
            TABLE BODY & TOTAL
         ========================= */
+
         function renderBody(data, isMobile, metric) {
             const body = document.getElementById('tableBody');
             const summaryTitle = document.getElementById('summaryTitle');
@@ -555,6 +578,7 @@
         /* =========================
            SORT
         ========================= */
+
         function sortTable(column) {
             if (currentSortColumn === column) {
                 currentSortOrder = currentSortOrder === 'DESC' ? 'ASC' : 'DESC';
@@ -579,6 +603,7 @@
         /* =========================
            DATE RANGE
         ========================= */
+
         function calculateDateRange(period) {
             const now = new Date();
             const year = now.getFullYear();
@@ -617,8 +642,6 @@
                     throw new Error('ไม่รู้จักช่วงเวลาที่เลือก');
             }
 
-            // ใช้ช่วง [start, end) เพื่อไม่ให้ขอบเขตเวลาซ้อนกัน
-            // Query ใช้ .lt(end) แทน .lte(end)
             return {
                 start: start.toISOString(),
                 end: end.toISOString()
@@ -628,6 +651,7 @@
         /* =========================
            HTML ESCAPE
         ========================= */
+
         function escapeHtml(value) {
             const div = document.createElement('div');
             div.textContent = value == null ? '' : String(value);
