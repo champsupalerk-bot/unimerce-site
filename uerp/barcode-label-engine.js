@@ -28,8 +28,8 @@ function openBarcodeGenModal(productName, productCode, productLocation, event) {
   try {
     JsBarcode("#barcodeSvgCanvas", productCode, {
       format: "CODE128",
-      width: 2.3,   
-      height: 65,   
+      width: 5.3,   
+      height: 85,   
       displayValue: true, 
       fontSize: 50, 
       fontOptions: "", 
