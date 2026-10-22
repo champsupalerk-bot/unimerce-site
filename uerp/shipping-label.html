@@ -34,7 +34,6 @@ tailwind.config={
   /* =========================================================
      [จุดแก้ความกว้างจุดเดียว] 
      ปรับตัวเลขตรงนี้เพื่อ เพิ่ม/หด ความกว้างของหน้าจอ Desktop
-     (เดิม 720px + เพิ่ม 100px = 820px)
      ========================================================= */
   --workspace-width: 820px; 
 }
@@ -65,51 +64,66 @@ body{min-height:100vh}
 .hint{font-size:11px;color:#9ca3af;line-height:1.5;margin-top:6px}
 .paper-wrap{display:flex;justify-content:flex-start;align-items:flex-start}
 .sticker-paper{width:100mm;height:150mm;background:#fff;box-shadow:0 4px 20px rgba(15,23,42,.15);display:flex;justify-content:center;align-items:flex-start;flex-shrink:0}
-.shipping-label{width:100mm;height:150mm;background:#fff;color:#111827;padding:4mm 3.5mm 3mm;display:flex;flex-direction:column;overflow:hidden}
-.label-header{display:grid;grid-template-columns:54% 46%;gap:2mm;padding-bottom:2mm;border-bottom:1px solid #111827;flex-shrink:0}
-.brand-area{min-width:0}
-.logo{width:38mm;height:auto;max-height:9mm;object-fit:contain;object-position:left center;display:block;margin-bottom:1.2mm}
-.warehouse{font-size:7.2px;line-height:1.35;color:#374151;padding-right:1mm}
-.tracking-area{text-align:right;min-width:0;padding-top:.5mm}
-.label-caption{font-size:7px;font-weight:700;letter-spacing:.5px;color:#6b7280;margin-bottom:.4mm}
-.tracking-number{font-family:"Courier New",monospace;font-size:16px;line-height:1.05;font-weight:800;word-break:break-all;overflow-wrap:anywhere;margin-bottom:1mm}
-.barcode-box{display:flex;justify-content:flex-end;overflow:hidden;min-height:0}
-.barcode-box svg{max-width:100%;height:auto;display:block}
-.section{margin-top:2.2mm;flex-shrink:0}
-.section-title{font-size:7.5px;font-weight:700;letter-spacing:.5px;color:#6b7280;padding-bottom:.7mm;border-bottom:.6px solid #cbd5e1;margin-bottom:1.2mm}
-.customer-grid{display:grid;grid-template-columns:23mm 1fr;column-gap:2mm;row-gap:.7mm;font-size:10.2px;line-height:1.25}
-.customer-label{color:#6b7280;font-weight:600;font-size:7.5px;padding-top:.4mm}
-.customer-value{min-width:0;word-break:break-word;overflow-wrap:anywhere;font-weight:500}
-.customer-address{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
-.customer-name{font-size:11.5px;font-weight:600}
-.order-section{margin-top:2.2mm;padding-top:1.8mm;border-top:1px solid #111827;flex-shrink:0}
-.order-title-row{display:flex;justify-content:flex-start;align-items:center}
-.order-number{font-family:"Courier New",monospace;font-size:16px;line-height:1.15;font-weight:800;word-break:break-all;overflow-wrap:anywhere;margin-bottom:1.3mm;text-align:left}
-.order-barcode{justify-content:flex-start}
-.order-barcode svg{max-width:82mm}
 
 /* =========================================================
-   [ปรับปรุงเรื่องตัวหนังสือจม/ไม่ตรงกับ Preview]
+   [ปรับปรุงขอบกระดาษ + แก้ปัญหาตัวหนังสือจมทั้งหมด]
    ========================================================= */
-.items-section{margin-top:2.3mm;flex-shrink:0;min-height:0}
+.shipping-label{
+  width:100mm;
+  height:150mm;
+  background:#fff;
+  color:#111827;
+  padding:4.5mm 4.5mm 4mm; /* เพิ่มระยะขอบรอบกระดาษกันตกขอบ */
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.label-header{display:grid;grid-template-columns:52% 48%;gap:2mm;padding-bottom:1.8mm;border-bottom:1px solid #111827;flex-shrink:0}
+.brand-area{min-width:0}
+.logo{width:36mm;height:auto;max-height:9mm;object-fit:contain;object-position:left center;display:block;margin-bottom:1.2mm}
+.warehouse{font-size:7.2px;line-height:1.35;color:#374151;padding-right:1mm}
+.tracking-area{text-align:right;min-width:0;padding-top:.3mm}
+.label-caption{font-size:7px;font-weight:700;letter-spacing:.5px;color:#6b7280;margin-bottom:.4mm}
+.tracking-number{font-family:"Courier New",monospace;font-size:15.5px;line-height:1.1;font-weight:800;word-break:break-all;overflow-wrap:anywhere;margin-bottom:1.2mm}
+.barcode-box{display:flex;justify-content:flex-end;overflow:hidden;min-height:0}
+.barcode-box svg{max-width:100%;height:auto;display:block}
+
+.section{margin-top:2mm;flex-shrink:0}
+.section-title{font-size:7.5px;font-weight:700;letter-spacing:.5px;color:#6b7280;padding-bottom:.6mm;border-bottom:.6px solid #cbd5e1;margin-bottom:1.2mm}
+.customer-grid{display:grid;grid-template-columns:23mm 1fr;column-gap:2mm;row-gap:1mm;font-size:10px;line-height:1.3}
+.customer-label{color:#6b7280;font-weight:600;font-size:7.5px;padding-top:.2mm}
+.customer-value{min-width:0;word-break:break-word;overflow-wrap:anywhere;font-weight:500}
+/* แก้ไขที่อยู่จม: ให้ยืดบรรทัดอิสระ ไม่บีบตัดรรทัด */
+.customer-address{display:block;word-break:break-word;white-space:normal;line-height:1.35;overflow:visible;padding-bottom:0.5mm}
+.customer-name{font-size:11px;font-weight:600;line-height:1.25}
+
+/* Order Section: เว้นระยะตัวหนังสือกับ Barcode ให้ไม่ทับ/ไม่จม */
+.order-section{margin-top:2mm;padding-top:1.5mm;border-top:1px solid #111827;flex-shrink:0}
+.order-number{font-family:"Courier New",monospace;font-size:15.5px;line-height:1.15;font-weight:800;word-break:break-all;overflow-wrap:anywhere;margin-bottom:2mm;text-align:left}
+.order-barcode{justify-content:flex-start;margin-top:-0.5mm}
+.order-barcode svg{max-width:82mm}
+
+/* Items Section: ปรับแก้ชื่อสินค้ายืดความสูงสวยงาม ไม่จม */
+.items-section{margin-top:2mm;flex-shrink:0;min-height:0}
 .items-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:9px}
 .items-table th{font-size:7px;color:#6b7280;font-weight:700;text-align:left;padding:.8mm .7mm;border-bottom:.7px solid #9ca3af}
-.items-table td{padding:1mm .7mm;vertical-align:top;border-bottom:.4px solid #e5e7eb;line-height:1.3;height:auto}
+.items-table td{padding:1.2mm .7mm;vertical-align:top;border-bottom:.4px solid #e5e7eb;line-height:1.35;height:auto}
 .items-table th:nth-child(1),.items-table td:nth-child(1){width:21mm}
 .items-table th:nth-child(2),.items-table td:nth-child(2){width:auto}
 .items-table th:nth-child(3),.items-table td:nth-child(3){width:10mm;text-align:right}
-.item-code{font-family:"Courier New",monospace;font-weight:700;font-size:8.5px;word-break:break-all}
-.item-name{display:block;word-break:break-word;overflow-wrap:break-word;white-space:normal;line-height:1.3;overflow:visible}
-.qty{font-weight:800;font-size:10px}
-.items-table.compact{font-size:8px}
-.items-table.compact td{padding:.7mm .6mm}
-.items-table.compact .item-name{display:block;line-height:1.2}
+.item-code{font-family:"Courier New",monospace;font-weight:700;font-size:8.5px;word-break:break-all;display:block;padding-top:0.2mm}
+.item-name{display:block;word-break:break-word;overflow-wrap:break-word;white-space:normal;line-height:1.35;overflow:visible}
+.qty{font-weight:800;font-size:10px;display:block;padding-top:0.2mm}
 
-.remark-section{margin-top:2mm;flex-shrink:0}
-.remark-box{min-height:8mm;max-height:13mm;border:.7px solid #9ca3af;padding:1.4mm;font-size:9px;line-height:1.25;white-space:pre-wrap;word-break:break-word;overflow:hidden}
-.label-footer{margin-top:auto;padding-top:1.8mm;border-top:.6px solid #d1d5db;display:flex;justify-content:space-between;align-items:flex-end;gap:3mm;flex-shrink:0}
-.invoice-ref{font-family:"Courier New",monospace;font-size:11px;font-weight:700;color:#111827;line-height:1.1}
-.website{font-size:11px;font-weight:700;color:#111827;white-space:nowrap}
+.items-table.compact{font-size:8px}
+.items-table.compact td{padding:.8mm .6mm}
+.items-table.compact .item-name{display:block;line-height:1.25}
+
+.remark-section{margin-top:1.8mm;flex-shrink:0}
+.remark-box{min-height:7.5mm;max-height:12mm;border:.7px solid #9ca3af;padding:1.2mm 1.4mm;font-size:8.8px;line-height:1.3;white-space:pre-wrap;word-break:break-word;overflow:hidden}
+.label-footer{margin-top:auto;padding-top:1.5mm;border-top:.6px solid #d1d5db;display:flex;justify-content:space-between;align-items:flex-end;gap:3mm;flex-shrink:0}
+.invoice-ref{font-family:"Courier New",monospace;font-size:10.5px;font-weight:700;color:#111827;line-height:1.1}
+.website{font-size:10.5px;font-weight:700;color:#111827;white-space:nowrap}
 .empty-message{text-align:center;padding:30px 15px;color:#6b7280;font-size:13px}
 
 @media(max-width:800px){
@@ -365,7 +379,7 @@ JsBarcode("#trackingBarcode",tracking,{format:"CODE128",width:1.25,height:30,dis
 }
 if(orderNo&&document.getElementById("orderBarcode")){
 try{
-JsBarcode("#orderBarcode",orderNo,{format:"CODE128",width:1.15,height:30,displayValue:false,margin:1,background:"#ffffff",lineColor:"#111827"});
+JsBarcode("#orderBarcode",orderNo,{format:"CODE128",width:1.15,height:28,displayValue:false,margin:1,background:"#ffffff",lineColor:"#111827"});
 }catch(error){console.warn("Order barcode error:",error);}
 }
 }
