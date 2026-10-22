@@ -6,6 +6,7 @@ let rawProducts = [];
 let filtered = [];
 let currentPage = 1;
 const itemsPerPage = 30;
+
 /* =========================
    SHARED PRODUCT FUNCTIONS
    ใช้ร่วมกับ index.js / productdetail.js
@@ -13,12 +14,14 @@ const itemsPerPage = 30;
 async function fetchAllProducts() {
   return await window.supabaseFetch("products");
 }
+
 async function getProductByCode(code) {
   const products = await fetchAllProducts();
   return products.find(
     p => String(p.item_code || "").trim() === String(code || "").trim()
   );
 }
+
 function cleanNumber(val) {
   if (val === null || val === undefined) return 0;
   if (typeof val === "number") return val;
@@ -29,18 +32,23 @@ function cleanNumber(val) {
   const parsed = parseFloat(str);
   return isNaN(parsed) ? 0 : parsed;
 }
+
 function createProductCard(p) {
   const img = String(
     p.image_link_01 || ""
   ).trim();
   const sku =
     p.item_code || "-";
+  
+  // เปลี่ยน main_category -> maincategory
   const category =
-    p.main_category || "-";
+    p.maincategory || "-";
+    
   const productName =
     p.name ||
     p.index4_description ||
     "-";
+    
   let onhand = p.onhand;
   if (
     onhand === null ||
@@ -52,28 +60,34 @@ function createProductCard(p) {
     onhand =
       cleanNumber(onhand).toLocaleString();
   }
+
+  // เปลี่ยน list_price -> listprice
   const listPriceFormatted =
     (
-      p.list_price !== null &&
-      p.list_price !== undefined &&
-      p.list_price !== ""
+      p.listprice !== null &&
+      p.listprice !== undefined &&
+      p.listprice !== ""
     )
-      ? cleanNumber(p.list_price).toLocaleString()
+      ? cleanNumber(p.listprice).toLocaleString()
       : "";
+
+  // เปลี่ยน promotion_price -> pricep
   const promoPriceFormatted =
     (
-      p.promotion_price !== null &&
-      p.promotion_price !== undefined &&
-      p.promotion_price !== ""
+      p.pricep !== null &&
+      p.pricep !== undefined &&
+      p.pricep !== ""
     )
-      ? cleanNumber(p.promotion_price).toLocaleString()
+      ? cleanNumber(p.pricep).toLocaleString()
       : "-";
+
   const detailUrl =
     "/productdetail.html?code=" +
     encodeURIComponent(String(sku).trim());
   const imageSrc =
     img ||
     "https://via.placeholder.com/600x600?text=No+Image";
+
   return `
     <a
       href="${detailUrl}"
@@ -128,6 +142,7 @@ function createProductCard(p) {
     </a>
   `;
 }
+
 /* =========================
    LOAD HEADER
 ========================= */
@@ -160,6 +175,7 @@ fetch("header.html")
   .catch(err => {
     console.error("Header load error:", err);
   });
+
 /* =========================
    LOAD FOOTER
 ========================= */
@@ -174,6 +190,7 @@ fetch("footer.html")
   .catch(err => {
     console.error("Footer load error:", err);
   });
+
 /* =========================
    LOAD PRODUCTS
 ========================= */
@@ -190,9 +207,10 @@ async function loadProducts() {
     ========================= */
     filtered =
       rawProducts.filter(p => {
+        // เปลี่ยน stock_status -> stockstatus
         const status =
           String(
-            p.stock_status || ""
+            p.stockstatus || ""
           )
           .trim()
           .toLowerCase();
@@ -215,6 +233,7 @@ async function loadProducts() {
     }
   }
 }
+
 /* =========================
    PROMOTION CARD
 ========================= */
@@ -230,6 +249,7 @@ const promoCard = `
     </div>
   </div>
 `;
+
 /* =========================
    PROCESS & RENDER
 ========================= */
@@ -244,6 +264,7 @@ function processAndRender() {
           .toLowerCase()
           .trim()
       : "";
+
   /* =========================
      SELECTED CATEGORIES
   ========================= */
@@ -254,8 +275,10 @@ function processAndRender() {
       )
     )
     .map(cb => cb.value);
+
   let targetProducts =
     filtered;
+
   /* =========================
      FILTER BY MAIN CATEGORY
   ========================= */
@@ -264,15 +287,17 @@ function processAndRender() {
   ) {
     targetProducts =
       targetProducts.filter(p => {
+        // เปลี่ยน main_category -> maincategory
         const category =
           String(
-            p.main_category || ""
+            p.maincategory || ""
           ).trim();
         return checkedCategories.includes(
           category
         );
       });
   }
+
   /* =========================
      FILTER BY SEARCH
   ========================= */
@@ -301,6 +326,7 @@ function processAndRender() {
         );
       });
   }
+
   /* =========================
      PAGINATION
   ========================= */
@@ -310,6 +336,7 @@ function processAndRender() {
     Math.ceil(
       totalItems / itemsPerPage
     ) || 1;
+
   if (
     currentPage > totalPages
   ) {
@@ -320,6 +347,7 @@ function processAndRender() {
   ) {
     currentPage = 1;
   }
+
   const startIndex =
     (currentPage - 1) *
     itemsPerPage;
@@ -331,6 +359,7 @@ function processAndRender() {
       startIndex,
       endIndex
     );
+
   /* =========================
      PRODUCT GRID
   ========================= */
@@ -341,6 +370,7 @@ function processAndRender() {
   if (!grid) {
     return;
   }
+
   if (
     paginatedProducts.length === 0
   ) {
@@ -349,6 +379,7 @@ function processAndRender() {
     renderPaginationControls(1);
     return;
   }
+
   /* =========================
      PRODUCT CARDS
   ========================= */
@@ -356,6 +387,7 @@ function processAndRender() {
     paginatedProducts
       .map(createProductCard)
       .join("");
+
   /* =========================
      FINAL RENDER
   ========================= */
@@ -367,6 +399,7 @@ function processAndRender() {
     )
       ? promoCard + productCards
       : productCards;
+
   /* =========================
      PAGINATION
   ========================= */
@@ -374,6 +407,7 @@ function processAndRender() {
     totalPages
   );
 }
+
 /* =========================
    PAGINATION CONTROLS
 ========================= */
@@ -391,7 +425,9 @@ function renderPaginationControls(
     container.innerHTML = "";
     return;
   }
+
   let html = "";
+
   /* =========================
      PREVIOUS
   ========================= */
@@ -408,6 +444,7 @@ function renderPaginationControls(
       ←
     </button>
   `;
+
   /* =========================
      PAGE NUMBERS
   ========================= */
@@ -429,6 +466,7 @@ function renderPaginationControls(
       </button>
     `;
   }
+
   /* =========================
      NEXT
   ========================= */
@@ -445,9 +483,11 @@ function renderPaginationControls(
       →
     </button>
   `;
+
   container.innerHTML =
     html;
 }
+
 /* =========================
    CHANGE PAGE
 ========================= */
@@ -460,6 +500,7 @@ window.changePage =
       behavior: "smooth"
     });
   };
+
 /* =========================
    INIT EVENTS
 ========================= */
@@ -482,6 +523,7 @@ window.addEventListener(
         }
       );
     }
+
     /* =========================
        CATEGORY FILTER
     ========================= */
@@ -498,6 +540,7 @@ window.addEventListener(
           }
         );
       });
+
     /* =========================
        LOAD DATA
     ========================= */
