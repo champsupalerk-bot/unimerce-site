@@ -1,5 +1,6 @@
 let currentProductData = null;
 let baseTotalLikes = 48;
+
 function cleanNumber(val) {
   if (val === null || val === undefined) return 0;
   if (typeof val === "number") return val;
@@ -8,6 +9,7 @@ function cleanNumber(val) {
   const parsed = parseFloat(str);
   return isNaN(parsed) ? 0 : parsed;
 }
+
 function formatMoney(val) {
   const num = cleanNumber(val);
   return num > 0
@@ -17,12 +19,14 @@ function formatMoney(val) {
       })
     : "-";
 }
+
 function getLikeStatus(itemCode) {
   const likesData = JSON.parse(
     localStorage.getItem("unimerce_likes") || "{}"
   );
   return likesData[itemCode] || false;
 }
+
 function saveLikeStatus(itemCode, status) {
   const likesData = JSON.parse(
     localStorage.getItem("unimerce_likes") || "{}"
@@ -30,6 +34,7 @@ function saveLikeStatus(itemCode, status) {
   likesData[itemCode] = status;
   localStorage.setItem("unimerce_likes", JSON.stringify(likesData));
 }
+
 function escapeAttr(value) {
   return String(value || "")
     .replace(/&/g, "&amp;")
@@ -38,17 +43,17 @@ function escapeAttr(value) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 }
+
 function getProductImages(product) {
   const images = [];
-  if (product.image_link_01) {
+  // ดึงจาก picture หรือ image_link_01
+  if (product.picture) {
+    images.push(String(product.picture).trim());
+  }
+  if (product.image_link_01 && !images.includes(String(product.image_link_01).trim())) {
     images.push(String(product.image_link_01).trim());
   }
-  if (product.image_link_02) {
-    images.push(String(product.image_link_02).trim());
-  }
-  if (product.image_link_03) {
-    images.push(String(product.image_link_03).trim());
-  }
+  
   if (images.length === 0) {
     images.push(
       "https://via.placeholder.com/600x600?text=No+Image"
@@ -56,6 +61,7 @@ function getProductImages(product) {
   }
   return images;
 }
+
 function createMetaTable(product) {
   const itemCode = escapeAttr(product.item_code);
   const name = escapeAttr(product.name);
@@ -105,11 +111,12 @@ function createMetaTable(product) {
       </tr>
       <tr>
         <td class="lbl">หมวดหมู่</td>
-        <td class="val">${product.main_category || "-"}</td>
+        <td class="val">${product.maincategory || "-"}</td>
       </tr>
     </table>
   `;
 }
+
 async function loadProductDetail() {
   const mainContent = document.getElementById("main-content");
   try {
@@ -159,8 +166,8 @@ async function loadProductDetail() {
         `UNIMERCE | ${productName}`
       );
     }
-    if (product.product_detail) {
-      const description = String(product.product_detail)
+    if (product.index4_description) {
+      const description = String(product.index4_description)
         .replace(/<[^>]*>/g, "")
         .substring(0, 150);
       if (metaDesc) {
@@ -170,19 +177,22 @@ async function loadProductDetail() {
         ogDesc.setAttribute("content", description);
       }
     }
-    if (product.image_link_01 && ogImage) {
+    if ((product.picture || product.image_link_01) && ogImage) {
       ogImage.setAttribute(
         "content",
-        String(product.image_link_01).trim()
+        String(product.picture || product.image_link_01).trim()
       );
     }
     const images = getProductImages(product);
-    const listPriceFormatted = product.list_price
-      ? formatMoney(product.list_price)
+    
+    // เปลี่ยนจาก list_price เป็น listprice และ promotion_price เป็น pricep
+    const listPriceFormatted = product.listprice
+      ? formatMoney(product.listprice)
       : "";
-    const promoPriceFormatted = product.promotion_price
-      ? formatMoney(product.promotion_price)
+    const promoPriceFormatted = product.pricep
+      ? formatMoney(product.pricep)
       : "-";
+
     const tableTemplateHTML = createMetaTable(product);
     mainContent.innerHTML = `
       <div class="breadcrumb">
@@ -340,7 +350,7 @@ async function loadProductDetail() {
         <div class="sec-block">
           <h2>Product Detail</h2>
           <div class="body-text">
-            ${product.product_detail || "-"}
+            ${product.index4_description || "-"}
           </div>
         </div>
       </div>
@@ -461,6 +471,7 @@ async function loadProductDetail() {
     );
   }
 }
+
 window.switchThumb = function(element, imgSrc) {
   const mainImg = document.getElementById("view-main-img");
   if (mainImg) {
@@ -471,6 +482,7 @@ window.switchThumb = function(element, imgSrc) {
     .forEach(box => box.classList.remove("active"));
   element.classList.add("active");
 };
+
 window.updateQty = function(amount) {
   const input = document.getElementById("order-qty");
   if (!input) return;
@@ -481,6 +493,7 @@ window.updateQty = function(amount) {
   }
   input.value = current;
 };
+
 window.toggleShopeeLike = function() {
   if (!currentProductData) return;
   const itemCode = currentProductData.item_code;
@@ -526,19 +539,23 @@ window.toggleShopeeLike = function() {
     mobCnt.innerText = currentVal;
   }
 };
+
 window.triggerAddToCartDummy = function() {
   alert(
     "ระบบตะกร้าสินค้ากำลังอยู่ระหว่างการพัฒนาเพิ่มเติมครับ"
   );
 };
+
 window.openOrderModal = function() {
   if (!currentProductData) return;
   const qtyElement =
     document.getElementById("order-qty");
   const qty = qtyElement ? qtyElement.value : 1;
+  
+  // เปลี่ยนราคาโปรโมชันเป็น pricep และราคาตั้งเป็น listprice
   const basePrice =
-    currentProductData.promotion_price ||
-    currentProductData.list_price ||
+    currentProductData.pricep ||
+    currentProductData.listprice ||
     "0";
   const priceUnitFormatted =
     formatMoney(basePrice);
@@ -552,7 +569,7 @@ window.openOrderModal = function() {
 ชื่อสินค้า (Description): ${currentProductData.name || "-"}
 แบรนด์ (Brand): ${currentProductData.index2_brand || "-"}
 รุ่น (Series): ${currentProductData.index3_series || "-"}
-หมวดหมู่ (Category): ${currentProductData.main_category || "-"}
+หมวดหมู่ (Category): ${currentProductData.maincategory || "-"}
 จำนวนที่ต้องการ: ${qty} ${currentProductData.uom || "หน่วย"}
 ราคาต่อหน่วย: ฿${priceUnitFormatted}
 ราคารวมทั้งสิ้น: ฿${totalPriceFormatted}
@@ -573,6 +590,7 @@ window.openOrderModal = function() {
     modal.classList.add("active");
   }
 };
+
 window.closeOrderModal = function() {
   const modal =
     document.getElementById("order-modal");
@@ -585,6 +603,7 @@ window.closeOrderModal = function() {
     toast.innerText = "";
   }
 };
+
 window.copyTextDirect = function(
   textToCopy,
   customMessage
@@ -611,6 +630,7 @@ window.copyTextDirect = function(
       console.error("Copy failed:", error);
     });
 };
+
 window.copyOrderTextToClipboard = function() {
   const copyTarget =
     document.getElementById("copy-text-target");
@@ -646,6 +666,7 @@ window.copyOrderTextToClipboard = function() {
         `mailto:sales@unimercegroup.com`;
     });
 };
+
 function showError(message) {
   const mainContent =
     document.getElementById("main-content");
@@ -664,6 +685,7 @@ function showError(message) {
     </div>
   `;
 }
+
 window.addEventListener("load", function() {
   let layoutCache = {
     header: "",
