@@ -55,7 +55,7 @@ async function initLocalCache() {
         console.log(`Loaded Customers: ${cachedCustomers.length} records`);
 
         cachedProducts = await fetchAllBatches(
-            '/itemmaster?select=item_code,name,pricec,pricea,priceb,priced,pricel,pricep'
+            '/itemmaster?select=item_code,name,pricep,pricea,priceb,priced,pricel,pricep'
         );
 
         console.log(`Loaded Products: ${cachedProducts.length} records`);
@@ -237,7 +237,7 @@ function searchProducts(query) {
                 </div>
                 <div class="text-right">
                     <span class="text-xs font-semibold text-blue-600">
-                        Price C: ${money(p.pricec)} ฿
+                        Price p: ${money(p.pricep)} ฿
                     </span>
                 </div>
             </div>
@@ -253,8 +253,8 @@ function addProductToCart(product) {
         item_code: product.item_code,
         name: product.name || '',
         productRef: product,
-        selectedPriceTier: 'pricec',
-        unitPrice: parseFloat(product.pricec) || 0,
+        selectedPriceTier: 'pricep',
+        unitPrice: parseFloat(product.pricep) || 0,
         qty: 1,
         discountVal: 0,
         discountType: 'THB'
@@ -361,7 +361,7 @@ function renderCart() {
                         onchange="updateTierPrice(${item.id}, this.value)"
                         class="p-1 border rounded text-xs bg-white">
 
-                        <option value="pricec"
+                        <option value="pricep"
                             ${item.selectedPriceTier === 'pricec' ? 'selected' : ''}>
                             Price C (Default)
                         </option>
@@ -713,7 +713,7 @@ async function refreshProductCache() {
 
     try {
         cachedProducts = await fetchAllBatches(
-            '/itemmaster?select=item_code,name,pricec,pricea,priceb,priced,pricel,pricep'
+            '/itemmaster?select=item_code,name,pricep,pricea,priceb,priced,pricel,pricep'
         );
 
         alert(
