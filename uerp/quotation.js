@@ -253,7 +253,7 @@ function addProductToCart(product) {
         unitPrice: parseFloat(product.pricep) || 0,
         qty: 1,
         discountVal: 0,
-        discountType: 'THB'
+        discountType: 'PERCENT'
     });
 
     $('prodDropdown')?.classList.add('hidden');
@@ -425,14 +425,14 @@ function renderCart() {
                             onchange="updateRowDiscount(${item.id}, null, this.value)"
                             class="p-1 border rounded text-[10px] bg-white">
 
-                            <option value="THB"
-                                ${item.discountType === 'THB' ? 'selected' : ''}>
-                                ฿
-                            </option>
-
                             <option value="PERCENT"
                                 ${item.discountType === 'PERCENT' ? 'selected' : ''}>
                                 %
+                            </option>
+
+                            <option value="THB"
+                                ${item.discountType === 'THB' ? 'selected' : ''}>
+                                ฿
                             </option>
                         </select>
                     </div>
