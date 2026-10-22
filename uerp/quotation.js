@@ -26,12 +26,10 @@ const money = n => (Number(n) || 0).toLocaleString('th-TH', {
 document.addEventListener('DOMContentLoaded', async () => {
     const now = new Date();
 
-    if ($('lblDocDate')) {
-        $('lblDocDate').innerText = now.toLocaleDateString('th-TH');
+    if ($('lblDocDate')) {$('lblDocDate').innerText = now.toLocaleDateString('th-TH');
     }
 
-    if ($('lblDocNo')) {
-        $('lblDocNo').innerText =
+    if ($('lblDocNo')) {$('lblDocNo').innerText =
             `QT-${now.toISOString().slice(0, 7).replace('-', '')}-${Math.floor(1000 + Math.random() * 9000)}`;
     }
 
@@ -55,7 +53,7 @@ async function initLocalCache() {
         console.log(`Loaded Customers: ${cachedCustomers.length} records`);
 
         cachedProducts = await fetchAllBatches(
-            '/itemmaster?select=item_code,name,pricep,pricea,priceb,priced,pricel,pricep'
+            '/itemmaster?select=item_code,name,pricec,pricea,priceb,priced,pricel,pricep'
         );
 
         console.log(`Loaded Products: ${cachedProducts.length} records`);
@@ -95,14 +93,12 @@ async function fetchAllBatches(endpoint) {
    ========================================================================== */
 
 function showSearchLoading(isLoading) {
-    if ($('custSearchInput')) {
-        $('custSearchInput').placeholder = isLoading
+    if ($('custSearchInput')) {$('custSearchInput').placeholder = isLoading
             ? 'กำลังโหลดข้อมูลลูกค้า (กรุณารอสักครู่)...'
             : 'พิมพ์คำค้นหาลูกค้า (ชื่อ, รหัส, เบอร์โทร, เลขภาษี ฯลฯ)...';
     }
 
-    if ($('prodSearchInput')) {
-        $('prodSearchInput').placeholder = isLoading
+    if ($('prodSearchInput')) {$('prodSearchInput').placeholder = isLoading
             ? 'กำลังโหลดข้อมูลสินค้า (กรุณารอสักครู่)...'
             : 'พิมพ์รหัสสินค้า (Item Code) หรือ ชื่อสินค้า (Name)...';
     }
@@ -237,7 +233,7 @@ function searchProducts(query) {
                 </div>
                 <div class="text-right">
                     <span class="text-xs font-semibold text-blue-600">
-                        Price p: ${money(p.pricep)} ฿
+                        Promo Price: ${money(p.pricep)} ฿
                     </span>
                 </div>
             </div>
@@ -362,8 +358,13 @@ function renderCart() {
                         class="p-1 border rounded text-xs bg-white">
 
                         <option value="pricep"
+                            ${item.selectedPriceTier === 'pricep' ? 'selected' : ''}>
+                            Promo Price (Default)
+                        </option>
+
+                        <option value="pricec"
                             ${item.selectedPriceTier === 'pricec' ? 'selected' : ''}>
-                            Price C (Default)
+                            Price C
                         </option>
 
                         <option value="pricea"
@@ -384,11 +385,6 @@ function renderCart() {
                         <option value="pricel"
                             ${item.selectedPriceTier === 'pricel' ? 'selected' : ''}>
                             Price L
-                        </option>
-
-                        <option value="pricep"
-                            ${item.selectedPriceTier === 'pricep' ? 'selected' : ''}>
-                            Promo Price
                         </option>
 
                         <option value="MANUAL"
@@ -497,12 +493,10 @@ function calculateTotals() {
 
     const grandTotal = Math.max(0, subtotal - billDiscountAmt);
 
-    if ($('txtSubtotal')) {
-        $('txtSubtotal').innerText = `${money(subtotal)} ฿`;
+    if ($('txtSubtotal')) {$('txtSubtotal').innerText = `${money(subtotal)} ฿`;
     }
 
-    if ($('txtGrandTotal')) {
-        $('txtGrandTotal').innerText = `${money(grandTotal)} ฿`;
+    if ($('txtGrandTotal')) {$('txtGrandTotal').innerText = `${money(grandTotal)} ฿`;
     }
 
     return {
@@ -524,36 +518,30 @@ function openPreviewModal() {
         return;
     }
 
-    if ($('lblCustName')) {
-        $('lblCustName').innerText = custName;
+    if ($('lblCustName')) {$('lblCustName').innerText = custName;
     }
 
-    if ($('lblCustAddress')) {
-        $('lblCustAddress').innerText = val('custAddress')
+    if ($('lblCustAddress')) {$('lblCustAddress').innerText = val('custAddress')
             ? `ที่อยู่: ${val('custAddress')}`
             : '';
     }
 
-    if ($('lblCustTax')) {
-        $('lblCustTax').innerText = val('custTaxId')
+    if ($('lblCustTax')) {$('lblCustTax').innerText = val('custTaxId')
             ? `เลขประจำตัวผู้เสียภาษี: ${val('custTaxId')}`
             : '';
     }
 
-    if ($('lblCustPhone')) {
-        $('lblCustPhone').innerText = val('custPhone')
+    if ($('lblCustPhone')) {$('lblCustPhone').innerText = val('custPhone')
             ? `เบอร์โทร: ${val('custPhone')}`
             : '';
     }
 
-    if ($('lblCustEmail')) {
-        $('lblCustEmail').innerText = val('custEmail')
+    if ($('lblCustEmail')) {$('lblCustEmail').innerText = val('custEmail')
             ? `อีเมล: ${val('custEmail')}`
             : '';
     }
 
-    if ($('lblDocRemark')) {
-        $('lblDocRemark').innerText = val('docRemark') || '-';
+    if ($('lblDocRemark')) {$('lblDocRemark').innerText = val('docRemark') || '-';
     }
 
     const tbody = $('lblTableBody');
@@ -605,16 +593,13 @@ function openPreviewModal() {
 
     const totals = calculateTotals();
 
-    if ($('lblSubtotal')) {
-        $('lblSubtotal').innerText = money(totals.subtotal);
+    if ($('lblSubtotal')) {$('lblSubtotal').innerText = money(totals.subtotal);
     }
 
-    if ($('lblBillDiscount')) {
-        $('lblBillDiscount').innerText = money(totals.billDiscountAmt);
+    if ($('lblBillDiscount')) {$('lblBillDiscount').innerText = money(totals.billDiscountAmt);
     }
 
-    if ($('lblGrandTotal')) {
-        $('lblGrandTotal').innerText = money(totals.grandTotal);
+    if ($('lblGrandTotal')) {$('lblGrandTotal').innerText = money(totals.grandTotal);
     }
 
     $('previewModal')?.classList.remove('hidden');
@@ -713,7 +698,7 @@ async function refreshProductCache() {
 
     try {
         cachedProducts = await fetchAllBatches(
-            '/itemmaster?select=item_code,name,pricep,pricea,priceb,priced,pricel,pricep'
+            '/itemmaster?select=item_code,name,pricec,pricea,priceb,priced,pricel,pricep'
         );
 
         alert(
@@ -726,4 +711,3 @@ async function refreshProductCache() {
         refreshIcon?.classList.remove('fa-spin');
     }
 }
-
