@@ -33,8 +33,8 @@ tailwind.config={
 *{box-sizing:border-box;font-family:"Kanit",Arial,sans-serif}
 html,body{margin:0;padding:0;background:#fff;color:#111827;overflow-x:hidden}
 body{min-height:100vh}
-.container{width:100%;max-width:1000px;margin:0 auto;padding:0 16px}
-.page-top{width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;margin:20px 0 14px}
+.container{width:100%;max-width:1000px;margin:0 auto;padding:0 16px;box-sizing:border-box}
+.page-top{width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;margin:20px 0 14px;box-sizing:border-box}
 .page-title{font-size:22px;font-weight:600;color:#111827;line-height:1.3}
 .page-subtitle{font-size:13px;color:#777;margin-top:2px}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -45,8 +45,8 @@ body{min-height:100vh}
 .status{padding:9px 12px;border-radius:7px;background:#eef6ff;border:1px solid #cfe4ff;color:#185abc;font-size:13px;margin-bottom:14px}
 .status.error{background:#fff1f2;border-color:#fecdd3;color:#be123c}
 .hidden{display:none!important}
-.workspace{width:100%;display:grid;grid-template-columns:300px 400px;gap:20px;align-items:start;justify-content:center;padding-bottom:40px}
-.editor{border:1px solid #e1e5eb;border-radius:10px;padding:16px;background:#fff}
+.workspace{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;justify-content:stretch;padding-bottom:40px}
+.editor{border:1px solid #e1e5eb;border-radius:10px;padding:16px;background:#fff;width:100%}
 .editor-title{font-size:15px;font-weight:600;margin-bottom:14px}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:12px;font-weight:600;color:#4b5563;margin-bottom:5px}
@@ -54,7 +54,7 @@ body{min-height:100vh}
 .field textarea{resize:vertical;min-height:70px}
 .field input:focus,.field textarea:focus{border-color:#1a73e8;box-shadow:0 0 0 2px rgba(26,115,232,.08)}
 .hint{font-size:11px;color:#9ca3af;line-height:1.5;margin-top:6px}
-.paper-wrap{display:flex;justify-content:flex-start;align-items:flex-start}
+.paper-wrap{display:flex;justify-content:flex-end;align-items:flex-start;width:100%}
 .sticker-paper{width:100mm;height:150mm;background:#fff;box-shadow:0 4px 20px rgba(15,23,42,.15);display:flex;justify-content:center;align-items:flex-start;flex-shrink:0}
 .shipping-label{width:100mm;height:150mm;background:#fff;color:#111827;padding:4mm 3.5mm 3mm;display:flex;flex-direction:column;overflow:hidden}
 .label-header{display:grid;grid-template-columns:54% 46%;gap:2mm;padding-bottom:2mm;border-bottom:1px solid #111827;flex-shrink:0}
