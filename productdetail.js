@@ -46,14 +46,15 @@ function escapeAttr(value) {
 
 function getProductImages(product) {
   const images = [];
-  // ดึงจาก picture หรือ image_link_01
-  if (product.picture) {
-    images.push(String(product.picture).trim());
-  }
-  if (product.image_link_01 && !images.includes(String(product.image_link_01).trim())) {
+  if (product.image_link_01) {
     images.push(String(product.image_link_01).trim());
   }
-  
+  if (product.image_link_02) {
+    images.push(String(product.image_link_02).trim());
+  }
+  if (product.image_link_03) {
+    images.push(String(product.image_link_03).trim());
+  }
   if (images.length === 0) {
     images.push(
       "https://via.placeholder.com/600x600?text=No+Image"
@@ -166,8 +167,8 @@ async function loadProductDetail() {
         `UNIMERCE | ${productName}`
       );
     }
-    if (product.index4_description) {
-      const description = String(product.index4_description)
+    if (product.product_detail) {
+      const description = String(product.product_detail)
         .replace(/<[^>]*>/g, "")
         .substring(0, 150);
       if (metaDesc) {
@@ -177,22 +178,19 @@ async function loadProductDetail() {
         ogDesc.setAttribute("content", description);
       }
     }
-    if ((product.picture || product.image_link_01) && ogImage) {
+    if (product.image_link_01 && ogImage) {
       ogImage.setAttribute(
         "content",
-        String(product.picture || product.image_link_01).trim()
+        String(product.image_link_01).trim()
       );
     }
     const images = getProductImages(product);
-    
-    // เปลี่ยนจาก list_price เป็น listprice และ promotion_price เป็น pricep
     const listPriceFormatted = product.listprice
       ? formatMoney(product.listprice)
       : "";
     const promoPriceFormatted = product.pricep
       ? formatMoney(product.pricep)
       : "-";
-
     const tableTemplateHTML = createMetaTable(product);
     mainContent.innerHTML = `
       <div class="breadcrumb">
@@ -350,7 +348,7 @@ async function loadProductDetail() {
         <div class="sec-block">
           <h2>Product Detail</h2>
           <div class="body-text">
-            ${product.index4_description || "-"}
+            ${product.product_detail || "-"}
           </div>
         </div>
       </div>
@@ -551,8 +549,6 @@ window.openOrderModal = function() {
   const qtyElement =
     document.getElementById("order-qty");
   const qty = qtyElement ? qtyElement.value : 1;
-  
-  // เปลี่ยนราคาโปรโมชันเป็น pricep และราคาตั้งเป็น listprice
   const basePrice =
     currentProductData.pricep ||
     currentProductData.listprice ||
