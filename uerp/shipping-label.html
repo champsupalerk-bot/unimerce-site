@@ -30,11 +30,20 @@ tailwind.config={
 <script src="/barcode-label-engine.js"></script>
 <script src="/layoutuerp.js"></script>
 <style>
+:root {
+  /* =========================================================
+     [จุดแก้ความกว้างจุดเดียว] 
+     ปรับตัวเลขตรงนี้เพื่อ เพิ่ม/หด ความกว้างของหน้าจอ Desktop
+     (เดิม 720px + เพิ่ม 100px = 820px)
+     ========================================================= */
+  --workspace-width: 820px; 
+}
+
 *{box-sizing:border-box;font-family:"Kanit",Arial,sans-serif}
 html,body{margin:0;padding:0;background:#fff;color:#111827;overflow-x:hidden}
 body{min-height:100vh}
 .container{width:100%;max-width:1000px;margin:0 auto;padding:0 16px}
-.page-top{width:100%;max-width:720px;margin:20px auto 14px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.page-top{width:100%;max-width:var(--workspace-width);margin:20px auto 14px;display:flex;justify-content:space-between;align-items:center;gap:16px}
 .page-title{font-size:22px;font-weight:600;color:#111827;line-height:1.3}
 .page-subtitle{font-size:13px;color:#777;margin-top:2px}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -45,7 +54,7 @@ body{min-height:100vh}
 .status{padding:9px 12px;border-radius:7px;background:#eef6ff;border:1px solid #cfe4ff;color:#185abc;font-size:13px;margin-bottom:14px}
 .status.error{background:#fff1f2;border-color:#fecdd3;color:#be123c}
 .hidden{display:none!important}
-.workspace{width:100%;display:grid;grid-template-columns:300px 400px;gap:20px;align-items:start;justify-content:center;padding-bottom:40px}
+.workspace{width:100%;max-width:var(--workspace-width);margin:0 auto;display:grid;grid-template-columns:1fr 400px;gap:20px;align-items:start;justify-content:center;padding-bottom:40px}
 .editor{border:1px solid #e1e5eb;border-radius:10px;padding:16px;background:#fff}
 .editor-title{font-size:15px;font-weight:600;margin-bottom:14px}
 .field{margin-bottom:12px}
@@ -78,31 +87,37 @@ body{min-height:100vh}
 .order-number{font-family:"Courier New",monospace;font-size:16px;line-height:1.15;font-weight:800;word-break:break-all;overflow-wrap:anywhere;margin-bottom:1.3mm;text-align:left}
 .order-barcode{justify-content:flex-start}
 .order-barcode svg{max-width:82mm}
+
+/* =========================================================
+   [ปรับปรุงเรื่องตัวหนังสือจม/ไม่ตรงกับ Preview]
+   ========================================================= */
 .items-section{margin-top:2.3mm;flex-shrink:0;min-height:0}
 .items-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:9px}
 .items-table th{font-size:7px;color:#6b7280;font-weight:700;text-align:left;padding:.8mm .7mm;border-bottom:.7px solid #9ca3af}
-.items-table td{padding:1mm .7mm;vertical-align:top;border-bottom:.4px solid #e5e7eb;line-height:1.25}
+.items-table td{padding:1mm .7mm;vertical-align:top;border-bottom:.4px solid #e5e7eb;line-height:1.3;height:auto}
 .items-table th:nth-child(1),.items-table td:nth-child(1){width:21mm}
 .items-table th:nth-child(2),.items-table td:nth-child(2){width:auto}
 .items-table th:nth-child(3),.items-table td:nth-child(3){width:10mm;text-align:right}
 .item-code{font-family:"Courier New",monospace;font-weight:700;font-size:8.5px;word-break:break-all}
-.item-name{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;word-break:break-word}
+.item-name{display:block;word-break:break-word;overflow-wrap:break-word;white-space:normal;line-height:1.3;overflow:visible}
 .qty{font-weight:800;font-size:10px}
 .items-table.compact{font-size:8px}
 .items-table.compact td{padding:.7mm .6mm}
-.items-table.compact .item-name{-webkit-line-clamp:1}
+.items-table.compact .item-name{display:block;line-height:1.2}
+
 .remark-section{margin-top:2mm;flex-shrink:0}
 .remark-box{min-height:8mm;max-height:13mm;border:.7px solid #9ca3af;padding:1.4mm;font-size:9px;line-height:1.25;white-space:pre-wrap;word-break:break-word;overflow:hidden}
 .label-footer{margin-top:auto;padding-top:1.8mm;border-top:.6px solid #d1d5db;display:flex;justify-content:space-between;align-items:flex-end;gap:3mm;flex-shrink:0}
 .invoice-ref{font-family:"Courier New",monospace;font-size:11px;font-weight:700;color:#111827;line-height:1.1}
 .website{font-size:11px;font-weight:700;color:#111827;white-space:nowrap}
 .empty-message{text-align:center;padding:30px 15px;color:#6b7280;font-size:13px}
+
 @media(max-width:800px){
 .container{padding:0 12px}
 .page-top{align-items:flex-start;flex-direction:column;max-width:100%}
 .actions{width:100%}
 .actions .btn{width:100%}
-.workspace{grid-template-columns:1fr;gap:18px}
+.workspace{grid-template-columns:1fr;gap:18px;max-width:100%}
 .editor{order:1}
 .paper-wrap{order:2;overflow-x:auto;justify-content:flex-start;padding-bottom:20px}
 }
