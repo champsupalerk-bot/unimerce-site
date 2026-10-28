@@ -90,6 +90,9 @@ th.sortable:hover {
 .period-btn {
     transition: all 0.15s ease;
 }
+.period-option {
+    transition: all 0.15s ease;
+}
 .order-count-live {
     font-size: 14px;
     color: #d93025;
@@ -217,18 +220,30 @@ th.sortable:hover {
             <button type="button" onclick="setPeriod('THIS_WEEK')" data-period="THIS_WEEK" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border whitespace-nowrap">
                 สัปดาห์นี้
             </button>
-            <button type="button" onclick="togglePeriodMenu()" class="px-2.5 py-1 rounded-md text-[11px] font-semibold border border-google-border bg-white text-slate-600 whitespace-nowrap">
-                Custom <i class="fa-solid fa-chevron-down text-[8px] ml-0.5"></i>
+            <button id="customPeriodBtn" type="button" onclick="togglePeriodMenu()" aria-expanded="false" aria-controls="periodMenu" class="period-btn px-2.5 py-1 rounded-md text-[11px] font-semibold border border-google-border bg-white text-slate-600 whitespace-nowrap">
+                <span id="customPeriodLabel">Custom</span>
+                <i id="customPeriodChevron" class="fa-solid fa-chevron-down text-[8px] ml-0.5"></i>
             </button>
         </div>
 
         <div id="periodMenu" class="hidden">
-            <select id="periodFilter" onchange="handleCustomPeriodChange()" class="google-select w-full bg-slate-50 border border-google-border rounded-md px-2 py-1.5 text-[11px] text-slate-700 font-medium focus:outline-none focus:border-google-blue">
-                <option value="ALL">ทั้งหมด</option>
-                <option value="THIS_WEEK">สัปดาห์นี้</option>
-                <option value="THIS_YEAR">ปีนี้</option>
-                <option value="CUSTOM">กำหนดวันที่เอง</option>
-            </select>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 p-1 bg-slate-50 border border-google-border rounded-lg">
+                <button type="button" onclick="selectPeriodOption('THIS_MONTH')" data-period-option="THIS_MONTH" class="period-option px-2.5 py-2 rounded-md border border-google-border bg-white text-slate-700 text-[11px] font-medium hover:bg-blue-50 hover:border-google-blue">
+                    เดือนนี้
+                </button>
+                <button type="button" onclick="selectPeriodOption('LAST_3_MONTHS')" data-period-option="LAST_3_MONTHS" class="period-option px-2.5 py-2 rounded-md border border-google-border bg-white text-slate-700 text-[11px] font-medium hover:bg-blue-50 hover:border-google-blue">
+                    3 เดือนย้อนหลัง
+                </button>
+                <button type="button" onclick="selectPeriodOption('THIS_YEAR')" data-period-option="THIS_YEAR" class="period-option px-2.5 py-2 rounded-md border border-google-border bg-white text-slate-700 text-[11px] font-medium hover:bg-blue-50 hover:border-google-blue">
+                    ปีนี้
+                </button>
+                <button type="button" onclick="selectPeriodOption('ALL')" data-period-option="ALL" class="period-option px-2.5 py-2 rounded-md border border-google-border bg-white text-slate-700 text-[11px] font-medium hover:bg-blue-50 hover:border-google-blue">
+                    ทั้งหมด
+                </button>
+                <button type="button" onclick="selectPeriodOption('CUSTOM')" data-period-option="CUSTOM" class="period-option col-span-2 sm:col-span-1 px-2.5 py-2 rounded-md border border-google-border bg-white text-slate-700 text-[11px] font-medium hover:bg-blue-50 hover:border-google-blue">
+                    กำหนดวันที่เอง
+                </button>
+            </div>
         </div>
 
         <div id="customDateContainer" class="hidden flex items-center gap-2 pt-1 text-xs text-slate-600">
@@ -294,5 +309,111 @@ th.sortable:hover {
 </main>
 
 <script src="transactions.js"></script>
+<script>
+(function () {
+    const menu = document.getElementById('periodMenu');
+    const button = document.getElementById('customPeriodBtn');
+    const label = document.getElementById('customPeriodLabel');
+    const chevron = document.getElementById('customPeriodChevron');
+    const dateContainer = document.getElementById('customDateContainer');
+
+    if (!menu || !button) return;
+
+    const labels = {
+        THIS_MONTH: 'เดือนนี้',
+        LAST_3_MONTHS: '3 เดือนย้อนหลัง',
+        THIS_YEAR: 'ปีนี้',
+        ALL: 'ทั้งหมด',
+        CUSTOM: 'กำหนดวันที่เอง'
+    };
+
+    window.togglePeriodMenu = function () {
+        const isOpening = menu.classList.contains('hidden');
+        menu.classList.toggle('hidden', !isOpening);
+        button.setAttribute('aria-expanded', String(isOpening));
+
+        if (chevron) {
+            chevron.classList.toggle('fa-chevron-down', !isOpening);
+            chevron.classList.toggle('fa-chevron-up', isOpening);
+        }
+    };
+
+    window.selectPeriodOption = function (period) {
+        if (typeof window.setPeriod !== 'function') return;
+
+        const customSelected = period === 'CUSTOM';
+
+        if (typeof window.currentPeriod !== 'undefined') {
+            window.currentPeriod = period;
+        }
+
+        if (typeof window.ensureCurrentPeriodData === 'function') {
+            window.currentPeriod = period;
+        }
+
+        menu.classList.add('hidden');
+        button.setAttribute('aria-expanded', 'false');
+
+        if (chevron) {
+            chevron.classList.remove('fa-chevron-up');
+            chevron.classList.add('fa-chevron-down');
+        }
+
+        if (label) {
+            label.textContent = labels[period] || 'Custom';
+        }
+
+        if (dateContainer) {
+            dateContainer.classList.toggle('hidden', !customSelected);
+        }
+
+        document.querySelectorAll('.period-btn[data-period]').forEach(function (item) {
+            item.classList.remove('bg-blue-50', 'text-google-blue', 'border-google-blue');
+            item.classList.add('bg-white', 'text-slate-600', 'border-google-border');
+        });
+
+        document.querySelectorAll('.period-option').forEach(function (item) {
+            const selected = item.dataset.periodOption === period;
+            item.classList.toggle('bg-blue-50', selected);
+            item.classList.toggle('text-google-blue', selected);
+            item.classList.toggle('border-google-blue', selected);
+            item.classList.toggle('font-bold', selected);
+            item.classList.toggle('bg-white', !selected);
+            item.classList.toggle('text-slate-700', !selected);
+            item.classList.toggle('border-google-border', !selected);
+            item.setAttribute('aria-pressed', String(selected));
+        });
+
+        if (customSelected) {
+            if (typeof window.applyFilters === 'function') {
+                const startDate = document.getElementById('startDate');
+                const endDate = document.getElementById('endDate');
+
+                if (startDate && endDate && startDate.value && endDate.value) {
+                    window.applyFilters();
+                }
+            }
+            return;
+        }
+
+        if (typeof window.setPeriod === 'function') {
+            window.setPeriod(period);
+        }
+    };
+
+    document.addEventListener('click', function (event) {
+        if (menu.classList.contains('hidden')) return;
+        if (menu.contains(event.target) || button.contains(event.target)) return;
+
+        menu.classList.add('hidden');
+        button.setAttribute('aria-expanded', 'false');
+
+        if (chevron) {
+            chevron.classList.remove('fa-chevron-up');
+            chevron.classList.add('fa-chevron-down');
+        }
+    });
+})();
+</script>
 </body>
 </html>
