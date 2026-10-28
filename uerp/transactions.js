@@ -1,4 +1,3 @@
-
 const supabaseClient = supabase.createClient(
     window.SUPABASE_URL,
     window.SUPABASE_ANON_KEY
@@ -967,6 +966,8 @@ function renderTable() {
 
             const invoiceNo = String(row.invoice_no || '');
             const encodedInvoice = encodeURIComponent(invoiceNo);
+            const shippingLabelUrl =
+                `/uerp/shipping-label.html?invoice_no=${encodedInvoice}`;
 
             let rowBgClass = 'hover:bg-slate-50';
             if (isDup) rowBgClass = 'row-duplicate';
@@ -978,10 +979,16 @@ function renderTable() {
                 `transition-colors border-b border-slate-100 cursor-pointer ${rowBgClass}`;
 
             tr.onclick = e => {
+                // ไม่เลือกแถวเมื่อคลิก Invoice หรือลิงก์ใบปะหน้า
+                if (e.target.closest('.tx-invoice-link')) {
+                    return;
+                }
+
                 if (
                     e.target.tagName === 'SELECT' ||
                     e.target.tagName === 'OPTION' ||
-                    e.target.tagName === 'INPUT'
+                    e.target.tagName === 'INPUT' ||
+                    e.target.closest('a, button')
                 ) {
                     return;
                 }
@@ -1023,14 +1030,14 @@ function renderTable() {
                 </td>
                 <td class="p-2 align-top">
                     <div class="sm:hidden leading-tight w-[78px] overflow-hidden">
-                        <div
-                            class="mobile-order-main font-bold text-slate-900 font-mono truncate"
+                        <a
+                            href="${shippingLabelUrl}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="tx-invoice-link mobile-order-main block font-bold text-slate-900 font-mono truncate"
                             title="${invoiceNo}"
-                            onclick="event.stopPropagation(); window.open('/uerp/shipping-label.html?invoice_no=${encodedInvoice}', '_blank')"
-                            style="cursor:pointer"
-                        >
-                            ${invoiceNo || '-'}
-                        </div>
+                            style="cursor:pointer; touch-action:manipulation;"
+                        >${invoiceNo || '-'}</a>
                         <div class="text-[9px] text-google-gray font-mono truncate" title="${orderNo}">
                             ${orderPrefix}
                         </div>
@@ -1039,13 +1046,13 @@ function renderTable() {
                         </div>
                     </div>
                     <div class="hidden sm:block leading-tight">
-                        <div
-                            class="font-bold text-slate-900 font-mono"
-                            onclick="event.stopPropagation(); window.open('/uerp/shipping-label.html?invoice_no=${encodedInvoice}', '_blank')"
-                            style="cursor:pointer"
-                        >
-                            ${invoiceNo || '-'}
-                        </div>
+                        <a
+                            href="${shippingLabelUrl}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="tx-invoice-link block font-bold text-slate-900 font-mono"
+                            style="cursor:pointer; touch-action:manipulation;"
+                        >${invoiceNo || '-'}</a>
                         <div class="text-[10px] text-google-gray font-mono">
                             ${row.order_no || '-'}
                         </div>
@@ -1090,6 +1097,20 @@ function renderTable() {
                     </select>
                 </td>
             `;
+
+            // ป้องกันการคลิก Invoice แล้วไปเลือกแถว
+            // ใช้ทั้ง click และ touchend เพื่อให้รองรับมือถือ
+            const invoiceLinks = tr.querySelectorAll('.tx-invoice-link');
+
+            invoiceLinks.forEach(link => {
+                link.addEventListener('click', e => {
+                    e.stopPropagation();
+                });
+
+                link.addEventListener('touchend', e => {
+                    e.stopPropagation();
+                }, { passive: true });
+            });
 
             tbody.appendChild(tr);
         });
