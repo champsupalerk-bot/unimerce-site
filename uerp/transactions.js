@@ -2,6 +2,7 @@ const supabaseClient = supabase.createClient(
     window.SUPABASE_URL,
     window.SUPABASE_ANON_KEY
 );
+
 let allTransactions = [];
 let filteredTransactions = [];
 let filteredOrderGroups = [];
@@ -17,8 +18,8 @@ const TRANSACTION_CACHE_DB = 'uerp_transactions_cache_db';
 const TRANSACTION_CACHE_STORE = 'transactions';
 const TRANSACTION_CACHE_META = 'meta';
 const TRANSACTION_CACHE_VERSION = 2;
-const INITIAL_CACHE_YEARS = 2;
 const FETCH_BATCH_SIZE = 1000;
+const ALL_DATA_START_DATE = new Date(2000, 0, 1);
 
 let loadSequence = 0;
 let isAppendingRows = false;
@@ -102,35 +103,47 @@ function formatMoney(val) {
     });
 }
 
-function getInitialCacheRange() {
+function getEndOfToday() {
     const now = new Date();
 
+    return new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        23, 59, 59, 999
+    );
+}
+
+function getDateMonthsAgo(date, months) {
+    const result = new Date(date);
+    const originalDay = result.getDate();
+
+    result.setDate(1);
+    result.setMonth(result.getMonth() - months);
+
+    const lastDayOfTargetMonth = new Date(
+        result.getFullYear(),
+        result.getMonth() + 1,
+        0
+    ).getDate();
+
+    result.setDate(Math.min(originalDay, lastDayOfTargetMonth));
+    result.setHours(0, 0, 0, 0);
+
+    return result;
+}
+
+function getInitialCacheRange() {
     return {
-        start: new Date(
-            now.getFullYear() - INITIAL_CACHE_YEARS,
-            now.getMonth(),
-            now.getDate()
-        ),
-        end: new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            23, 59, 59, 999
-        )
+        start: new Date(ALL_DATA_START_DATE),
+        end: getEndOfToday()
     };
 }
 
 function getCurrentPeriodRange() {
     const now = new Date();
     let start = null;
-    let end = null;
-
-    end = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        23, 59, 59, 999
-    );
+    let end = getEndOfToday();
 
     if (currentPeriod === 'TODAY') {
         start = new Date(
@@ -144,6 +157,7 @@ function getCurrentPeriodRange() {
             now.getMonth(),
             now.getDate() - 1
         );
+
         end = new Date(
             now.getFullYear(),
             now.getMonth(),
@@ -156,6 +170,7 @@ function getCurrentPeriodRange() {
             now.getMonth(),
             now.getDate() - 2
         );
+
         end = new Date(
             now.getFullYear(),
             now.getMonth(),
@@ -176,12 +191,15 @@ function getCurrentPeriodRange() {
             now.getMonth(),
             1
         );
+    } else if (currentPeriod === 'LAST_3_MONTHS') {
+        start = getDateMonthsAgo(now, 3);
     } else if (currentPeriod === 'LAST_MONTH') {
         start = new Date(
             now.getFullYear(),
             now.getMonth() - 1,
             1
         );
+
         end = new Date(
             now.getFullYear(),
             now.getMonth(),
@@ -576,6 +594,7 @@ async function loadCurrentPeriodData(token) {
         allTransactions = normalizeTransactionRows(
             await getAllCachedTransactions()
         );
+
         applyFilters();
         hideStatus();
         return;
@@ -674,15 +693,62 @@ async function ensureCurrentPeriodData() {
    PERIOD FILTERS
 ========================= */
 
+// ปุ่มช่วงเวลาที่มีอยู่เดิม
 function setPeriod(period, shouldApply = true) {
     currentPeriod = currentPeriod === period ? 'ALL' : period;
 
+    updatePeriodControls();
+
+    if (shouldApply) {
+        ensureCurrentPeriodData();
+    }
+}
+
+// ใช้กับเมนูตัวเลือกช่วงเวลาใหม่
+// ไม่สลับไป ALL เมื่อเลือกช่วงเวลาเดิมซ้ำ
+function selectPeriodOption(period) {
+    const allowedPeriods = [
+        'THIS_MONTH',
+        'LAST_3_MONTHS',
+        'THIS_YEAR',
+        'ALL',
+        'CUSTOM'
+    ];
+
+    if (!allowedPeriods.includes(period)) {
+        console.warn('Unknown period option:', period);
+        return;
+    }
+
+    currentPeriod = period;
+
+    updatePeriodControls();
+
+    document.getElementById('periodMenu')?.classList.add('hidden');
+
+    if (currentPeriod === 'CUSTOM') {
+        const startDate = document.getElementById('startDate')?.value;
+        const endDate = document.getElementById('endDate')?.value;
+
+        if (startDate && endDate) {
+            ensureCurrentPeriodData();
+        } else {
+            applyFilters();
+        }
+
+        return;
+    }
+
+    ensureCurrentPeriodData();
+}
+
+function updatePeriodControls() {
     document.getElementById('customDateContainer')?.classList.toggle(
         'hidden',
         currentPeriod !== 'CUSTOM'
     );
 
-    document.querySelectorAll('.period-btn').forEach(btn => {
+    document.querySelectorAll('.period-btn, .period-option').forEach(btn => {
         const active = btn.dataset.period === currentPeriod;
 
         btn.classList.toggle('bg-google-blue', active);
@@ -693,42 +759,52 @@ function setPeriod(period, shouldApply = true) {
         btn.classList.toggle('border-google-border', !active);
     });
 
-    if (shouldApply) {
-        ensureCurrentPeriodData();
+    const periodFilter = document.getElementById('periodFilter');
+
+    if (periodFilter && periodFilter.value !== currentPeriod) {
+        periodFilter.value = currentPeriod;
     }
 }
 
 function togglePeriodMenu() {
-    document.getElementById('periodMenu')?.classList.toggle('hidden');
+    const periodMenu = document.getElementById('periodMenu');
+
+    if (!periodMenu) return;
+
+    periodMenu.classList.toggle('hidden');
 }
 
 function handleCustomPeriodChange() {
-    currentPeriod = document.getElementById('periodFilter').value;
+    const periodFilter = document.getElementById('periodFilter');
 
-    document.getElementById('customDateContainer')?.classList.toggle(
-        'hidden',
-        currentPeriod !== 'CUSTOM'
-    );
+    if (!periodFilter) return;
 
-    document.querySelectorAll('.period-btn').forEach(btn => {
-        btn.classList.remove(
-            'bg-google-blue',
-            'text-white',
-            'border-google-blue'
-        );
+    const selectedPeriod = periodFilter.value;
 
-        btn.classList.add(
-            'bg-white',
-            'text-slate-600',
-            'border-google-border'
-        );
-    });
+    const allowedPeriods = [
+        'ALL',
+        'THIS_WEEK',
+        'THIS_MONTH',
+        'LAST_3_MONTHS',
+        'LAST_MONTH',
+        'THIS_YEAR',
+        'CUSTOM'
+    ];
+
+    if (!allowedPeriods.includes(selectedPeriod)) {
+        console.warn('Unknown period filter:', selectedPeriod);
+        return;
+    }
+
+    currentPeriod = selectedPeriod;
+
+    updatePeriodControls();
 
     if (currentPeriod === 'CUSTOM') {
-        const s = document.getElementById('startDate')?.value;
-        const e = document.getElementById('endDate')?.value;
+        const startDate = document.getElementById('startDate')?.value;
+        const endDate = document.getElementById('endDate')?.value;
 
-        if (s && e) {
+        if (startDate && endDate) {
             ensureCurrentPeriodData();
         } else {
             applyFilters();
@@ -774,7 +850,6 @@ function applyFilters() {
 
     const channel = document.getElementById('channelFilter')?.value || 'ALL';
     const status = document.getElementById('statusFilter')?.value || 'ALL';
-    const period = currentPeriod;
     const showPKOnly = document.getElementById('showPKToggle')?.checked || false;
 
     const range = getCurrentPeriodRange();
@@ -1177,7 +1252,10 @@ async function submitChanges() {
                 const item = allTransactions.find(t => t._rowId === rowId);
 
                 if (!item || !item.id) {
-                    return { rowId, error: new Error(`ไม่พบ ID ของรายการ ${rowId}`) };
+                    return {
+                        rowId,
+                        error: new Error(`ไม่พบ ID ของรายการ ${rowId}`)
+                    };
                 }
 
                 const newStatus = pendingStatusChanges[rowId];
